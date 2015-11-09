@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.orchidatech.askandanswer.Activity.Signup">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.6"
+    android:background="@drawable/main_background"
+    >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/contenDesc_logo"
+        android:id="@+id/iv_logo" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        />
+
+
+</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.4"
+        android:orientation="vertical"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:inputType="text"
+            android:drawableLeft="@drawable/ic_name"
+            android:drawableStart="@drawable/ic_name"
+            android:drawablePadding="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:hint="@string/ed_name_hint"
+            android:imeOptions="actionNext"
+            android:id="@+id/ed_name" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:textSize="20sp"
+            android:inputType="textEmailAddress"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawableStart="@drawable/ic_email"
+            android:layout_below="@+id/ed_name"
+            android:drawablePadding="10dip"
+            android:hint="@string/ed_email_hint"
+            android:imeOptions="actionNext"
+            android:id="@+id/ed_email" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:textSize="20sp"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/ic_password"
+            android:drawableStart="@drawable/ic_password"
+            android:layout_below="@+id/ed_email"
+            android:drawablePadding="10dp"
+            android:hint="@string/ed_password_hint"
+            android:imeOptions="actionNext"
+            android:id="@+id/ed_password" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:textSize="20sp"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/ic_password"
+            android:drawableStart="@drawable/ic_password"
+            android:layout_below="@+id/ed_password"
+            android:drawablePadding="10dp"
+            android:hint="@string/ed_repassword_hint"
+            android:imeOptions="actionDone"
+            android:id="@+id/ed_repassword" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_signup_now"
+
+            android:background="@drawable/btn_enter_backgnd"
+            android:textColor="#fff"
+            android:textSize="20dip"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btn_signup" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/fr_contact_backgnd">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contactus_small"
+            android:textSize="25sp"
+            android:textColor="#f0ae24"
+            android:id="@+id/tv_contact"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_message"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#b3b3b3"
+        android:layout_below="@+id/tv_contact"
+
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:padding="17dp"
+        android:gravity="top"
+        android:background="@drawable/ed_contact_backgnd"
+        android:hint="@string/ed_contactus_hint"/>
+    <View android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#b3b3b3"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:gravity="center"
+            android:text="@string/btn_send"
+            android:textSize="18sp"
+            android:id="@+id/tv_send"
+            android:background="@drawable/btns_contactus_backgnd"/>
+        <View android:layout_height="match_parent"
+            android:layout_width="0.5dp"
+            android:background="#b3b3b3"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/btn_cancel"
+            android:textSize="18sp"
+            android:id="@+id/tv_cancel"
+            android:background="@drawable/btns_contactus_backgnd"/>
+    </LinearLayout>
+</LinearLayout>

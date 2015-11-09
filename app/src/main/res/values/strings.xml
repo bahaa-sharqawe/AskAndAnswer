@@ -1,3 +1,73 @@
 <resources>
     <string name="app_name">AskAndAnswer</string>
+    <string name="contenDesc_logo">Logo Photo</string>
+    <string name="enter">Enter</string>
+    <string name="ed_name_hint">Username</string>
+    <string name="ed_email_hint">Email</string>
+    <string name="ed_password_hint">Password</string>
+    <string name="ed_repassword_hint">Re-Password</string>
+    <string name="introduction">INTRODUCTION</string>
+    <string name="contact">CONTACT US</string>
+    <string name="intro_content">Question combines the power and potential of Asking Therapy and Answering Therapy into one money-saving app.
+Asking and answering questions is critical to the natural give-and-take of everyday communication. Re-learning how to properly initiate and respond to questions will help a person with aphasia regain confidence in conversation.
+Question Therapy targets both the receptive and the expressive use of questions, concentrating on yes-or-no questions and the who, what, when, where, how, and why of a situation.</string>
+    <string name="tv_signup_now"><![CDATA[<b>Signup<b>]]> Now</string>
+    <string name="tv_now">Now</string>
+    <string name="tv_login_using">Or Login Using</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google +</string>
+    <string name="contactus_small">Contact Us</string>
+    <string name="ed_contactus_hint">write here ...</string>
+    <string name="btn_send">SEND</string>
+    <string name="btn_cancel">CANCEL</string>
+    <string name="tv_delPostTitle">Delete Post?</string>
+    <string name="tv_delPostAttention">Deleting the post is forever, There is no undo.</string>
+    <string name="btn_confirm">CONFIRM</string>
+    <string name="view_post_example">An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding.</string>
+    <string name="terms">TERMS AND CONDITIONS</string>
+    <string name="terms_example">1. Acceptance of terms of use and amendments each time you use or cause access to this application, you agree to be bound by these Terms of use, as amended from time to time with or without notice to you. In addition, if you are using a particular service ont his application or accessed via this application, you will be subject to any rules or guidelines applicable to those services, and they will be incorporated by reference within these Terms of use. 2. ServicesThis application and the services provided to you on and via this application are provided on an "AS IS" basis.</string>
+    <string name="accept">ACCEPT</string>
+    <string name="notification_setting_title">Notifications and Sounds</string>
+    <string name="notification_setting_desc">Notify me about updates to Questions and Answers</string>
+    <string name="ed_fullName_hint">Full Name</string>
+    <string name="categories">Categories</string>
+    <string name="category">Category</string>
+    <string name="add_post">Add Image and Description</string>
+    <string name="ed_add_post_hint">What is your Question?</string>
+    <string name="tv_your_questions">The Questions which you add</string>
+    <string name="post_example">An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding.</string>
+    <string name="tv_comments_count">%1$d Comment</string>
+    <string name="tv_ask_count">%1$d Ask</string>
+    <string name="tv_answer_count">%1$d Answer</string>
+    <string name="tv_comment">Comment</string>
+    <string name="tv_share">Share</string>
+    <string name="tv_favorite">Favorite</string>
+    <string name="next">NEXT</string>
+    <string-array name="categories">
+        <item>Programming</item>
+        <item>Writing</item>
+        <item>English</item>
+        <item>Cocking</item>
+        <item>Design</item>
+        <item>Android</item>
+        <item>PHP</item>
+        <item>ASP</item>
+    </string-array>
+    <string-array name="drawerItems">
+        <item>Profile</item>
+        <item>Search</item>
+        <item>Logout</item>
+        <item>Settings</item>
+        <item>Terms Of Use</item>
+        <item>About</item>
+    </string-array>
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_name_flat</item>
+        <item>@drawable/ic_search_black</item>
+        <item>@drawable/ic_logout</item>
+        <item>@drawable/ic_settings</item>
+        <item>@drawable/ic_terms</item>
+        <item>@drawable/ic_info</item>
+    </array>
+
 </resources>
