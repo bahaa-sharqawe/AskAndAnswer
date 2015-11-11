@@ -2,6 +2,9 @@ package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,50 +45,51 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
-        Post post = posts.get(position);
-        Person postOwner = post.getOwner();
-        holder.tv_postDesc.setText(post.getDesc());
-        holder.tv_post_category.setText(post.getCategory());
-        holder.tv_postDate.setText(Constants.DateConversion.getDate(post.getDate()));
-        holder.rating_post.setRating(post.getRate());
-        holder.tv_comments.setText(context.getResources().getString(R.string.tv_comments_count, post.getComments()));
-        holder.tv_likes.setText(String.valueOf(post.getLikes()));
-        holder.tv_unlikes.setText(String.valueOf(post.getUnlikes()));
-        holder.tv_person_name.setText(postOwner.getName());
-
-        ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse(postOwner.getPhoto())), holder.iv_person,
-                null, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-
-            }
-        }, new ImageLoadingProgressListener() {
-            @Override
-            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-
-            }
-        });
-
+        holder.rating_post.setRating(3.67f);
+//        Post post = posts.get(position);
+//        Person postOwner = post.getOwner();
+//        holder.tv_postDesc.setText(post.getDesc());
+//        holder.tv_post_category.setText(post.getCategory());
+//        holder.tv_postDate.setText(Constants.DateConversion.getDate(post.getDate()));
+//        holder.rating_post.setRating(post.getRate());
+//        holder.tv_comments.setText(context.getResources().getString(R.string.tv_comments_count, post.getComments()));
+//        holder.tv_likes.setText(String.valueOf(post.getLikes()));
+//        holder.tv_unlikes.setText(String.valueOf(post.getUnlikes()));
+//        holder.tv_person_name.setText(postOwner.getName());
+//
+//        ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse(postOwner.getPhoto())), holder.iv_person,
+//                null, new ImageLoadingListener() {
+//            @Override
+//            public void onLoadingStarted(String imageUri, View view) {
+//
+//            }
+//
+//            @Override
+//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//
+//            }
+//
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//
+//            }
+//
+//            @Override
+//            public void onLoadingCancelled(String imageUri, View view) {
+//
+//            }
+//        }, new ImageLoadingProgressListener() {
+//            @Override
+//            public void onProgressUpdate(String imageUri, View view, int current, int total) {
+//
+//            }
+//        });
+//
     }
 
     @Override
     public int getItemCount() {
-        return posts.size();
+        return 3;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -104,6 +108,8 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
             iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
             tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
             rating_post = (RatingBar) itemView.findViewById(R.id.rating_post);
+            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
             tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
             tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
             tv_postDesc = (TextView) itemView.findViewById(R.id.tv_postDate);

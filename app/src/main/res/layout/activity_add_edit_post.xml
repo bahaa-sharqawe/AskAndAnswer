@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.orchidatech.askandanswer.Activity.AddPost">
+    android:background="#fff"
+    tools:context="com.orchidatech.askandanswer.Activity.AddEditPost">
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,14 +15,15 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
     </android.support.v7.widget.Toolbar>
     <Spinner
-        android:layout_width="130dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/spin_categories"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="5dp"
         android:gravity="left"
         android:entries="@array/categories"
+        android:theme="@style/SpinnerStyle"
         >
     </Spinner>
     <View
@@ -49,7 +51,7 @@
             android:id="@+id/iv_camera"
             android:layout_below="@+id/tv_addPost"
             android:layout_alignLeft="@+id/tv_addPost"
-            android:src="@drawable/ic_camera"
+            android:src="@drawable/ic_camera_flat"
             android:background="@drawable/iv_add_post_backgnd"
             android:padding="20dp"
             android:layout_marginRight="10dp"
@@ -84,9 +86,11 @@
             android:layout_height="150dp"
             android:layout_below="@+id/iv_camera"
             android:layout_marginTop="20dp"
+            android:textSize="13sp"
             android:hint="@string/ed_add_post_hint"
             android:gravity="top"
             android:padding="15dp"
+            android:layout_alignLeft="@+id/iv_camera"
             android:background="@drawable/ed_add_post_backgnd"/>
     </RelativeLayout>
 

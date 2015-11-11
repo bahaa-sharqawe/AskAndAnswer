@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Entity.Category;
 import com.orchidatech.askandanswer.R;
 
 public class Login extends Activity {
@@ -26,10 +28,12 @@ public class Login extends Activity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(Login.this, TermsActivity.class));
 
             }
         });
         tv_signup_now = (TextView) this.findViewById(R.id.tv_signup_now);
+        tv_signup_now.setText(Html.fromHtml(getResources().getString(R.string.tv_signup_now)));
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

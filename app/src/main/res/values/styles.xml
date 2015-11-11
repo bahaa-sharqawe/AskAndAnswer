@@ -9,6 +9,16 @@
     </style>
     <style name="AppTheme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionMenuTextColor">@color/colorMenuItem</item>
+        <item name="android:textSize">16sp</item>
     </style>`
+    <style name="SpinnerStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">#249885</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">#249885</item>
+        <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets -->
+        <item name="colorAccent">#249885</item>
+        <item name="colorControlNormal">#249885</item>
+    </style>
 
 </resources>

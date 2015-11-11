@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
 
@@ -15,7 +16,8 @@ import com.orchidatech.askandanswer.R;
  */
 public class DeletePost extends DialogFragment {
     AlertDialog dialog;
-
+    TextView tv_confirm;
+    TextView tv_cancel;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -28,6 +30,20 @@ public class DeletePost extends DialogFragment {
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_delete_post, null, false);
+        tv_confirm = (TextView) view.findViewById(R.id.tv_confirm);
+        tv_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         return view;
     }
 }

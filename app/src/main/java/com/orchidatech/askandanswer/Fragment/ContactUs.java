@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
 
@@ -15,6 +16,8 @@ import com.orchidatech.askandanswer.R;
  */
 public class ContactUs extends DialogFragment {
     AlertDialog dialog;
+    TextView tv_cancel;
+    TextView tv_send;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,6 +31,20 @@ public class ContactUs extends DialogFragment {
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_contactus, null, false);
+        tv_send = (TextView) view.findViewById(R.id.tv_send);
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         return view;
     }
 }

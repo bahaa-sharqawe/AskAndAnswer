@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/contactus_small"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textColor="#f0ae24"
             android:id="@+id/tv_contact"
             android:layout_centerVertical="true"/>

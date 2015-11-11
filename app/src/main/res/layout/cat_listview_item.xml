@@ -2,44 +2,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f8f8f8"
-    android:padding="18dp"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    android:paddingTop="18dp"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:orientation="vertical"
+ >
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        >
-        <ImageView
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_checkbox"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/ic_checkbox"
-            android:visibility="visible"
-            />
-        <ImageView
-            android:id="@+id/iv_checked"
+            android:layout_marginRight="20dp"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/iv_checkbox"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_checkbox"
+                android:visibility="visible"
+                />
+            <ImageView
+                android:id="@+id/iv_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_checked"
+                android:visibility="visible"
+                />
+
+        </RelativeLayout>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/ic_checked"
-            android:visibility="visible"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Programming"
+            android:id="@+id/tv_category"
+            android:textSize="20sp"
+            android:textColor="#9f9f9f"
             />
 
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Programming"
-        android:id="@+id/tv_category"
-        android:textSize="22sp"
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#dad9d9"
+        android:layout_marginTop="18dp"
         />
+
 </LinearLayout>

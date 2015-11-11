@@ -16,10 +16,11 @@
             android:layout_height="wrap_content"
             android:text="@string/accept"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="14dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:textColor="#959595"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:id="@+id/tv_accept"
             />
         <ImageView
@@ -38,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rl_terms_header"
-            android:layout_marginBottom="35dp">
+          >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,14 +55,14 @@
         </RelativeLayout>
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.2"
-            android:layout_below="@+id/rl_terms_header">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_terms_header"
+            android:paddingTop="20dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/terms_example"
-                android:textColor="#5c5c5c"
+                android:textColor="#6a6a6a"
                 android:textSize="16sp"/>
         </ScrollView>
     </RelativeLayout>

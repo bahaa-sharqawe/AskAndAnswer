@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Entity.Category;
 import com.orchidatech.askandanswer.R;
@@ -46,13 +47,15 @@ public class CategoriesAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ImageView iv_checkbox;
         final ImageView iv_checked;
+        final TextView tv_category;
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.cat_listview_item, null, false);
         }
         iv_checkbox = (ImageView) convertView.findViewById(R.id.iv_checkbox);
         iv_checked = (ImageView) convertView.findViewById(R.id.iv_checked);
-
+        tv_category = (TextView) convertView.findViewById(R.id.tv_category);
+        tv_category.setText(categories.get(position).getName());
         if(categories.get(position).getChecked()){
             selectedCategories.add(categories.get(position));
             iv_checkbox.setVisibility(View.INVISIBLE);

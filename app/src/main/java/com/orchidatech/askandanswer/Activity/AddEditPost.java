@@ -7,58 +7,43 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Entity.SpinnerItem;
 import com.orchidatech.askandanswer.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class AddPost extends AppCompatActivity {
+public class AddEditPost extends AppCompatActivity {
     ArrayList<String> spItemTitles;
     ArrayList<SpinnerItem> spinnerItems;
     Spinner spin_categories;
-    ArrayAdapter<SpinnerItem> adapter;
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_post);
+        setContentView(R.layout.activity_add_edit_post);
         setCustomActionBar();
         spItemTitles = new ArrayList<>(Arrays.asList(this.getResources().getStringArray(R.array.categories)));
+        spinnerItems = new ArrayList<>();
         for(int i = 0; i < spItemTitles.size(); i++)
             spinnerItems.add(new SpinnerItem(spItemTitles.get(i), false));
-        spItemTitles.add(getResources().getString(R.string.category));//hint
+//        spItemTitles.add(getResources().getString(R.string.category));//hint
         spinnerItems.add(new SpinnerItem(getResources().getString(R.string.category), true));//hint
 
         spin_categories = (Spinner) this.findViewById(R.id.spin_categories);
-        adapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerItems);
+//        adapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerItems);
+        adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, spItemTitles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_categories.setAdapter(adapter);
-        spin_categories.setSelection(spinnerItems.size() - 1);
-        spin_categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerItems.get(position).isHint())
-                    ((TextView)view).setTextColor(Color.parseColor("#cbcbcb"));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                spin_categories.setSelection(spinnerItems.size() - 1);
-            }
-        });
     }
 
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Add Post");
-        toolbar.setTitleTextColor(Color.parseColor("#fff"));
+        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);

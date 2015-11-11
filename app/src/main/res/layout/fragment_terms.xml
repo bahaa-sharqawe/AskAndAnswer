@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_drawer"
+            android:src="@drawable/ic_drawer_flat"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="14dp"
             android:layout_marginTop="14dp"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rl_terms_header"
-                android:layout_marginBottom="35dp">
+                android:layout_marginBottom="20dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -52,15 +52,15 @@
             </RelativeLayout>
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.2"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_terms_header">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/terms_example"
-                        android:textColor="#5c5c5c"
-                        android:textSize="16sp"/>
-            </ScrollView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/terms_example"
+                            android:textColor="#5c5c5c"
+                            android:textSize="16sp"/>
+             </ScrollView>
 </RelativeLayout>
 </LinearLayout>

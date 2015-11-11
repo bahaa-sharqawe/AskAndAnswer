@@ -29,7 +29,7 @@
         </activity>
         <activity android:name=".Activity.EditProfile" >
         </activity>
-        <activity android:name=".Activity.AddPost" >
+        <activity android:name=".Activity.AddEditPost" >
         </activity>
         <activity android:name=".Activity.SearchQuestions" >
         </activity>

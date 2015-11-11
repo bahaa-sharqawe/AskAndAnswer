@@ -50,7 +50,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         if(holder.viewType == TYPE_HEADER){//complete the code here
 
         }else{
-            DrawerItem item = items.get(position);
+            DrawerItem item = items.get(position-1);//0 is header
             holder.tv_drawer_item.setText(item.getTitle());
             holder.iv_drawer_item.setImageResource(item.getImage());
         }
@@ -71,7 +71,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         ImageView iv_drawer_item;
         TextView tv_drawer_item;
 
-        public ItemViewHolder(View itemView, int viewType) {
+        public ItemViewHolder(final View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
 
@@ -85,7 +85,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        listener.onClick(getAdapterPosition()-1);// -1 beacause the header is in position 0
+                        listener.onClick(getAdapterPosition());// -1 beacause the header is in position 0
                     }
                 });
             }

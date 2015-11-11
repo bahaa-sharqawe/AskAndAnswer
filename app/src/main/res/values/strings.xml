@@ -11,8 +11,8 @@
     <string name="intro_content">Question combines the power and potential of Asking Therapy and Answering Therapy into one money-saving app.
 Asking and answering questions is critical to the natural give-and-take of everyday communication. Re-learning how to properly initiate and respond to questions will help a person with aphasia regain confidence in conversation.
 Question Therapy targets both the receptive and the expressive use of questions, concentrating on yes-or-no questions and the who, what, when, where, how, and why of a situation.</string>
-    <string name="tv_signup_now"><![CDATA[<b>Signup<b>]]> Now</string>
-    <string name="tv_now">Now</string>
+    <string name="tv_signup_now">&lt;b&gt;Signup&lt;/b&gt; Now</string>
+    <string name="tv_signup">Signup</string>
     <string name="tv_login_using">Or Login Using</string>
     <string name="facebook">Facebook</string>
     <string name="google">Google +</string>
@@ -25,7 +25,8 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="btn_confirm">CONFIRM</string>
     <string name="view_post_example">An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding.</string>
     <string name="terms">TERMS AND CONDITIONS</string>
-    <string name="terms_example">1. Acceptance of terms of use and amendments each time you use or cause access to this application, you agree to be bound by these Terms of use, as amended from time to time with or without notice to you. In addition, if you are using a particular service ont his application or accessed via this application, you will be subject to any rules or guidelines applicable to those services, and they will be incorporated by reference within these Terms of use. 2. ServicesThis application and the services provided to you on and via this application are provided on an "AS IS" basis.</string>
+    <string name="terms_example">1. Acceptance of terms of use and amendments each time you use or cause access to this application, you agree to be bound by these Terms of use, as amended from time to time with or without notice to you. In addition, if you are using a particular service ont his application or accessed via this application, you will be subject to any rules or guidelines applicable to those services, and they will be incorporated by reference within these Terms of use.
+        \n \n2. ServicesThis application and the services provided to you on and via this application are provided on an "AS IS" basis.</string>
     <string name="accept">ACCEPT</string>
     <string name="notification_setting_title">Notifications and Sounds</string>
     <string name="notification_setting_desc">Notify me about updates to Questions and Answers</string>

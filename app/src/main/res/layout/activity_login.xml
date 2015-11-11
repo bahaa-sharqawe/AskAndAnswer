@@ -14,6 +14,9 @@
             android:src="@drawable/logo"
             android:contentDescription="@string/contenDesc_logo"
             android:id="@+id/iv_logo"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
             android:visibility="visible"/>
 
 
@@ -22,20 +25,22 @@
         android:layout_height="0dp"
         android:layout_weight="1.4"
         android:orientation="vertical"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:layout_marginTop="20dp"
         >
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            android:textColor="#959595"
+            android:singleLine="true"
             android:inputType="text"
             android:drawableLeft="@drawable/ic_name"
             android:drawableStart="@drawable/ic_name"
             android:drawablePadding="10dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
+            android:paddingLeft="0dp"
             android:hint="@string/ed_name_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_name" />
@@ -44,14 +49,17 @@
             android:layout_height="wrap_content"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            android:singleLine="true"
+            android:textColor="#959595"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
             android:drawableStart="@drawable/ic_password"
             android:layout_below="@+id/ed_email"
             android:drawablePadding="10dp"
+            android:paddingLeft="0dp"
             android:hint="@string/ed_password_hint"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:id="@+id/ed_password" />
 
         <Button
@@ -73,19 +81,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_signup_now"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:text="@string/tv_signup_now"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="|"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:layout_centerInParent="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_login_using"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
@@ -93,13 +101,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
-            <LinearLayout
-                android:layout_width="140dp"
+            <RelativeLayout
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:paddingRight="15dp"
-                android:paddingLeft="15dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/btn_fb"
                 android:background="@drawable/btn_social_backgnd">
@@ -107,41 +115,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_fb"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_centerVertical="true"
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/facebook"
                     android:textColor="#fff"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-           <LinearLayout
-                       android:layout_width="140dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+           <RelativeLayout
+                       android:layout_width="130dp"
                         android:layout_height="wrap_content"
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
                         android:layout_alignParentRight="true"
+                        android:layout_alignTop="@+id/btn_fb"
+                        android:layout_alignBottom="@+id/btn_fb"
                         android:id="@+id/btn_gplus"
                         android:background="@drawable/btn_social_backgnd">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_google"
-                            android:layout_marginRight="15dp"/>
+                            />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/google"
                             android:textColor="#fff"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
-                            android:layout_gravity="center_vertical"/>
-                    </LinearLayout>
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"/>
+                    </RelativeLayout>
 
         </RelativeLayout>
     </LinearLayout>

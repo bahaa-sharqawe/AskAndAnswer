@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.orchidatech.askandanswer.Fragment.DeletePost;
 import com.orchidatech.askandanswer.R;
 
 public class ViewPost extends AppCompatActivity {
@@ -23,7 +24,7 @@ public class ViewPost extends AppCompatActivity {
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Android");
-        toolbar.setTitleTextColor(Color.parseColor("#fff"));
+        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
@@ -39,6 +40,7 @@ public class ViewPost extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.delete_post) {
+            new DeletePost().show(getFragmentManager(), "Delete Post");
             return true;
         }else if(id == R.id.edit_post){
             return true;
