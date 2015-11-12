@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AskAndAnswer</string>
-    <string name="accept">موافق</string>
-    <string name="add_post">اضافة سؤال</string>
-    <string name="btn_cancel">الغاء</string>
 </resources>
