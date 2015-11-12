@@ -44,7 +44,7 @@
                 android:layout_alignLeft="@+id/tv_person_name"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:isIndicator="false"
+                android:isIndicator="true"
                 android:progressDrawable="@drawable/ratingbar_selector"
                 android:rating="4"
                 android:numStars="5"
