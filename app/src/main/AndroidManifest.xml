@@ -18,7 +18,7 @@
 
         <activity android:name=".Activity.MainActivity" >
         </activity>
-        <activity android:name=".Activity.Splash" >
+        <activity android:name=".Activity.SplashScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

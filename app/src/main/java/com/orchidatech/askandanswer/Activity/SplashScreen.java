@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.orchidatech.askandanswer.R;
 
-public class Splash extends Activity {
+public class SplashScreen extends Activity {
     ImageView iv_logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class Splash extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(Splash.this,Login.class));
+                startActivity(new Intent(SplashScreen.this,Login.class));
             }
         }, 2 * 1000);
     }
