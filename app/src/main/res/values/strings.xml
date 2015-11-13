@@ -23,7 +23,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="tv_delPostTitle">Delete Post?</string>
     <string name="tv_delPostAttention">Deleting the post is forever, There is no undo.</string>
     <string name="btn_confirm">CONFIRM</string>
-    <string name="view_post_example">An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding.</string>
+    <string name="view_post_example">An activity is a single, focused thing that the users can do. when ever users click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the users can do. when ever users click on GUI the next Activity will be start and new GUI set base on coding. An activity is a single, focused thing that the users can do. when ever users click on GUI the next Activity will be start and new GUI set base on coding.</string>
     <string name="terms">TERMS AND CONDITIONS</string>
     <string name="terms_example">1. Acceptance of terms of use and amendments each time you use or cause access to this application, you agree to be bound by these Terms of use, as amended from time to time with or without notice to you. In addition, if you are using a particular service ont his application or accessed via this application, you will be subject to any rules or guidelines applicable to those services, and they will be incorporated by reference within these Terms of use.
         \n \n2. ServicesThis application and the services provided to you on and via this application are provided on an "AS IS" basis.</string>
@@ -36,7 +36,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="add_post">Add Image and Description</string>
     <string name="ed_add_post_hint">What is your Question?</string>
     <string name="tv_your_questions">The Questions which you add</string>
-    <string name="post_example">An activity is a single, focused thing that the user can do. when ever user click on GUI the next Activity will be start and new GUI set base on coding.</string>
+    <string name="post_example">An activity is a single, focused thing that the users can do. when ever users click on GUI the next Activity will be start and new GUI set base on coding.</string>
     <string name="tv_comments_count">%1$d Comment</string>
     <string name="tv_ask_count">%1$d Ask</string>
     <string name="tv_answer_count">%1$d Answer</string>
