@@ -31,8 +31,8 @@ public class Application extends android.app.Application {
 
         Configuration.Builder builder = new Configuration.Builder(getBaseContext());
 //        builder.setCacheSize(1024*1024*4);
-//        builder.setDatabaseName("AskAndAnswer.db");
-//        builder.setDatabaseVersion(1);
+        builder.setDatabaseName("AskAndAnswer.db");
+        builder.setDatabaseVersion(1);
         ActiveAndroid.initialize(builder.create(), true);
 //        ActiveAndroid.initialize(this);
 
