@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Application;
 import android.content.SharedPreferences;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orchidatech.askandanswer.Constant.Constants;
@@ -28,7 +29,12 @@ public class Application extends android.app.Application {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
-        ActiveAndroid.initialize(this);
+        Configuration.Builder builder = new Configuration.Builder(getBaseContext());
+//        builder.setCacheSize(1024*1024*4);
+//        builder.setDatabaseName("AskAndAnswer.db");
+//        builder.setDatabaseVersion(1);
+        ActiveAndroid.initialize(builder.create(), true);
+//        ActiveAndroid.initialize(this);
 
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
                 .setAppId(APP_ID)
@@ -36,5 +42,11 @@ public class Application extends android.app.Application {
                 .setPermissions(permissions)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        ActiveAndroid.dispose();
     }
 }
