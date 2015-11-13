@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Database.Model;
 
 import android.provider.BaseColumns;
 
+import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
@@ -9,7 +10,7 @@ import com.activeandroid.annotation.Table;
  * Created by Bahaa on 13/11/2015.
  */
 @Table(name = User_Actions.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class User_Actions {
+public class User_Actions extends Model {
 
     public static class FIELDS {
         public static final String TABLE_NAME = "User_Actions";

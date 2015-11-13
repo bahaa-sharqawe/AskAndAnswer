@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Database.Model;
 
 import android.provider.BaseColumns;
 
+import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
@@ -9,7 +10,7 @@ import com.activeandroid.annotation.Table;
  * Created by Bahaa on 13/11/2015.
  */
 @Table(name = Search_History.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class Search_History {
+public class Search_History extends Model{
 
     public static class FIELDS {
         public static final String TABLE_NAME = "Search_History";
