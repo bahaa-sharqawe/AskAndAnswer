@@ -1,12 +1,9 @@
 package com.orchidatech.askandanswer.Application;
 
-import android.content.SharedPreferences;
-
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.orchidatech.askandanswer.Constant.Constants;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;

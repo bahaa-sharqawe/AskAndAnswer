@@ -1,11 +1,9 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +11,6 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.orchidatech.askandanswer.Constant.Constants;
-import com.orchidatech.askandanswer.Entity.Person;
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
 
@@ -50,7 +42,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 //        Person postOwner = post.getOwner();
 //        holder.tv_postDesc.setText(post.getDesc());
 //        holder.tv_post_category.setText(post.getCategory());
-//        holder.tv_postDate.setText(Constants.DateConversion.getDate(post.getDate()));
+//        holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(post.getDate()));
 //        holder.rating_post.setRating(post.getRate());
 //        holder.tv_comments.setText(context.getResources().getString(R.string.tv_comments_count, post.getComments()));
 //        holder.tv_likes.setText(String.valueOf(post.getLikes()));

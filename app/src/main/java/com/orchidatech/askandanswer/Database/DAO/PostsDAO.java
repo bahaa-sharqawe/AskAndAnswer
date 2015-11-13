@@ -43,6 +43,10 @@ public class PostsDAO {
     public static List<Posts> getAllPosts(long categoryId){
         return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID).execute();
     }
+    public static List<Posts> getAllPosts(long userId, long categoryId){
+        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? and " +
+                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", userId, categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID).execute();
+    }
 
     public static void deleteAllPosts(){
         new Delete().from(Posts.class).execute();

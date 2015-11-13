@@ -11,40 +11,20 @@ import java.util.TimeZone;
 /**
  * Created by Bahaa on 7/11/2015.
  */
-public class Constants {
+public class GNLConstants {
 
-    public final static class Enum {
+    public static final int MAX_ROWS_FETCH = 40;
 
-            public enum NOTIFICATIONS {//Enum.NOTIFICATIONS.NEW_POST_ADDED.getNumericType();
-                NEW_POST_ADDED(0),
-                NEW_MENTION(1),
-                NEW_COMMENT(2);
-                private int type;
-
-                NOTIFICATIONS(int i) {
-                    this.type = i;
-                }
-
-                public int getNumericType() {
-                    return type;
-                }
-            }
-            public enum USER_ACTIONS {//Enum.USER_ACTIONS.LIKE.getNumericType();
-                NO_ACTIONS(0),
-                LIKE(1),
-                DISLIKE(2);
-                private int type;
-                    USER_ACTIONS(int i) {
-                    this.type = i;
-                }
-
-                public int getNumericType() {
-                    return type;
-                }
-        }
-}
-    public static final String SHARED_PREF_NAME = "AskAndAnswerPref";
-
+    public final static class Settings_Keys{
+        public static String NOTIFICATIONS_SOUND = "notificationAndSound";
+    }
+    public final static class SharedPreference{
+        public static final String SHARED_PREF_NAME = "AskAndAnswerPref";
+        public static final String FIRST_TIME_KEY = "FIRST_TIME";
+        public static final String ID_KEY = "ID";
+        public static final String IS_LOGGED_KEY = "IS_LOGGED";
+        public static final String IS_USER_SELECTED_CATEGORIES_KEY = "IS_CATEGORY_SELECTED";
+    }
     public final static class DateConversion {
         final static String MONTHS[] = new String[]{"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
@@ -62,4 +42,5 @@ public class Constants {
                 return "0" + String.valueOf(value);
         }
     }
+
 }
