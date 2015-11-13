@@ -11,7 +11,7 @@ import com.activeandroid.annotation.Table;
  */
 @Table(name = Notifications.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class Notifications extends Model {
-    public static class FIELDS{
+    public static class FIELDS {
         public static final String TABLE_NAME = "Notifications";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
@@ -21,6 +21,7 @@ public class Notifications extends Model {
         public static final String COLUMN_DATE = "DATE";
         public static final String COLUMN_IS_DONE = "IS_DONE";
     }
+
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long serverID;
 

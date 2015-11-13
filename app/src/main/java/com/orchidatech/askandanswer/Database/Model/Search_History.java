@@ -11,7 +11,7 @@ import com.activeandroid.annotation.Table;
 @Table(name = Search_History.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class Search_History {
 
-    public static class FIELDS{
+    public static class FIELDS {
         public static final String TABLE_NAME = "Search_History";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";

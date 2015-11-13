@@ -11,17 +11,18 @@ import com.activeandroid.annotation.Table;
 @Table(name = Posts.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class Posts {
 
-    public static class FIELDS{
-    public static final String TABLE_NAME = "Posts";
+    public static class FIELDS {
+        public static final String TABLE_NAME = "Posts";
 
-    public static final String COLUMN_SERVER_ID = "SERVER_ID";
-    public static final String COLUMN_TEXT= "TEXT";
-    public static final String COLUMN_IMAGE = "IMAGE";
-    public static final String COLUMN_DATE = "DATE";
-    public static final String COLUMN_USER_ID = "USER_ID";
-    public static final String COLUMN_CATEGORY_ID = "CATEGORY_ID";
-    public static final String COLUMN_IS_HIDDEN = "IS_HIDDEN";
-}
+        public static final String COLUMN_SERVER_ID = "SERVER_ID";
+        public static final String COLUMN_TEXT = "TEXT";
+        public static final String COLUMN_IMAGE = "IMAGE";
+        public static final String COLUMN_DATE = "DATE";
+        public static final String COLUMN_USER_ID = "USER_ID";
+        public static final String COLUMN_CATEGORY_ID = "CATEGORY_ID";
+        public static final String COLUMN_IS_HIDDEN = "IS_HIDDEN";
+    }
+
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long serverID;
 

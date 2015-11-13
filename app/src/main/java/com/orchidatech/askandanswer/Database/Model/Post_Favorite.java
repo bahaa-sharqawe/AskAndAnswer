@@ -11,7 +11,7 @@ import com.activeandroid.annotation.Table;
 @Table(name = Post_Favorite.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class Post_Favorite {
 
-    public static class FIELDS{
+    public static class FIELDS {
         public static final String TABLE_NAME = "Post_Favorite";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";

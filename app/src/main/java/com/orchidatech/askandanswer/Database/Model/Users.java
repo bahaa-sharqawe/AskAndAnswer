@@ -5,20 +5,19 @@ import android.provider.BaseColumns;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.orchidatech.askandanswer.Database.DAO.UserDAO;
 
 
 /**
  * Created by Bahaa on 12/11/2015.
  */
 @Table(name = Users.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class Users extends Model{
+public class Users extends Model {
 
-    public static class FIELDS{
+    public static class FIELDS {
         public static final String TABLE_NAME = "Users";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
-        public static final String COLUMN_USERNAME= "USERNAME";
+        public static final String COLUMN_USERNAME = "USERNAME";
         public static final String COLUMN_EMAIL = "EMAIL";
         public static final String COLUMN_PASSWORD = "PASSWORD";
         public static final String COLUMN_IMAGE = "IMAGE";
@@ -29,6 +28,7 @@ public class Users extends Model{
         public static final String COLUMN_IS_PUBLIC_PROFILE = "IS_PUBLIC_PROFILE";
         public static final String COLUMN_CODE = "CODE";
     }
+
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long serverID;
 

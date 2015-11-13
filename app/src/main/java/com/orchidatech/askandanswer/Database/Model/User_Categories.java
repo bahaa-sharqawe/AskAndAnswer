@@ -11,7 +11,7 @@ import com.activeandroid.annotation.Table;
 @Table(name = User_Categories.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class User_Categories {
 
-    public static class FIELDS{
+    public static class FIELDS {
         public static final String TABLE_NAME = "User_Categories";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
