@@ -1,6 +1,5 @@
-package com.orchidatech.askandanswer.Logic;
+package com.orchidatech.askandanswer.View.Utils;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.regex.Matcher;

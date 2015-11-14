@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/coordinatorLayout"
+    tools:context="com.orchidatech.askandanswer.Activity.LoginScreen">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/main_background"
-    tools:context="com.orchidatech.askandanswer.Activity.Signup">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/contenDesc_logo"
-            android:id="@+id/iv_logo"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:visibility="visible"/>
+    >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/contenDesc_logo"
+        android:id="@+id/iv_logo"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:visibility="visible"/>
 
 
     <LinearLayout
@@ -127,35 +131,37 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
-           <RelativeLayout
-                       android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignTop="@+id/btn_fb"
-                        android:layout_alignBottom="@+id/btn_fb"
-                        android:id="@+id/btn_gplus"
-                        android:background="@drawable/btn_social_backgnd">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_google"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/google"
-                            android:textColor="#fff"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"/>
-                    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/btn_fb"
+                android:layout_alignBottom="@+id/btn_fb"
+                android:id="@+id/btn_gplus"
+                android:background="@drawable/btn_social_backgnd">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_google"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/google"
+                    android:textColor="#fff"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
 
         </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

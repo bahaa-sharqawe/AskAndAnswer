@@ -6,6 +6,8 @@ import android.net.Uri;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.orchidatech.askandanswer.Constant.URL;
+import com.orchidatech.askandanswer.Constant.URLParameters;
+import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 
 import org.json.JSONObject;
@@ -32,7 +34,7 @@ public class Operations {
     }
 
     public void login(Map<String, String> params, final OnLoadFinished onLoadFinished) {
-        String url = URL.LOGIN + "?email=" + encode(params.get("email")) + "&password=" + encode(params.get("password"));
+        String url = URL.LOGIN + "?" + URLParameters.USERNAME + "="+ encode(params.get(URLParameters.USERNAME)) + "&" + URLParameters.PASSWORD + "=" + encode(params.get(URLParameters.PASSWORD));
         sendRequest(url, onLoadFinished);
 
     }
@@ -59,7 +61,7 @@ public class Operations {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        listener.onFail(volleyError.getMessage());
+                        listener.onFail(context.getString(R.string.BR_GNL_001));
                     }
                 });
     }
