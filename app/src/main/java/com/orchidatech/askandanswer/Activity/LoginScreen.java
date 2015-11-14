@@ -12,10 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Entity.Category;
 import com.orchidatech.askandanswer.R;
 
-public class Login extends Activity {
+public class LoginScreen extends Activity {
         ImageView iv_logo;
         Button btn_login;
         TextView tv_signup_now;
@@ -28,7 +27,7 @@ public class Login extends Activity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Login.this, TermsActivity.class));
+                startActivity(new Intent(LoginScreen.this, TermsActivity.class));
 
             }
         });
@@ -37,7 +36,7 @@ public class Login extends Activity {
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Login.this, Signup.class));
+                startActivity(new Intent(LoginScreen.this, Signup.class));
             }
         });
         resizeLogo();

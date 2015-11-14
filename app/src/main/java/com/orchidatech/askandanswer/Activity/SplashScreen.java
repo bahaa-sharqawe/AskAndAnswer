@@ -54,7 +54,7 @@ public class SplashScreen extends Activity {
             else
                 mIntent = new Intent(this, TermsActivity.class);
         } else {
-            mIntent = new Intent(this, Login.class);
+            mIntent = new Intent(this, LoginScreen.class);
         }
 
         mHandler = new Handler();
