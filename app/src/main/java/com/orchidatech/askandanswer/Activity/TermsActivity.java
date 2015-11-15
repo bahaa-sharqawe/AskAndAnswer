@@ -26,7 +26,7 @@ public class TermsActivity extends AppCompatActivity {
         tv_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TermsActivity.this, Categories.class));
+                startActivity(new Intent(TermsActivity.this, SelectCategoryScreen.class));
             }
         });
     }

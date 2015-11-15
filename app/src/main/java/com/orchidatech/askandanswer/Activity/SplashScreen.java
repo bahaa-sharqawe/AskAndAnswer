@@ -11,8 +11,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+
+import java.util.ArrayList;
 
 public class SplashScreen extends Activity {
     private final String TAG = SplashScreen.class.getSimpleName();
@@ -68,7 +72,17 @@ public class SplashScreen extends Activity {
     }
 
     private void updateCategoriesFromServer() {
-        WebServiceFunctions.getCategories(this);
+        WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
+            @Override
+            public void onSuccess(ArrayList<Category> categories) {
+
+            }
+
+            @Override
+            public void onFail(String cause) {
+
+            }
+        });
     }
 
     private void fetchPostsFromServer() {

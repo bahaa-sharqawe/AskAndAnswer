@@ -74,7 +74,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_GNL_001">Please check your internet connection</string>
     <string name="BR_GNL_002">Please check email format</string>
     <string name="BR_GNL_003">Please, Password must contains letters and numbers, and it must be greater than 8 characters</string>
-    <string name="BR_GNL_004">Please, user name contains only letters, numbers, ., _, -</string>
+    <string name="BR_GNL_004">Please, username contains only letters, numbers, ., _, -</string>
     <string name="BR_GNL_005">No more data to load it</string>
 
     <string name="BR_LOGIN_001">Please enter your username</string>
@@ -88,9 +88,12 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_SIGN_003">Please repeat your password</string>
     <string name="BR_SIGN_004">User already exists</string>
     <string name="BR_SIGN_005">Please enter your email</string>
+    <string name="BR_SIGN_006">Password and repeated password does not match</string>
 
     <string name="BR_CATS_001">Please select at least one category</string>
     <string name="BR_CATS_002">Oh, you must select at maximum 20 category</string>
 
     <string name="BR_POST_001">This post does not have comments</string>
+
+    <string name="facebook_app_id">446821295503912</string>
 </resources>

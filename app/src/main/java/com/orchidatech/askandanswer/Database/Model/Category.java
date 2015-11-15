@@ -9,8 +9,8 @@ import com.activeandroid.annotation.Table;
 /**
  * Created by Bahaa on 13/11/2015.
  */
-@Table(name = Categories.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class Categories extends Model{
+@Table(name = Category.FIELDS.TABLE_NAME, id = BaseColumns._ID)
+public class Category extends Model{
 
     public static class FIELDS {
         public static final String TABLE_NAME = "Categories";
@@ -29,14 +29,25 @@ public class Categories extends Model{
     @Column(name = FIELDS.COLUMN_DESCRIPTION)
     private String description;
 
-    public Categories() {
+    private boolean isChecked;
+
+    public Category() {
         super();
     }
 
-    public Categories(long serverID, String name, String description) {
+    public Category(long serverID, String name, String description) {
+        super();
         this.serverID = serverID;
         this.name = name;
         this.description = description;
+    }
+
+    public Category(long serverID, String name, String description, boolean isChecked) {
+        super();
+        this.serverID = serverID;
+        this.name = name;
+        this.description = description;
+        this.isChecked = isChecked;
     }
 
     public long getServerID() {
@@ -61,5 +72,13 @@ public class Categories extends Model{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setIsChecked(boolean isChecked) {
+        this.isChecked = isChecked;
     }
 }

@@ -67,6 +67,7 @@ public class Users extends Model {
     }
 
     public Users(long serverID, String username, String email, String password, String image, long creationDate, int active, String lastLogin, String mobile, int isPublicProfile, String code) {
+        super();
         this.serverID = serverID;
         this.username = username;
         this.email = email;

@@ -45,6 +45,7 @@ public class Notifications extends Model {
     }
 
     public Notifications(long serverID, int notificationType, long objectID, String notificationText, long date, int isDone) {
+        super();
         this.serverID = serverID;
         this.notificationType = notificationType;
         this.objectID = objectID;

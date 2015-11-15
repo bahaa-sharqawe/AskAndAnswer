@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.orchidatech.askandanswer" >
-
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name="com.activeandroid.app.Application">
         <!-- Configurations For Active Android-->
         <meta-data android:name="AA_DB_NAME"
             android:value="AskAndAnswer.db" />
         <meta-data android:name="AA_DB_VERSION"
             android:value="1" />
-
+        <meta-data
+            android:name="AA_MODELS"
+            android:value=".Database.Model.Category, .Database.Model.Comments,
+            .Database.Model.Notifications, .Database.Model.Post_Favorite, .Database.Model.Posts,
+            .Database.Model.Search_History, .Database.Model.Settings, .Database.Model.User_Actions,
+            .Database.Model.User_Categories, .Database.Model.Users" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity android:name=".Activity.MainActivity" >
         </activity>
         <activity android:name=".Activity.SplashScreen" >
@@ -27,9 +36,9 @@
         </activity>
         <activity android:name=".Activity.LoginScreen" >
         </activity>
-        <activity android:name=".Activity.Signup" >
+        <activity android:name=".Activity.RegisterScreen" >
         </activity>
-        <activity android:name=".Activity.Categories" >
+        <activity android:name=".Activity.SelectCategoryScreen" >
         </activity>
         <activity android:name=".Activity.ViewPost" >
         </activity>
@@ -41,6 +50,14 @@
         </activity>
         <activity android:name=".Activity.TermsActivity" >
         </activity>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
     </application>
 
 </manifest>

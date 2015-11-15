@@ -1,5 +1,10 @@
 package com.orchidatech.askandanswer.Application;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.util.Base64;
+import android.util.Log;
+
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -8,12 +13,16 @@ import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
 /**
  * Created by Bahaa on 7/11/2015.
  */
-public class Application extends android.app.Application {
-    private static final String APP_ID = "";
-    private static final String APP_NAMESPACE = "";
+public class Application extends com.activeandroid.app.Application {
+    private static final String APP_ID = "446821295503912";
+    private static final String APP_NAMESPACE = "orchaskandanswer";
     private static final Permission[] permissions = new Permission[] {
             Permission.USER_PHOTOS,
             Permission.EMAIL,
@@ -30,7 +39,7 @@ public class Application extends android.app.Application {
 //        builder.setCacheSize(1024*1024*4);
         builder.setDatabaseName("AskAndAnswer.db");
         builder.setDatabaseVersion(1);
-        ActiveAndroid.initialize(builder.create(), true);
+        ActiveAndroid.initialize(builder.create());
 //        ActiveAndroid.initialize(this);
 
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
@@ -41,9 +50,11 @@ public class Application extends android.app.Application {
         SimpleFacebook.setConfiguration(configuration);
     }
 
+
     @Override
     public void onTerminate() {
         super.onTerminate();
         ActiveAndroid.dispose();
     }
+
 }

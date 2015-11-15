@@ -2,7 +2,7 @@ package com.orchidatech.askandanswer.Database.DAO;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
-import com.orchidatech.askandanswer.Database.Model.Categories;
+import com.orchidatech.askandanswer.Database.Model.Category;
 
 import java.util.List;
 
@@ -11,31 +11,31 @@ import java.util.List;
  */
 public class CategoriesDAO {
 
-    public static void addCategory(Categories newCategory){
+    public static void addCategory(Category newCategory){
         newCategory.save();
     }
 
     public static void deleteCategory(long categoryServerId){
-        new Delete().from(Categories.class).where(Categories.FIELDS.COLUMN_SERVER_ID + " = ?", categoryServerId).execute();
+        new Delete().from(Category.class).where(Category.FIELDS.COLUMN_SERVER_ID + " = ?", categoryServerId).execute();
     }
 
-    public static Categories getCategory(long categoryServerId){
-        return new Select().from(Categories.class).where(Categories.FIELDS.COLUMN_SERVER_ID + " = ? "
+    public static Category getCategory(long categoryServerId){
+        return new Select().from(Category.class).where(Category.FIELDS.COLUMN_SERVER_ID + " = ? "
                 , categoryServerId).executeSingle();
     }
 
-    public static void updateCategory(Categories category){
-        Categories existCategory = getCategory(category.getServerID());
+    public static void updateCategory(Category category){
+        Category existCategory = getCategory(category.getServerID());
         existCategory.setDescription(category.getDescription());
         existCategory.setName(category.getName());
         existCategory.save();
     }
 
-    public static List<Categories> getAllCategories(){
-        return new Select().from(Categories.class).orderBy(Categories.FIELDS.COLUMN_SERVER_ID).execute();
+    public static List<Category> getAllCategories(){
+        return new Select().from(Category.class).orderBy(Category.FIELDS.COLUMN_SERVER_ID).execute();
     }
 
     public static void deleteAllCategories(){
-        new Delete().from(Categories.class).execute();
+        new Delete().from(Category.class).execute();
     }
 }

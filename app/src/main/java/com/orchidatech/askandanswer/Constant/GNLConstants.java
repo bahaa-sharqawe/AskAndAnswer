@@ -2,6 +2,10 @@ package com.orchidatech.askandanswer.Constant;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+//
+//import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
+//import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +45,10 @@ public class GNLConstants {
             else
                 return "0" + String.valueOf(value);
         }
+    }
+
+    public class Social{
+//        public static final int GOOGLE_PLUS_ID = GooglePlusSocialNetwork.ID;
     }
 
 }

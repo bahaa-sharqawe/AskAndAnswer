@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 
-import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
+//import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
 import com.orchidatech.askandanswer.Activity.EditProfile;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Entity.Post;

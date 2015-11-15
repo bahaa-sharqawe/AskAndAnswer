@@ -50,6 +50,7 @@ public class Comments extends Model{
     }
 
     public Comments(long serverID, String text, String image, long date, long userID, long postID, int isHidden) {
+        super();
         this.serverID = serverID;
         this.text = text;
         this.image = image;

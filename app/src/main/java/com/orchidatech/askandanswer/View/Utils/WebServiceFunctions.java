@@ -3,8 +3,10 @@ package com.orchidatech.askandanswer.View.Utils;
 import android.content.Context;
 
 import com.orchidatech.askandanswer.Constant.URLParameters;
+import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
+import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.WebService.Operations;
 
 import org.json.JSONObject;
@@ -38,6 +40,27 @@ public class WebServiceFunctions {
             }
         });
     }
+    public static void register(Context context, String username, String email, String password, final OnRegisterListener listener){
+        Map<String, String> params = new HashMap<>();
+        params.put(URLParameters.USERNAME, username);
+        params.put(URLParameters.EMAIL, email);
+        params.put(URLParameters.PASSWORD, password);
+
+        Operations.getInstance(context).register(params, new OnLoadFinished() {
+            @Override
+            public void onSuccess(JSONObject o) {
+                ///Check o content then decide success or fail..
+                //if user already exists then listener.onFail(context.getString(R.string.BR_SIGN_004))
+                //else listener.onSuccess()
+                listener.onSuccess();
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+            }
+        });
+    }
     public static void getPosts(Context context) {
         Operations.getInstance(context).getPosts(new OnLoadFinished() {
             @Override
@@ -51,17 +74,19 @@ public class WebServiceFunctions {
             }
         });
     }
-    public static void getCategories(Context contxt){
+    public static void getCategories(Context contxt, final OnCategoriesFetchedListener listener){
         Operations.getInstance(contxt).getCategories(new OnLoadFinished(){
 
             @Override
             public void onSuccess(JSONObject o) {
                 //store in localDB
+                ///parsing o to fetch all categories
+                listener.onSuccess(null);
             }
 
             @Override
             public void onFail(String error) {
-
+                listener.onFail(error);
             }
         });
 

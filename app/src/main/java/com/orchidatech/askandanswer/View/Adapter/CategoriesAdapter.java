@@ -5,12 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Entity.Category;
+import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.R;
 
 import java.util.ArrayList;
@@ -21,12 +19,12 @@ import java.util.ArrayList;
 public class CategoriesAdapter extends BaseAdapter {
     Context context;
     ArrayList<Category> categories;
-    ArrayList<Category> selectedCategories;
+//    ArrayList<Categories> selectedCategories;
 
     public CategoriesAdapter(Context context, ArrayList<Category> categories){
         this.context = context;
         this.categories = categories;
-        selectedCategories = new ArrayList<>();
+//        selectedCategories = new ArrayList<>();
     }
     @Override
     public int getCount() {
@@ -56,8 +54,8 @@ public class CategoriesAdapter extends BaseAdapter {
         iv_checked = (ImageView) convertView.findViewById(R.id.iv_checked);
         tv_category = (TextView) convertView.findViewById(R.id.tv_category);
         tv_category.setText(categories.get(position).getName());
-        if(categories.get(position).getChecked()){
-            selectedCategories.add(categories.get(position));
+        if(categories.get(position).isChecked()){
+//            selectedCategories.add(categories.get(position));
             iv_checkbox.setVisibility(View.INVISIBLE);
             iv_checked.setVisibility(View.VISIBLE);
         }else{
@@ -65,25 +63,25 @@ public class CategoriesAdapter extends BaseAdapter {
             iv_checked.setVisibility(View.INVISIBLE);
         }
 
-        iv_checkbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedCategories.add(categories.get(position));
-                v.setVisibility(View.INVISIBLE);
-                iv_checked.setVisibility(View.VISIBLE);
-            }
-        });
-        iv_checked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedCategories.remove(categories.get(position));
-                v.setVisibility(View.INVISIBLE);
-                iv_checkbox.setVisibility(View.VISIBLE);
-            }
-        });
+//        iv_checkbox.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                selectedCategories.add(categories.get(position));
+//                v.setVisibility(View.INVISIBLE);
+//                iv_checked.setVisibility(View.VISIBLE);
+//            }
+//        });
+//        iv_checked.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                selectedCategories.remove(categories.get(position));
+//                v.setVisibility(View.INVISIBLE);
+//                iv_checkbox.setVisibility(View.VISIBLE);
+//            }
+//        });
         return convertView;
     }
-    public ArrayList<Category> getSelectedCategories(){ // called when next pressed
-        return selectedCategories;
-    }
+//    public ArrayList<Categories> getSelectedCategories(){ // called when next pressed
+//        return selectedCategories;
+//    }
 }

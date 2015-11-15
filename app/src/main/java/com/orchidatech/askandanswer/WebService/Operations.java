@@ -66,4 +66,19 @@ public class Operations {
                 });
     }
 
+    public void register(Map<String, String> params, final OnLoadFinished listener) {
+        OperationsManager.getInstance(context).sendRequest(URL.REGISTER, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject o) {
+                        listener.onSuccess(o);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        listener.onFail(context.getString(R.string.BR_GNL_001));
+                    }
+                });
+
+    }
 }
