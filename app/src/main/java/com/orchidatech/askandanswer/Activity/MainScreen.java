@@ -29,7 +29,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements TermsFragment.OnDrawerIconClickListener {
+public class MainScreen extends AppCompatActivity implements TermsFragment.OnDrawerIconClickListener {
     DrawerLayout mDrawerLayout;
     ArrayList<DrawerItem> items;
     ArrayList<String> itemsTitles;

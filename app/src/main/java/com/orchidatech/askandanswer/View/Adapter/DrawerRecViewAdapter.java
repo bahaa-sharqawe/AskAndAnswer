@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
+import com.orchidatech.askandanswer.Database.Model.User;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnDrawerItemClickListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -48,9 +53,14 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {//Display the data at the specified position
         if(holder.viewType == TYPE_HEADER){//complete the code here
-
+           User user =  UsersDAO.getUser(1);
+            if(user != null) {
+                holder.tv_person_name.setText(user.getUsername());
+                holder.tv_person_email.setText(user.getEmail());
+                Picasso.with(context).load(Uri.parse(user.getImage())).into(holder.iv_profile);
+            }
         }else{
-            DrawerItem item = items.get(position-1);//0 is header
+            DrawerItem item = items.get(position - 1);//0 is header
             holder.tv_drawer_item.setText(item.getTitle());
             holder.iv_drawer_item.setImageResource(item.getImage());
         }

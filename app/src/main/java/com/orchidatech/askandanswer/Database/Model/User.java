@@ -10,14 +10,16 @@ import com.activeandroid.annotation.Table;
 /**
  * Created by Bahaa on 12/11/2015.
  */
-@Table(name = Users.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class Users extends Model {
+@Table(name = User.FIELDS.TABLE_NAME, id = BaseColumns._ID)
+public class User extends Model {
 
     public static class FIELDS {
         public static final String TABLE_NAME = "Users";
 
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
-        public static final String COLUMN_USERNAME = "USERNAME";
+        public static final String COLUMN_FNAME = "F_NAME";
+        public static final String COLUMN_LNAME = "L_NAME";
+        public static final String COLUMN_USERNAME = "username";
         public static final String COLUMN_EMAIL = "EMAIL";
         public static final String COLUMN_PASSWORD = "PASSWORD";
         public static final String COLUMN_IMAGE = "IMAGE";
@@ -30,45 +32,53 @@ public class Users extends Model {
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
+
+    @Column(name = FIELDS.COLUMN_FNAME)
+    public String fname;
+
+    @Column(name = FIELDS.COLUMN_LNAME)
+    public String lname;
 
     @Column(name = FIELDS.COLUMN_USERNAME)
-    private String username;
+    public String username;
 
     @Column(name = FIELDS.COLUMN_EMAIL)
-    private String email;
+    public String email;
 
     @Column(name = FIELDS.COLUMN_PASSWORD)
-    private String password;
+    public String password;
 
     @Column(name = FIELDS.COLUMN_IMAGE)
-    private String image;
+    public String image;
 
     @Column(name = FIELDS.COLUMN_CREATION_DATE)
-    private long creationDate;
+    public long creationDate;
 
     @Column(name = FIELDS.COLUMN_ACTIVE)
-    private int active;
+    public int active;
 
     @Column(name = FIELDS.COLUMN_LAST_LOGIN)
-    private String lastLogin;
+    public long lastLogin;
 
     @Column(name = FIELDS.COLUMN_MOBILE)
-    private String mobile;
+    public String mobile;
 
     @Column(name = FIELDS.COLUMN_IS_PUBLIC_PROFILE)
-    private int isPublicProfile;
+    public int isPublicProfile;
 
     @Column(name = FIELDS.COLUMN_CODE)
-    private String code;
+    public String code;
 
-    public Users() {
+    public User() {
         super();
     }
 
-    public Users(long serverID, String username, String email, String password, String image, long creationDate, int active, String lastLogin, String mobile, int isPublicProfile, String code) {
+    public User(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code) {
         super();
         this.serverID = serverID;
+        this.fname = fname;
+        this.lname = lname;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -95,6 +105,22 @@ public class Users extends Model {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
     }
 
     public String getEmail() {
@@ -137,11 +163,11 @@ public class Users extends Model {
         this.active = active;
     }
 
-    public String getLastLogin() {
+    public long getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(String lastLogin) {
+    public void setLastLogin(long lastLogin) {
         this.lastLogin = lastLogin;
     }
 

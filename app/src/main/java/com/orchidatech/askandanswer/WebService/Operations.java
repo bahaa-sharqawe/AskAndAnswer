@@ -33,10 +33,14 @@ public class Operations {
         return instance;
     }
 
+    public void register(Map<String, String> params, final OnLoadFinished listener) {
+        String url = URL.REGISTER + "?" + URLParameters.FNAME + "=" + encode(params.get(URLParameters.FNAME)) + "&" + URLParameters.LNAME + "=" + encode(params.get(URLParameters.LNAME)) + "&" + URLParameters.EMAIL + "=" + encode(params.get(URLParameters.EMAIL)) + "&" + URLParameters.PASSWORD + "=" + encode(params.get(URLParameters.PASSWORD));
+        sendRequest(url, listener);
+    }
+
     public void login(Map<String, String> params, final OnLoadFinished onLoadFinished) {
         String url = URL.LOGIN + "?" + URLParameters.USERNAME + "="+ encode(params.get(URLParameters.USERNAME)) + "&" + URLParameters.PASSWORD + "=" + encode(params.get(URLParameters.PASSWORD));
         sendRequest(url, onLoadFinished);
-
     }
     public void getPosts(final OnLoadFinished listener){
         sendRequest(URL.GET_POSTS, listener);
@@ -66,19 +70,4 @@ public class Operations {
                 });
     }
 
-    public void register(Map<String, String> params, final OnLoadFinished listener) {
-        OperationsManager.getInstance(context).sendRequest(URL.REGISTER, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject o) {
-                        listener.onSuccess(o);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        listener.onFail(context.getString(R.string.BR_GNL_001));
-                    }
-                });
-
-    }
 }

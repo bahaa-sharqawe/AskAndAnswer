@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Activity.AddEditPost;
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Adapter.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class MyPosts extends Fragment {
     ArrayList<Post> myPosts;
     FloatingActionButton fab_add_post;
     RelativeLayout rl_num_notifications;
+    private int tempNum = 10;
 
     @Nullable
     @Override
@@ -55,7 +58,15 @@ public class MyPosts extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         myPosts = new ArrayList<>();
-        adapter = new SearchRecViewAdapter(getActivity(), myPosts);
+        adapter = new SearchRecViewAdapter(getActivity(), myPosts, tempNum, new OnLastListReachListener() {
+            @Override
+            public void onReached() {
+                tempNum += 10;
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "reached", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         rv_posts.setAdapter(adapter);
 
     }

@@ -4,13 +4,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
 
@@ -22,22 +26,50 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Bahaa on 7/11/2015.
  */
 public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdapter.PostViewHolder> {
+    private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
+    private static final int TYPE_FOOTER = 1;
+    private final OnLastListReachListener listener;
+
     private ArrayList<Post> posts;
+    int tempNum;
     private Context context;
-    public SearchRecViewAdapter(Context context, ArrayList<Post> posts) {
+    private boolean loading = false;
+
+    public SearchRecViewAdapter(Context context, ArrayList<Post> posts, int tempNum, OnLastListReachListener listener) {
         this.context = context;
         this.posts = posts;
+        this.tempNum = tempNum;
+        this.listener = listener;
     }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item_search, parent, false);
-        return new PostViewHolder(itemView);
+        View itemView = null;
+        if(viewType == TYPE_FOOTER) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
+            return new PostViewHolder(itemView, TYPE_FOOTER);
+        }
+        else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item_search, parent, false);
+            return new PostViewHolder(itemView, TYPE_HEADER);
+        }
     }
 
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
-        holder.rating_post.setRating(3.67f);
+        if(holder.viewType == TYPE_FOOTER && !loading){
+           new Handler().postDelayed(new Runnable() {
+               @Override
+               public void run() {
+//                   listener.onReached();
+                   tempNum += 10;
+                   notifyDataSetChanged();
+                   loading = false;
+
+               }
+           }, 2000);
+//            Toast.makeText(context, "last reached", Toast.LENGTH_LONG).show();
+        }
 //        Post post = posts.get(position);
 //        Person postOwner = post.getOwner();
 //        holder.tv_postDesc.setText(post.getDesc());
@@ -81,7 +113,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 
     @Override
     public int getItemCount() {
-        return 3;
+        return tempNum+1;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -94,20 +126,37 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         TextView tv_comments;
         TextView tv_likes;
         TextView tv_unlikes;
+        ProgressBar pv_load;;
 
-        public PostViewHolder(View itemView) {
+
+        int viewType;
+
+        public PostViewHolder(View itemView, int viewType) {
             super(itemView);
-            iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
-            tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-            rating_post = (RatingBar) itemView.findViewById(R.id.rating_post);
-            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
-            stars.getDrawable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
-            tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
-            tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-            tv_postDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
-            tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
-            tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
-            tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
+            this.viewType = viewType;
+            if (viewType == TYPE_FOOTER) {
+                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
+                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+            } else {
+                iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
+                tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
+                rating_post = (RatingBar) itemView.findViewById(R.id.rating_post);
+//            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
+//            stars.getDraewable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
+                tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
+                tv_postDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
+                tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
+                tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
+            }
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == tempNum)
+            return TYPE_FOOTER;
+        return TYPE_HEADER;
     }
 }

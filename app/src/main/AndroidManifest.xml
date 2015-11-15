@@ -21,11 +21,11 @@
             android:value=".Database.Model.Category, .Database.Model.Comments,
             .Database.Model.Notifications, .Database.Model.Post_Favorite, .Database.Model.Posts,
             .Database.Model.Search_History, .Database.Model.Settings, .Database.Model.User_Actions,
-            .Database.Model.User_Categories, .Database.Model.Users" />
+            .Database.Model.User_Categories, .Database.Model.User" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <activity android:name=".Activity.MainActivity" >
+        <activity android:name=".Activity.MainScreen" >
         </activity>
         <activity android:name=".Activity.SplashScreen" >
             <intent-filter>

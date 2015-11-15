@@ -23,7 +23,8 @@ import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 public class RegisterScreen extends Activity {
     private String TAG = RegisterScreen.class.getSimpleName();
 
-    EditText ed_name;
+    EditText ed_fname;
+    EditText ed_lname;
     EditText ed_email;
     EditText ed_password;
     EditText ed_repassword;
@@ -44,7 +45,8 @@ public class RegisterScreen extends Activity {
 
     private void initializeFields() {
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
-        ed_name = (EditText) this.findViewById(R.id.ed_name);
+        ed_fname = (EditText) this.findViewById(R.id.ed_fname);
+        ed_lname = (EditText) this.findViewById(R.id.ed_lname);
         ed_email = (EditText) this.findViewById(R.id.ed_email);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
         ed_repassword = (EditText) this.findViewById(R.id.ed_repassword);
@@ -52,12 +54,13 @@ public class RegisterScreen extends Activity {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = ed_name.getText().toString();
+                String fname = ed_fname.getText().toString();
+                String lname = ed_lname.getText().toString();
                 String email = ed_email.getText().toString();
                 String password = ed_password.getText().toString();
                 String repassword = ed_repassword.getText().toString();
-                if (verifyInputs(username, email, password, repassword)) {
-                    register(username, email, password);
+                if (verifyInputs(fname, lname, email, password, repassword)) {
+                    register(fname, lname, email, password);
                 }
             }
         });
@@ -72,8 +75,8 @@ public class RegisterScreen extends Activity {
         mValidator = Validator.getInstance();
     }
 
-    private void register(String username, String email, String password) {
-        WebServiceFunctions.register(this, username, email, password, new OnRegisterListener() {
+    private void register(String fname, String lname, String email, String password) {
+        WebServiceFunctions.register(this, fname, lname, email, password, new OnRegisterListener() {
             @Override
             public void onSuccess() {
                 startActivity(new Intent(RegisterScreen.this, SelectCategoryScreen.class));
@@ -86,11 +89,17 @@ public class RegisterScreen extends Activity {
         });
     }
 
-    private boolean verifyInputs(String username, String email, String password, String repassword) {
-        if (TextUtils.isEmpty(username)) {
+    private boolean verifyInputs(String fname, String lname, String email, String password, String repassword) {
+        if (TextUtils.isEmpty(fname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
             return false;
-        } else if (!mValidator.isValidUserName(username)) {
+        } else if (!mValidator.isValidUserName(fname)) {
+            AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
+            return false;
+        }  if (TextUtils.isEmpty(lname)) {
+            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
+            return false;
+        } else if (!mValidator.isValidUserName(lname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(email)) {

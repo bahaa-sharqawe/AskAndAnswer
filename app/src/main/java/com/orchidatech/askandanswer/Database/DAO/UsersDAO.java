@@ -1,8 +1,11 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
-import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Database.Model.User;
 
 import java.util.List;
 
@@ -11,21 +14,30 @@ import java.util.List;
  */
 public class UsersDAO {
 
-    public static void addUser(Users newUser){
-        newUser.save();
+    public static void addUser(User newUser){
+        User user = new User();
+        user.fname = newUser.getFname();
+        user.lname = newUser.getLname();
+        user.image = newUser.getImage();
+        user.email = newUser.getEmail();
+        user.username = newUser.getUsername();
+        user.serverID = newUser.getServerID();
+
+        Log.i("fd", user.save()+"");
     }
 
-    public static void deleteUser(long userServerId){
-        new Delete().from(Users.class).where(Users.FIELDS.COLUMN_SERVER_ID + " = ?", userServerId).execute();
+    public static void deleteUser(long UsererverId){
+        new Delete().from(User.class).where(User.FIELDS.COLUMN_SERVER_ID + " = ?", UsererverId).execute();
     }
 
-    public static Users getUser(long userServerId){
-        return new Select ().from(Users.class).where(Users.FIELDS.COLUMN_SERVER_ID + " = ?", userServerId).executeSingle();
+    public static User getUser(long UsererverId){
+        return new Select().from(User.class).where(User.FIELDS.COLUMN_SERVER_ID + " = ?", UsererverId).executeSingle();
     }
 
-    public static void updateUser(Users user){
-        Users existUser = getUser(user.getServerID());
-        existUser.setUsername(user.getUsername());
+    public static void updateUser(User user){
+        User existUser = getUser(user.getServerID());
+        existUser.setFname(user.getFname());
+        existUser.setLname(user.getLname());
         existUser.setEmail(user.getEmail());
         existUser.setPassword(user.getPassword());
         existUser.setImage(user.getImage());
@@ -38,11 +50,11 @@ public class UsersDAO {
         existUser.save();
     }
 
-    public static List<Users> getAllUsers(){
-        return new Select().from(Users.class).orderBy(Users.FIELDS.COLUMN_SERVER_ID).execute();
+    public static List<User> getAllUser(){
+        return new Select().from(User.class).orderBy(User.FIELDS.COLUMN_SERVER_ID).execute();
     }
 
-    public static void deleteAllUsers(){
-        new Delete().from(Users.class).execute();
+    public static void deleteAllUser(){
+        new Delete().from(User.class).execute();
     }
 }

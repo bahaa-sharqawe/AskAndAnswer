@@ -60,7 +60,7 @@ public class Profile extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new ProfileRecViewAdapter(getActivity(), posts, new ProfileRecViewAdapter.OnPostEventListener() {
+        adapter = new ProfileRecViewAdapter(getActivity(), posts, 10, new ProfileRecViewAdapter.OnPostEventListener() {
             @Override
             public void onEditPost() {
                 startActivity(new Intent(getActivity(), ViewPost.class));
@@ -73,7 +73,7 @@ public class Profile extends Fragment {
 
             @Override
             public void onCommentPost() {
-
+                    new Comments().show(getFragmentManager(), "comments");
             }
 
             @Override

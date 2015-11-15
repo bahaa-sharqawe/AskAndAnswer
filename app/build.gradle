@@ -40,6 +40,8 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.4'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+
 //    compile 'com.github.asne:asne-googleplus:0.3.3'
 //    compile('com.github.androidsocialnetworks:library:0.3.7@aar') {
 //        transitive = true

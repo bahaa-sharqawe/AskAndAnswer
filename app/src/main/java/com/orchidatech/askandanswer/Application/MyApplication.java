@@ -13,6 +13,7 @@ import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -20,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Bahaa on 7/11/2015.
  */
-public class Application extends com.activeandroid.app.Application {
+public class MyApplication extends com.activeandroid.app.Application {
     private static final String APP_ID = "446821295503912";
     private static final String APP_NAMESPACE = "orchaskandanswer";
     private static final Permission[] permissions = new Permission[] {
@@ -35,12 +36,12 @@ public class Application extends com.activeandroid.app.Application {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
-        Configuration.Builder builder = new Configuration.Builder(getBaseContext());
-//        builder.setCacheSize(1024*1024*4);
-        builder.setDatabaseName("AskAndAnswer.db");
-        builder.setDatabaseVersion(1);
-        ActiveAndroid.initialize(builder.create());
-//        ActiveAndroid.initialize(this);
+//        Configuration.Builder builder = new Configuration.Builder(getBaseContext());
+////        builder.setCacheSize(1024*1024*4);
+//        builder.setDatabaseName("AskAndAnswer.db");
+//        builder.setDatabaseVersion(1);
+//        ActiveAndroid.initialize(builder.create());
+        ActiveAndroid.initialize(this);
 
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
                 .setAppId(APP_ID)
@@ -49,12 +50,12 @@ public class Application extends com.activeandroid.app.Application {
                 .build();
         SimpleFacebook.setConfiguration(configuration);
     }
-
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        ActiveAndroid.dispose();
-    }
+//
+//
+//    @Override
+//    public void onTerminate() {
+//        super.onTerminate();
+//        ActiveAndroid.dispose();
+//    }
 
 }

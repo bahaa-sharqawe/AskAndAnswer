@@ -40,9 +40,10 @@ public class WebServiceFunctions {
             }
         });
     }
-    public static void register(Context context, String username, String email, String password, final OnRegisterListener listener){
+    public static void register(Context context, String fname, String lname, String email, String password, final OnRegisterListener listener){
         Map<String, String> params = new HashMap<>();
-        params.put(URLParameters.USERNAME, username);
+        params.put(URLParameters.FNAME, fname);
+        params.put(URLParameters.LNAME, lname);
         params.put(URLParameters.EMAIL, email);
         params.put(URLParameters.PASSWORD, password);
 

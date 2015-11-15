@@ -2,6 +2,8 @@
     <string name="app_name">AskAndAnswer</string>
     <string name="contenDesc_logo">Logo Photo</string>
     <string name="enter">Enter</string>
+    <string name="ed_fname_hint">First name</string>
+    <string name="ed_lname_hint">Last name</string>
     <string name="ed_name_hint">Username</string>
     <string name="ed_email_hint">Email</string>
     <string name="ed_password_hint">Password</string>
@@ -83,12 +85,13 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_LOGIN_004">User not exist</string>
     <string name="BR_LOGIN_005">Account does not active</string>
 
-    <string name="BR_SIGN_001">Please enter your username</string>
+    <string name="BR_SIGN_001">Please enter your first name</string>
     <string name="BR_SIGN_002">Please enter your password</string>
     <string name="BR_SIGN_003">Please repeat your password</string>
     <string name="BR_SIGN_004">User already exists</string>
     <string name="BR_SIGN_005">Please enter your email</string>
     <string name="BR_SIGN_006">Password and repeated password does not match</string>
+    <string name="BR_SIGN_007">Please enter your last name</string>
 
     <string name="BR_CATS_001">Please select at least one category</string>
     <string name="BR_CATS_002">Oh, you must select at maximum 20 category</string>

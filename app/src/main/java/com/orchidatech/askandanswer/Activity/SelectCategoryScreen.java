@@ -158,7 +158,7 @@ public class SelectCategoryScreen extends AppCompatActivity {
         if (id == R.id.next) {
             if (validSelectedCount()) {
                 storeSelectedCategories();
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, MainScreen.class));
             }
             return true;
         } else if (id == android.R.id.home) {//search icon

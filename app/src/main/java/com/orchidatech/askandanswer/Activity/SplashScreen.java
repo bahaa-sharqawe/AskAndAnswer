@@ -15,6 +15,9 @@ import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.sromku.simple.fb.Permission;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.SimpleFacebookConfiguration;
 
 import java.util.ArrayList;
 
@@ -31,11 +34,11 @@ public class SplashScreen extends Activity {
     boolean mFirstTime;
     boolean mLogged;
     boolean mCategoriesSelected;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         resizeLogo();
 
@@ -54,7 +57,7 @@ public class SplashScreen extends Activity {
 
         if (mLogged) {
             if (mCategoriesSelected)
-                mIntent = new Intent(this, MainActivity.class);
+                mIntent = new Intent(this, MainScreen.class);
             else
                 mIntent = new Intent(this, TermsActivity.class);
         } else {

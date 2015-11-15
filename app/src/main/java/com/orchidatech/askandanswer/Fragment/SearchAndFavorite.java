@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Adapter.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -54,7 +55,12 @@ public class SearchAndFavorite extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new SearchRecViewAdapter(getActivity(), posts);
+        adapter = new SearchRecViewAdapter(getActivity(), posts, 20, new OnLastListReachListener() {
+            @Override
+            public void onReached() {
+
+            }
+        });
         rv_posts.setAdapter(adapter);
 
     }

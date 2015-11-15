@@ -1,6 +1,8 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +25,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Bahaa on 7/11/2015.
  */
 public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAdapter.PostViewHolder> {
+    private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
+    private static final int TYPE_FOOTER = 1;
+
     private static OnPostEventListener listener;
+    private int tempNum;
 
     public interface OnPostEventListener{
         public void onEditPost();
@@ -33,39 +40,54 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
 
     private ArrayList<Post> posts;
     private Context context;
-    public ProfileRecViewAdapter(Context context, ArrayList<Post> posts, OnPostEventListener listener) {
+    public ProfileRecViewAdapter(Context context, ArrayList<Post> posts, int tempNum, OnPostEventListener listener) {
         this.context = context;
         this.posts = posts;
         this.listener = listener;
+        this.tempNum = tempNum;
     }
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView;
+        View itemView = null;
         //if (viewType == TYPE_HEADER)
+        if(viewType == TYPE_FOOTER) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
+            return new PostViewHolder(itemView, TYPE_FOOTER);
+        }else {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item_profile, parent, false);
-//        else
-//            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item_profile, parent, false);
-        return new PostViewHolder(itemView, viewType);
+            return new PostViewHolder(itemView, TYPE_HEADER);
+        }
 
     }
 
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
+        if(holder.viewType == TYPE_FOOTER ){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                   listener.onReached();
+                    tempNum += 10;
+                    notifyDataSetChanged();
+
+                }
+            }, 2000);
+//            Toast.makeText(context, "last reached", Toast.LENGTH_LONG).show();
+        }
 //        Post post = posts.get(position);
 //        Person postOwner = post.getOwner();
 //        holder.tv_person_name.setText(postOwner.getName());
         //complete the code here
 
-holder.comment_ll.addView( LayoutInflater.from(context).inflate(R.layout.comment_item_profile, null, false));
+//holder.comment_ll.addView( LayoutInflater.from(context).inflate(R.layout.comment_item_profile, null, false));
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return tempNum+1;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout comment_ll ;
 
         TextView tv_person_name;
         TextView tv_postDate;
@@ -77,40 +99,44 @@ holder.comment_ll.addView( LayoutInflater.from(context).inflate(R.layout.comment
         FloatingActionButton fab_edit_post; //change visibility
         RelativeLayout rl_like_unlike; //change visibility
         RelativeLayout rl_postEvents; //change visibility
-        LinearLayout ll_comment;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
+        LinearLayout ll_comment;
         CircleImageView iv_profile;
         int viewType;
+        ProgressBar pv_load;;
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
-            tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-            tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
-            tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
-            iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
-            iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
-            comment_ll = (LinearLayout) itemView.findViewById(R.id.comment_ll);
-//            if (viewType == TYPE_MENU){
-//                tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
-//            tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
-//            fab_edit_post = (FloatingActionButton) itemView.findViewById(R.id.fab_edit_post);
-//            rl_like_unlike = (RelativeLayout) itemView.findViewById(R.id.rl_like_unlike);
-//            fab_edit_post.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    listener.onEditPost();
-//                }
-//            });
-//        }else{
+            if (viewType == TYPE_FOOTER) {
+                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
+                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+            } else {
+                tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
+                tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
+
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
+                ll_comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onCommentPost();
+                    }
+                });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-           // }
-
+            }
         }
+    }
+    @Override
+    public int getItemViewType(int position) {
+        if(position == tempNum)
+            return TYPE_FOOTER;
+        return TYPE_HEADER;
     }
 }
