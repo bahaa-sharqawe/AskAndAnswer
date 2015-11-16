@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnCategoryClickListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 
 import java.util.ArrayList;
 
@@ -28,22 +30,18 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
 
-    private static OnPostEventListener listener;
+    private static OnPostEventListener postEventsListener;
+    private  static OnCategoryClickListener catListener;
     private int tempNum;
 
-    public interface OnPostEventListener{
-        public void onEditPost();
-        public void onSharePost();
-        public void onCommentPost();
-        public void onFavoritePost();
-    }
 
     private ArrayList<Post> posts;
     private Context context;
-    public ProfileRecViewAdapter(Context context, ArrayList<Post> posts, int tempNum, OnPostEventListener listener) {
+    public ProfileRecViewAdapter(Context context, ArrayList<Post> posts, int tempNum, OnPostEventListener postEventsListener, OnCategoryClickListener catListener) {
         this.context = context;
         this.posts = posts;
-        this.listener = listener;
+        this.postEventsListener = postEventsListener;
+        this.catListener = catListener;
         this.tempNum = tempNum;
     }
     @Override
@@ -120,12 +118,18 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
+                tv_post_category.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        catListener.onClick(1, 2);
+                    }
+                });
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        listener.onCommentPost();
+                        postEventsListener.onCommentPost();
                     }
                 });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);

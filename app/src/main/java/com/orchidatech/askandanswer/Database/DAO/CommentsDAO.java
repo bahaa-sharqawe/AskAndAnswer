@@ -12,7 +12,16 @@ import java.util.List;
 public class CommentsDAO {
 
     public static void addComment(Comments newComment){
-        newComment.save();
+        Comments comment = new Comments();
+        comment.date = newComment.getDate();
+        comment.image = newComment.getImage();
+        comment.postID = newComment.getPostID();
+        comment.serverID = newComment.getServerID();
+        comment.isHidden = newComment.getIsHidden();
+        comment.text = newComment.getText();
+        comment.userID = newComment.getUserID();
+
+        comment.save();
     }
 
     public static void deleteComment(long commentServerId){
@@ -26,10 +35,10 @@ public class CommentsDAO {
 
     public static void updateComment(Comments comment){
         Comments existComment = getComment(comment.getServerID());
-        existComment.setText(comment.getText());
-        existComment.setImage(comment.getImage());
-        existComment.setDate(comment.getDate());
-        existComment.setIsHidden(comment.getIsHidden());
+        existComment.date = comment.getDate();
+        existComment.image = comment.getImage();
+        existComment.isHidden = comment.getIsHidden();
+        existComment.text = comment.getText();
         existComment.save();
     }
 

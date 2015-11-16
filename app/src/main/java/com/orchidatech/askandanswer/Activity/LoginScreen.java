@@ -21,12 +21,11 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
-import com.orchidatech.askandanswer.Database.Model.User;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.OnSocialLoggedListener;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.entities.Profile;
@@ -150,6 +149,9 @@ public class LoginScreen extends AppCompatActivity {
                     googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
                         @Override
                         public void onSuccess(SocialUser user) {
+                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+                            startActivity(new Intent(LoginScreen.this, TermsActivity.class));
+
                             Toast.makeText(LoginScreen.this, user.getEmail() + ", " + user.getName(), Toast.LENGTH_LONG).show();
 
                         }
@@ -206,7 +208,7 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             public void onComplete(Profile response) {
                 super.onComplete(response);
-                UsersDAO.addUser(new User(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
                 startActivity(new Intent(LoginScreen.this, TermsActivity.class));
 
                 Toast.makeText(LoginScreen.this, response.getName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();

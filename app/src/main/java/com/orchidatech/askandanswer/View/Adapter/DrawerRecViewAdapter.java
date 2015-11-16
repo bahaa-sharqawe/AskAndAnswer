@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
-import com.orchidatech.askandanswer.Database.Model.User;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnDrawerItemClickListener;
@@ -53,7 +52,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {//Display the data at the specified position
         if(holder.viewType == TYPE_HEADER){//complete the code here
-           User user =  UsersDAO.getUser(1);
+           Users user =  UsersDAO.getUser(1);
             if(user != null) {
                 holder.tv_person_name.setText(user.getUsername());
                 holder.tv_person_email.setText(user.getEmail());

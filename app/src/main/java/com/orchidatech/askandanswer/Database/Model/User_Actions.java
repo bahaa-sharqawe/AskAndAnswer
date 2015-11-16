@@ -23,19 +23,19 @@ public class User_Actions extends Model {
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_COMMENT_ID)
-    private long commentID;
+    public long commentID;
 
     @Column(name = FIELDS.COLUMN_USER_ID)
-    private long userID;
+    public long userID;
 
     @Column(name = FIELDS.COLUMN_DATE)
-    private long date;
+    public long date;
 
     @Column(name = FIELDS.ACTION_TYPE)
-    private int actionType;
+    public int actionType;
 
     public User_Actions() {
         super();

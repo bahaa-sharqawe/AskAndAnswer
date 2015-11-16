@@ -12,7 +12,11 @@ import java.util.List;
 public class User_CategoriesDAO {
 
     public static void addUserCategory(User_Categories newUserCategory) {
-        newUserCategory.save();
+        User_Categories user_categories = new User_Categories();
+        user_categories.categoryID = newUserCategory.getCategoryID();
+        user_categories.serverID = newUserCategory.getServerID();
+        user_categories.userID = newUserCategory.getUserID();
+        user_categories.save();
     }
 
     public static void deleteUserCategory(long userCategoryServerId, long userServerId) {

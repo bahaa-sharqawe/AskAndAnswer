@@ -38,7 +38,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     RecyclerView rv_navigation;
     ActionBarDrawerToggle mDrawerToggle;
     Toolbar toolbar;
-    int oldPosition = -1;
     MaterialEditText ed_search;
     RelativeLayout rl_num_notifications;
 
@@ -71,10 +70,9 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         adapter = new DrawerRecViewAdapter(this, items, new OnDrawerItemClickListener() {
             @Override
             public void onClick(int position) {
-                if(oldPosition != position) {
-                    oldPosition = position;
+
                     startEvent(position);
-                }
+
                 mDrawerLayout.closeDrawer(rv_navigation);
 //                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -127,7 +125,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 //        mDrawerToggle.onConfigurationChanged(newConfig);
 //    }
 
-    private void startEvent(int position) {
+    public void startEvent(int position) {
         switch (position) {
             case 0:
                 //my posts
@@ -162,7 +160,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //about
-                oldPosition = -1;
                 getFragmentManager().beginTransaction().replace(R.id.fragment_host, new AboutUs()).commit();
                 setTitle(itemsTitles.get(position-1));
                 break;

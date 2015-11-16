@@ -12,7 +12,11 @@ import java.util.List;
 public class CategoriesDAO {
 
     public static void addCategory(Category newCategory){
-        newCategory.save();
+        Category category = new Category();
+        category.name = newCategory.getName();
+        category.serverID = newCategory.getServerID();
+        category.description = newCategory.getDescription();
+        category.save();
     }
 
     public static void deleteCategory(long categoryServerId){
@@ -26,8 +30,8 @@ public class CategoriesDAO {
 
     public static void updateCategory(Category category){
         Category existCategory = getCategory(category.getServerID());
-        existCategory.setDescription(category.getDescription());
-        existCategory.setName(category.getName());
+        existCategory.name = category.getName();
+        existCategory.description = category.getDescription();
         existCategory.save();
     }
 

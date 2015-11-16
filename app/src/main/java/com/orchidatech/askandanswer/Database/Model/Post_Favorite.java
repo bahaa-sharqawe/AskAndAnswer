@@ -22,16 +22,16 @@ public class Post_Favorite extends Model{
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_POST_ID)
-    private long postID;
+    public long postID;
 
     @Column(name = FIELDS.COLUMN_USER_ID)
-    private long userID;
+    public long userID;
 
     @Column(name = FIELDS.COLUMN_DATE)
-    private long date;
+    public long date;
 
     public Post_Favorite() {
         super();

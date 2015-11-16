@@ -21,13 +21,13 @@ public class User_Categories extends Model{
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_USER_ID)
-    private long userID;
+    public long userID;
 
     @Column(name = FIELDS.COLUMN_CATEGORY_ID)
-    private long categoryID;
+    public long categoryID;
 
     public User_Categories() {
         super();

@@ -21,15 +21,15 @@ public class Category extends Model{
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_NAME)
-    private String name;
+    public String name;
 
     @Column(name = FIELDS.COLUMN_DESCRIPTION)
-    private String description;
+    public String description;
 
-    private boolean isChecked;
+    public boolean isChecked;
 
     public Category() {
         super();

@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,14 @@ import android.widget.RatingBar;
 
 //import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
 import com.orchidatech.askandanswer.Activity.EditProfile;
+import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Entity.Post;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnCategoryClickListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 
 import java.util.ArrayList;
 
@@ -35,6 +39,7 @@ public class Profile extends Fragment {
     ArrayList<Post> posts;
     RatingBar rating_person;
     CircleImageView iv_profile;
+    FloatingActionButton fab_edit_profile;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,9 +49,14 @@ public class Profile extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        fab_edit_profile = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
+        fab_edit_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), EditProfile.class));
+            }
+        });
         rating_person = (RatingBar) getActivity().findViewById(R.id.rating_person);
-        LayerDrawable stars = (LayerDrawable) rating_person.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
         iv_profile = (CircleImageView) getActivity().findViewById(R.id.iv_profile);
         iv_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +70,7 @@ public class Profile extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new ProfileRecViewAdapter(getActivity(), posts, 10, new ProfileRecViewAdapter.OnPostEventListener() {
+        adapter = new ProfileRecViewAdapter(getActivity(), posts, 10, new OnPostEventListener() {
             @Override
             public void onEditPost() {
                 startActivity(new Intent(getActivity(), ViewPost.class));
@@ -73,11 +83,16 @@ public class Profile extends Fragment {
 
             @Override
             public void onCommentPost() {
-                    new Comments().show(getFragmentManager(), "comments");
+                new Comments().show(getFragmentManager(), "comments");
             }
 
             @Override
             public void onFavoritePost() {
+            }
+        }, new OnCategoryClickListener() {
+            @Override
+            public void onClick(long userId, long categoryId) {
+                ((MainScreen)getActivity()).startEvent(2);
             }
         });
         rv_posts.setAdapter(adapter);

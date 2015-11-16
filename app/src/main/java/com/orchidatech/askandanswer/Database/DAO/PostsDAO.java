@@ -13,7 +13,15 @@ import java.util.List;
 public class PostsDAO {
 
     public static void addPost(Posts newPost){
-        newPost.save();
+        Posts post = new Posts();
+        post.categoryID = newPost.getCategoryID();
+        post.date = newPost.getDate();
+        post.image = newPost.getImage();
+        post.isHidden = newPost.getIsHidden();
+        post.serverID = newPost.getServerID();
+        post.userID = newPost.getUserID();
+        post.text = newPost.getText();
+        post.save();
     }
 
     public static void deletePost(long postServerId){
@@ -26,13 +34,10 @@ public class PostsDAO {
 
     public static void updatePost(Posts post){
         Posts existPost = getPost(post.getServerID());
-
-        existPost.setText(post.getText());
-        existPost.setImage(post.getImage());
-        existPost.setDate(post.getDate());
-        existPost.setUserID(post.getUserID());
-        existPost.setCategoryID(post.getCategoryID());
-        existPost.setIsHidden(post.getIsHidden());
+        post.date = post.getDate();
+        post.image = post.getImage();
+        post.isHidden = post.getIsHidden();
+        post.text = post.getText();
         existPost.save();
     }
 

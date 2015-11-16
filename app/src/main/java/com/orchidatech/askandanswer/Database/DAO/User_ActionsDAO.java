@@ -11,7 +11,13 @@ import java.util.List;
 public class User_ActionsDAO {
 
     public static void addUserAction(User_Actions newUserAction){
-        newUserAction.save();
+        User_Actions user_actions  = new User_Actions();
+        user_actions.actionType = newUserAction.getActionType();
+        user_actions.commentID = newUserAction.getCommentID();
+        user_actions.date = newUserAction.getDate();
+        user_actions.serverID = newUserAction.getServerID();
+        user_actions.userID = newUserAction.getUserID();
+        user_actions.save();
     }
 
     public static User_Actions getUserAction(long userServerId, long commentServerId){
@@ -22,8 +28,8 @@ public class User_ActionsDAO {
     public static void updateUserAction(User_Actions userAction){
         User_Actions existUserAction = getUserAction(userAction.getUserID(), userAction.getCommentID());
 
-        existUserAction.setDate(userAction.getDate());
-        existUserAction.setActionType(userAction.getActionType());
+        existUserAction.date = userAction.getDate();
+        existUserAction.actionType = userAction.getActionType();
         existUserAction.save();
     }
 

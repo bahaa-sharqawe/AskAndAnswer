@@ -22,16 +22,16 @@ public class Search_History extends Model{
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_TEXT)
-    private long text;
+    public long text;
 
     @Column(name = FIELDS.COLUMN_IS_DELETED)
-    private int isDeleted;
+    public int isDeleted;
 
     @Column(name = FIELDS.COLUMN_USER_ID)
-    private long userID;
+    public long userID;
 
     public Search_History() {
         super();

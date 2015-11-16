@@ -12,7 +12,12 @@ import java.util.List;
 public class Post_FavoriteDAO {
 
     public static void addPostFavorite(Post_Favorite newPostFavorite){
-        newPostFavorite.save();
+        Post_Favorite post_favorite = new Post_Favorite();
+        post_favorite.date = newPostFavorite.getDate();
+        post_favorite.postID = newPostFavorite.getPostID();
+        post_favorite.userID = newPostFavorite.getUserID();
+        post_favorite.serverID = newPostFavorite.getServerID();
+        post_favorite.save();
     }
 
     public static void deletePostFavorite(long postFavoriteServerId, long userServerId){

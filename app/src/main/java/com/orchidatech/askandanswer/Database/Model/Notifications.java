@@ -23,22 +23,22 @@ public class Notifications extends Model {
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private long serverID;
+    public long serverID;
 
     @Column(name = FIELDS.COLUMN_NOTIFICATION_TYPE)
-    private int notificationType;
+    public int notificationType;
 
     @Column(name = FIELDS.COLUMN_OBJECT_ID)
-    private long objectID;
+    public long objectID;
 
     @Column(name = FIELDS.COLUMN_NOTIFICATION_TEXT)
-    private String notificationText;
+    public String notificationText;
 
     @Column(name = FIELDS.COLUMN_DATE)
-    private long date;
+    public long date;
 
     @Column(name = FIELDS.COLUMN_IS_DONE)
-    private int isDone;
+    public int isDone;
 
     public Notifications() {
         super();

@@ -12,7 +12,12 @@ import java.util.List;
 public class Search_HistoryDAO {
 
     public static void addSearchHistory(Search_History newSearchHistory){
-        newSearchHistory.save();
+        Search_History search_history = new Search_History();
+        search_history.isDeleted = newSearchHistory.getIsDeleted();
+        search_history.serverID = newSearchHistory.getServerID();
+        search_history.text = newSearchHistory.getText();
+        search_history.userID = newSearchHistory.getUserID();
+        search_history.save();
     }
 
     public static void deleteSearchHistory(long searchHistoryServerId, long userServerId){
@@ -33,5 +38,11 @@ public class Search_HistoryDAO {
 
     public static void deleteAllUserSearch_History(long userServerId){
         new Delete().from(Search_History.class).where(Search_History.FIELDS.COLUMN_USER_ID + " = ?", userServerId).execute();
+    }
+    public static void updateSearch_History(Search_History search_history){
+        Search_History existSearch_History = getSearchHistory(search_history.getServerID());
+        existSearch_History.text = search_history.getText();
+        existSearch_History.isDeleted = search_history.getIsDeleted();
+        existSearch_History.save();
     }
 }

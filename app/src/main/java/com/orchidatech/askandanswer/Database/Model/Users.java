@@ -10,8 +10,8 @@ import com.activeandroid.annotation.Table;
 /**
  * Created by Bahaa on 12/11/2015.
  */
-@Table(name = User.FIELDS.TABLE_NAME, id = BaseColumns._ID)
-public class User extends Model {
+@Table(name = Users.FIELDS.TABLE_NAME, id = BaseColumns._ID)
+public class Users extends Model {
 
     public static class FIELDS {
         public static final String TABLE_NAME = "Users";
@@ -70,11 +70,11 @@ public class User extends Model {
     @Column(name = FIELDS.COLUMN_CODE)
     public String code;
 
-    public User() {
+    public Users() {
         super();
     }
 
-    public User(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code) {
+    public Users(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code) {
         super();
         this.serverID = serverID;
         this.fname = fname;

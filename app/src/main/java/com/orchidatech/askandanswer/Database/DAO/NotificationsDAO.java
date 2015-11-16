@@ -12,7 +12,14 @@ import java.util.List;
 public class NotificationsDAO {
 
     public static void addNotification(Notifications newNotification){
-        newNotification.save();
+        Notifications notification = new Notifications();
+        notification.date = newNotification.getDate();
+        notification.isDone = newNotification.getIsDone();
+        notification.notificationText = newNotification.getNotificationText();
+        notification.notificationType = newNotification.getNotificationType();
+        notification.objectID = newNotification.getObjectID();
+        notification.serverID = newNotification.getServerID();
+        notification.save();
     }
 
     public static void deleteNotification(long notificationServerId){
@@ -23,13 +30,13 @@ public class NotificationsDAO {
         return new Select().from(Notifications.class).where(Notifications.FIELDS.COLUMN_SERVER_ID + " = ?", notificationServerId).executeSingle();
     }
 
-    public static void updateUser(Notifications notification){
+    public static void updateNotification(Notifications notification){
         Notifications existNotification = getNotification(notification.getServerID());
-        existNotification.setNotificationType(notification.getNotificationType());
-        existNotification.setObjectID(notification.getObjectID());
-        existNotification.setNotificationText(notification.getNotificationText());
-        existNotification.setDate(notification.getDate());
-        existNotification.setIsDone(notification.getIsDone());
+        existNotification.notificationType = notification.getNotificationType();
+        existNotification.objectID = notification.getObjectID();
+        existNotification.notificationText = notification.getNotificationText();
+        existNotification.date = notification.getDate();
+        existNotification.isDone = notification.getIsDone();
         existNotification.save();
     }
 

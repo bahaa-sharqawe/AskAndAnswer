@@ -10,16 +10,20 @@ import com.orchidatech.askandanswer.Database.Model.Settings;
 public class SettingsDAO {
 
     public static void addSettings(Settings newSettings){
-        newSettings.save();
+        Settings settings = new Settings();
+        settings.key = newSettings.getKey();
+        settings.value = newSettings.getValue();
+        settings.serverID = newSettings.getServerID();
+        settings.save();
     }
-    public static Settings getSetting(String settingKey){
-        return new Select().from(Settings.class).where(Settings.FIELDS.COLUMN_SETTING_KEY + " = ?",
-                settingKey).executeSingle();
+    public static Settings getSetting(long userId, String settingKey){
+        return new Select().from(Settings.class).where(Settings.FIELDS.COLUMN_SETTING_KEY + " = ? and " + Settings.FIELDS.COLUMN_USER_ID + " = ?",
+                userId,settingKey).executeSingle();
 
     }
     public static void updateSettings(Settings settings){
-        Settings existSetting = getSetting(settings.getKey());
-        existSetting.setValue(settings.getValue());
+        Settings existSetting = getSetting(settings.getUserID(), settings.getKey());
+        existSetting.value = settings.getValue();
         existSetting.save();
     }
 }
