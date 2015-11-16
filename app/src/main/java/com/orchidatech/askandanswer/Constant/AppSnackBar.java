@@ -1,6 +1,5 @@
 package com.orchidatech.askandanswer.Constant;
 
-import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.widget.TextView;
  */
 public class AppSnackBar {
 
-    public static void show(View view,String message,int background, int textColor){
+    public static void show(View view, String message, int background, int textColor) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(textColor);
         View snackBarView = snackbar.getView();
@@ -20,7 +19,8 @@ public class AppSnackBar {
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         snackbar.show();
     }
-    public static void show(View view, String message, int background){
+
+    public static void show(View view, String message, int background) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(background);
@@ -28,7 +28,8 @@ public class AppSnackBar {
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         snackbar.show();
     }
-    public static void show(View view, String message){
+
+    public static void show(View view, String message) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         TextView tv = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
