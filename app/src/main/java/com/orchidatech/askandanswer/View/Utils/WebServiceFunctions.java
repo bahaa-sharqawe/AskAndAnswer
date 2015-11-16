@@ -2,7 +2,7 @@ package com.orchidatech.askandanswer.View.Utils;
 
 import android.content.Context;
 
-import com.orchidatech.askandanswer.Constant.URLParameters;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
@@ -21,8 +21,8 @@ public class WebServiceFunctions {
 
     public static void login(Context context, String username, String password, final OnLoginListener listener){
         Map<String, String> params = new HashMap<>();
-        params.put(URLParameters.USERNAME, username);
-        params.put(URLParameters.PASSWORD, password);
+        params.put(URL.URLParameters.USERNAME, username);
+        params.put(URL.URLParameters.PASSWORD, password);
 
         Operations.getInstance(context).login(params, new OnLoadFinished() {
             @Override
@@ -42,10 +42,10 @@ public class WebServiceFunctions {
     }
     public static void register(Context context, String fname, String lname, String email, String password, final OnRegisterListener listener){
         Map<String, String> params = new HashMap<>();
-        params.put(URLParameters.FNAME, fname);
-        params.put(URLParameters.LNAME, lname);
-        params.put(URLParameters.EMAIL, email);
-        params.put(URLParameters.PASSWORD, password);
+        params.put(URL.URLParameters.FNAME, fname);
+        params.put(URL.URLParameters.LNAME, lname);
+        params.put(URL.URLParameters.EMAIL, email);
+        params.put(URL.URLParameters.PASSWORD, password);
 
         Operations.getInstance(context).register(params, new OnLoadFinished() {
             @Override

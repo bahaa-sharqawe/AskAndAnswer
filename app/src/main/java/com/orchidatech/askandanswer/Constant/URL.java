@@ -14,4 +14,13 @@ public class URL {
     public static final String GET_POSTS = "";
     public static final String GET_CATEGORIES = "";
     public static final String REGISTER = "";
+
+    public class URLParameters {
+        public static final String USERNAME = "username";
+        public static final String FNAME = "fname";
+        public static final String LNAME = "lname";
+        public static final String PASSWORD = "password";
+        public static final String EMAIL = "email";
+    }
+
 }

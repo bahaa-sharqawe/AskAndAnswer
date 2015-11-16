@@ -6,7 +6,6 @@ import android.net.Uri;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.orchidatech.askandanswer.Constant.URL;
-import com.orchidatech.askandanswer.Constant.URLParameters;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 
@@ -34,12 +33,12 @@ public class Operations {
     }
 
     public void register(Map<String, String> params, final OnLoadFinished listener) {
-        String url = URL.REGISTER + "?" + URLParameters.FNAME + "=" + encode(params.get(URLParameters.FNAME)) + "&" + URLParameters.LNAME + "=" + encode(params.get(URLParameters.LNAME)) + "&" + URLParameters.EMAIL + "=" + encode(params.get(URLParameters.EMAIL)) + "&" + URLParameters.PASSWORD + "=" + encode(params.get(URLParameters.PASSWORD));
+        String url = URL.REGISTER + "?" + URL.URLParameters.FNAME + "=" + encode(params.get(URL.URLParameters.FNAME)) + "&" + URL.URLParameters.LNAME + "=" + encode(params.get(URL.URLParameters.LNAME)) + "&" + URL.URLParameters.EMAIL + "=" + encode(params.get(URL.URLParameters.EMAIL)) + "&" + URL.URLParameters.PASSWORD + "=" + encode(params.get(URL.URLParameters.PASSWORD));
         sendRequest(url, listener);
     }
 
     public void login(Map<String, String> params, final OnLoadFinished onLoadFinished) {
-        String url = URL.LOGIN + "?" + URLParameters.USERNAME + "="+ encode(params.get(URLParameters.USERNAME)) + "&" + URLParameters.PASSWORD + "=" + encode(params.get(URLParameters.PASSWORD));
+        String url = URL.LOGIN + "?" + URL.URLParameters.USERNAME + "="+ encode(params.get(URL.URLParameters.USERNAME)) + "&" + URL.URLParameters.PASSWORD + "=" + encode(params.get(URL.URLParameters.PASSWORD));
         sendRequest(url, onLoadFinished);
     }
     public void getPosts(final OnLoadFinished listener){
