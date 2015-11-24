@@ -33,7 +33,7 @@ import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.MyPostsRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
@@ -45,10 +45,10 @@ import java.util.ArrayList;
 /**
  * Created by Bahaa on 7/11/2015.
  */
-public class MyPosts extends Fragment {
+public class Timeline extends Fragment {
     RecyclerView rv_posts;
-    MyPostsRecViewAdapter adapter;
-    ArrayList<Posts> myPosts;
+    TimelineRecViewAdapter adapter;
+    ArrayList<Posts> allPosts;
     FloatingActionButton fab_add_post;
     RelativeLayout rl_num_notifications;
     RelativeLayout rl_parent;
@@ -67,7 +67,7 @@ public class MyPosts extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_posts, null, false);
+        return inflater.inflate(R.layout.fragment_timeline, null, false);
     }
 
     @Override
@@ -100,15 +100,15 @@ public class MyPosts extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
-//        myPosts = new ArrayListcom.orchidatech.askandanswer.Fragment.MyPosts.myPosts<>(PostsDAO.getUserPosts(1)); // 1 is current user id
-        myPosts = new ArrayList<>();
-        adapter = new MyPostsRecViewAdapter(getActivity(), myPosts, rl_parent, new OnPostEventListener() {
+//        myPosts = new ArrayListcom.orchidatech.askandanswer.Fragment.Timeline.myPosts<>(PostsDAO.getUserPosts(1)); // 1 is current user id
+        allPosts = new ArrayList<>();
+        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
-                Intent intent = new Intent(getActivity(), ViewPost.class);
-                intent.putExtra(ViewPost.POST_ID, pid);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), ViewPost.class);
+//                intent.putExtra(ViewPost.POST_ID, pid);
+//                startActivity(intent);
 
             }
 
@@ -149,10 +149,10 @@ public class MyPosts extends Fragment {
 
             @Override
             public void onCategoryClick(long cid, long uid) {
-            Intent intent = new Intent(getActivity(), CategoryPosts.class);
-                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
-                intent.putExtra(CategoryPosts.USER_ID, uid);
-                startActivity(intent);
+//            Intent intent = new Intent(getActivity(), CategoryPosts.class);
+//                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
+//                intent.putExtra(CategoryPosts.USER_ID, uid);
+//                startActivity(intent);
             }
         }, new OnLastListReachListener() {
             @Override
@@ -173,7 +173,7 @@ public class MyPosts extends Fragment {
                 loadNewPosts();
             }
         });
-        userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
+//        userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         loadNewPosts();
@@ -181,7 +181,7 @@ public class MyPosts extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount(), last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount(), last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
                 if(pb_loading_main.getVisibility() == View.VISIBLE){
@@ -196,13 +196,13 @@ public class MyPosts extends Fragment {
                 if(pb_loading_main.getVisibility() == View.VISIBLE){
                     pb_loading_main.setVisibility(View.GONE);
                     if(errorCode != 402){//ALL ERRORS EXCEPT NO_POSTS
-                        if(userPosts.size()>0)
-                            getFromLocal();
-                        else {
+//                        if(userPosts.size()>0)
+//                            getFromLocal();
+//                        else {
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
-                        }
+                      //  }
                     }else{
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(false);

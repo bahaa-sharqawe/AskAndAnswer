@@ -33,7 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Bahaa on 17/11/2015.
  */
-public class MyPostsRecViewAdapter extends RecyclerView.Adapter<MyPostsRecViewAdapter.PostViewHolder> {
+public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecViewAdapter.PostViewHolder> {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final View parent;
@@ -47,8 +47,8 @@ public class MyPostsRecViewAdapter extends RecyclerView.Adapter<MyPostsRecViewAd
     OnLastListReachListener lastListReachListener;
 
 
-    public MyPostsRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent,
-                                 OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
+    public TimelineRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent,
+                                  OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;

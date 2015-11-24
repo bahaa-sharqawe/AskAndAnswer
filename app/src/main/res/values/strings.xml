@@ -76,6 +76,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>ASP</item>
     </string-array>
     <string-array name="drawerItems">
+        <item>Timeline</item>
         <item>My Asks</item>
         <item>My Answers</item>
         <item>Favorite</item>
@@ -87,6 +88,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>About</item>
     </string-array>
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_question_nav</item>
         <item>@drawable/ic_question_nav</item>
         <item>@drawable/ic_answer_nav</item>
         <item>@drawable/ic_favorite_nav</item>

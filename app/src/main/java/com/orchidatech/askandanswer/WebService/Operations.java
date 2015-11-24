@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ import java.util.UUID;
  * Created by Bahaa on 13/11/2015.
  */
 public class Operations {
-//0 get  1 post
+    //0 get  1 post
     private static Operations instance;
     private Context context;
 
@@ -41,12 +40,10 @@ public class Operations {
     }
 
     public void register(Map<String, String> params, final OnLoadFinished listener) {
-//        String url = URL.REGISTER + "?" + URL.URLParameters.FNAME + "=" + encode(params.get(URL.URLParameters.FNAME)) + "&" + URL.URLParameters.LNAME + "=" + encode(params.get(URL.URLParameters.LNAME)) + "&" + URL.URLParameters.EMAIL + "=" + encode(params.get(URL.URLParameters.EMAIL)) + "&" + URL.URLParameters.PASSWORD + "=" + encode(params.get(URL.URLParameters.PASSWORD));
         sendRequest(Request.Method.POST, URL.REGISTER, params, listener);
     }
 
     public void login(Map<String, String> params, final OnLoadFinished listener) {
-//        String url = URL.LOGIN + "?" + URL.URLParameters.USERNAME + "="+ encode(params.get(URL.URLParameters.USERNAME)) + "&" + URL.URLParameters.PASSWORD + "=" + encode(params.get(URL.URLParameters.PASSWORD));
         sendRequest(Request.Method.POST, URL.LOGIN, params, listener);
     }
 
@@ -85,7 +82,7 @@ public class Operations {
         request.addParameter(URL.URLParameters.CATEGORIES_ID, category_id + "");
         request.addParameter(URL.URLParameters.TEXT, text);
         request.addParameter(URL.URLParameters.DATE, date + "");
-        request.addParameter(URL.URLParameters.IS_HIDDEN, is_hidden+"");
+        request.addParameter(URL.URLParameters.IS_HIDDEN, is_hidden + "");
         request.setMethod("POST");
         try {
             request.startUpload();
@@ -98,14 +95,14 @@ public class Operations {
         UploadReceiver uploadReceiver = new UploadReceiver(context, listener);
         uploadReceiver.register(context);
         MultipartUploadRequest request = new MultipartUploadRequest(context, UUID.randomUUID().toString(), URL.EDIT_POST);
-       if(picturePath != null)
-         request.addFileToUpload(picturePath, URL.URLParameters.IMAGE, new File(picturePath).getName(), null);
+        if (picturePath != null)
+            request.addFileToUpload(picturePath, URL.URLParameters.IMAGE, new File(picturePath).getName(), null);
         request.addParameter(URL.URLParameters.POST_ID, post_id + "");
         request.addParameter(URL.URLParameters.USER_ID, user_id + "");
         request.addParameter(URL.URLParameters.CATEGORIES_ID, category_id + "");
         request.addParameter(URL.URLParameters.TEXT, text);
         request.addParameter(URL.URLParameters.DATE, date + "");
-        request.addParameter(URL.URLParameters.IS_HIDDEN, isHidden+"");
+        request.addParameter(URL.URLParameters.IS_HIDDEN, isHidden + "");
         request.setMethod("POST");
         try {
             request.startUpload();
@@ -118,13 +115,13 @@ public class Operations {
     public void updateProfile(long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, OnUploadImageListener listener) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < selectedCategories.size(); i++)
-            sb.append(selectedCategories.get(i).getServerID()).append(i!=selectedCategories.size()-1?",":"");
+            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
         UploadReceiver uploadReceiver = new UploadReceiver(context, listener);
         uploadReceiver.register(context);
         MultipartUploadRequest request = new MultipartUploadRequest(context, UUID.randomUUID().toString(), URL.UPDATE_PROFILE);
-        if(picturePath != null)
+        if (picturePath != null)
             request.addFileToUpload(picturePath, URL.URLParameters.IMAGE, new File(picturePath).getName(), null);
-        request.addParameter(URL.URLParameters.ID, id+"");
+        request.addParameter(URL.URLParameters.ID, id + "");
         request.addParameter(URL.URLParameters.FNAME, fname);
         request.addParameter(URL.URLParameters.LNAME, lname);
         request.addParameter(URL.URLParameters.PASSWORD, password);
@@ -145,6 +142,7 @@ public class Operations {
     public void removePostFavorite(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.REMOVE_POST_FAVORITE, params, listener);
     }
+
     private void sendRequest(int method, final String url, Map<String, String> params, final OnLoadFinished listener) {
         OperationsManager.getInstance(context).sendRequest(method, url, params, new Response.Listener<JSONObject>() {
                     @Override

@@ -20,8 +20,9 @@ import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.Fragment.AboutUs;
 import com.orchidatech.askandanswer.Fragment.MyAnswers;
+import com.orchidatech.askandanswer.Fragment.MyAsks;
 import com.orchidatech.askandanswer.Fragment.MyFavorites;
-import com.orchidatech.askandanswer.Fragment.MyPosts;
+import com.orchidatech.askandanswer.Fragment.Timeline;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.Fragment.SearchAndFavorite;
 import com.orchidatech.askandanswer.Fragment.Settings;
@@ -128,46 +129,50 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         Fragment fragment = null;
         switch (position) {
             case 0:
-                //my posts
-                fragment = new MyPosts();
+                //timeline
+                fragment = new Timeline();
+                break;
+            case 1:
+                //my asks
+                fragment = new MyAsks();
                 break;
 
-            case 1:
+            case 2:
                 //my answers
                 fragment = new MyAnswers();
                 break;
 
-            case 2:
+            case 3:
                 //my favorite
                 fragment = new MyFavorites();
                 break;
 
-            case 3:
+            case 4:
                 //profile
                 fragment = new Profile();
                 Bundle args = new Bundle();
                 args.putLong(Profile.USER_ID_KEY, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                 fragment.setArguments(args);
                 break;
-            case 4:
+            case 5:
                 //search
                 fragment = new SearchAndFavorite();
                 break;
-            case 5:
+            case 6:
                 //logout
                 Intent intent = new Intent(this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
-            case 6:
+            case 7:
                 //settings
                 fragment = new Settings();
                 break;
-            case 7:
+            case 8:
                 //terms
                 fragment = new TermsFragment();
                 break;
-            case 8:
+            case 9:
                 //about
                 fragment = new AboutUs();
                 break;

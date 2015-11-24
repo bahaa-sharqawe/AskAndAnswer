@@ -23,6 +23,7 @@ import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
+import com.orchidatech.askandanswer.View.Interface.OnMyAsksFetched;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
@@ -111,7 +112,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.IMAGE, image);
         params.put(URL.URLParameters.ACTIVE, active + "");
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
-        params.put(URL.URLParameters.MOBILE, mobile);
+//        params.put(URL.URLParameters.MOBILE, mobile);
         params.put(URL.URLParameters.IS_PUBLIC, is_public + "");
         params.put(URL.URLParameters.PASSWORD, encode(password));
 
@@ -235,7 +236,7 @@ public class WebServiceFunctions {
 
     public static void getUserInfo(final Context context, long user_id, final OnUserInfoFetched listener) {
         String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id;
-        Operations.getInstance(context).getUserInfo(new OnLoadFinished(){
+        Operations.getInstance(context).getUserInfo(new OnLoadFinished() {
 
             @Override
             public void onSuccess(JSONObject o) {
@@ -311,8 +312,52 @@ public class WebServiceFunctions {
             }
         }, url);
     }
+
     public static void getUserPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
+                "&" + URL.URLParameters.LIMIT + "=" + limit +
+                "&" + URL.URLParameters.OFFSET + "=" + offset +
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Operations.getInstance(context).getUserPosts(new OnLoadFinished() {
+            @Override
+            public void onSuccess(JSONObject o) {
+                try {
+                    int status_code = o.getInt("statusCode");
+                    int status = o.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = o.getJSONArray("data");
+                        ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject post = data.getJSONObject(i);
+                            long id = post.getLong("id");
+                            String text = post.getString("text");
+                            String image = post.getString("image");
+                            int is_hidden = post.getInt("is_hidden");
+                            long category_id = post.getLong("category_id");
+                            int comments_no = post.getInt("comment_no");
+                            long created_at = post.getLong("created_at");
+                            Posts postItem = new Posts(id, text, image, created_at, uid, category_id, is_hidden, comments_no);
+                            PostsDAO.addPost(postItem);
+                            fetchedPosts.add(postItem);
+                        }
+                        long last_id = o.getLong("last_id");
+                        listener.onSuccess(fetchedPosts, last_id);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        }, url);
+    }
+
+    public static void geTimeLine(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+        String url = URL.GET_TIME_LINE + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
@@ -555,8 +600,9 @@ public class WebServiceFunctions {
                                     user_categories.add(new User_Categories(user_category_id, uid, category_id));
                                 }
                                 ArrayList<User_Categories> allCurrentStored = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
+                                boolean deleting;
                                 for(User_Categories currentUserCategory : allCurrentStored){
-                                    boolean deleting = true;
+                                    deleting = false;
                                     for(int i = 0; i < user_categories.size(); i++){
                                         if(currentUserCategory.getCategoryID() == user_categories.get(i).getCategoryID()){
                                             deleting = true;
@@ -565,7 +611,7 @@ public class WebServiceFunctions {
                                         if(deleting){
                                             User_CategoriesDAO.deleteUserCategory(currentUserCategory.getServerID(), uid);
                                             PostsDAO.deletePostsInCategory(uid, currentUserCategory.getCategoryID());
-                                      ////find solution to remove favorite posts also, it is solvd im getAllUserPostFavorite method
+                                      ////find solution to remove favorite posts also, it is solved in getAllUserPostFavorite method
                                         }
 
                                     }
