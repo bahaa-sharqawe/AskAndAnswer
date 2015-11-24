@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/ll_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#fff"
-    tools:context="com.orchidatech.askandanswer.Activity.EditProfile">
+    tools:context="com.orchidatech.askandanswer.Activity.UpdateProfile">
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +71,7 @@
                    android:src="@drawable/ic_camera"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
+                   android:id="@+id/iv_camera"
                    android:layout_alignParentRight="true"
                    android:layout_alignParentBottom="true"
                    android:layout_marginBottom="25dp"
@@ -87,10 +89,23 @@
            <EditText
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:id="@+id/ed_name"
+               android:id="@+id/ed_fname"
                android:drawableLeft="@drawable/ic_name_flat"
                android:drawablePadding="10dp"
-               android:hint="@string/ed_fullName_hint"
+               android:hint="@string/ed_fname_hint"
+               android:textSize="16sp"
+               android:textColor="#959595"
+               android:paddingBottom="23dp"
+               android:paddingLeft="0dp"
+               android:inputType="text"/>
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/ed_lname"
+               android:layout_below="@+id/ed_fname"
+               android:drawableLeft="@drawable/ic_name_flat"
+               android:drawablePadding="10dp"
+               android:hint="@string/ed_lname_hint"
                android:textSize="16sp"
                android:textColor="#959595"
                android:paddingBottom="23dp"
@@ -100,7 +115,7 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/ed_email"
-               android:layout_below="@+id/ed_name"
+               android:layout_below="@+id/ed_lname"
                android:drawableLeft="@drawable/ic_email_flat"
                android:drawablePadding="10dp"
                android:hint="@string/ed_email_hint"
@@ -108,7 +123,8 @@
                android:textColor="#959595"
                android:paddingBottom="23dp"
                android:paddingLeft="0dp"
-               android:inputType="textEmailAddress"/>
+               android:inputType="textEmailAddress"
+               android:enabled="false"/>
            <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"

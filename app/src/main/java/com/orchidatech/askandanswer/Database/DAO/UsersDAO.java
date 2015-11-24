@@ -14,6 +14,10 @@ import java.util.List;
 public class UsersDAO {
 
     public static void addUser(Users newUser){
+        if(isExist(newUser.getServerID())){
+            updateUser(newUser);
+            return;
+        }
         Users user = new Users();
         user.fname = newUser.getFname();
         user.lname = newUser.getLname();
@@ -63,4 +67,9 @@ public class UsersDAO {
     public static void deleteAllUser(){
         new Delete().from(Users.class).execute();
     }
+
+    private static boolean isExist(long serverID) {
+        return getUser(serverID) != null ;
+    }
+
 }

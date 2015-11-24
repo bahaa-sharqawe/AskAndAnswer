@@ -32,8 +32,7 @@ public class Introduction extends Fragment {
         tv_intro = (TextView) getActivity().findViewById(R.id.tv_intro);
         tv_intro_content = (TextView) getActivity().findViewById(R.id.tv_intro_content);
         mFontManager = FontManager.getInstance(getActivity().getAssets());
-        tv_intro.setTypeface(mFontManager.getFont("roboto_light"));
-        tv_intro_content.setTypeface(mFontManager.getFont("roboto_light"));
-
+        tv_intro.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+        tv_intro_content.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
     }
 }

@@ -11,15 +11,15 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.SimpleFacebookConfiguration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SplashScreen extends Activity {
     private final String TAG = SplashScreen.class.getSimpleName();
@@ -29,11 +29,11 @@ public class SplashScreen extends Activity {
     private Handler mHandler;
     private Intent mIntent;
     ImageView iv_logo;
-    SharedPreferences pref;
-    SharedPreferences.Editor prefEditor;
+    public static SharedPreferences pref;
+    public static SharedPreferences.Editor prefEditor;
     boolean mFirstTime;
-    boolean mLogged;
-    boolean mCategoriesSelected;
+    long mId;
+    String mPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,23 +45,26 @@ public class SplashScreen extends Activity {
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, MODE_PRIVATE);
         prefEditor = pref.edit();
         mFirstTime = pref.getBoolean(GNLConstants.SharedPreference.FIRST_TIME_KEY, true);
-        mLogged = pref.getBoolean(GNLConstants.SharedPreference.IS_LOGGED_KEY, false);
-        mCategoriesSelected = pref.getBoolean(GNLConstants.SharedPreference.IS_USER_SELECTED_CATEGORIES_KEY, false);
+        mId = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);//user id if is logged
+        mPassword = pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null); // password for current user
 
-        if (mFirstTime) {
-            prefEditor.putBoolean(GNLConstants.SharedPreference.FIRST_TIME_KEY, false).commit();
-        } else {
-            fetchPostsFromServer();//to sync posts with server
-        }
-        updateCategoriesFromServer();//to sync categories with server
+//        if (mFirstTime) {
+//            prefEditor.putBoolean(GNLConstants.SharedPreference.FIRST_TIME_KEY, false).commit();
+//        } else {
+//            fetchPostsFromServer();//to sync posts with server
+//        }
+//        updateCategoriesFromServer();//to sync categories with server
 
-        if (mLogged) {
-            if (mCategoriesSelected)
+        if (mId != -1) {//Someone is logged
+            List<User_Categories> categories = User_CategoriesDAO.getAllUserCategories(mId);
+            if (categories != null && categories.size() > 0) {//this means that current user selected categories previously
+//                fetchPostsFromServer();//to sync posts with server
                 mIntent = new Intent(this, MainScreen.class);
+            }
             else
                 mIntent = new Intent(this, TermsActivity.class);
         } else {
-            mIntent = new Intent(this, LoginScreen.class);
+            mIntent = new Intent(this, Login.class);
         }
 
         mHandler = new Handler();
@@ -89,7 +92,7 @@ public class SplashScreen extends Activity {
     }
 
     private void fetchPostsFromServer() {
-        WebServiceFunctions.getPosts(this);
+//        WebServiceFunctions.getPosts(this);
     }
 
     private void resizeLogo() {

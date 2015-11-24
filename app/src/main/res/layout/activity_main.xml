@@ -71,7 +71,7 @@
 
             </RelativeLayout>
             </RelativeLayout>
-                        <com.rengwuxian.materialedittext.MaterialEditText
+            <com.rengwuxian.materialedittext.MaterialEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Search"
@@ -100,5 +100,6 @@
             android:background="#f8f8f8"
             android:scrollbars="vertical">
         </android.support.v7.widget.RecyclerView>
+
 
 </android.support.v4.widget.DrawerLayout>

@@ -3,7 +3,6 @@ package com.orchidatech.askandanswer.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -15,21 +14,28 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.User_Categories;
+import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CategoriesAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
+import com.orchidatech.askandanswer.View.Interface.OnSendCategoriesListener;
+import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SelectCategoryScreen extends AppCompatActivity {
-    private String TAG = SelectCategoryScreen.class.getSimpleName();
-    private final int MIN_CATEGORY = 1;
-    private final int MAX_CATEGORY = 20;
+public class SelectCategory extends AppCompatActivity {
+    private String TAG = SelectCategory.class.getSimpleName();
+    public static  final int MIN_CATEGORY = 1;
+    public static final int MAX_CATEGORY = 20;
 
     RelativeLayout rl_parent;
     ListView lv_categories;
@@ -39,6 +45,7 @@ public class SelectCategoryScreen extends AppCompatActivity {
     ArrayList<Category> original_categories;
     ArrayList<String> titles;
     EditText ed_search;
+    long uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,37 +71,32 @@ public class SelectCategoryScreen extends AppCompatActivity {
     private void loadCategories() {
         pv_load.startAnimation();
         lv_categories.setVisibility(View.GONE);
-        new Handler().postDelayed(new Runnable() {
+        WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
-            public void run() {
+            public void onSuccess(ArrayList<Category> newCategories) {
                 pv_load.setVisibility(View.GONE);
                 lv_categories.setVisibility(View.VISIBLE);
-                adapter.notifyDataSetChanged();
-            }
-        }, 1000);
-        for (int i = 0; i < titles.size(); i++) {
-            Category category = new Category(i + 1, titles.get(i), titles.get(i), i == 0 ? true : false);
-            categories.add(category);
-            original_categories.add(category);
-
-        }
-       /* WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
-            @Override
-            public void onSuccess(ArrayList<Categories> newCategories) {
                 categories.addAll(newCategories);
                 original_categories.addAll(newCategories);
-                pv_load.setVisibility(View.GONE);
-                lv_categories.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFail(String cause) {
-                pv_load.setVisibility(View.GONE);
-                lv_categories.setVisibility(View.VISIBLE);
-                AppSnackBar.show(rl_parent, cause, Color.RED, Color.WHITE);
+                fetchFromLocal(cause);
             }
-        });*/
+        });
+    }
+
+    private void fetchFromLocal(String error) {
+        categories.addAll(CategoriesDAO.getAllCategories());
+        original_categories.addAll(categories);
+        pv_load.setVisibility(View.GONE);
+        lv_categories.setVisibility(View.VISIBLE);
+        if(categories.size() > 0)
+            adapter.notifyDataSetChanged();
+        else
+            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
     }
 
     private void initializeFields() {
@@ -133,12 +135,13 @@ public class SelectCategoryScreen extends AppCompatActivity {
         original_categories = new ArrayList<>();
         adapter = new CategoriesAdapter(this, categories);
         lv_categories.setAdapter(adapter);
+        uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.categories));
-        toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
+        toolbar.setTitleTextColor(this.getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_search);
 
         setSupportActionBar(toolbar);
@@ -157,8 +160,7 @@ public class SelectCategoryScreen extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.next) {
             if (validSelectedCount()) {
-                storeSelectedCategories();
-                startActivity(new Intent(this, MainScreen.class));
+                sendSelectedCategories();
             }
             return true;
         } else if (id == android.R.id.home) {//search icon
@@ -179,14 +181,36 @@ public class SelectCategoryScreen extends AppCompatActivity {
         return false;
     }
 
-    private void storeSelectedCategories() {
+    private void sendSelectedCategories() {
+        final ArrayList<Category> selectedCats = new ArrayList<>();
         for (Category category : original_categories) {
-            if (category.isChecked()) {
-                //send selected categories to server
-                Toast.makeText(getApplicationContext(), category.getName(), Toast.LENGTH_LONG).show();
-            }
+            if (category.isChecked())
+                selectedCats.add(category);
         }
-    }
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
+        loadingDialog.setArguments(args);
+        loadingDialog.show(getFragmentManager(), "sending");
+        //send selected categories to server
+                WebServiceFunctions.sendUserCategories(this, uid, selectedCats, new OnSendCategoriesListener() {
+
+                    @Override
+                    public void onSendingSuccess() {
+                    if(loadingDialog.isVisible())
+                        loadingDialog.dismiss();
+                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
+                    }
+
+                    @Override
+                    public void onSendingFail(String error) {
+                        if(loadingDialog.isVisible())
+                            loadingDialog.dismiss();
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+
+                    }
+                });
+            }
 
     private boolean validSelectedCount() {
         int numSelected = 0;

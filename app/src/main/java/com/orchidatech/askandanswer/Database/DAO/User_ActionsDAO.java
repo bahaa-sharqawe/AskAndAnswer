@@ -10,8 +10,12 @@ import java.util.List;
  */
 public class User_ActionsDAO {
 
-    public static void addUserAction(User_Actions newUserAction){
-        User_Actions user_actions  = new User_Actions();
+    public static void addUserAction(User_Actions newUserAction) {
+        if(isExist(newUserAction.getServerID())){
+            updateUserAction(newUserAction);
+            return;
+        }
+        User_Actions user_actions = new User_Actions();
         user_actions.actionType = newUserAction.getActionType();
         user_actions.commentID = newUserAction.getCommentID();
         user_actions.date = newUserAction.getDate();
@@ -20,28 +24,38 @@ public class User_ActionsDAO {
         user_actions.save();
     }
 
-    public static User_Actions getUserAction(long userServerId, long commentServerId){
+    public static User_Actions getUserAction(long userServerId, long commentServerId) {
         return new Select().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_USER_ID + " = ? and " +
                 User_Actions.FIELDS.COLUMN_COMMENT_ID + " = ?", userServerId, commentServerId).executeSingle();
     }
 
-    public static void updateUserAction(User_Actions userAction){
-        User_Actions existUserAction = getUserAction(userAction.getUserID(), userAction.getCommentID());
+    private static User_Actions getUserAction(long serverID) {
+        return new Select().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_SERVER_ID + " = ?", serverID).executeSingle();
+    }
 
+    public static void updateUserAction(User_Actions userAction) {
+        User_Actions existUserAction = getUserAction(userAction.getUserID(), userAction.getCommentID());
+        existUserAction.userID = userAction.getUserID();
         existUserAction.date = userAction.getDate();
         existUserAction.actionType = userAction.getActionType();
+        existUserAction.commentID = userAction.getCommentID();
         existUserAction.save();
     }
 
-    public static List<User_Actions> getAllUserActions(long userServerId){
+    public static List<User_Actions> getAllUserActions(long userServerId) {
         return new Select().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_USER_ID + " = ?", userServerId)
                 .orderBy(User_Actions.FIELDS.COLUMN_SERVER_ID).execute();
     }
 
-    public static List<User_Actions> getAllUserActions(long userServerId, int userActionType){
+    public static List<User_Actions> getAllUserActions(long userServerId, int userActionType) {
         return new Select().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_USER_ID + " = ? and " +
                 User_Actions.FIELDS.ACTION_TYPE + " = ?", userServerId, userActionType)
                 .orderBy(User_Actions.FIELDS.COLUMN_SERVER_ID).execute();
     }
+
+    private static boolean isExist(long serverID) {
+        return getUserAction(serverID) != null ;
+    }
+
 
 }

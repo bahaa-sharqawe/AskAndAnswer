@@ -1,21 +1,12 @@
 package com.orchidatech.askandanswer.Application;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.util.Base64;
-import android.util.Log;
-
 import com.activeandroid.ActiveAndroid;
-import com.activeandroid.Configuration;
+import com.alexbbb.uploadservice.UploadService;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
-
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 
 /**
@@ -24,11 +15,13 @@ import java.security.NoSuchAlgorithmException;
 public class MyApplication extends com.activeandroid.app.Application {
     private static final String APP_ID = "446821295503912";
     private static final String APP_NAMESPACE = "orchaskandanswer";
-    private static final Permission[] permissions = new Permission[] {
+    private static final Permission[] permissions = new Permission[]{
             Permission.USER_PHOTOS,
             Permission.EMAIL,
             Permission.PUBLISH_ACTION
-    };;
+    };
+    ;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,6 +42,7 @@ public class MyApplication extends com.activeandroid.app.Application {
                 .setPermissions(permissions)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
+        UploadService.NAMESPACE = "com.orchidatech.askandanswer";
     }
 //
 //

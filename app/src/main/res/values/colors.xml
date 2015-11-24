@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#249885</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorMenuItem">#FFF</color>
+    <color name="white">#FFF</color>
 </resources>

@@ -1,61 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_notify_setting_row"
-        android:paddingTop="20dp"
-        android:paddingBottom="15dp"
-        android:background="#f8f8f8">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/iv_notification"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="18dp"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/ic_notification_setting"/>
+         android:orientation="vertical">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_toRightOf="@+id/iv_notification">
-    <TextView
+    android:id="@+id/rl_notify_setting_row"
+    android:paddingTop="20dp"
+    android:paddingBottom="15dp"
+    android:background="#f8f8f8">
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/notification_setting_title"
-        android:textSize="15sp"
-        android:textColor="#333333"
-        android:layout_marginBottom="7dp"
-        android:id="@+id/tv_notify_setting_title" />
-    <TextView
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_notify_setting_desc"
-        android:text="@string/notification_setting_desc"
-        android:textSize="12sp"
-        android:textColor="#878686"
-        android:layout_below="@+id/tv_notify_setting_title"
-        android:layout_alignLeft="@+id/tv_notify_setting_title"/>
-
-    <View android:layout_height="1dp"
+        android:id="@+id/iv_notification"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/ic_notification_setting"/>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#bbbbbb"
-        android:layout_below="@+id/tv_notify_setting_desc"
-        android:layout_marginTop="10dp"
-        android:layout_alignLeft="@+id/tv_notify_setting_title"
-        />
-
-</RelativeLayout>
-
-        <Switch
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_notification">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:id="@+id/sw_notification"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="20dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/notification_setting_title"
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:layout_marginBottom="7dp"
+            android:id="@+id/tv_notify_setting_title" />
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_notify_setting_desc"
+            android:text="@string/notification_setting_desc"
+            android:textSize="12sp"
+            android:textColor="#878686"
+            android:layout_below="@+id/tv_notify_setting_title"
+            android:layout_alignLeft="@+id/tv_notify_setting_title"/>
+
+        <View android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#bbbbbb"
+            android:layout_below="@+id/tv_notify_setting_desc"
+            android:layout_marginTop="10dp"
+            android:layout_alignLeft="@+id/tv_notify_setting_title"
             />
+
+    </RelativeLayout>
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/sw_notification"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="20dp"
+        />
+</RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_publicl_profile_row"
+    android:paddingTop="20dp"
+    android:paddingBottom="15dp"
+    android:background="#f8f8f8">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_show_profile"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/ic_name_flat"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_show_profile">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/profile_setting_title"
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:layout_marginBottom="7dp"
+            android:id="@+id/tv_show_profile_setting_title" />
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_show_profile_setting_desc"
+            android:text="@string/profile_setting_desc"
+            android:textSize="12sp"
+            android:textColor="#878686"
+            android:layout_below="@+id/tv_show_profile_setting_title"
+            android:layout_alignLeft="@+id/tv_show_profile_setting_title"/>
+
+        <View android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#bbbbbb"
+            android:layout_below="@+id/tv_show_profile_setting_desc"
+            android:layout_marginTop="10dp"
+            android:layout_alignLeft="@+id/tv_show_profile_setting_title"
+            />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/sw_show_profile"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="20dp"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_checkbox"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_checkbox"
+            android:visibility="visible"
+            />
+        <ImageView
+            android:id="@+id/iv_checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_checked"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
+
+</LinearLayout>

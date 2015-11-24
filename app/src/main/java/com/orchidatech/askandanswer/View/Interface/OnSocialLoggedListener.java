@@ -1,4 +1,4 @@
-package com.orchidatech.askandanswer.View.Adapter;
+package com.orchidatech.askandanswer.View.Interface;
 
 import com.orchidatech.askandanswer.Entity.SocialUser;
 

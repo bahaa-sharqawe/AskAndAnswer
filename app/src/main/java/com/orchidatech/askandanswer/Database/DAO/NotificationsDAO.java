@@ -12,6 +12,10 @@ import java.util.List;
 public class NotificationsDAO {
 
     public static void addNotification(Notifications newNotification){
+        if(isExist(newNotification.getServerID())){
+            updateNotification(newNotification);
+            return;
+        }
         Notifications notification = new Notifications();
         notification.date = newNotification.getDate();
         notification.isDone = newNotification.getIsDone();
@@ -47,4 +51,9 @@ public class NotificationsDAO {
     public static void deleteAllNotifications(){
         new Delete().from(Notifications.class).execute();
     }
+
+    private static boolean isExist(long serverID) {
+        return getNotification(serverID) != null ;
+    }
+
 }

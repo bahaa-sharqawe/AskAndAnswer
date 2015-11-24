@@ -32,6 +32,8 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="accept">ACCEPT</string>
     <string name="notification_setting_title">Notifications and Sounds</string>
     <string name="notification_setting_desc">Notify me about updates to Questions and Answers</string>
+    <string name="profile_setting_title">Profile</string>
+    <string name="profile_setting_desc">Other users can see my profile</string>
     <string name="ed_fullName_hint">Full Name</string>
     <string name="categories">Categories</string>
     <string name="category">Category</string>
@@ -46,6 +48,23 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="tv_share">Share</string>
     <string name="tv_favorite">Favorite</string>
     <string name="next">NEXT</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="search_questions">Search in Questions</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="add_post_str">Add Post</string>
+    <string name="choose_valid_image">please choose valid image</string>
+    <string name="current_password">Current Password</string>
+    <string name="facebook_app_id">446821295503912</string>
+    <string name="android">Android</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="loading">Loading...</string>
+    <string name="logging">Logging in...</string>
+    <string name="registering">Registering...</string>
+    <string name="sending">Sending data...</string>
+    <string name="retry">Press to Retry</string>
+    <string name="no_posts_found">No Posts Found...</string>
+    <string name="saving">Saving...</string>
+
     <string-array name="categories">
         <item>Programming</item>
         <item>Writing</item>
@@ -57,6 +76,9 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>ASP</item>
     </string-array>
     <string-array name="drawerItems">
+        <item>My Asks</item>
+        <item>My Answers</item>
+        <item>Favorite</item>
         <item>Profile</item>
         <item>Search</item>
         <item>Logout</item>
@@ -65,6 +87,9 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>About</item>
     </string-array>
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_question_nav</item>
+        <item>@drawable/ic_answer_nav</item>
+        <item>@drawable/ic_favorite_nav</item>
         <item>@drawable/ic_name_flat</item>
         <item>@drawable/ic_search_black</item>
         <item>@drawable/ic_logout</item>
@@ -78,6 +103,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_GNL_003">Please, Password must contains letters and numbers, and it must be greater than 8 characters</string>
     <string name="BR_GNL_004">Please, username contains only letters, numbers, ., _, -</string>
     <string name="BR_GNL_005">No more data to load it</string>
+    <string name="BR_GNL_006">An Error Occurred, retry</string>
 
     <string name="BR_LOGIN_001">Please enter your username</string>
     <string name="BR_LOGIN_002">Please enter your password</string>
@@ -93,10 +119,23 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_SIGN_006">Password and repeated password does not match</string>
     <string name="BR_SIGN_007">Please enter your last name</string>
 
+    <string name="BR_EP_001">Please enter your full name</string>
+    <string name="BR_EP_002">Please enter your current password</string>
+    <string name="BR_EP_003">Current password incorrect</string>
+    <string name="BR_EP_004">Please enter your new password</string>
+
+    <string name="BR_AEP_001">Please, your must select photo</string>
+    <string name="BR_AEP_002">Please enter your question</string>
+    <string name="BR_AEP_003">Please, your question must be at maximum 8000 character</string>
+
     <string name="BR_CATS_001">Please select at least one category</string>
     <string name="BR_CATS_002">Oh, you must select at maximum 20 category</string>
 
     <string name="BR_POST_001">This post does not have comments</string>
-
-    <string name="facebook_app_id">446821295503912</string>
+    <string name="saved">Saved Successfully</string>
+    <string name="delteing">Deleting...</string>
+    <string name="deleted">Deleted Successfully</string>
+    <string name="post_is_favorite">This Post is already favorite</string>
+    <string name="post_favorite_added">Post added to favorite</string>
+    <string name="post_favorite_removed">Post removed from favorite</string>
 </resources>

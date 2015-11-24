@@ -1,54 +1,109 @@
 package com.orchidatech.askandanswer.Constant;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-//
-//import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
-//import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
-
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Bahaa on 7/11/2015.
  */
 public class GNLConstants {
 
-    public static final int MAX_ROWS_FETCH = 40;
-
-    public final static class Settings_Keys{
+    public static final int POST_LIMIT = 40;
+    public final static class Settings_Keys {
         public static String NOTIFICATIONS_SOUND = "notificationAndSound";
     }
-    public final static class SharedPreference{
+
+    public final static class SharedPreference {
         public static final String SHARED_PREF_NAME = "AskAndAnswerPref";
         public static final String FIRST_TIME_KEY = "FIRST_TIME";
         public static final String ID_KEY = "ID";
+        public static final String PASSWORD_KEY = "PASSWORD";
         public static final String IS_LOGGED_KEY = "IS_LOGGED";
         public static final String IS_USER_SELECTED_CATEGORIES_KEY = "IS_CATEGORY_SELECTED";
+        public static final String USER_KEY = "USER";
     }
+
     public final static class DateConversion {
         final static String MONTHS[] = new String[]{"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
         public static String getDate(long milliSeconds) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds);
-            String fullDate = MONTHS[calendar.get(Calendar.MONTH)] + " " + buildValueOf(calendar.get(Calendar.DAY_OF_MONTH)) +", " + calendar.get(Calendar.YEAR);
+            String fullDate = MONTHS[calendar.get(Calendar.MONTH)] + " " + buildValueOf(calendar.get(Calendar.DAY_OF_MONTH)) + ", " + calendar.get(Calendar.YEAR);
             return fullDate;
         }
 
         private static String buildValueOf(int value) {
-            if (value >= 10)
-                return String.valueOf(value);
-            else
-                return "0" + String.valueOf(value);
+            return value >= 10 ? String.valueOf(value) : "0" + String.valueOf(value);
         }
     }
 
-    public class Social{
-//        public static final int GOOGLE_PLUS_ID = GooglePlusSocialNetwork.ID;
+    public static String getStatus(int code){
+        String message = "";
+        switch (code){
+            case 100:
+                message = "Connection error";
+                break;
+            case 200:
+                message = "The operation has successfully";
+                break;
+            case 300:
+                message = "The operation failed";
+                break;
+            case 400:
+                message = "Validator fails";
+                break;
+            case 500:
+                message = "Input Error";
+                break;
+            case 301:
+                message = "Couldn't be saved image";
+                break;
+            case 303:
+                message = "User already exist";
+                break;
+            case 305:
+                message = "User does not exist";
+                break;
+            case 307:
+                message = "No search results";
+                break;
+            case 401:
+                message = "Your category doesn't numeric array !";
+                break;
+            case 501:
+                message = "There is no input category !";
+                break;
+            case 404:
+                message = "There is no comment on this post !";
+                break;
+            case 402:
+                message = "There is no post";
+                break;
+            case 406:
+                message = "Can't found Categories for this user";
+                break;
+            case 408:
+                message = "Can't found comment Action";
+                break;
+            case 505:
+                message = "Can't found this comment";
+                break;
+            case 503:
+                message = "Can't found this post with this id";
+                break;
+            case 504:
+                message = "Can't found  User with this id !";
+                break;
+            case 700:
+                message = "Can't add  this search to search history";
+                break;
+            case 506:
+                message = "Can't found  category with this id !";
+                break;
+        }
+        return message;
     }
 
 }

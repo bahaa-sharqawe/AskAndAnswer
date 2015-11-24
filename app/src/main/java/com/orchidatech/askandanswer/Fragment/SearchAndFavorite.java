@@ -1,23 +1,21 @@
 package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.orchidatech.askandanswer.Entity.Post;
+import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -29,8 +27,9 @@ import java.util.ArrayList;
 public class SearchAndFavorite extends Fragment {
     RecyclerView rv_posts;
     SearchRecViewAdapter adapter;
-    ArrayList<Post> posts;
+    ArrayList<Posts> posts;
     MaterialEditText ed_search;
+    LinearLayout ll_parent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class SearchAndFavorite extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 //        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
         ed_search = (MaterialEditText) getActivity().findViewById(R.id.ed_search);
         rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
         rv_posts.setHasFixedSize(true);
@@ -55,12 +55,7 @@ public class SearchAndFavorite extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new SearchRecViewAdapter(getActivity(), posts, 20, new OnLastListReachListener() {
-            @Override
-            public void onReached() {
-
-            }
-        });
+        adapter = new SearchRecViewAdapter(getActivity(), posts, 20, ll_parent);
         rv_posts.setAdapter(adapter);
 
     }
@@ -83,9 +78,9 @@ public class SearchAndFavorite extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.search) {//search icon
+        if (id == R.id.search) {//search icon
             if (ed_search.getVisibility() == View.GONE) {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
                 ed_search.setVisibility(View.VISIBLE);
                 return true;
             } else {

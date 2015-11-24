@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.orchidatech.askandanswer.Entity.Post;
+import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.R;
 
 import java.util.ArrayList;
@@ -15,17 +15,15 @@ import java.util.ArrayList;
 /**
  * Created by Bahaa on 15/11/2015.
  */
-public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecViewAdapter.CommentsViewHolder>  {
+public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecViewAdapter.CommentsViewHolder> {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
 
-    private int tempNum;
-    private ArrayList<Post> posts;
+    private ArrayList<Comments> comments;
     private Context context;
 
-    public CommentsRecViewAdapter(Context context, ArrayList<Post> posts, int tempNum) {
-        this.tempNum = tempNum;
-        this.posts = posts;
+    public CommentsRecViewAdapter(Context context, ArrayList<Comments> comments) {
+        this.comments = comments;
         this.context = context;
     }
 
@@ -33,12 +31,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     @Override
     public CommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = null;
-        //if (viewType == TYPE_HEADER)
-        if(viewType == TYPE_FOOTER) {
+        if (viewType == TYPE_FOOTER) {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
             return new CommentsViewHolder(itemView, TYPE_FOOTER);
-        }else {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item_profile, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
             return new CommentsViewHolder(itemView, TYPE_HEADER);
         }
 
@@ -46,12 +43,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     @Override
     public void onBindViewHolder(CommentsViewHolder holder, int position) {
-        if(holder.viewType == TYPE_FOOTER ){
+        if (holder.viewType == TYPE_FOOTER) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
 //                   listener.onReached();
-                    tempNum += 10;
                     notifyDataSetChanged();
 
                 }
@@ -62,11 +58,12 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     @Override
     public int getItemCount() {
-        return tempNum+1;
+        return comments.size() + 1;
     }
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
         int viewType;
+
         public CommentsViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
@@ -75,7 +72,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     @Override
     public int getItemViewType(int position) {
-        if(position == tempNum)
+        if (position == comments.size())
             return TYPE_FOOTER;
         return TYPE_HEADER;
     }

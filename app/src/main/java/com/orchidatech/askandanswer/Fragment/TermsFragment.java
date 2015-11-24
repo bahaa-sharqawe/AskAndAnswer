@@ -32,7 +32,7 @@ public class TermsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_terms, null , false);
+        return inflater.inflate(R.layout.fragment_terms, null, false);
     }
 
     @Override
@@ -47,17 +47,18 @@ public class TermsFragment extends Fragment {
                 listener.onClick();
             }
         });
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }
 
     private void resizeLogo() {
         Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point screenSize = new Point(); // used to store screen size
         display.getSize(screenSize); // store size in screenSize
-        iv_logo.getLayoutParams().height = (int)(screenSize.y*0.25);
-        iv_logo.getLayoutParams().width = (int)(screenSize.y*0.25);
+        iv_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
+        iv_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
-    public interface OnDrawerIconClickListener{
+
+    public interface OnDrawerIconClickListener {
         public void onClick();
     }
 

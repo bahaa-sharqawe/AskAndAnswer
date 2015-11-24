@@ -12,6 +12,10 @@ import java.util.List;
 public class Search_HistoryDAO {
 
     public static void addSearchHistory(Search_History newSearchHistory){
+        if(isExist(newSearchHistory.getServerID())){
+            updateSearch_History(newSearchHistory);
+            return;
+        }
         Search_History search_history = new Search_History();
         search_history.isDeleted = newSearchHistory.getIsDeleted();
         search_history.serverID = newSearchHistory.getServerID();
@@ -43,6 +47,11 @@ public class Search_HistoryDAO {
         Search_History existSearch_History = getSearchHistory(search_history.getServerID());
         existSearch_History.text = search_history.getText();
         existSearch_History.isDeleted = search_history.getIsDeleted();
+        existSearch_History.userID = search_history.getUserID();
         existSearch_History.save();
+    }
+
+    private static boolean isExist(long serverID) {
+        return getSearchHistory(serverID) != null ;
     }
 }

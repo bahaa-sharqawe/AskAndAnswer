@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rl_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#f8f8f8"
     android:orientation="vertical">
@@ -75,13 +76,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_ask"
+                        android:id="@+id/tv_asks"
                         android:text="@string/tv_ask_count"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="|"
-                        android:layout_toRightOf="@+id/tv_ask"
+                        android:layout_toRightOf="@+id/tv_asks"
                         android:id="@+id/divider"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="15dp"/>
@@ -89,34 +90,67 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/divider"
+                        android:id="@+id/tv_answers"
                         android:text="@string/tv_answer_count"/>
 
                 </RelativeLayout>
 
             </RelativeLayout>
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="12dp"
+    android:layout_below="@+id/rl_header"
+    >
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="12dp"
-        android:layout_below="@+id/rl_header"
         android:id="@+id/rv_posts"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
         />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/rl_error"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/uncolored_logo"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/uncolored_logo"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/tv_your_questions"
+            android:id="@+id/tv_error"
+            android:layout_below="@+id/uncolored_logo"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         xmlns:fab="http://schemas.android.com/apk/res-auto"
-
         android:id="@+id/fab_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginRight="10dp"
         android:src="@drawable/ic_edit"
         fab:backgroundTint="#f0ae24"

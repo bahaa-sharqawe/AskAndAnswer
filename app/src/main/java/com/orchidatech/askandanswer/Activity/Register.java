@@ -15,13 +15,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
+import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 
-public class RegisterScreen extends Activity {
-    private String TAG = RegisterScreen.class.getSimpleName();
+public class Register extends Activity {
+    private String TAG = Register.class.getSimpleName();
 
     EditText ed_fname;
     EditText ed_lname;
@@ -54,9 +57,9 @@ public class RegisterScreen extends Activity {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fname = ed_fname.getText().toString();
-                String lname = ed_lname.getText().toString();
-                String email = ed_email.getText().toString();
+                String fname = ed_fname.getText().toString().trim();
+                String lname = ed_lname.getText().toString().trim();
+                String email = ed_email.getText().toString().trim();
                 String password = ed_password.getText().toString();
                 String repassword = ed_repassword.getText().toString();
                 if (verifyInputs(fname, lname, email, password, repassword)) {
@@ -75,18 +78,32 @@ public class RegisterScreen extends Activity {
         mValidator = Validator.getInstance();
     }
 
-    private void register(String fname, String lname, String email, String password) {
-        WebServiceFunctions.register(this, fname, lname, email, password, new OnRegisterListener() {
-            @Override
-            public void onSuccess() {
-                startActivity(new Intent(RegisterScreen.this, SelectCategoryScreen.class));
-            }
+    private void register(String fname, String lname, String email, final String password) {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
+        loadingDialog.setArguments(args);
+        loadingDialog.show(getFragmentManager(), "registering");
+        WebServiceFunctions.register(this, fname, lname, email, URL.DEFAULT_IMAGE, 0, System.currentTimeMillis(), System.currentTimeMillis(), null, 0, password,
+                new OnRegisterListener() {
+                    @Override
+                    public void onSuccess(long uid) {
+                        if (loadingDialog.isVisible())
+                            loadingDialog.dismiss();
+                        SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
+                        SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        SplashScreen.prefEditor.commit();
+                        startActivity(new Intent(Register.this, TermsActivity.class));
+                        finish();
+                    }
 
-            @Override
-            public void onFail(String cause) {
-                AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
-            }
-        });
+                    @Override
+                    public void onFail(String cause) {
+                        if (loadingDialog.isVisible())
+                            loadingDialog.dismiss();
+                        AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
+                    }
+                });
     }
 
     private boolean verifyInputs(String fname, String lname, String email, String password, String repassword) {
@@ -96,7 +113,8 @@ public class RegisterScreen extends Activity {
         } else if (!mValidator.isValidUserName(fname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
-        }  if (TextUtils.isEmpty(lname)) {
+        }
+        if (TextUtils.isEmpty(lname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(lname)) {

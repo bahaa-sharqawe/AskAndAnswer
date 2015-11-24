@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.orchidatech.askandanswer"
         minSdkVersion 15
@@ -24,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.sromku:simple-fb:4.1.1'
@@ -41,9 +40,15 @@ dependencies {
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     compile 'com.squareup.picasso:picasso:2.4.0'
-
-//    compile 'com.github.asne:asne-googleplus:0.3.3'
-//    compile('com.github.androidsocialnetworks:library:0.3.7@aar') {
-//        transitive = true
-//    }
+    compile 'com.alexbbb:uploadservice:1.4'
+    //    compile 'org.apache.httpcomponents:httpclient:4.3.6'
+    //    compile 'org.apache.httpcomponents:httpmime:4.3.6'
+    //    compile 'org.apache.httpcomponents:httpcore:4.3.3'
+    //    compile 'com.github.asne:asne-googleplus:0.3.3'
+    //    compile('com.github.androidsocialnetworks:library:0.3.7@aar') {
+    //        transitive = true
+    //    }
+    /*    compile files('libs/httpclient-4.3.6.jar')
+        compile files('libs/httpcore-4.3.3.jar')
+        compile files('libs/httpmime-4.3.6.jar')*/
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 
 import com.orchidatech.askandanswer.R;
@@ -16,6 +17,9 @@ import com.orchidatech.askandanswer.R;
  */
 public class Settings extends Fragment {
     Switch sw_notification;
+    ImageView iv_checkbox;
+    ImageView iv_checked;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,7 +33,24 @@ public class Settings extends Fragment {
         sw_notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                //update in server then
+                //   SettingsDAO.updateSettings(1, GNLConstants.Settings_Keys.NOTIFICATIONS_SOUND, isChecked?1:0);
+            }
+        });
+        iv_checkbox = (ImageView) getActivity().findViewById(R.id.iv_checkbox);
+        iv_checked = (ImageView) getActivity().findViewById(R.id.iv_checked);
+        iv_checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                iv_checked.setVisibility(View.VISIBLE);
+            }
+        });
+        iv_checked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                iv_checkbox.setVisibility(View.VISIBLE);
             }
         });
     }

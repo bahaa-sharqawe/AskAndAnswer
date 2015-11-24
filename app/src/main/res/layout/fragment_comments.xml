@@ -2,16 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:padding="8dp"
     android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:id="@+id/rv_comments"
-            android:background="@drawable/comments_fragment_backgnd"
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             />
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<EditText-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content" -->
+                <!--android:layout_weight="1"/>-->
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/ic_done"-->
+                <!--android:layout_gravity="center_vertical"/>-->
+        <!--</LinearLayout>-->
+    <!--</RelativeLayout>-->
+
 
 </LinearLayout>

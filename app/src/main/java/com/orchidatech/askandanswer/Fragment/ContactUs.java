@@ -35,6 +35,7 @@ public class ContactUs extends DialogFragment {
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //send message to server then
                 dialog.dismiss();
             }
         });

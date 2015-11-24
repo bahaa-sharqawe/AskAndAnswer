@@ -12,6 +12,10 @@ import java.util.List;
 public class CommentsDAO {
 
     public static void addComment(Comments newComment){
+        if(isExist(newComment.getServerID())){
+            updateComment(newComment);
+            return;
+        }
         Comments comment = new Comments();
         comment.date = newComment.getDate();
         comment.image = newComment.getImage();
@@ -27,6 +31,9 @@ public class CommentsDAO {
     public static void deleteComment(long commentServerId){
         new Delete().from(Comments.class).where(Comments.FIELDS.COLUMN_SERVER_ID + " = ?", commentServerId).execute();
     }
+    public static void deleteCommentByPost(long postServerId){//when post is deleted
+        new Delete().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).execute();
+    }
 
     public static Comments getComment(long commentServerId){
         return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_SERVER_ID + " = ?",
@@ -39,11 +46,16 @@ public class CommentsDAO {
         existComment.image = comment.getImage();
         existComment.isHidden = comment.getIsHidden();
         existComment.text = comment.getText();
+        existComment.userID = comment.getUserID();
+        existComment.postID = comment.getPostID();
         existComment.save();
     }
 
     public static List<Comments> getAllComments(long userServerId, long postServerId){
         return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_USER_ID + " = ?" + " and "
                 + Comments.FIELDS.COLUMN_POST_ID + " = ?", userServerId, postServerId).execute();
+    }
+    private static boolean isExist(long serverID) {
+        return getComment(serverID) != null ;
     }
 }

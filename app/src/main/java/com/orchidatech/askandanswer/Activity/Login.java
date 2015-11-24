@@ -20,22 +20,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
-import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.SocialUser;
+import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.OnSocialLoggedListener;
+import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
+import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.entities.Profile;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnProfileListener;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class LoginScreen extends AppCompatActivity {
+public class Login extends AppCompatActivity {
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
 
     ImageView iv_logo;
@@ -48,7 +49,7 @@ public class LoginScreen extends AppCompatActivity {
     RelativeLayout btn_fb;
     RelativeLayout btn_gplus;
     private SimpleFacebook mSimpleFacebook;
-    private String TAG = LoginScreen.class.getSimpleName();
+    private String TAG = Login.class.getSimpleName();
 
     public static AppGoogleAuth googleAuth;
 
@@ -58,28 +59,46 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initializeFields();
         resizeLogo();
-
     }
-///////
-    private void login(String username, String password) {
-        startActivity(new Intent(this, TermsActivity.class));
-//        WebServiceFunctions.login(this, username, password,
-//                new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
-//                    @Override
-//                    public void onSuccess() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFail(String cause) {
-//                        AppSnackBar.show(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
-//                    }
-//                });
+
+    ///////
+    private void login(String username, final String password) {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
+        loadingDialog.setArguments(args);
+        loadingDialog.show(getFragmentManager(), "logging in");
+//        startActivity(new Intent(this, TermsActivity.class));
+        WebServiceFunctions.login(this, username, password,
+                new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
+                    @Override
+                    public void onSuccess(long uid, ArrayList<Long> user_categories) {
+                        if(loadingDialog.isVisible())
+                            loadingDialog.dismiss();
+                        SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
+                        SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        SplashScreen.prefEditor.commit();
+                        if(user_categories != null && user_categories.size() > 0){
+                              startActivity(new Intent(Login.this, MainScreen.class));
+                        }else{
+                              startActivity(new Intent(Login.this, TermsActivity.class));
+                        }
+                        finish();
+                    }
+
+                    @Override
+                    public void onFail(String cause) {
+                        if(loadingDialog.isVisible())
+                            loadingDialog.dismiss();
+                        AppSnackBar.show(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
+                    }
+                });
 
     }
 
     private void initializeFields() {
         googleAuth = new AppGoogleAuth(this);
+        googleAuth.mGoogleApiClient.connect();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         ed_name = (EditText) this.findViewById(R.id.ed_name);
@@ -89,11 +108,10 @@ public class LoginScreen extends AppCompatActivity {
         btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
         btn_gplus = (RelativeLayout) this.findViewById(R.id.btn_gplus);
 
-
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = ed_name.getText().toString();
+                String username = ed_name.getText().toString().trim();
                 String password = ed_password.getText().toString();
                 if (verifyInputs(username, password)) {
                     login(username, password);
@@ -105,7 +123,7 @@ public class LoginScreen extends AppCompatActivity {
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginScreen.this, RegisterScreen.class));
+                startActivity(new Intent(Login.this, Register.class));
             }
         });
 
@@ -115,8 +133,7 @@ public class LoginScreen extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSimpleFacebook.isLogin()) {
                     getFbProfile();
-                }
-                else {
+                } else {
                     mSimpleFacebook.login(new OnLoginListener() {
                         @Override
                         public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
@@ -149,11 +166,9 @@ public class LoginScreen extends AppCompatActivity {
                     googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
                         @Override
                         public void onSuccess(SocialUser user) {
-                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
-                            startActivity(new Intent(LoginScreen.this, TermsActivity.class));
-
-                            Toast.makeText(LoginScreen.this, user.getEmail() + ", " + user.getName(), Toast.LENGTH_LONG).show();
-
+//                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+//                            startActivity(new Intent(Login.this, TermsActivity.class));
+                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getName(), Toast.LENGTH_LONG).show();
                         }
                     });
             }
@@ -192,10 +207,11 @@ public class LoginScreen extends AppCompatActivity {
                 if (!googleAuth.mGoogleApiClient.isConnecting()) {
                     googleAuth.mGoogleApiClient.connect();
                 }
-        }else
+        } else
             mSimpleFacebook.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     private void getFbProfile() {
 
         Profile.Properties properties = new Profile.Properties.Builder()
@@ -208,23 +224,18 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             public void onComplete(Profile response) {
                 super.onComplete(response);
-                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
-                startActivity(new Intent(LoginScreen.this, TermsActivity.class));
+//                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+               // startActivity(new Intent(Login.this, TermsActivity.class));
 
-                Toast.makeText(LoginScreen.this, response.getName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this, response.getName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         mSimpleFacebook = SimpleFacebook.getInstance(this);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        googleAuth.mGoogleApiClient.connect();
-
-    }
 }

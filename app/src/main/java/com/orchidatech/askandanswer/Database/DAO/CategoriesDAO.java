@@ -12,6 +12,10 @@ import java.util.List;
 public class CategoriesDAO {
 
     public static void addCategory(Category newCategory){
+        if(isExist(newCategory.getServerID())){
+            updateCategory(newCategory);
+            return;
+        }
         Category category = new Category();
         category.name = newCategory.getName();
         category.serverID = newCategory.getServerID();
@@ -41,5 +45,8 @@ public class CategoriesDAO {
 
     public static void deleteAllCategories(){
         new Delete().from(Category.class).execute();
+    }
+    private static boolean isExist(long serverID) {
+        return getCategory(serverID) != null ;
     }
 }

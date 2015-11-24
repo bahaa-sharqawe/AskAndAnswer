@@ -22,6 +22,7 @@ public class Posts extends Model {
         public static final String COLUMN_USER_ID = "USER_ID";
         public static final String COLUMN_CATEGORY_ID = "CATEGORY_ID";
         public static final String COLUMN_IS_HIDDEN = "IS_HIDDEN";
+        public static final String COLUMN_COMMENTS_NO = "COMMENTS_NO";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -45,11 +46,14 @@ public class Posts extends Model {
     @Column(name = FIELDS.COLUMN_IS_HIDDEN)
     public int isHidden;
 
+    @Column(name = FIELDS.COLUMN_COMMENTS_NO)
+    public int comments_no;
+
     public Posts() {
         super();
     }
 
-    public Posts(long serverID, String text, String image, long date, long userID, long categoryID, int isHidden) {
+    public Posts(long serverID, String text, String image, long date, long userID, long categoryID, int isHidden, int comments_no) {
         super();
         this.serverID = serverID;
         this.text = text;
@@ -58,6 +62,7 @@ public class Posts extends Model {
         this.userID = userID;
         this.categoryID = categoryID;
         this.isHidden = isHidden;
+        this.comments_no = comments_no;
     }
 
     public long getServerID() {
@@ -114,5 +119,13 @@ public class Posts extends Model {
 
     public void setIsHidden(int isHidden) {
         this.isHidden = isHidden;
+    }
+
+    public int getComments_no() {
+        return comments_no;
+    }
+
+    public void setComments_no(int comments_no) {
+        this.comments_no = comments_no;
     }
 }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
@@ -24,11 +25,18 @@ public class Comments extends DialogFragment {
     AlertDialog dialog;
     RecyclerView mRecyclerView;
     CommentsRecViewAdapter adapter;
+    long postId;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        postId = getArguments().getLong(ViewPost.POST_ID);
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.comments_fragment_backgnd));
         dialog.setView(getCustomView(), 0, 0, 0, 0);
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
@@ -42,9 +50,8 @@ public class Comments extends DialogFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        adapter = new CommentsRecViewAdapter(getActivity(), null, 10);
+        adapter = new CommentsRecViewAdapter(getActivity(), null);
         mRecyclerView.setAdapter(adapter);
-
         return view;
     }
 
