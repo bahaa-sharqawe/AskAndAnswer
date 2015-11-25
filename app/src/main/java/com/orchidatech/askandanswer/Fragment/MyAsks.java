@@ -98,18 +98,16 @@ public class MyAsks extends Fragment{
                 Comments comments = new Comments();
                 comments.setArguments(args);
                 comments.show(getFragmentManager(), "Comments");
-
             }
 
             @Override
             public void onFavoritePost(final int position, long pid, long uid) {
-                //remove post from favoritea
-                WebServiceFunctions.removePostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
+                //add post to favorites
+                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
 
                     @Override
                     public void onSuccess() {
-                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_removed), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                        adapter.removePost(position);
+                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                     }
 
                     @Override

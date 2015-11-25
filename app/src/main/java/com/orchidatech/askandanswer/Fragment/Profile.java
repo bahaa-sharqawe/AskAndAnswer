@@ -37,6 +37,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
@@ -144,8 +145,21 @@ public class Profile extends Fragment {
             }
 
             @Override
-            public void onFavoritePost(int position, long pid, long uid) {
+            public void onFavoritePost(final int position, long pid, long uid) {
+                //add post to favorites
+                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
 
+                    @Override
+                    public void onSuccess() {
+                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                    }
+
+                    @Override
+                    public void onFail(String error) {
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+
+                    }
+                });
             }
 
             @Override

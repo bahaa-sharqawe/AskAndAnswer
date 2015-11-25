@@ -128,10 +128,6 @@ public class Timeline extends Fragment {
 
             @Override
             public void onFavoritePost(int position, long pid, long uid) {
-                if(Post_FavoriteDAO.getPost_FavoriteByPostId(pid, uid) != null){
-                    AppSnackBar.show(rl_parent, getString(R.string.post_is_favorite), Color.RED, Color.WHITE);
-                    return;
-                }
                 WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener(){
 
                     @Override
