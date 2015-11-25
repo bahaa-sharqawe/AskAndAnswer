@@ -49,6 +49,7 @@ dependencies {
     //        transitive = true
     //    }
     /*    compile files('libs/httpclient-4.3.6.jar')
-        compile files('libs/httpcore-4.3.3.jar')
-        compile files('libs/httpmime-4.3.6.jar')*/
+            compile files('libs/httpcore-4.3.3.jar')
+            compile files('libs/httpmime-4.3.6.jar')*/
+    compile files('libs/android-image-helper-1.0.2.jar')
 }

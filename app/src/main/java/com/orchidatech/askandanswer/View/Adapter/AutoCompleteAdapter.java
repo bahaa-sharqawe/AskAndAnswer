@@ -9,8 +9,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Database.Model.Category;
-
 import java.util.ArrayList;
 
 /**
@@ -19,14 +17,14 @@ import java.util.ArrayList;
 public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
     Context contex;
     ArrayList<String> unSelectedCategoriestTitles;
-    ArrayList<String>originalUnSelectedCategoriestTitles;
+    ArrayList<String> originalUnSelectedCategoriesTitles;
     private ArrayFilter mFilter;
 
 
     public AutoCompleteAdapter(Context contex, ArrayList<String> unSelectedCategoriestTitles) {
         this.contex = contex;
-        this.unSelectedCategoriestTitles = unSelectedCategoriestTitles;
-        this.originalUnSelectedCategoriestTitles = unSelectedCategoriestTitles;
+        this.unSelectedCategoriestTitles = new ArrayList<>(unSelectedCategoriestTitles);
+        this.originalUnSelectedCategoriesTitles = new ArrayList<>(unSelectedCategoriestTitles);
     }
 
     @Override
@@ -46,10 +44,10 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-    if(convertView == null){
-        LayoutInflater inflater = (LayoutInflater) contex.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(android.R.layout.simple_dropdown_item_1line, null, false);
-    }
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) contex.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(android.R.layout.simple_dropdown_item_1line, null, false);
+        }
         TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
         textView.setText(unSelectedCategoriestTitles.get(position));
         return convertView;
@@ -64,12 +62,12 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
     }
 
     public void remove(String removedCategory) {
-        originalUnSelectedCategoriestTitles.add(removedCategory);
+        originalUnSelectedCategoriesTitles.add(removedCategory);
         notifyDataSetChanged();
     }
 
     public void add(String addedCategory) {
-        originalUnSelectedCategoriestTitles.add(addedCategory);
+        originalUnSelectedCategoriesTitles.add(addedCategory);
         notifyDataSetChanged();
     }
 
@@ -78,29 +76,29 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
         super.notifyDataSetChanged();
     }
 
-    private class ArrayFilter extends Filter{
+    private class ArrayFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-            if(constraint != null || constraint.length() == 0){
-                ArrayList<String> list = new ArrayList<>(originalUnSelectedCategoriestTitles);
+            if (constraint != null || constraint.length() == 0) {
+                ArrayList<String> list = new ArrayList<>(originalUnSelectedCategoriesTitles);
                 results.values = list;
                 results.count = list.size();
-            }else{
+            } else {
                 String prefixString = constraint.toString().toLowerCase();
-                ArrayList<String> values = new ArrayList<>(originalUnSelectedCategoriestTitles);
+                ArrayList<String> values = new ArrayList<>(originalUnSelectedCategoriesTitles);
                 int count = values.size();
                 ArrayList<String> newValues = new ArrayList<>();
-                for(int i = 0; i < count; i++){
+                for (int i = 0; i < count; i++) {
                     String value = values.get(i);
                     String valueText = value.toLowerCase();
-                    if(valueText.startsWith(prefixString)){
+                    if (valueText.startsWith(prefixString)) {
                         newValues.add(valueText);
-                    }else{
+                    } else {
                         String[] words = valueText.split(" ");
                         int wordCount = words.length;
-                        for(int k = 0; k < wordCount; k++){
-                            if(words[k].startsWith(prefixString)){
+                        for (int k = 0; k < wordCount; k++) {
+                            if (words[k].startsWith(prefixString)) {
                                 newValues.add(value);
                                 break;
                             }
@@ -116,9 +114,9 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             unSelectedCategoriestTitles = (ArrayList<String>) results.values;
-            if(results.count > 0){
+            if (results.count > 0) {
                 notifyDataSetChanged();
-            }else{
+            } else {
                 notifyDataSetInvalidated();
             }
         }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -39,6 +40,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -89,6 +91,7 @@ public class Profile extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         fab_edit_profile = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +180,14 @@ public class Profile extends Fragment {
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         loadNewPosts();
+
+    }
+
+    private void setActionBar() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
 
     }
 

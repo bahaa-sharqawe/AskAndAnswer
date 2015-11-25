@@ -157,23 +157,13 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                tv_post_category.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onCategoryClick(posts.get(getAdapterPosition()).getCategoryID(), posts.get(getAdapterPosition()).getUserID());
-                    }
-                });
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
-            }        }
+
+            }
+        }
     }
 
     @Override

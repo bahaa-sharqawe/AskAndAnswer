@@ -81,8 +81,8 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             }
         }else {
             Posts currentPost = posts.get(position);
-            Users postOwner = UsersDAO.getUser(currentPost.getUserID());
-            Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+            final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+            final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
@@ -107,6 +107,13 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                     pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
                 }
             });
+            holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onCategoryClick(postCategory.getServerID(), postOwner.getServerID());
+                }
+            });
+
             String postImage = currentPost.getImage();
             if(postImage!=null && postImage.length()>0)
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);

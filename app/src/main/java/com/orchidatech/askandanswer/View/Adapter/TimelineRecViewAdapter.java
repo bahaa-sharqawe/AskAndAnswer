@@ -1,8 +1,12 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -21,6 +27,7 @@ import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
@@ -80,17 +87,44 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             }
         } else {
             Posts currentPost = posts.get(position);
-            Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+            final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
             Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+            holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   goToProfile(postOwner.getServerID());
+                }
+            });
+
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
             if(postImage!=null && postImage.length()>0)
                  Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
             Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
+            holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToProfile(postOwner.getServerID());
+                }
+            });
         }
+    }
+
+    private void goToProfile(long userId) {
+        MainScreen.oldPosition = -1;
+        Fragment fragment = new Profile();
+        Bundle args = new Bundle();
+        args.putLong(Profile.USER_ID_KEY, userId);
+        fragment.setArguments(args);
+        FragmentManager mFragmentManager = activity.getFragmentManager();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.fragment_host, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+        mFragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -129,18 +163,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 });
             } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
+
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                tv_post_category.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onCategoryClick(posts.get(getAdapterPosition()).getCategoryID(), posts.get(getAdapterPosition()).getUserID());
-                    }
-                });
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_comment.setOnClickListener(new View.OnClickListener() {
