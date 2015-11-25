@@ -1,7 +1,9 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
+import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -31,14 +40,17 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private final View parent;
 
     private ArrayList<Posts> posts;
-    private Context context;
+    Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
+    private OnPostEventListener pe_listener;
 
-    public SearchRecViewAdapter(Context context, ArrayList<Posts> posts, View parent) {
-        this.context = context;
+    public SearchRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent,
+                                OnPostEventListener pe_listener) {
+        this.activity = activity;
         this.posts = posts;
         this.parent = parent;
+        this.pe_listener = pe_listener;
     }
 
     @Override
@@ -54,17 +66,39 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     }
 
     @Override
-    public void onBindViewHolder(final PostViewHolder holder, int position) {
-
-//        if (holder.viewType == TYPE_FOOTER) {
-//            if (!loading && isFoundData) {
-//                loading = true;
-//
-//            }
-//        } else {
-//
-//        }
-    }
+    public void onBindViewHolder(final PostViewHolder holder, final int position) {
+        Posts currentPost = posts.get(position);
+        Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+        Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+        holder.tv_post_category.setText(postCategory.getName());
+        holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+        holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
+        holder.tv_postContent.setText(currentPost.getText());
+        holder.ll_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pe_listener.onCommentPost(posts.get(position).getServerID());
+            }
+        });
+        holder.ll_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pe_listener.onSharePost(posts.get(position).getServerID());
+            }
+        });
+        holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
+            }
+        });
+        String postImage = currentPost.getImage();
+        if(postImage!=null && postImage.length()>0) {
+            Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+            holder.iv_postImage.setVisibility(View.VISIBLE);
+        } else
+            holder.iv_postImage.setVisibility(View.GONE);
+        Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);    }
 
     @Override
     public int getItemCount() {

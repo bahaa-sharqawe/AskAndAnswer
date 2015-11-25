@@ -55,7 +55,8 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
         this.posts = posts;
         this.parent = parent;
         this.pe_listener = pe_listener;
-        this.lastListReachListener = lastListReachListener;    }
+        this.lastListReachListener = lastListReachListener;
+    }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

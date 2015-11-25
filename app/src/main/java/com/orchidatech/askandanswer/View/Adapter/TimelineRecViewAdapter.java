@@ -103,8 +103,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
-            if(postImage!=null && postImage.length()>0)
-                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+            if(postImage!=null && postImage.length()>0) {
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+                holder.iv_postImage.setVisibility(View.VISIBLE);
+            }else
+                holder.iv_postImage.setVisibility(View.GONE);
+
             Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
