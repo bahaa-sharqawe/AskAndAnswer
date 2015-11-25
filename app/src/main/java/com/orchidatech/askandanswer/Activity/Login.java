@@ -26,7 +26,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.entities.Profile;

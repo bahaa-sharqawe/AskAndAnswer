@@ -25,7 +25,7 @@ import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;

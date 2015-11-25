@@ -21,7 +21,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 public class Register extends Activity {
     private String TAG = Register.class.getSimpleName();

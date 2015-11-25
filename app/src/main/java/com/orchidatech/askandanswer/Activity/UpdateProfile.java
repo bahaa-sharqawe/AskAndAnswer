@@ -1,7 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,9 +37,8 @@ import com.orchidatech.askandanswer.Logic.HorizontalFlowLayout;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.AutoCompleteAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
-import com.orchidatech.askandanswer.View.Interface.OnUploadImageListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;

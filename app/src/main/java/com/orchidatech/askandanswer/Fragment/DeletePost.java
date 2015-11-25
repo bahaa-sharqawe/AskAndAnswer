@@ -11,11 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
-import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 
 /**
  * Created by Bahaa on 5/11/2015.

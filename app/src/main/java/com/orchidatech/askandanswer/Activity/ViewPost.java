@@ -14,15 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
-import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.DeletePost;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
 public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteListener{

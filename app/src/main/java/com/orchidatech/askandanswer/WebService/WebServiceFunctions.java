@@ -1,4 +1,4 @@
-package com.orchidatech.askandanswer.View.Utils;
+package com.orchidatech.askandanswer.WebService;
 
 import android.app.Activity;
 import android.content.Context;

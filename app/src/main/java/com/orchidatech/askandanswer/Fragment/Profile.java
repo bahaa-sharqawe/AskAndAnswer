@@ -40,8 +40,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
-import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
-import com.rengwuxian.materialedittext.MaterialEditText;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
