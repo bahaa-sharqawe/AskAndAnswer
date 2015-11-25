@@ -140,4 +140,5 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="post_is_favorite">This Post is already favorite</string>
     <string name="post_favorite_added">Post added to favorite</string>
     <string name="post_favorite_removed">Post removed from favorite</string>
+    <string name="no_comments_found">No Comments Found</string>
 </resources>

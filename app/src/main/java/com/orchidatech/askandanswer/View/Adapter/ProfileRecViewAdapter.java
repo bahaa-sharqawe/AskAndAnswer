@@ -71,7 +71,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     }
 
     @Override
-    public void onBindViewHolder(PostViewHolder holder, int position) {
+    public void onBindViewHolder(PostViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
             if (!loading && isFoundData && posts.size() > 0) {
@@ -87,6 +87,24 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
+            holder.ll_comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onCommentPost(posts.get(position).getServerID());
+                }
+            });
+            holder.ll_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onSharePost(posts.get(position).getServerID());
+                }
+            });
+            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
+                }
+            });
             String postImage = currentPost.getImage();
             if(postImage!=null && postImage.length()>0) {
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
@@ -147,26 +165,8 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 });
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
-                ll_comment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onCommentPost(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
-                ll_share.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                ll_favorite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), posts.get(getAdapterPosition()).getUserID());
-                    }
-                });
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -186,9 +186,9 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            notifyDataSetChanged();
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            notifyDataSetChanged();
         } else {
             if(isErrorConnection){
                 btn_reload.setVisibility(View.VISIBLE);
@@ -206,7 +206,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     public void addFromLocal(ArrayList<Posts> newPosts){
         posts.addAll(newPosts);
         pv_load.setVisibility(View.GONE);
-        notifyDataSetChanged();
         isFoundData = false;
+        notifyDataSetChanged();
     }
 }

@@ -1,26 +1,33 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.MainScreen;
-import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
+import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Posts;
-import com.orchidatech.askandanswer.Fragment.Profile;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -34,19 +41,21 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     private static final int TYPE_FOOTER = 1;
     private View parent;
     private OnUserActionsListener listener;
-
-    private ArrayList<Posts> posts;
-    int tempNum;
+    private ProgressBar pv_load;
+    private Button btn_reload;
+    private ArrayList<Comments> comments;
     private Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
+    private final OnLastListReachListener lastListReachListener;
 
-    public MyAnswersRecViewAdapter(Activity activity, ArrayList<Posts> posts, int tempNum, View parent, OnUserActionsListener listener) {
+
+    public MyAnswersRecViewAdapter(Activity activity, ArrayList<Comments> comments, View parent, OnUserActionsListener listener, OnLastListReachListener lastListReachListener) {
         this.activity = activity;
-        this.posts = posts;
-        this.tempNum = tempNum;
         this.parent = parent;
         this.listener = listener;
+        this.comments = comments;
+        this.lastListReachListener = lastListReachListener;
     }
 
     @Override
@@ -62,85 +71,63 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     }
 
     @Override
-    public void onBindViewHolder(final AnswerViewHolder holder, int position) {
-
+    public void onBindViewHolder(final AnswerViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
-            if (!loading && isFoundData) {
+            btn_reload.setVisibility(View.GONE);
+            if (!loading && isFoundData && comments.size() > 0) {
+                pv_load.setVisibility(View.VISIBLE);
                 loading = true;
-                ///load data from server
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //                   listener.onReached();
-                        if (tempNum == 30) {
-                            holder.pv_load.setVisibility(View.GONE);
-                            AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
-                            isFoundData = false;
-                            return;
-                        }
-                        tempNum += 10;
-                        notifyDataSetChanged();
-                        loading = false;
-                    }
-                }, 2000);
+                lastListReachListener.onReached();
             }
-        } else {
-            holder.rl_post_item.setOnClickListener(new View.OnClickListener() {
+        }else {
+            Comments currentComment = comments.get(position);
+            Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
+            Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
+            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
+            holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
+            holder.tv_commentDesc.setText(currentComment.getText());
+            holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
+            holder.tv_comment_category.setText(commentCategory.getName());
+            Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person);
+            if (!TextUtils.isEmpty(currentComment.getImage())) {
+                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment);
+                holder.iv_comment.setVisibility(View.VISIBLE);
+            } else
+                holder.iv_comment.setVisibility(View.GONE);
+            holder.tv_unlikes.setText(currentComment.getDisLikes());
+            holder.tv_likes.setText(currentComment.getLikes());
+            holder.tv_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.startActivity(new Intent(activity, ViewPost.class));
+                    listener.onLike(comments.get(position).getServerID());
+                }
+            });
+            holder.tv_unlikes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onDislike(comments.get(position).getServerID());
                 }
             });
 
-//        ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse(postOwner.getPhoto())), holder.iv_person,
-//                null, new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//
-//            }
-//        }, new ImageLoadingProgressListener() {
-//            @Override
-//            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//
-//            }
-//        });
-//
         }
     }
 
     @Override
     public int getItemCount() {
-        return tempNum + 1;
+        return comments.size() + 1;
     }
 
     public class AnswerViewHolder extends RecyclerView.ViewHolder {
         CircleImageView iv_person;
         TextView tv_person_name;
-        RatingBar rating_post;
-        TextView tv_postDate;
-        TextView tv_post_category;
-        TextView tv_postDesc;
-        TextView tv_comments;
+        RatingBar rating_comment;
+        TextView tv_commentDate;
+        TextView tv_comment_category;
+        TextView tv_commentDesc;
         TextView tv_likes;
         TextView tv_unlikes;
-        ProgressBar pv_load;
-        ;
-        RelativeLayout rl_post_item;
+        ImageView iv_comment;
+        RelativeLayout rl_comment_item;
         int viewType;
 
         public AnswerViewHolder(View itemView, int viewType) {
@@ -149,69 +136,62 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
             if (viewType == TYPE_FOOTER) {
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-            } else {
-                rl_post_item = (RelativeLayout) itemView.findViewById(R.id.rl_post_item);
+                btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
+                btn_reload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setVisibility(View.GONE);
+                        pv_load.setVisibility(View.VISIBLE);
+                        loading = true;
+                        lastListReachListener.onReached();
+                    }
+                });
+            }else {
+                rl_comment_item = (RelativeLayout) itemView.findViewById(R.id.rl_comment_item);
                 iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
-                iv_person.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainScreen.oldPosition = 3;
-                        activity.getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Profile()).addToBackStack(null).commit();
-                        activity.getFragmentManager().executePendingTransactions();
-                    }
-                });
+                iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-                tv_person_name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainScreen.oldPosition = 3;
-                        activity.getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Profile()).addToBackStack(null).commit();
-                        activity.getFragmentManager().executePendingTransactions();
-                    }
-                });
-                rating_post = (RatingBar) itemView.findViewById(R.id.rating_post);
-//            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
-//            stars.getDraewable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
-                tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
-                tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                tv_post_category.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        activity.startActivity(new Intent(activity, CategoryPosts.class));
-                    }
-                });
-                tv_postDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
-                tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
-                tv_comments.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        new Comments().show(activity.getFragmentManager(), "Comments");
-                        listener.onComment();
-                        ;
-                    }
-                });
+                rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
+                tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
+                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
+                tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
-                tv_likes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onLike();
-                    }
-                });
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
-                tv_unlikes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onDislike();
-                    }
-                });
             }
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == tempNum)
+        if (position == comments.size())
             return TYPE_FOOTER;
         return TYPE_HEADER;
+    }
+
+
+    public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
+        if (comments != null && comments.size() > 0) {
+            comments.addAll(_comments);
+            pv_load.setVisibility(View.VISIBLE);
+            isFoundData = true;
+            notifyDataSetChanged();
+        } else {
+            if (isErrorConnection) {
+                btn_reload.setVisibility(View.VISIBLE);
+                pv_load.setVisibility(View.GONE);
+            } else {
+                pv_load.setVisibility(View.GONE);
+                btn_reload.setVisibility(View.GONE);
+                isFoundData = false;
+                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+            }
+        }
+        loading = false;
+    }
+    public void addFromLocal(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> myComments) {
+        comments.addAll(myComments);
+        pv_load.setVisibility(View.GONE);
+        isFoundData = false;
+        notifyDataSetChanged();
     }
 }

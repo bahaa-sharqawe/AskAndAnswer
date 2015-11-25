@@ -13,6 +13,7 @@ import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
@@ -20,6 +21,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
+import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
@@ -342,6 +344,64 @@ public class WebServiceFunctions {
                         }
                         long last_id = o.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        }, url);
+    }
+    public static void getUserComments(final Context context, final long uid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+        String url = URL.GET_USER_Comments + "?" + URL.URLParameters.USER_ID + "=" + uid +
+                "&" + URL.URLParameters.LIMIT + "=" + limit +
+                "&" + URL.URLParameters.OFFSET + "=" + offset +
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Operations.getInstance(context).getUserComments(new OnLoadFinished() {
+            @Override
+            public void onSuccess(JSONObject o) {
+                try {
+                    int status_code = o.getInt("statusCode");
+                    int status = o.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = o.getJSONArray("data");
+                        ArrayList<Comments> fetchedComments = new ArrayList<>();
+                        long last_id = o.getLong("last_id");
+                        listener.onSuccess(fetchedComments, last_id);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        }, url);
+    }
+    public static void getPostComments(final Context context, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+        String url = URL.GET_POST_Comments + "?" + URL.URLParameters.POST_ID + "=" + pid +
+                "&" + URL.URLParameters.LIMIT + "=" + limit +
+                "&" + URL.URLParameters.OFFSET + "=" + offset +
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Operations.getInstance(context).getPostComments(new OnLoadFinished() {
+            @Override
+            public void onSuccess(JSONObject o) {
+                try {
+                    int status_code = o.getInt("statusCode");
+                    int status = o.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = o.getJSONArray("data");
+                        ArrayList<Comments> fetchedComments = new ArrayList<>();
+                        long last_id = o.getLong("last_id");
+                        listener.onSuccess(fetchedComments, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {

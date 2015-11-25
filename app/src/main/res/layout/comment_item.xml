@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_post_item"
+        android:id="@+id/rl_comment_item"
         android:layout_marginTop="20dp"
         android:layout_margin="5dp"
         android:background="@drawable/comment_item_backgnd"
@@ -25,7 +25,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rl_postData"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/rl_commentData"
             android:layout_toRightOf="@+id/iv_person"
             android:layout_alignTop="@+id/iv_person"
             >
@@ -41,7 +42,7 @@
             <RatingBar
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
-                android:id="@+id/rating_post"
+                android:id="@+id/rating_comment"
                 android:layout_below="@+id/tv_person_name"
                 android:layout_alignLeft="@+id/tv_person_name"
                 android:layout_marginRight="10dp"
@@ -54,20 +55,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_postDate"
-                android:layout_toRightOf="@+id/rating_post"
+                android:id="@+id/tv_commentDate"
+                android:layout_toRightOf="@+id/rating_comment"
                 android:layout_below="@+id/tv_person_name"
-                android:layout_alignBottom="@+id/rating_post"
+                android:layout_alignBottom="@+id/rating_comment"
                 android:text="Oct 16, 2015"
                 android:textSize="15sp"
                 android:textColor="#959595"
                 android:gravity="center|bottom"
-                android:layout_alignTop="@+id/rating_post"
+                android:layout_alignTop="@+id/rating_comment"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_post_category"
+                android:id="@+id/tv_comment_category"
                 android:text="Android"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/tv_person_name"
@@ -81,17 +82,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_postDesc"
-                android:layout_below="@+id/rating_post"
+                android:id="@+id/tv_comDesc"
+                android:layout_below="@+id/rating_comment"
                 android:layout_alignLeft="@+id/tv_person_name"
                 android:paddingLeft="0dp"
                 android:text="@string/post_example"
                 android:layout_marginTop="17dp"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="10dp"
                 android:paddingRight="10dp"
                 android:textSize="15sp"
-                android:textColor="#4d4d4d"
-                />
+                android:textColor="#4d4d4d" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:id="@+id/iv_comment"
+            android:src="@drawable/android_wallpaper"
+            android:scaleType="centerCrop"
+            android:layout_below="@+id/tv_comDesc"/>
         </RelativeLayout>
 
         <View
@@ -99,7 +106,7 @@
             android:layout_height="2dp"
             android:id="@+id/divider"
             android:background="#e6e6e6"
-            android:layout_below="@+id/rl_postData"
+            android:layout_below="@+id/rl_commentData"
             android:layout_marginRight="10dp"
 
             />
@@ -107,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider"
-            android:layout_alignLeft="@+id/rl_postData"
+            android:layout_alignLeft="@+id/rl_commentData"
 
             android:paddingTop="4dp"
             android:paddingBottom="4dp"

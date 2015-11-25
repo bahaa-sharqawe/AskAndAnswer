@@ -55,6 +55,14 @@ public class Operations {
         sendRequest(Request.Method.GET, url, null, listener);
     }
 
+    public void getUserComments(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
+
+    public void getPostComments(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+
+    }
     public void getUserFavPosts(OnLoadFinished listener, String url) {
         sendRequest(Request.Method.GET, url, null, listener);
     }

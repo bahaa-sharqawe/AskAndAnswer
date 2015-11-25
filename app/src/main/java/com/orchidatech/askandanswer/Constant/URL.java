@@ -28,6 +28,8 @@ public class URL {
     public static final String REMOVE_POST_FAVORITE = "remove-post-favorite.php";
     public static final String GET_USER_INFO = "user_id.php";
     public static final String GET_TIME_LINE = "newestpost.php";
+    public static String GET_USER_Comments = "";
+    public static String GET_POST_Comments = "";
 
     public class URLParameters {
         public static final String ID = "id";

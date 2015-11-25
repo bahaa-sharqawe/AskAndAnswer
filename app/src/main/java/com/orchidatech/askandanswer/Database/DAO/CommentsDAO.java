@@ -24,6 +24,8 @@ public class CommentsDAO {
         comment.isHidden = newComment.getIsHidden();
         comment.text = newComment.getText();
         comment.userID = newComment.getUserID();
+        comment.likes = newComment.getLikes();
+        comment.disLikes = newComment.getDisLikes();
 
         comment.save();
     }
@@ -48,12 +50,20 @@ public class CommentsDAO {
         existComment.text = comment.getText();
         existComment.userID = comment.getUserID();
         existComment.postID = comment.getPostID();
+        existComment.likes = comment.getLikes();
+        existComment.disLikes = comment.getDisLikes();
         existComment.save();
     }
 
     public static List<Comments> getAllComments(long userServerId, long postServerId){
         return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_USER_ID + " = ?" + " and "
                 + Comments.FIELDS.COLUMN_POST_ID + " = ?", userServerId, postServerId).execute();
+    }
+    public static List<Comments> getAllComments(long userServerId){
+        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_USER_ID + " = ?", userServerId).execute();
+    }
+    public static List<Comments> getAllCommentsByPost(long postServerId){
+        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).execute();
     }
     private static boolean isExist(long serverID) {
         return getComment(serverID) != null ;

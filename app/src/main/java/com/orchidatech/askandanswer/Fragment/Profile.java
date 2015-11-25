@@ -203,7 +203,7 @@ public class Profile extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount(), last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {

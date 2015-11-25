@@ -1,13 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/ll_parent"
-    android:orientation="vertical">
+    >
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_answers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"
         android:listSelector="@android:color/transparent" />
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/rl_error"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/uncolored_logo"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/uncolored_logo"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/tv_your_questions"
+                android:id="@+id/tv_error"
+                android:layout_below="@+id/uncolored_logo"
+                android:layout_centerHorizontal="true"
+                android:textSize="20sp"/>
+
+        </RelativeLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/pb_loading_main" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

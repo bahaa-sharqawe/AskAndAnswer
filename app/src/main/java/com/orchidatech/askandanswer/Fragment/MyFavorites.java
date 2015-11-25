@@ -149,7 +149,7 @@ public class MyFavorites extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserFavPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount(), last_id_server, new OnUserFavPostFetched() {
+        WebServiceFunctions.getUserFavPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserFavPostFetched() {
             @Override
             public void onSuccess(ArrayList<Post_Favorite> userFavPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {

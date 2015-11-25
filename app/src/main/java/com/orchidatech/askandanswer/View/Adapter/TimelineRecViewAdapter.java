@@ -163,12 +163,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                         pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), posts.get(getAdapterPosition()).getUserID());
                     }
                 });
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
             }
 
         }
@@ -183,9 +177,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            notifyDataSetChanged();
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            notifyDataSetChanged();
         } else {
             if(isErrorConnection){
                 btn_reload.setVisibility(View.VISIBLE);
@@ -203,7 +197,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromLocal(ArrayList<Posts> newPosts){
         posts.addAll(newPosts);
         pv_load.setVisibility(View.GONE);
-        notifyDataSetChanged();
         isFoundData = false;
+        notifyDataSetChanged();
     }
 }
