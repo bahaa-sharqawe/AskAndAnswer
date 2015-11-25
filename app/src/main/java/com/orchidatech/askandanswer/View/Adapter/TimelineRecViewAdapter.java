@@ -94,6 +94,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+                       || postOwner.getIsPublicProfile()==0)
                    goToProfile(postOwner.getServerID());
                 }
             });
@@ -107,7 +109,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    goToProfile(postOwner.getServerID());
+                    if(postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+                            || postOwner.getIsPublicProfile()==0)
+                        goToProfile(postOwner.getServerID());
                 }
             });
         }
