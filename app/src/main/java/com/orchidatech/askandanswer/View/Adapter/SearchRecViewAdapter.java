@@ -116,7 +116,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     public class PostViewHolder extends RecyclerView.ViewHolder {
         CircleImageView iv_person;
         TextView tv_person_name;
-        RatingBar rating_post;
+        RatingBar rating_comment;
         TextView tv_postDate;
         TextView tv_post_category;
         TextView tv_postDesc;
@@ -136,7 +136,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
             } else {
                 iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-                rating_post = (RatingBar) itemView.findViewById(R.id.rating_post);
+                rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
 //            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
 //            stars.getDraewable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
