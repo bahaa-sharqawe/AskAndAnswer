@@ -35,8 +35,8 @@ public class URL {
     public class URLParameters {
         public static final String ID = "id";
         public static final String USERNAME = "username";
-        public static final String FNAME = "fname";
-        public static final String LNAME = "lname";
+        public static final String FNAME = "f_name";
+        public static final String LNAME = "l_name";
         public static final String PASSWORD = "password";
         public static final String EMAIL = "email";
         public static final String IMAGE = "image";

@@ -220,7 +220,6 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onFail(String error) {
                 AppSnackBar.show(ll_parent, error, getResources().getColor(R.color.colorPrimary), Color.WHITE);
-
             }
         });
     }

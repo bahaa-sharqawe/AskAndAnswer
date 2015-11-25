@@ -55,6 +55,10 @@ public class Operations {
         sendRequest(Request.Method.GET, url, null, listener);
     }
 
+    public void getTimeLine(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
+
     public void getUserComments(OnLoadFinished listener, String url) {
         sendRequest(Request.Method.GET, url, null, listener);
     }
@@ -83,6 +87,7 @@ public class Operations {
         sendRequest(Request.Method.GET, url, null, listener);
     }
     public void addPost(Context context, long user_id, long category_id, String text, String picturePath, long date, int is_hidden, OnUploadImageListener listener) {
+
         UploadReceiver uploadReceiver = new UploadReceiver(context, listener);
         uploadReceiver.register(context);
         MultipartUploadRequest request = new MultipartUploadRequest(context, UUID.randomUUID().toString(), URL.ADD_POST);
@@ -166,5 +171,6 @@ public class Operations {
                     }
                 });
     }
+
 
 }

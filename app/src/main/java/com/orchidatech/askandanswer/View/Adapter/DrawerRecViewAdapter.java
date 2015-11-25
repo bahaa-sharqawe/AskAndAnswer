@@ -58,7 +58,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         if (holder.viewType == TYPE_HEADER) {//complete the code here
             Users user = UsersDAO.getUser(SplashScreen.pref.getInt(GNLConstants.SharedPreference.ID_KEY, -1));
             if (user != null) {
-                holder.tv_person_name.setText(user.getUsername());
+                holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
                 holder.tv_person_email.setText(user.getEmail());
                 Picasso.with(context).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
                     @Override

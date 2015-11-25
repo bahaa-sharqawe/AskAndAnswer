@@ -21,7 +21,6 @@ public class CommentsDAO {
         comment.image = newComment.getImage();
         comment.postID = newComment.getPostID();
         comment.serverID = newComment.getServerID();
-        comment.isHidden = newComment.getIsHidden();
         comment.text = newComment.getText();
         comment.userID = newComment.getUserID();
         comment.likes = newComment.getLikes();
@@ -46,7 +45,6 @@ public class CommentsDAO {
         Comments existComment = getComment(comment.getServerID());
         existComment.date = comment.getDate();
         existComment.image = comment.getImage();
-        existComment.isHidden = comment.getIsHidden();
         existComment.text = comment.getText();
         existComment.userID = comment.getUserID();
         existComment.postID = comment.getPostID();

@@ -97,7 +97,6 @@ public class Timeline extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
-//        myPosts = new ArrayListcom.orchidatech.askandanswer.Fragment.Timeline.myPosts<>(PostsDAO.getUserPosts(1)); // 1 is current user id
         allPosts = new ArrayList<>();
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnPostEventListener() {
 
@@ -170,18 +169,17 @@ public class Timeline extends Fragment {
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         loadNewPosts();
-
     }
 
     private void loadNewPosts() {
         WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
             @Override
-            public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
+            public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
                 if(pb_loading_main.getVisibility() == View.VISIBLE){
                     pb_loading_main.setVisibility(View.GONE);
                 }
                 last_id_server = last_id_server == 0?last_id:last_id_server;
-                adapter.addFromServer(userPosts, false);
+                adapter.addFromServer(latestPosts, false);
             }
 
             @Override

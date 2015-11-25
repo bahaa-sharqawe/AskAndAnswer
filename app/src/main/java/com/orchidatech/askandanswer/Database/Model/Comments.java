@@ -21,7 +21,6 @@ public class Comments extends Model{
         public static final String COLUMN_DATE = "DATE";
         public static final String COLUMN_USER_ID = "USER_ID";
         public static final String COLUMN_POST_ID = "POST_ID";
-        public static final String COLUMN_IS_HIDDEN = "IS_HIDDEN";
         public static final String COLUMN_LIKES = "LIKES";
         public static final String COLUMN_DISLIKES= "DISLIKES";
     }
@@ -44,8 +43,6 @@ public class Comments extends Model{
     @Column(name = FIELDS.COLUMN_POST_ID)
     public long postID;
 
-    @Column(name = FIELDS.COLUMN_IS_HIDDEN)
-    public int isHidden;
     @Column(name = FIELDS.COLUMN_LIKES)
     public int likes;
     @Column(name = FIELDS.COLUMN_DISLIKES)
@@ -55,7 +52,7 @@ public class Comments extends Model{
         super();
     }
 
-    public Comments(long serverID, String text, String image, long date, long userID, long postID, int isHidden, int likes, int disLikes) {
+    public Comments(long serverID, String text, String image, long date, long userID, long postID, int likes, int disLikes) {
         super();
         this.serverID = serverID;
         this.text = text;
@@ -63,7 +60,6 @@ public class Comments extends Model{
         this.date = date;
         this.userID = userID;
         this.postID = postID;
-        this.isHidden = isHidden;
         this.likes = likes;
         this.disLikes = disLikes;
     }
@@ -114,14 +110,6 @@ public class Comments extends Model{
 
     public void setPostID(long postID) {
         this.postID = postID;
-    }
-
-    public int getIsHidden() {
-        return isHidden;
-    }
-
-    public void setIsHidden(int isHidden) {
-        this.isHidden = isHidden;
     }
 
     public int getLikes() {

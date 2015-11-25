@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "logging in");
 //        startActivity(new Intent(this, TermsActivity.class));
-        WebServiceFunctions.login(this, username, password,
+        WebServiceFunctions.login(this, username, password, System.currentTimeMillis(),
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {

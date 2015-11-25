@@ -84,7 +84,7 @@ public class Register extends Activity {
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "registering");
-        WebServiceFunctions.register(this, fname, lname, email, URL.DEFAULT_IMAGE, 0, System.currentTimeMillis(), System.currentTimeMillis(), null, 0, password,
+        WebServiceFunctions.register(this, fname, lname, email, password, URL.DEFAULT_IMAGE, System.currentTimeMillis(), 0,
                 new OnRegisterListener() {
                     @Override
                     public void onSuccess(long uid) {

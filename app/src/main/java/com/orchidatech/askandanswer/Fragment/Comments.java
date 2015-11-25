@@ -166,7 +166,4 @@ public class Comments extends DialogFragment {
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
-
-
-
 }
