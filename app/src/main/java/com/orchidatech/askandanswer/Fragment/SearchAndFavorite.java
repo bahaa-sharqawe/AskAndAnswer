@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
+import com.orchidatech.askandanswer.View.Utils.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -55,20 +59,10 @@ public class SearchAndFavorite extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new SearchRecViewAdapter(getActivity(), posts, 20, ll_parent);
+        adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent);
         rv_posts.setAdapter(adapter);
 
     }
-//    private void setCustomActionBar() {
-//        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-//        toolbar.setTitle("Search And Favorite");
-//        toolbar.setTitleTextColor(Color.parseColor("#fff"));
-//        toolbar.setNavigationIcon(R.drawable.ic_search);
-//
-//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-//
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -85,10 +79,38 @@ public class SearchAndFavorite extends Fragment {
                 return true;
             } else {
                 //perform searching
+                    posts.clear();
+                    performSearching(ed_search.getText().toString());
                 return true;
             }
         }
 
         return false;
+    }
+
+    private void performSearching(String s) {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.search_questions));
+        loadingDialog.setArguments(args);
+        loadingDialog.show(getFragmentManager(), "search");
+        WebServiceFunctions.search(getActivity(), s, new OnSearchCompleted(){
+
+            @Override
+            public void onSuccess(ArrayList<Posts> searchResult) {
+                if(loadingDialog.isVisible())
+                    loadingDialog.dismiss();
+                posts.addAll(searchResult);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFail(String error) {
+                if(loadingDialog.isVisible())
+                    loadingDialog.dismiss();
+                AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
+
+            }
+        });
     }
 }

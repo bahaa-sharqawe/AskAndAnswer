@@ -151,9 +151,14 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     }
                 });
             } else {
+                tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
+                tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
+                tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
-
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
 

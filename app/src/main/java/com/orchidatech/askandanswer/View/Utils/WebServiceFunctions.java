@@ -29,6 +29,7 @@ import com.orchidatech.askandanswer.View.Interface.OnMyAsksFetched;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
+import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
 import com.orchidatech.askandanswer.View.Interface.OnSendCategoriesListener;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
 import com.orchidatech.askandanswer.View.Interface.OnUploadImageListener;
@@ -416,6 +417,21 @@ public class WebServiceFunctions {
         }, url);
     }
 
+    public static void search(Context context, String textFilter, OnSearchCompleted listener) {
+        String url = URL.SEARCH + "?filter=" + encode(textFilter);
+        Operations.getInstance(context).search(new OnLoadFinished() {
+            @Override
+            public void onSuccess(JSONObject o) {
+
+            }
+
+            @Override
+            public void onFail(String error) {
+
+            }
+        }, url);
+
+    }
     public static void geTimeLine(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_TIME_LINE + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +

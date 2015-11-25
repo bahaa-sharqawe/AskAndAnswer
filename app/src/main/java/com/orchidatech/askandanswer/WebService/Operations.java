@@ -71,16 +71,17 @@ public class Operations {
         sendRequest(Request.Method.GET, URL.GET_CATEGORIES, null, listener);
     }
 
-
     public void sendUserCategories(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.SEND_USER_CATEGORIES, params, listener);
-
     }
 
     public void deletePost(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.DELETE_POST, params, listener);
     }
 
+    public void search(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
     public void addPost(Context context, long user_id, long category_id, String text, String picturePath, long date, int is_hidden, OnUploadImageListener listener) {
         UploadReceiver uploadReceiver = new UploadReceiver(context, listener);
         uploadReceiver.register(context);

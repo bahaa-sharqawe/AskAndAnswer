@@ -7,8 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
@@ -28,26 +31,24 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private final View parent;
 
     private ArrayList<Posts> posts;
-    int tempNum;
     private Context context;
     private boolean loading = false;
     private boolean isFoundData = true;
 
-    public SearchRecViewAdapter(Context context, ArrayList<Posts> posts, int tempNum, View parent) {
+    public SearchRecViewAdapter(Context context, ArrayList<Posts> posts, View parent) {
         this.context = context;
         this.posts = posts;
-        this.tempNum = tempNum;
         this.parent = parent;
     }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        if (viewType == TYPE_FOOTER) {
+       /* if (viewType == TYPE_FOOTER) {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
             return new PostViewHolder(itemView, TYPE_FOOTER);
-        } else {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
+        } else*/ {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, parent, false);
             return new PostViewHolder(itemView, TYPE_HEADER);
         }
     }
@@ -55,104 +56,57 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     @Override
     public void onBindViewHolder(final PostViewHolder holder, int position) {
 
-        if (holder.viewType == TYPE_FOOTER) {
-            if (!loading && isFoundData) {
-                loading = true;
-                ///load data from server
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                   listener.onReached();
-                        if (tempNum == 30) {
-                            holder.pv_load.setVisibility(View.GONE);
-                            AppSnackBar.show(parent, context.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
-                            isFoundData = false;
-                            return;
-                        }
-                        tempNum += 10;
-                        notifyDataSetChanged();
-                        loading = false;
-                    }
-                }, 2000);
-            }
-        } else {
-
-//        ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse(postOwner.getPhoto())), holder.iv_person,
-//                null, new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
+//        if (holder.viewType == TYPE_FOOTER) {
+//            if (!loading && isFoundData) {
+//                loading = true;
 //
 //            }
+//        } else {
 //
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//
-//            }
-//        }, new ImageLoadingProgressListener() {
-//            @Override
-//            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//
-//            }
-//        });
-//
-        }
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return tempNum + 1;
+        return posts.size();
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView iv_person;
         TextView tv_person_name;
-        RatingBar rating_comment;
         TextView tv_postDate;
-        TextView tv_post_category;
-        TextView tv_postDesc;
-        TextView tv_comments;
-        TextView tv_likes;
-        TextView tv_unlikes;
-        ProgressBar pv_load;
-        ;
+        TextView tv_postContent;
+        TextView tv_post_category;  //change visibility
+        ImageView iv_postImage;
+        RelativeLayout rl_postEvents; //change visibility
+        LinearLayout ll_share;
+        LinearLayout ll_favorite;
+        LinearLayout ll_comment;
+        CircleImageView iv_profile;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
-            if (viewType == TYPE_FOOTER) {
+           /* if (viewType == TYPE_FOOTER) {
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-            } else {
-                iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
+            } else*/ {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-                rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
-//            LayerDrawable stars = (LayerDrawable) rating_post.getProgressDrawable();
-//            stars.getDraewable(2).setColorFilter(Color.parseColor("#f1ad24"), PorterDuff.Mode.SRC_ATOP);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                tv_postDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
-                tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
-                tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
-                tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
+                rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
+                ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
+                ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
+                ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
             }
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == tempNum)
-            return TYPE_FOOTER;
-        return TYPE_HEADER;
+        return super.getItemViewType(position);
     }
 }

@@ -155,7 +155,6 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
-
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
