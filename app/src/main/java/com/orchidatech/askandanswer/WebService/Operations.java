@@ -75,6 +75,10 @@ public class Operations {
         sendRequest(Request.Method.GET, URL.GET_CATEGORIES, null, listener);
     }
 
+    public void addComment(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
+
     public void sendUserCategories(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.SEND_USER_CATEGORIES, params, listener);
     }

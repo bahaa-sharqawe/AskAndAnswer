@@ -10,7 +10,7 @@ import java.util.Map;
     This class will contains all webservice links
  */
 public class URL {
-    public static final String SERVER_URL = "http://orchidatech.com/";
+    public static final String SERVER_URL = "http://softplaystore.com";
     public static final String WEB_SERVICES_PATH = "sharearide/web-services/";
 
     public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "login.php";
@@ -29,6 +29,7 @@ public class URL {
     public static final String GET_USER_INFO = "user_id.php";
     public static final String GET_TIME_LINE = "newestpost.php";
     public static final String SEARCH = "";
+    public static final String ADD_COMMENT = "add-comment.php";
     public static String GET_USER_Comments = "";
     public static String GET_POST_Comments = "";
 
@@ -53,6 +54,7 @@ public class URL {
         public static final String TEXT = "text";
         public static final String DATE = "date";
         public static final String IS_HIDDEN = "is_hidden";
+        public static final String COMMENT = "comment";
     }
 
 }

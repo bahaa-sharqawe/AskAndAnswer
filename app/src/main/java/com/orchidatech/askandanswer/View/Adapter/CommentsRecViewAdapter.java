@@ -119,6 +119,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         return comments.size() + 1;
     }
 
+
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
         CircleImageView iv_person;
         TextView tv_person_name;
@@ -195,6 +196,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         comments.addAll(postComments);
         pv_load.setVisibility(View.GONE);
         isFoundData = false;
+        notifyDataSetChanged();
+    }
+
+    public void addComment(com.orchidatech.askandanswer.Database.Model.Comments comment) {
+        comments.add(comment);
         notifyDataSetChanged();
     }
 }

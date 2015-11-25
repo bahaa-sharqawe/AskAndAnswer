@@ -4,24 +4,30 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
+import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
@@ -45,8 +51,10 @@ public class Comments extends DialogFragment {
     ProgressBar pb_loading_main;
     private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments;
     private RelativeLayout rl_parent;
-    private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments
-            ;
+    private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments;
+
+    EditText ed_add_comment;
+    ImageView iv_add_comment;
 
 
     @Override
@@ -115,6 +123,31 @@ public class Comments extends DialogFragment {
         resizeLogo();
         loadNewComments();
         postComments = new ArrayList<>(CommentsDAO.getAllCommentsByPost(postId));
+        ed_add_comment = (EditText) view.findViewById(R.id.ed_add_comment);
+        iv_add_comment = (ImageView) view.findViewById(R.id.iv_add_comment);
+        iv_add_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = ed_add_comment.getText().toString().trim();
+                if(!TextUtils.isEmpty(comment)){
+                    iv_add_comment.setEnabled(false);
+                    WebServiceFunctions.addComment(getActivity(), comment, postId, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener(){
+
+                        @Override
+                        public void onAdded(com.orchidatech.askandanswer.Database.Model.Comments comment) {
+                            adapter.addComment(comment);
+                            iv_add_comment.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onFail(String error) {
+                            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                            iv_add_comment.setEnabled(true);
+                        }
+                    });
+                }
+            }
+        });
         return view;
     }
 
