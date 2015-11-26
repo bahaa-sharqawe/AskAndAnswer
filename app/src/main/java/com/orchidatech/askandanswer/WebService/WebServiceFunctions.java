@@ -753,11 +753,8 @@ public class WebServiceFunctions {
 
     }
 
-    public static void addComment(final Context context, final String comment, long postId, long user_id, final OnCommentAddListener listener) {
-       String url = URL.ADD_COMMENT + "?" + URL.URLParameters.COMMENT + "=" + encode(comment) +
-               "&" + URL.URLParameters.POST_ID + "=" + postId + "&" + URL.URLParameters.USER_ID + "=" + user_id;
-        Operations.getInstance(context).addComment(new OnLoadFinished(){
-
+    public static void addComment(final Context context, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
+        UploadImage uploadImage = new UploadImage(context, URL.ADD_COMMENT, new OnLoadFinished() {
             @Override
             public void onSuccess(JSONObject o) {
                 try {
@@ -786,7 +783,47 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error);
             }
-        }, url);
+        });
+        uploadImage.addStringProperty(URL.URLParameters.COMMENT, encode(comment));
+        uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId+"");
+        uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id+"");
+        if(!TextUtils.isEmpty(picturePath))
+            uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
+        uploadImage.sendRequest();
+
+//            String url = URL.ADD_COMMENT + "?" + URL.URLParameters.COMMENT + "=" + encode(comment) +
+//               "&" + URL.URLParameters.POST_ID + "=" + postId + "&" + URL.URLParameters.USER_ID + "=" + user_id;
+//        Operations.getInstance(context).addComment(new OnLoadFinished(){
+//
+//            @Override
+//            public void onSuccess(JSONObject o) {
+//                try {
+//                    int status_code = o.getInt("statusCode");
+//                    int status = o.getInt("status");
+//                    if(status == 0){
+//                        JSONArray data = o.getJSONArray("data");
+//                        JSONObject comment = data.getJSONObject(0);
+//                        long comment_id = comment.getLong("id");
+//                        String comment_text = comment.getString("comment");
+//                        String comment_image = comment.getString("image");
+//                        long user_id = comment.getLong("user_id");
+//                        long post_id = comment.getLong("post_id");
+//                        long comment_date = comment.getLong("created_at");
+//                        Comments newComment = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, 0, 0);
+//                        CommentsDAO.addComment(newComment);
+//                        listener.onAdded(newComment);
+//                    }else
+//                        listener.onFail(GNLConstants.getStatus(status_code));
+//                } catch (JSONException e) {
+//                    listener.onFail(context.getString(R.string.BR_GNL_006));
+//                }
+//            }
+//
+//            @Override
+//            public void onFail(String error) {
+//                listener.onFail(error);
+//            }
+//        }, url);
     }
     public static void updateProfile(final Context context, long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
         Operations.getInstance(context).updateProfile(id, encode(fname), encode(lname),

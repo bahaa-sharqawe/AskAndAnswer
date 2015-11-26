@@ -130,7 +130,7 @@ public class MyAnswers extends Fragment {
                         rl_error.setEnabled(false);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
-                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                    adapter.addFromServer(null, errorCode != 402 ? true : false);
                 }/*else{
                         getFromLocal();
                     }
