@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.WebService;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.alexbbb.uploadservice.MultipartUploadRequest;
 import com.android.volley.Request;
@@ -44,7 +45,9 @@ public class Operations {
     }
 
     public void login(Map<String, String> params, final OnLoadFinished listener) {
+        Log.i("", URL.LOGIN);
         sendRequest(Request.Method.POST, URL.LOGIN, params, listener);
+
     }
 
     public void getUserInfo(OnLoadFinished listener, String url) {

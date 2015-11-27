@@ -104,6 +104,9 @@ public class GNLConstants {
             case 506:
                 message = "Can't found  category with this id !";
                 break;
+            default:
+                message = "An error occurred";
+                break;
         }
         return message;
     }

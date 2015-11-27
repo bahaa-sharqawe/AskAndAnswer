@@ -34,7 +34,7 @@ public class User_ActionsDAO {
     }
 
     public static void updateUserAction(User_Actions userAction) {
-        User_Actions existUserAction = getUserAction(userAction.getUserID(), userAction.getCommentID());
+        User_Actions existUserAction = getUserAction(userAction.getServerID());
         existUserAction.userID = userAction.getUserID();
         existUserAction.date = userAction.getDate();
         existUserAction.actionType = userAction.getActionType();

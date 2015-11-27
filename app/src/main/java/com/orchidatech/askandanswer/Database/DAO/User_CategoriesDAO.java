@@ -50,8 +50,7 @@ public class User_CategoriesDAO {
 
 
     public static List<User_Categories> getAllUserCategories(long userServerId) {
-        return new Select().from(User_Categories.class).where(User_Categories.FIELDS.COLUMN_USER_ID + " = ?", userServerId)
-                .orderBy(User_Categories.FIELDS.COLUMN_SERVER_ID).execute();
+        return new Select().from(User_Categories.class).where(User_Categories.FIELDS.COLUMN_USER_ID + " = ?", userServerId).execute();
     }
 
     public static void deleteAllUserCategories(long userServerId) {

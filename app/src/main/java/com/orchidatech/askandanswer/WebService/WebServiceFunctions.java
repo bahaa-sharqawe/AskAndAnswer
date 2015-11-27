@@ -5,18 +5,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.orchidatech.askandanswer.Constant.GNLConstants;
-import com.orchidatech.askandanswer.Constant.URL;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
@@ -72,8 +74,7 @@ public class WebServiceFunctions {
                     int status_code = o.getInt("statusCode");
                     int status = o.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
-                        JSONObject user = data.getJSONObject(0);
+                        JSONObject user = o.getJSONObject("data");
                         long user_id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -85,23 +86,18 @@ public class WebServiceFunctions {
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
-                        ArrayList<Long> user_categories = new ArrayList<Long>();
-                        JSONArray user_category = user.getJSONArray("user_category");
-                        for (int i = 0; i < user_category.length(); i++)
-                            user_categories.add((Long) user_category.get(i));
-                        JSONArray user_category_info = user.getJSONArray("category_info");
-                        for (int i = 0; i < user_category_info.length(); i++) {
-                            JSONObject category = user_category_info.getJSONObject(i);
-                            long category_id = category.getLong("id");
-                            String name = category.getString("name");
-                            String description = category.getString("description");
-                            CategoriesDAO.addCategory(new Category(category_id, name, description));
-                            User_CategoriesDAO.addUserCategory(new User_Categories(user_categories.get(i), user_id, category_id));
-
-                        }
                         Users _user = new Users(user_id, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
                         UsersDAO.addUser(_user);
-                        listener.onSuccess(user_id, user_categories);
+                        ArrayList<Long> user_categories_id = new ArrayList<Long>();
+                        JSONArray user_category_arr = user.getJSONArray("user_category");
+                        for (int i = 0; i < user_category_arr.length(); i++) {
+                            JSONObject category_obj = user_category_arr.getJSONObject(i);
+                            User_CategoriesDAO.addUserCategory(new User_Categories(category_obj.getLong("id"), category_obj.getLong("user_id"), category_obj.getLong("category_id")));
+                            user_categories_id.add(category_obj.getLong("id"));
+                            JSONObject category_info = category_obj.getJSONObject("Category_info");
+                            CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
+                        }
+                        listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
@@ -140,8 +136,7 @@ public class WebServiceFunctions {
                     int status_code = o.getInt("statusCode");
                     int status = o.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
-                        JSONObject user = data.getJSONObject(0);
+                        JSONObject user = o.getJSONObject("data");
                         long id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -258,8 +253,7 @@ public class WebServiceFunctions {
                     int status_code = o.getInt("statusCode");
                     int status = o.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
-                        JSONObject user = data.getJSONObject(0);
+                        JSONObject user = o.getJSONObject("data");
                         long id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -271,9 +265,11 @@ public class WebServiceFunctions {
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
+                        int no_answer = user.getInt("no_answer");
+                        int no_ask = user.getInt("no_ask");
                         Users _user = new Users(id, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
                         UsersDAO.addUser(_user);
-                        listener.onDataFetched(_user);
+                        listener.onDataFetched(_user, no_answer, no_ask);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
 
@@ -443,6 +439,8 @@ public class WebServiceFunctions {
                             Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, created_at, active, last_login, mobile, is_public, code);
                             UsersDAO.addUser(_user);
                             //////////////////////////////////////////////
+                            JSONObject user_action = comment.getJSONArray("data").getJSONObject(0);
+                            User_ActionsDAO.addUserAction(new User_Actions(user_action.getLong("id"), user_action.getLong("comment_id"), user_action.getLong("user_id"), System.currentTimeMillis(), user_action.getInt("action_type")));
                         }
                         long last_id = o.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
@@ -638,8 +636,7 @@ public class WebServiceFunctions {
                     int status_code = response.getInt("statusCode");
                     int status = response.getInt("status");
                     if (status == 0) {
-                        JSONArray data = response.getJSONArray("data");
-                        JSONObject post = data.getJSONObject(0);
+                        JSONObject post = response.getJSONObject("data");
                         long id = post.getLong("id");
                         String text = post.getString("text");
                         String image = post.getString("image");
@@ -848,31 +845,31 @@ public class WebServiceFunctions {
                                 String code = user.getString("code");
                                 String mobile = user.getString("mobile");
                                 int is_public = user.getInt("is_public");
-                                ArrayList<User_Categories> user_categories = new ArrayList<User_Categories>();
-                                JSONArray arr_user_category = user.getJSONArray("user_category");
-                                for (int i = 0; i < arr_user_category.length(); i++) {
-                                    JSONObject user_category = arr_user_category.getJSONObject(i);
-                                    long user_category_id = user_category.getLong("id");
-                                    long category_id = user_category.getLong("category_id");
-                                    user_categories.add(new User_Categories(user_category_id, uid, category_id));
-                                }
-                                ArrayList<User_Categories> allCurrentStored = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
-                                boolean deleting;
-                                for (User_Categories currentUserCategory : allCurrentStored) {
-                                    deleting = false;
-                                    for (int i = 0; i < user_categories.size(); i++) {
-                                        if (currentUserCategory.getCategoryID() == user_categories.get(i).getCategoryID()) {
-                                            deleting = true;
-                                            break;
-                                        }
-                                        if (deleting) {
-                                            User_CategoriesDAO.deleteUserCategory(currentUserCategory.getServerID(), uid);
-                                            PostsDAO.deletePostsInCategory(uid, currentUserCategory.getCategoryID());
-                                            ////find solution to remove favorite posts also, it is solved in getAllUserPostFavorite method
-                                        }
-
-                                    }
-                                }
+//                                ArrayList<User_Categories> user_categories = new ArrayList<User_Categories>();
+//                                JSONArray arr_user_category = user.getJSONArray("user_category");
+//                                for (int i = 0; i < arr_user_category.length(); i++) {
+//                                    JSONObject user_category = arr_user_category.getJSONObject(i);
+//                                    long user_category_id = user_category.getLong("id");
+//                                    long category_id = user_category.getLong("category_id");
+//                                    user_categories.add(new User_Categories(user_category_id, uid, category_id));
+//                                }
+//                                ArrayList<User_Categories> allCurrentStored = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
+//                                boolean deleting;
+//                                for (User_Categories currentUserCategory : allCurrentStored) {
+//                                    deleting = false;
+//                                    for (int i = 0; i < user_categories.size(); i++) {
+//                                        if (currentUserCategory.getCategoryID() == user_categories.get(i).getCategoryID()) {
+//                                            deleting = true;
+//                                            break;
+//                                        }
+//                                        if (deleting) {
+//                                            User_CategoriesDAO.deleteUserCategory(currentUserCategory.getServerID(), uid);
+//                                            PostsDAO.deletePostsInCategory(uid, currentUserCategory.getCategoryID());
+//                                            ////find solution to remove favorite posts also, it is solved in getAllUserPostFavorite method
+//                                        }
+//
+//                                    }
+//                                }
 
                                 Users _user = new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
                                 UsersDAO.addUser(_user);

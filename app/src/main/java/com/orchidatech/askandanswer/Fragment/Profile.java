@@ -208,7 +208,7 @@ public class Profile extends Fragment {
         WebServiceFunctions.getUserInfo(getActivity(), user_id, new OnUserInfoFetched() {
 
             @Override
-            public void onDataFetched(Users user) {
+            public void onDataFetched(Users user, int no_answer, int no_ask) {
                 tv_person.setText(user.getFname() + " " + user.getLname());
                 Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile);
             }

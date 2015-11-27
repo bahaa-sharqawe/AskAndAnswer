@@ -1,8 +1,5 @@
 package com.orchidatech.askandanswer.Constant;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Bahaa on 13/11/2015.
  */
@@ -12,26 +9,26 @@ import java.util.Map;
 public class URL {
     public static final String SERVER_URL = "http://softplaystore.com";
     public static final String WEB_SERVICES_PATH = "/askandanswer_ws/public/";
-    public static final String DEFAULT_IMAGE = "";
+    public static final String DEFAULT_IMAGE = SERVER_URL + WEB_SERVICES_PATH + "users/default_image.jpg";
 
-    public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/login.php";
-    public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user.php";
-    public static final String GET_USER_INFO = "user/user_info.php";
-    public static final String GET_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "cat/all-categories.php";
-    public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update_profile.php";
-    public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category.php";
-    public static final String GET_USER_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpost.php";
-    public static final String EDIT_POST = "post/edit-post.php";
-    public static final String ADD_POST = "post/add-post.php";
-    public static final String DELETE_POST = "post/delete-post.php";
-    public static final String GET_TIME_LINE = "post/newestpost.php";
-    public static final String ADD_POST_FAVORITE = "postFav/add-post-favorite.php";
-    public static final String GET_USER_FAV_POSTS = "postFav/userfavpost.php";
-    public static final String REMOVE_POST_FAVORITE = "postFav/remove-post-favorite.php";
-    public static final String SEARCH = "post/searchuserpostall.php";
-    public static final String ADD_COMMENT = "comment/add-comment.php";
+    public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/login";
+    public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user";
+    public static final String GET_USER_INFO = "user/user_info";
+    public static final String GET_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "cat/all-categories";
+    public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update_profile";
+    public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category";
+    public static final String GET_USER_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpost";
+    public static final String EDIT_POST = "post/edit-post";
+    public static final String ADD_POST = "post/add-post";
+    public static final String DELETE_POST = "post/delete-post";
+    public static final String GET_TIME_LINE = "post/newestpost";
+    public static final String ADD_POST_FAVORITE = "postFav/add-post-favorite";
+    public static final String GET_USER_FAV_POSTS = "postFav/userfavpost";
+    public static final String REMOVE_POST_FAVORITE = "postFav/remove-post-favorite";
+    public static final String SEARCH = "post/searchuserpostall";
+    public static final String ADD_COMMENT = "comment/add-comment";
     public static String GET_USER_Comments = "";
-    public static String GET_POST_Comments = "comment/post-comment.php";
+    public static String GET_POST_Comments = "comment/post-comment";
 
     public class URLParameters {
         public static final String ID = "id";

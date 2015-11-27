@@ -56,6 +56,7 @@ public class SplashScreen extends Activity {
 //        updateCategoriesFromServer();//to sync categories with server
 
         if (mId != -1) {//Someone is logged
+
             List<User_Categories> categories = User_CategoriesDAO.getAllUserCategories(mId);
             if (categories != null && categories.size() > 0) {//this means that current user selected categories previously
 //                fetchPostsFromServer();//to sync posts with server

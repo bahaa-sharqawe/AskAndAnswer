@@ -38,7 +38,7 @@
             android:textSize="16sp"
             android:textColor="#959595"
             android:singleLine="true"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_name"
             android:drawableStart="@drawable/ic_name"
             android:drawablePadding="10dp"
