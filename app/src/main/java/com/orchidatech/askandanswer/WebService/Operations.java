@@ -83,6 +83,9 @@ public class Operations {
         sendRequest(Request.Method.GET, url, null, listener);
     }
 
+    public void getUserCategories(String url, OnLoadFinished listener) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
     public void sendUserCategories(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.SEND_USER_CATEGORIES, params, listener);
     }

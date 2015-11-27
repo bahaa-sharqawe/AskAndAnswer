@@ -3,19 +3,23 @@ package com.orchidatech.askandanswer.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
+import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
@@ -34,11 +38,12 @@ public class SplashScreen extends Activity {
     boolean mFirstTime;
     long mId;
     String mPassword;
+    RelativeLayout rl_parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         resizeLogo();
 
@@ -48,18 +53,11 @@ public class SplashScreen extends Activity {
         mId = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);//user id if is logged
         mPassword = pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null); // password for current user
 
-//        if (mFirstTime) {
-//            prefEditor.putBoolean(GNLConstants.SharedPreference.FIRST_TIME_KEY, false).commit();
-//        } else {
-//            fetchPostsFromServer();//to sync posts with server
-//        }
-//        updateCategoriesFromServer();//to sync categories with server
-
         if (mId != -1) {//Someone is logged
-
             List<User_Categories> categories = User_CategoriesDAO.getAllUserCategories(mId);
             if (categories != null && categories.size() > 0) {//this means that current user selected categories previously
-//                fetchPostsFromServer();//to sync posts with server
+                updateCategoriesFromServer();
+                updateUserCategories(mId);
                 mIntent = new Intent(this, MainScreen.class);
             }
             else
@@ -78,23 +76,38 @@ public class SplashScreen extends Activity {
         }, TIME_OUT);
     }
 
-    private void updateCategoriesFromServer() {
-        WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
+    private void updateUserCategories(long mId) {
+        WebServiceFunctions.getUserCategories(this, mId, new OnUserCategoriesFetched(){
+
             @Override
-            public void onSuccess(ArrayList<Category> categories) {
+            public void onSuccess(ArrayList<User_Categories> categories) {
+//                AppSnackBar.show(rl_parent, "User Categories updating completed...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
 
             }
 
             @Override
             public void onFail(String cause) {
+//                AppSnackBar.show(rl_parent, "User Categories updating failed...", Color.RED, Color.WHITE);
 
             }
         });
     }
 
-    private void fetchPostsFromServer() {
-//        WebServiceFunctions.getPosts(this);
+    private void updateCategoriesFromServer() {
+        WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
+            @Override
+            public void onSuccess(ArrayList<Category> categories) {
+//                AppSnackBar.show(rl_parent, "Categories updated...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
+
+            }
+
+            @Override
+            public void onFail(String cause) {
+//                AppSnackBar.show(rl_parent, "Categories updating failed...", Color.RED, Color.WHITE);
+            }
+        });
     }
+
 
     private void resizeLogo() {
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();

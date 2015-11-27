@@ -18,7 +18,7 @@
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/iv_person"
-            android:src="@drawable/man"
+            android:src="@drawable/ic_user"
             android:layout_marginRight="10dp"
             app:civ_border_width="1dp"
             app:civ_border_color="#ece8e7"/>
@@ -145,12 +145,25 @@
                     android:text="30"
                     android:textSize="16sp"
                     android:textColor="#959595"/>
-                <ImageView
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/iv_unlike"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/unlike"/>
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/iv_unlike"
+                        android:layout_gravity="center"
+                        android:src="@drawable/unlike"
+                        />
+                      <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/iv_unlike_on"
+                        android:layout_gravity="center"
+                        android:src="@drawable/unlike"/>
+
+                </RelativeLayout>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -168,12 +181,24 @@
                     android:text="10"
                     android:textSize="16sp"
                     android:textColor="#959595"/>
-                <ImageView
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/iv_like"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/like"/>
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/iv_like"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/like"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/iv_like_on"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/like"/>
+                </RelativeLayout>
+
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>

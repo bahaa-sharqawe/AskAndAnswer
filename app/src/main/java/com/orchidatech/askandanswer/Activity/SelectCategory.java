@@ -217,6 +217,7 @@ public class SelectCategory extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
         loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "sending");
         //send selected categories to server
                 WebServiceFunctions.sendUserCategories(this, uid, selectedCats, new OnSendCategoriesListener() {
@@ -224,9 +225,8 @@ public class SelectCategory extends AppCompatActivity {
                     @Override
                     public void onSendingSuccess() {
                         loadingDialog.dismiss();
-                        AppSnackBar.show(rl_parent, "sending successfully", Color.GREEN, Color.WHITE);
-
-//                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
+//                        AppSnackBar.show(rl_parent, "saved successfully", Color.GREEN, Color.WHITE);
+                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
                     }
 
                     @Override

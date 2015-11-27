@@ -1,10 +1,15 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import com.activeandroid.Model;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.User_Categories;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,6 +34,14 @@ public class PostsDAO {
         post.save();
     }
 
+    public static void checkRowsCount() {
+        ArrayList<Posts> allPosts = new ArrayList<>(getAllPosts());
+        int count = allPosts.size();
+        Collections.reverse(allPosts);
+            for(int i = 0; i < count-GNLConstants.MAX_POSTS_ROWS; i++)
+                deletePost(allPosts.get(0).getServerID());
+    }
+
     public static void deletePost(long postServerId){
         new Delete().from(Posts.class).where(Posts.FIELDS.COLUMN_SERVER_ID + " = ?", postServerId).execute();
     }
@@ -50,15 +63,15 @@ public class PostsDAO {
     }
 
     public static List<Posts> getAllPosts(){
-        return new Select().from(Posts.class).orderBy(Posts.FIELDS.COLUMN_SERVER_ID).execute();
+        return new Select().from(Posts.class).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
     }
 
     public static List<Posts> getUserPosts(long userId){
-        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? ", userId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID).execute();
+        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? ", userId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
     }
     public static List<Posts> getAllPosts(long userId, long categoryId){
         return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? and " +
-                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", userId, categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID).execute();
+                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", userId, categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
     }
 
     public static void deleteAllPosts(){
@@ -72,5 +85,22 @@ public class PostsDAO {
     public static void deletePostsInCategory(long uid, long categoryId) {
         new Delete().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? and " + Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", uid, categoryId).execute();
 
+    }
+
+    public static ArrayList<Posts> getPostsInUserCategories(long user_id) {
+        ArrayList<Long> user_categories_id = new ArrayList<>();
+        ArrayList<Posts> allPosts = new ArrayList<>();
+        for(User_Categories user_categories : User_CategoriesDAO.getAllUserCategories(user_id))
+            user_categories_id.add(user_categories.getCategoryID());
+        for(long categoryId : user_categories_id){
+            allPosts.addAll(new ArrayList<Posts>(getAllPostsByCategory(categoryId)));
+        }
+
+        return allPosts;
+    }
+
+    private static List<Posts> getAllPostsByCategory(long categoryId) {
+        return new Select().from(Posts.class).where(
+                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
     }
 }

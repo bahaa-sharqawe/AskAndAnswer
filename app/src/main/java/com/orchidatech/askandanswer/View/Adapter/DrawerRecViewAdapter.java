@@ -1,12 +1,14 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -54,21 +56,22 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {//Display the data at the specified position
+    public void onBindViewHolder(final ItemViewHolder holder, int position) {//Display the data at the specified position
         if (holder.viewType == TYPE_HEADER) {//complete the code here
-            Users user = UsersDAO.getUser(SplashScreen.pref.getInt(GNLConstants.SharedPreference.ID_KEY, -1));
+            Users user = UsersDAO.getUser(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
             if (user != null) {
                 holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
                 holder.tv_person_email.setText(user.getEmail());
+                holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 Picasso.with(context).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
-
+                        holder.load_image_progress.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onError() {
-
+                        holder.load_image_progress.setVisibility(View.GONE);
                     }
                 });
             }
@@ -90,6 +93,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         TextView tv_person_name;
         TextView tv_person_email;
         ImageView iv_profile;
+        ProgressBar load_image_progress;
         //menu components
         ImageView iv_drawer_item;
         TextView tv_drawer_item;
@@ -102,6 +106,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_person_email = (TextView) itemView.findViewById(R.id.tv_person_email);
                 iv_profile = (ImageView) itemView.findViewById(R.id.iv_profile);
+                load_image_progress = (ProgressBar) itemView.findViewById(R.id.load_image_progress);
             } else {
                 iv_drawer_item = (ImageView) itemView.findViewById(R.id.iv_drawer_item);
                 tv_drawer_item = (TextView) itemView.findViewById(R.id.tv_drawer_item);

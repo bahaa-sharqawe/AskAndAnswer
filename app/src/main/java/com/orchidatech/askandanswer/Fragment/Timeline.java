@@ -28,6 +28,7 @@ import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
@@ -58,7 +59,7 @@ public class Timeline extends Fragment {
     ImageView uncolored_logo;
     TextView tv_error;
     ProgressBar pb_loading_main;
-    private ArrayList<Posts> userPosts;
+    private ArrayList<Posts> allStoredPosts;
 
 
     @Nullable
@@ -168,6 +169,7 @@ public class Timeline extends Fragment {
 //        userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
         resizeLogo();
+        allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
         loadNewPosts();
     }
 
@@ -190,10 +192,9 @@ public class Timeline extends Fragment {
 //                        if(userPosts.size()>0)
 //                            getFromLocal();
 //                        else {
-                            rl_error.setVisibility(View.VISIBLE);
-                            tv_error.setText(GNLConstants.getStatus(errorCode));
-                            rl_error.setEnabled(true);
+
                       //  }
+                        getFromLocal(error);
                     }else{
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(false);
@@ -207,8 +208,13 @@ public class Timeline extends Fragment {
         });
     }
 
-    private void getFromLocal() {
-        adapter.addFromLocal(userPosts);
+    private void getFromLocal(String error) {
+        if(allStoredPosts == null || allStoredPosts.size() == 0) {
+            rl_error.setVisibility(View.VISIBLE);
+            tv_error.setText(error);
+            rl_error.setEnabled(true);
+        }
+        adapter.addFromLocal(allStoredPosts);
     }
     private void resizeLogo() {
         Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();

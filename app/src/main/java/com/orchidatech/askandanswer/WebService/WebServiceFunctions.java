@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
@@ -35,6 +36,7 @@ import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
 import com.orchidatech.askandanswer.View.Interface.OnSendCategoriesListener;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
 import com.orchidatech.askandanswer.View.Interface.OnUploadImageListener;
+import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
@@ -251,6 +253,43 @@ public class WebServiceFunctions {
         });
     }
 
+    public static void getUserCategories(final Context context, final long mId, final OnUserCategoriesFetched listener) {
+        String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId;
+        Operations.getInstance(context).getUserCategories(url , new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        ArrayList<User_Categories> allUserCategories = new ArrayList<>();
+                        JSONArray data = dataObj.getJSONArray("data");
+                        for(int i = 0; i<data.length(); i++){
+                            JSONObject userCategory_obj = data.getJSONObject(i);
+                            long user_category_id = userCategory_obj.getLong("category_id");
+                            JSONObject category_info = userCategory_obj.getJSONObject("category_info");
+                            CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
+                            User_Categories user_categories = new User_Categories(user_category_id, mId, category_info.getLong("id"));
+                            User_CategoriesDAO.addUserCategory(user_categories);
+                            allUserCategories.add(user_categories);
+                        }
+                        listener.onSuccess(allUserCategories);
+                    }else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+
+            }
+        });
+
+    }
     public static void getUserInfo(final Context context, long user_id, final OnUserInfoFetched listener) {
         String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id;
         Operations.getInstance(context).getUserInfo(new OnLoadFinished() {
@@ -363,6 +402,7 @@ public class WebServiceFunctions {
                             fetchedPosts.add(postItem);
                         }
                         long last_id = dataObj.getLong("last_id");
+                        PostsDAO.checkRowsCount();
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -515,7 +555,7 @@ public class WebServiceFunctions {
                             long post_created_at = post.getLong("created_at");
                             /////////////////////////////////////////////////////////////
                             ///data for post's user to store him/her if does not stored in local db
-                            JSONObject user = post.getJSONObject("user");
+                            JSONObject user = post.getJSONArray("user").getJSONObject(0);
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
                             String email = user.getString("email");
@@ -527,13 +567,14 @@ public class WebServiceFunctions {
                             String mobile = user.getString("mobile");
                             int is_public = user.getInt("is_public");
                             /////////////////////////////////////////////////////////////
-                            Users _user = new Users(id, f_name, l_name, null, email, null, user_image, user_created_at, active, last_login, mobile, is_public, code);
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, user_created_at, active, last_login, mobile, is_public, code);
                             UsersDAO.addUser(_user);
                             Posts postItem = new Posts(id, text, image, post_created_at, user_id, category_id, is_hidden, comments_no);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
                         long last_id = dataObj.getLong("last_id");
+                        PostsDAO.checkRowsCount();
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -665,6 +706,7 @@ public class WebServiceFunctions {
                         long created_at = post.getLong("created_at");
                         Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
                         PostsDAO.addPost(postItem);
+                        PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
