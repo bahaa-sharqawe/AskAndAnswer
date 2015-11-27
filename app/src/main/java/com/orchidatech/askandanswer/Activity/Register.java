@@ -83,12 +83,12 @@ public class Register extends Activity {
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
         loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "registering");
         WebServiceFunctions.register(this, fname, lname, email, password, URL.DEFAULT_IMAGE, System.currentTimeMillis(), 0,
                 new OnRegisterListener() {
                     @Override
                     public void onSuccess(long uid) {
-                        if (loadingDialog.isVisible())
                             loadingDialog.dismiss();
                         SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
@@ -99,7 +99,6 @@ public class Register extends Activity {
 
                     @Override
                     public void onFail(String cause) {
-                        if (loadingDialog.isVisible())
                             loadingDialog.dismiss();
                         AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
                     }

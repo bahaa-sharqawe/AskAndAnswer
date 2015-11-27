@@ -3,7 +3,6 @@ package com.orchidatech.askandanswer.WebService;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 
 import org.apache.http.HttpEntity;
@@ -15,8 +14,6 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,13 +89,7 @@ public class UploadImage {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(s);
-                listener.onSuccess(jsonObject);
-            } catch (JSONException e) {
-                listener.onFail(context.getString(R.string.BR_GNL_001));
-            }
+            listener.onSuccess(s);
         }
     }
 }

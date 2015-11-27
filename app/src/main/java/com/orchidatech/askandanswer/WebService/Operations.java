@@ -41,11 +41,11 @@ public class Operations {
     }
 
     public void register(Map<String, String> params, final OnLoadFinished listener) {
+        Log.i("gfgfdgfdgfdgfdgfdgfdg", URL.REGISTER);
         sendRequest(Request.Method.POST, URL.REGISTER, params, listener);
     }
 
     public void login(Map<String, String> params, final OnLoadFinished listener) {
-        Log.i("", URL.LOGIN);
         sendRequest(Request.Method.POST, URL.LOGIN, params, listener);
 
     }
@@ -75,6 +75,7 @@ public class Operations {
     }
 
     public void getCategories(OnLoadFinished listener) {
+        Log.i("gfgfdgfdgfdgfdgfdgfdg", URL.GET_CATEGORIES);
         sendRequest(Request.Method.GET, URL.GET_CATEGORIES, null, listener);
     }
 
@@ -165,9 +166,9 @@ public class Operations {
     }
 
     private void sendRequest(int method, final String url, Map<String, String> params, final OnLoadFinished listener) {
-        OperationsManager.getInstance(context).sendRequest(method, url, params, new Response.Listener<JSONObject>() {
+        OperationsManager.getInstance(context).sendRequest(method, url, params, new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject o) {
+                    public void onResponse(String o) {
                         listener.onSuccess(o);
                     }
                 },

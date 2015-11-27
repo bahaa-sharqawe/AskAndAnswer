@@ -67,14 +67,14 @@ public class Login extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
         loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "logging in");
 //        startActivity(new Intent(this, TermsActivity.class));
         WebServiceFunctions.login(this, username, password, System.currentTimeMillis(),
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
-                        if(loadingDialog.isVisible())
-                            loadingDialog.dismiss();
+                            loadingDialog.getDialog().dismiss();
                         SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         SplashScreen.prefEditor.commit();
@@ -88,8 +88,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
-                        if(loadingDialog.isVisible())
-                            loadingDialog.dismiss();
+                        loadingDialog.getDialog().dismiss();
                         AppSnackBar.show(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
                     }
                 });
@@ -116,7 +115,6 @@ public class Login extends AppCompatActivity {
                 if (verifyInputs(username, password)) {
                     login(username, password);
                 }
-
             }
         });
         tv_signup_now.setText(Html.fromHtml(getResources().getString(R.string.tv_signup_now)));
@@ -124,6 +122,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this, Register.class));
+                finish();
             }
         });
 

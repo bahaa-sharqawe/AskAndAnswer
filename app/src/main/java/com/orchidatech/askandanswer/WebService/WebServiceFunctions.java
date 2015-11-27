@@ -1,12 +1,11 @@
 package com.orchidatech.askandanswer.WebService;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.orchidatech.askandanswer.Constant.*;
-import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
@@ -63,18 +62,21 @@ public class WebServiceFunctions {
 
         Operations.getInstance(context).login(params, new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
+
+                    Log.i("gfgfdgfdgfdgfdgfdgfdg", response);
                     //fill user info from o then store it and pass it to onSuccess
                     ///Check o content then decide success or fail..
                     //if user not found then listener.onFail(context.getString(R.string.BR_LOGIN_004))
                     //if username or password incorrect then listener.onFail(context.getString(R.string.BR_LOGIN_003))
                     //else listener.onSuccess()
                     //store in local DB
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject data = new JSONObject(response);
+                    int status_code = data.getInt("statusCode");
+                    int status = data.getInt("status");
                     if (status == 0) {
-                        JSONObject user = o.getJSONObject("data");
+                        JSONObject user = data.getJSONObject("data");
                         long user_id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -119,24 +121,26 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.FNAME, encode(fname));
         params.put(URL.URLParameters.LNAME, encode(lname));
         params.put(URL.URLParameters.EMAIL, email);
+        params.put(URL.URLParameters.PASSWORD, encode(password));
         params.put(URL.URLParameters.IMAGE, image);
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
 //        params.put(URL.URLParameters.MOBILE, mobile);
         params.put(URL.URLParameters.IS_PUBLIC, is_public + "");
-        params.put(URL.URLParameters.PASSWORD, encode(password));
-
         Operations.getInstance(context).register(params, new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 ///Check o content then decide success or fail..
                 //if user already exists then listener.onFail(context.getString(R.string.BR_SIGN_004))
                 //else listener.onSuccess()
                 //store in local DB
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    Log.i("gfgfdgfdgfdgfdgfdgfdg", response);
+
+                    JSONObject data = new JSONObject(response);
+                    int status_code = data.getInt("statusCode");
+                    int status = data.getInt("status");
                     if (status == 0) {
-                        JSONObject user = o.getJSONObject("data");
+                        JSONObject user = data.getJSONObject("data");
                         long id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -170,14 +174,15 @@ public class WebServiceFunctions {
         Operations.getInstance(context).getCategories(new OnLoadFinished() {
 
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 ///parsing o to fetch all categories then
                 //store in localDB
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Category> allCategories = new ArrayList<Category>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject category = data.getJSONObject(i);
@@ -214,13 +219,14 @@ public class WebServiceFunctions {
         Operations.getInstance(context).sendUserCategories(params, new OnLoadFinished() {
 
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 //store in local DB
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject category = data.getJSONObject(i);
                             long id = category.getLong("id");
@@ -248,12 +254,13 @@ public class WebServiceFunctions {
         Operations.getInstance(context).getUserInfo(new OnLoadFinished() {
 
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONObject user = o.getJSONObject("data");
+                        JSONObject user = dataObj.getJSONObject("data");
                         long id = user.getLong("id");
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
@@ -291,12 +298,13 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Operations.getInstance(context).getUserFavPosts(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Post_Favorite> fetchedPosts = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post = data.getJSONObject(i);
@@ -307,7 +315,7 @@ public class WebServiceFunctions {
                             Post_FavoriteDAO.addPostFavorite(postItem);
                             fetchedPosts.add(postItem);
                         }
-                        long last_id = o.getLong("last_id");
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -331,12 +339,13 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Operations.getInstance(context).getUserPosts(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post = data.getJSONObject(i);
@@ -351,7 +360,7 @@ public class WebServiceFunctions {
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
-                        long last_id = o.getLong("last_id");
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -374,14 +383,15 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Operations.getInstance(context).getUserComments(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
-                        long last_id = o.getLong("last_id");
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -404,12 +414,13 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Operations.getInstance(context).getPostComments(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject comment = data.getJSONObject(i);
@@ -442,7 +453,7 @@ public class WebServiceFunctions {
                             JSONObject user_action = comment.getJSONArray("data").getJSONObject(0);
                             User_ActionsDAO.addUserAction(new User_Actions(user_action.getLong("id"), user_action.getLong("comment_id"), user_action.getLong("user_id"), System.currentTimeMillis(), user_action.getInt("action_type")));
                         }
-                        long last_id = o.getLong("last_id");
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -462,7 +473,7 @@ public class WebServiceFunctions {
         String url = URL.SEARCH + "?filter=" + encode(textFilter);
         Operations.getInstance(context).search(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
 
             }
 
@@ -481,12 +492,13 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Operations.getInstance(context).getTimeLine(new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post = data.getJSONObject(i);
@@ -519,7 +531,7 @@ public class WebServiceFunctions {
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
-                        long last_id = o.getLong("last_id");
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -542,12 +554,13 @@ public class WebServiceFunctions {
         Operations.getInstance(context).addPostFavorite(params, new OnLoadFinished() {
 
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         JSONObject post_fav = data.getJSONObject(0);
                         Post_Favorite post_favorite = new Post_Favorite(post_fav.getLong("id"), post_fav.getLong("post_id"), post_fav.getLong("user_id"), System.currentTimeMillis());
                         Post_FavoriteDAO.addPostFavorite(post_favorite);
@@ -575,10 +588,11 @@ public class WebServiceFunctions {
         Operations.getInstance(context).removePostFavorite(params, new OnLoadFinished() {
 
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
                         Post_FavoriteDAO.deletePostFavorite(postFavId, uid);
                         listener.onSuccess();
@@ -601,10 +615,11 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.POST_ID, postId + "");
         Operations.getInstance(context).deletePost(params, new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
                         PostsDAO.deletePost(postId);
                         //CASCADE
@@ -631,12 +646,13 @@ public class WebServiceFunctions {
 
         UploadImage uploadImage = new UploadImage(context, URL.ADD_POST, new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject response) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = response.getInt("statusCode");
-                    int status = response.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONObject post = response.getJSONObject("data");
+                        JSONObject post = dataObj.getJSONObject("data");
                         long id = post.getLong("id");
                         String text = post.getString("text");
                         String image = post.getString("image");
@@ -753,12 +769,13 @@ public class WebServiceFunctions {
     public static void addComment(final Context context, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
         UploadImage uploadImage = new UploadImage(context, URL.ADD_COMMENT, new OnLoadFinished() {
             @Override
-            public void onSuccess(JSONObject o) {
+            public void onSuccess(String response) {
                 try {
-                    int status_code = o.getInt("statusCode");
-                    int status = o.getInt("status");
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if(status == 0){
-                        JSONArray data = o.getJSONArray("data");
+                        JSONArray data = dataObj.getJSONArray("data");
                         JSONObject comment = data.getJSONObject(0);
                         long comment_id = comment.getLong("id");
                         String comment_text = comment.getString("comment");

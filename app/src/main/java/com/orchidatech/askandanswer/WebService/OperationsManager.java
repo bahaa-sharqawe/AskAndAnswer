@@ -28,7 +28,7 @@ public class OperationsManager {
         return instance;
     }
 
-    public void sendRequest(int method, String url, Map<String, String> params, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void sendRequest(int method, String url, Map<String, String> params, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         MyRequest mRequest = new MyRequest(method, url, listener, errorListener, params);
         RequestQueueHandler.getInstance(context).addToRequestQueue(mRequest);
 //
