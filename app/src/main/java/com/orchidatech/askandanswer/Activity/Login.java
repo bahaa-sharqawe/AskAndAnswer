@@ -26,6 +26,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
+import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
@@ -52,6 +53,7 @@ public class Login extends AppCompatActivity {
     private String TAG = Login.class.getSimpleName();
 
     public static AppGoogleAuth googleAuth;
+    private Validator mValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class Login extends AppCompatActivity {
         googleAuth.mGoogleApiClient.connect();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mValidator = Validator.getInstance();
         ed_name = (EditText) this.findViewById(R.id.ed_name);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
         btn_login = (Button) this.findViewById(R.id.btn_login);
@@ -179,6 +182,9 @@ public class Login extends AppCompatActivity {
     private boolean verifyInputs(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
+            return false;
+        } else if (!mValidator.isValidEmail(username)) {
+            AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
             AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);

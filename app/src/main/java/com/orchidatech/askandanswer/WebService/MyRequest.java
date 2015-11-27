@@ -30,16 +30,14 @@ public class MyRequest extends StringRequest {
         return params;
     }
 
-//    @Override
-//    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-//        try {
-//            String utf8String = new String(response.data, "UTF-8");
-//            return Response.success(new JSONObject(utf8String), HttpHeaderParser.parseCacheHeaders(response));
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    @Override
+    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+        try {
+            String utf8String = new String(response.data, "UTF-8");
+            return Response.success(new String(utf8String), HttpHeaderParser.parseCacheHeaders(response));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

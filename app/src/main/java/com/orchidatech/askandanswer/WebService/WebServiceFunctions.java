@@ -118,10 +118,10 @@ public class WebServiceFunctions {
                                 String password, final String image, final long last_login, final int is_public,
                                 final OnRegisterListener listener) {
         Map<String, String> params = new HashMap<>();
-        params.put(URL.URLParameters.FNAME, encode(fname));
-        params.put(URL.URLParameters.LNAME, encode(lname));
+        params.put(URL.URLParameters.FNAME, fname.replace(" ", "%20"));
+        params.put(URL.URLParameters.LNAME, lname.replace(" ", "%20"));
         params.put(URL.URLParameters.EMAIL, email);
-        params.put(URL.URLParameters.PASSWORD, encode(password));
+        params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.IMAGE, image);
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
 //        params.put(URL.URLParameters.MOBILE, mobile);
@@ -215,6 +215,7 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.CATEGORIES_ID, sb.toString());
         params.put(URL.URLParameters.USER_ID, uid + "");
+        Log.i("gfgfdgfdgfdgfdgfdgfdg", uid + ", " + sb.toString());
 
         Operations.getInstance(context).sendUserCategories(params, new OnLoadFinished() {
 
@@ -222,6 +223,7 @@ public class WebServiceFunctions {
             public void onSuccess(String response) {
                 //store in local DB
                 try {
+                    Log.i("gfgfdgfdgfdgfdgfdgfdg", uid + ", " + response);
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");

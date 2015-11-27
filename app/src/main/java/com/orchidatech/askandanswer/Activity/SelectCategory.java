@@ -103,9 +103,11 @@ public class SelectCategory extends AppCompatActivity {
         original_categories.addAll(categories);
         pv_load.setVisibility(View.GONE);
         lv_categories.setVisibility(View.VISIBLE);
-        if(categories.size() > 0)
+        if(categories.size() > 0) {
+            original_categories.get(0).setIsChecked(true);
+            categories.get(0).setIsChecked(true);
             adapter.notifyDataSetChanged();
-        else {
+        } else {
             rl_error.setVisibility(View.VISIBLE);
             tv_error.setText(error);
             AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
@@ -221,14 +223,14 @@ public class SelectCategory extends AppCompatActivity {
 
                     @Override
                     public void onSendingSuccess() {
-                    if(loadingDialog.isVisible())
                         loadingDialog.dismiss();
-                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
+                        AppSnackBar.show(rl_parent, "sending successfully", Color.GREEN, Color.WHITE);
+
+//                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
                     }
 
                     @Override
                     public void onSendingFail(String error) {
-                        if(loadingDialog.isVisible())
                             loadingDialog.dismiss();
                         AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
 
