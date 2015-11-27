@@ -1,19 +1,26 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
@@ -37,13 +44,17 @@ public class SelectCategory extends AppCompatActivity {
 
     RelativeLayout rl_parent;
     ListView lv_categories;
-    CircularProgressView pv_load;
+//    CircularProgressView pv_load;
+    ProgressBar pv_load;
     CategoriesAdapter adapter;
     ArrayList<Category> categories;
     ArrayList<Category> original_categories;
     ArrayList<String> titles;
     EditText ed_search;
     long uid;
+    RelativeLayout rl_error;
+    ImageView uncolored_logo;
+    TextView tv_error;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +78,8 @@ public class SelectCategory extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        pv_load.startAnimation();
+        rl_error.setVisibility(View.GONE);
+        pv_load.setVisibility(View.VISIBLE);
         lv_categories.setVisibility(View.GONE);
         WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
@@ -93,13 +105,26 @@ public class SelectCategory extends AppCompatActivity {
         lv_categories.setVisibility(View.VISIBLE);
         if(categories.size() > 0)
             adapter.notifyDataSetChanged();
-        else
+        else {
+            rl_error.setVisibility(View.VISIBLE);
+            tv_error.setText(error);
             AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+        }
     }
 
     private void initializeFields() {
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
-        pv_load = (CircularProgressView) this.findViewById(R.id.pv_load);
+        pv_load = (ProgressBar) this.findViewById(R.id.pv_load);
+        pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
+        rl_error.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadCategories();
+            }
+        });
+        tv_error = (TextView) this.findViewById(R.id.tv_error);
+        uncolored_logo = (ImageView) this.findViewById(R.id.uncolored_logo);
         ed_search = (EditText) this.findViewById(R.id.ed_search);
         ed_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -109,7 +134,7 @@ public class SelectCategory extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                pv_load.resetAnimation();
+//                pv_load.resetAnimation();
                 pv_load.setVisibility(View.VISIBLE);
                 lv_categories.setVisibility(View.GONE);
                 filterList(s.toString());
@@ -134,6 +159,8 @@ public class SelectCategory extends AppCompatActivity {
         adapter = new CategoriesAdapter(this, categories);
         lv_categories.setAdapter(adapter);
         uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        resizeLogo();
+
     }
 
     private void setCustomActionBar() {
@@ -168,7 +195,6 @@ public class SelectCategory extends AppCompatActivity {
                 return true;
             } else {
                 //perform searching
-                pv_load.resetAnimation();
                 pv_load.setVisibility(View.VISIBLE);
                 lv_categories.setVisibility(View.GONE);
                 filterList(ed_search.getText().toString());
@@ -226,5 +252,13 @@ public class SelectCategory extends AppCompatActivity {
         }
         return true;
     }
+    private void resizeLogo() {
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point screenSize = new Point(); // used to store screen size
+        display.getSize(screenSize); // store size in screenSize
+        uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
+        uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+    }
+
 
 }

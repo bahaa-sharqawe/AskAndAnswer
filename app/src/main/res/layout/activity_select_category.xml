@@ -38,14 +38,48 @@
         android:layout_below="@+id/toolbar"
         android:divider="@null"
         android:dividerHeight="0dp"/>
-    <com.github.rahatarmanahmed.cpv.CircularProgressView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pv_load"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/rl_error"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/uncolored_logo"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/uncolored_logo"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/tv_your_questions"
+            android:id="@+id/tv_error"
+            android:layout_below="@+id/uncolored_logo"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+    <!--<com.github.rahatarmanahmed.cpv.CircularProgressView-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/pv_load"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--app:cpv_animAutostart="true"-->
+        <!--app:cpv_indeterminate="true"-->
+        <!--app:cpv_color="#249885"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--/>-->
+    <ProgressBar
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:cpv_animAutostart="true"
-        app:cpv_indeterminate="true"
-        app:cpv_color="#249885"
+        android:id="@+id/pv_load"
         android:layout_centerInParent="true"
         />
 
