@@ -114,7 +114,12 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                     pe_listener.onCategoryClick(postCategory.getServerID(), postOwner.getServerID());
                 }
             });
-
+            holder.ll_post.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onClick(posts.get(position).getServerID());
+                }
+            });
             String postImage = currentPost.getImage();
             if(postImage!=null && postImage.length()>0) {
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
@@ -143,6 +148,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
+        LinearLayout ll_post;
         CircleImageView iv_profile;
         int viewType;
 
@@ -173,12 +179,8 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
+                ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
+
 
             }
 

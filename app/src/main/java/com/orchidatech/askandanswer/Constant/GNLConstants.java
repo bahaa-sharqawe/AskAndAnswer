@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class GNLConstants {
 
-    public static final int POST_LIMIT = 40;
+    public static final int POST_LIMIT = 5;
     public static final int MAX_POSTS_ROWS = 100;
     public static final int COMMENTS_LIMIT = 10;
 

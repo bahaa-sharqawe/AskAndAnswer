@@ -609,7 +609,7 @@ public class WebServiceFunctions {
 
     public static void geTimeLine(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_TIME_LINE + "?" + URL.URLParameters.USER_ID + "=" + uid +
-                "&" + URL.URLParameters.LIMIT + "=" + 10 +
+                "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Log.i("sdsadsadsds", url);
@@ -817,28 +817,29 @@ public class WebServiceFunctions {
 
 
     public static void editPost(final Context context, long post_id, long user_id, long category_id, String postDesc, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
-        Operations.getInstance(context).editPost(context, post_id, user_id, category_id, postDesc, picturePath, date, isHidden, new OnUploadImageListener() {
+
+        UploadImage uploadImage = new UploadImage(context, URL.EDIT_POST, new OnLoadFinished() {
             @Override
-            public void onSuccess(String serverResponseMessage) {
+            public void onSuccess(String response) {
                 try {
-                    JSONObject response = new JSONObject(serverResponseMessage);
-                    int status_code = response.getInt("statusCode");
-                    int status = response.getInt("status");
+                    Log.i("dfdcxcx", response);
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = response.getJSONArray("data");
-                        JSONObject post = data.getJSONObject(0);
+                        JSONObject post = dataObj.getJSONObject("data");
                         long id = post.getLong("id");
                         String text = post.getString("text");
                         String image = post.getString("image");
                         int is_hidden = post.getInt("is_hidden");
-                        long user_id = post.getLong("user_id");
                         long category_id = post.getLong("category_id");
-                        int comments_no = post.getInt("comment_no");
+                        long user_id = post.getLong("user_id");
+//                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("created_at");
-                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
-                        PostsDAO.updatePost(postItem);
+                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0);
+                        PostsDAO.addPost(postItem);
+                        PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
-                        ;
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
@@ -851,8 +852,55 @@ public class WebServiceFunctions {
             @Override
             public void onFail(String error) {
                 listener.onFail(error);
+
             }
         });
+        uploadImage.addStringProperty(URL.URLParameters.ID, post_id + "");
+        uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
+        uploadImage.addStringProperty(URL.URLParameters.CATEGORY_ID, category_id + "");
+        uploadImage.addStringProperty(URL.URLParameters.TEXT, postDesc);
+//        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
+        uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, isHidden + "");
+        if (!TextUtils.isEmpty(picturePath))
+            uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
+        uploadImage.sendRequest();
+//        Operations.getInstance(context).editPost(context, post_id, user_id, category_id, postDesc, picturePath, date, isHidden, new OnUploadImageListener() {
+//            @Override
+//            public void onSuccess(String serverResponseMessage) {
+//                Log.i("sdss", serverResponseMessage);
+//                try {
+//                    JSONObject response = new JSONObject(serverResponseMessage);
+//                    int status_code = response.getInt("statusCode");
+//                    int status = response.getInt("status");
+//                    if (status == 0) {
+//                        JSONArray data = response.getJSONArray("data");
+//                        JSONObject post = data.getJSONObject(0);
+//                        long id = post.getLong("id");
+//                        String text = post.getString("text");
+//                        String image = post.getString("image");
+//                        int is_hidden = post.getInt("is_hidden");
+//                        long user_id = post.getLong("user_id");
+//                        long category_id = post.getLong("category_id");
+//                        int comments_no = post.getInt("comment_no");
+//                        long created_at = post.getLong("created_at");
+//                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
+//                        PostsDAO.updatePost(postItem);
+//                        listener.onSuccess(context.getResources().getString(R.string.saved));
+//                        ;
+//                    } else {
+//                        listener.onFail(GNLConstants.getStatus(status_code));
+//                    }
+//
+//                } catch (JSONException e) {
+//                    listener.onFail(context.getString(R.string.BR_GNL_006));
+//                }
+//            }
+//
+//            @Override
+//            public void onFail(String error) {
+//                listener.onFail(error);
+//            }
+//        });
 
     }
 

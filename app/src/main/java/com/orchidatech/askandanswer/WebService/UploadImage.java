@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.WebService;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 
@@ -18,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Created by Bahaa on 20/11/2015.
@@ -49,7 +51,7 @@ public class UploadImage {
 
     public void addStringProperty(String key, String value) {
         try {
-            entity.addPart(key, new StringBody(value));
+            entity.addPart(key, new StringBody(value, Charset.forName("UTF-8")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -81,7 +83,6 @@ public class UploadImage {
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
             }
             return responseString;
         }
@@ -89,6 +90,10 @@ public class UploadImage {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if(TextUtils.isEmpty(s))
+                listener.onFail("Please Chaeck yout internet connection");
+            else
+
             listener.onSuccess(s);
         }
     }

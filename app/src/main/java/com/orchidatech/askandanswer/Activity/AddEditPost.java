@@ -177,10 +177,12 @@ public class AddEditPost extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
         loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "Saving...");
         WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, picturePath, date, isHidden, new OnEditPostListener() {
             @Override
             public void onSuccess(String message) {
+                loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -192,6 +194,7 @@ public class AddEditPost extends AppCompatActivity {
 
             @Override
             public void onFail(String error) {
+                loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });

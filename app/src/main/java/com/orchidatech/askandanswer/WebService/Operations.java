@@ -124,10 +124,10 @@ public class Operations {
         uploadReceiver.register(context);
         MultipartUploadRequest request = new MultipartUploadRequest(context, UUID.randomUUID().toString(), URL.EDIT_POST);
         if (picturePath != null)
-            request.addFileToUpload(picturePath, URL.URLParameters.IMAGE, new File(picturePath).getName(), null);
-        request.addParameter(URL.URLParameters.POST_ID, post_id + "");
+            request.addFileToUpload(picturePath, "image", new File(picturePath).getName(), null);
+        request.addParameter(URL.URLParameters.ID, post_id + "");
         request.addParameter(URL.URLParameters.USER_ID, user_id + "");
-        request.addParameter(URL.URLParameters.CATEGORIES_ID, category_id + "");
+        request.addParameter(URL.URLParameters.CATEGORY_ID, category_id + "");
         request.addParameter(URL.URLParameters.TEXT, text);
         request.addParameter(URL.URLParameters.DATE, date + "");
         request.addParameter(URL.URLParameters.IS_HIDDEN, isHidden + "");
