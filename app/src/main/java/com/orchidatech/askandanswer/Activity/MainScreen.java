@@ -160,9 +160,13 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //logout
+                SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
+                SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
+
                 Intent intent = new Intent(this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                finish();
                 break;
             case 7:
                 //settings
@@ -177,12 +181,12 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 fragment = new AboutUs();
                 break;
         }
-        if (fragment != null && oldPosition != position) {
+        if (fragment != null) {
             oldPosition = position;
             defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
             ft.replace(R.id.fragment_host, fragment);
-            ft.addToBackStack(null);
+//            ft.addToBackStack(null);
             ft.commit();
             mFragmentManager.executePendingTransactions();
             setTitle(position == 0 ? "Questions" : itemsTitles.get(position));

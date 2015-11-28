@@ -65,21 +65,27 @@ public class Timeline extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_timeline, null, false);
+        View view = inflater.inflate(R.layout.fragment_timeline, null, false);
+        rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
+//        rv_posts.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_posts.setLayoutManager(llm);
+        return  view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.notif_drawer);
-        rv_notifications = (RecyclerView) getActivity().findViewById(R.id.rv_notifications);
+//        mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.notif_drawer);
+//        rv_notifications = (RecyclerView) getActivity().findViewById(R.id.rv_notifications);
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
         rl_num_notifications.setVisibility(View.VISIBLE);
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawerLayout.openDrawer(GravityCompat.END);
+//                mDrawerLayout.openDrawer(GravityCompat.END);
 //                mDrawerLayout.openDrawer(rv_notifications);
             }
         });
@@ -93,11 +99,7 @@ public class Timeline extends Fragment {
             }
         });
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-        rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
-        rv_posts.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_posts.setLayoutManager(llm);
+
         allPosts = new ArrayList<>();
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnPostEventListener() {
 
@@ -182,6 +184,8 @@ public class Timeline extends Fragment {
                 }
                 last_id_server = last_id_server == 0?last_id:last_id_server;
                 adapter.addFromServer(latestPosts, false);
+//                allPosts.addAll(latestPosts);
+//                adapter.notifyDataSetChanged();
             }
 
             @Override

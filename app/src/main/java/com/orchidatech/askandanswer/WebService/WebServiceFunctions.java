@@ -59,7 +59,7 @@ public class WebServiceFunctions {
     public static void login(final Context context, String email, String password, long last_login, final OnLoginListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.EMAIL, email);
-        params.put(URL.URLParameters.PASSWORD, encode(password));
+        params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.LAST_LOGIN, last_login+"");
 
         Operations.getInstance(context).login(params, new OnLoadFinished() {
@@ -120,8 +120,8 @@ public class WebServiceFunctions {
                                 String password, final String image, final long last_login, final int is_public,
                                 final OnRegisterListener listener) {
         Map<String, String> params = new HashMap<>();
-        params.put(URL.URLParameters.FNAME, fname.replace(" ", "%20"));
-        params.put(URL.URLParameters.LNAME, lname.replace(" ", "%20"));
+        params.put(URL.URLParameters.FNAME, fname);
+        params.put(URL.URLParameters.LNAME, lname);
         params.put(URL.URLParameters.EMAIL, email);
         params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.IMAGE, image);
@@ -529,9 +529,10 @@ public class WebServiceFunctions {
 
     public static void geTimeLine(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_TIME_LINE + "?" + URL.URLParameters.USER_ID + "=" + uid +
-                "&" + URL.URLParameters.LIMIT + "=" + limit +
+                "&" + URL.URLParameters.LIMIT + "=" + 10 +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("sdsadsadsds", url);
         Operations.getInstance(context).getTimeLine(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -691,6 +692,7 @@ public class WebServiceFunctions {
             @Override
             public void onSuccess(String response) {
                 try {
+                    Log.i("dfdcxcx", response);
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
@@ -702,9 +704,9 @@ public class WebServiceFunctions {
                         int is_hidden = post.getInt("is_hidden");
                         long category_id = post.getLong("category_id");
                         long user_id = post.getLong("user_id");
-                        int comments_no = post.getInt("comment_no");
+//                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("created_at");
-                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
+                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
                         PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
@@ -724,7 +726,7 @@ public class WebServiceFunctions {
             }
         });
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
-        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, category_id + "");
+        uploadImage.addStringProperty(URL.URLParameters.CATEGORY_ID, category_id + "");
         uploadImage.addStringProperty(URL.URLParameters.TEXT, text);
 //        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
         uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, is_hidden + "");

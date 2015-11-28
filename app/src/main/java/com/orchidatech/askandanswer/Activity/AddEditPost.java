@@ -162,9 +162,9 @@ public class AddEditPost extends AppCompatActivity {
             if (verifyInputs(picturePath, postDesc)) {
                 ///SEND TO SERVER
                 if(editPostId == -1){//add case
-                    addPost(user_id, selectedCategory.getServerID(), postDesc, picturePath, System.currentTimeMillis(), 0);
+                    addPost(user_id, selectedCategory.getCategoryID(), postDesc, picturePath, System.currentTimeMillis(), 0);
                 }else{//edit case
-                    editPost(editPostId, user_id, selectedCategory.getServerID(), postDesc, editPost.date, image_str==null?null:picturePath/*to know if picture changed */, editPost.getIsHidden());
+                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, image_str==null?null:picturePath/*to know if picture changed */, editPost.getIsHidden());
                 }
             }
             return true;
@@ -203,11 +203,13 @@ public class AddEditPost extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
         loadingDialog.setArguments(args);
-        loadingDialog.show(getFragmentManager(), "Saving...");
+        loadingDialog.setCancelable(false);
 
+        loadingDialog.show(getFragmentManager(), "Saving...");
         WebServiceFunctions.addPost(this, user_id, category_id, postDesc, picturePath, date, is_hidden, new OnAddPostListener() {
             @Override
             public void onSuccess(String message) {
+                loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -219,6 +221,7 @@ public class AddEditPost extends AppCompatActivity {
 
             @Override
             public void onFail(String error) {
+                loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, error, getResources().getColor(R.color.colorPrimary), Color.WHITE);
             }
         });

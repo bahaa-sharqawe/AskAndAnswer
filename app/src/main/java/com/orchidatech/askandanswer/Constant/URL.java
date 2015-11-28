@@ -20,17 +20,17 @@ public class URL {
     public static final String GET_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/user-categories";
 
     public static final String GET_USER_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpost";
-    public static final String EDIT_POST = "post/edit-post";
-    public static final String ADD_POST = "post/add-post";
-    public static final String DELETE_POST = "post/delete-post";
-    public static final String GET_TIME_LINE = "post/newestpost";
-    public static final String ADD_POST_FAVORITE = "postFav/add-post-favorite";
-    public static final String GET_USER_FAV_POSTS = "postFav/userfavpost";
-    public static final String REMOVE_POST_FAVORITE = "postFav/remove-post-favorite";
-    public static final String SEARCH = "post/searchuserpostall";
-    public static final String ADD_COMMENT = "comment/add-comment";
+    public static final String EDIT_POST = SERVER_URL + WEB_SERVICES_PATH + "post/edit-post";
+    public static final String ADD_POST = SERVER_URL + WEB_SERVICES_PATH + "post/add-post";
+    public static final String DELETE_POST = SERVER_URL + WEB_SERVICES_PATH + "post/delete-post";
+    public static final String GET_TIME_LINE = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost";
+    public static final String ADD_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/add-post-favorite";
+    public static final String GET_USER_FAV_POSTS = SERVER_URL + WEB_SERVICES_PATH + "postFav/userfavpost";
+    public static final String REMOVE_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/remove-post-favorite";
+    public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
+    public static final String ADD_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/add-comment";
     public static String GET_USER_Comments = "";
-    public static String GET_POST_Comments = "comment/post-comment";
+    public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";
 
     public class URLParameters {
         public static final String ID = "id";
@@ -54,5 +54,6 @@ public class URL {
         public static final String DATE = "date";
         public static final String IS_HIDDEN = "is_hidden";
         public static final String COMMENT = "comment";
+        public static final String CATEGORY_ID = "category_id";
     }
 }

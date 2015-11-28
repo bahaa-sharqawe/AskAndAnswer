@@ -84,7 +84,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
-            }
+            }else
+                pv_load.setVisibility(View.GONE);
+
         } else {
             Posts currentPost = posts.get(position);
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
@@ -108,8 +110,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 holder.iv_postImage.setVisibility(View.VISIBLE);
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
-
-            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
+            if(postOwner!=null && postOwner.getImage().length()>0)
+                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -214,16 +216,22 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
+            if(pv_load != null)
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
         } else {
             if(isErrorConnection){
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    btn_reload.setEnabled(true);
+                    pv_load.setVisibility(View.GONE);
+                }
             }else {
-                pv_load.setVisibility(View.GONE);
-                btn_reload.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
                 isFoundData = false;
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
@@ -233,7 +241,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
     public void addFromLocal(ArrayList<Posts> newPosts){
         posts.addAll(newPosts);
-        pv_load.setVisibility(View.GONE);
+        if(pv_load != null)
+            pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
     }
