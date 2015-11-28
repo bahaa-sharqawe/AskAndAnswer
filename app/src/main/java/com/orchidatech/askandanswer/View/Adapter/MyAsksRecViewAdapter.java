@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             if(postImage!=null && postImage.length()>0) {
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
+                Log.i("jggn", currentPost.getImage());
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
 

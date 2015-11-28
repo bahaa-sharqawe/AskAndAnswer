@@ -112,6 +112,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             if(postImage!=null && postImage.length()>0) {
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
+
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
 

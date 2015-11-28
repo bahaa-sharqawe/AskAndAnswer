@@ -65,7 +65,7 @@ public class MyFavorites extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
         rv_favorites.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());

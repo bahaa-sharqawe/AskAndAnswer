@@ -269,10 +269,12 @@ public class WebServiceFunctions {
                         JSONArray data = dataObj.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject userCategory_obj = data.getJSONObject(i);
-                            long user_category_id = userCategory_obj.getLong("category_id");
+                            long user_category_id = userCategory_obj.getLong("id");
+                            long user_id = userCategory_obj.getLong("user_id");
+                            long category_id = userCategory_obj.getLong("category_id");
                             JSONObject category_info = userCategory_obj.getJSONObject("category_info");
                             CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
-                            User_Categories user_categories = new User_Categories(user_category_id, mId, category_info.getLong("id"));
+                            User_Categories user_categories = new User_Categories(user_category_id, user_id, category_id);
                             User_CategoriesDAO.addUserCategory(user_categories);
                             allUserCategories.add(user_categories);
                         }
