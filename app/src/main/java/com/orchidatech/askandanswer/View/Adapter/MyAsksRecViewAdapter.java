@@ -197,14 +197,18 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            pv_load.setVisibility(View.VISIBLE);
+            if(pv_load != null)
+              pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
         } else {
             if(isErrorConnection){
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    pv_load.setVisibility(View.GONE);
+                }
             }else {
+                if(pv_load != null && btn_reload != null)
                 pv_load.setVisibility(View.GONE);
                 btn_reload.setVisibility(View.GONE);
                 isFoundData = false;
@@ -216,6 +220,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
 
     public void addFromLocal(ArrayList<Posts> newPosts){
         posts.addAll(newPosts);
+        if(pv_load != null)
         pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();

@@ -73,12 +73,14 @@ public class Comments extends DialogFragment {
     ImageView iv_comment;
     private String picturePath;
     private String image_str;
+    private long user_id;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         postId = getArguments().getLong(ViewPost.POST_ID);
+        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -87,14 +89,13 @@ public class Comments extends DialogFragment {
         dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.comments_fragment_backgnd));
         dialog.setView(getCustomView(), 0, 0, 0, 0);
-        dialog.setCanceledOnTouchOutside(true);
-
         return dialog;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
     }
 
@@ -195,8 +196,9 @@ public class Comments extends DialogFragment {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
+
     private void loadNewComments() {
-        WebServiceFunctions.getPostComments(getActivity(), postId, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnCommentFetchListener() {
+        WebServiceFunctions.getPostComments(getActivity(), user_id, postId, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {

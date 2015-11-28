@@ -176,16 +176,21 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
         if (comments != null && comments.size() > 0) {
             comments.addAll(_comments);
-            pv_load.setVisibility(View.VISIBLE);
+            if(pv_load != null)
+                pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
         } else {
             if (isErrorConnection) {
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    pv_load.setVisibility(View.GONE);
+                }
             } else {
-                pv_load.setVisibility(View.GONE);
-                btn_reload.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
                 isFoundData = false;
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
@@ -194,7 +199,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
     public void addFromLocal(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments) {
         comments.addAll(postComments);
-        pv_load.setVisibility(View.GONE);
+        if(pv_load != null)
+            pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
     }

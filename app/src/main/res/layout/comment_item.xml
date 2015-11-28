@@ -30,21 +30,41 @@
             android:layout_toRightOf="@+id/iv_person"
             android:layout_alignTop="@+id/iv_person"
             >
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_person_name"
-                android:text="Paco Xiao"
-                android:textColor="#4d4d4d"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                />
+                android:orientation="horizontal"
+                android:id="@+id/ll_comment_header">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/tv_person_name"
+                    android:text="Paco Xiao"
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_comment_category"
+                    android:text="Android"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="#fff"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/post_category_backgnd"/>
+            </LinearLayout>
+
             <RatingBar
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:id="@+id/rating_comment"
-                android:layout_below="@+id/tv_person_name"
-                android:layout_alignLeft="@+id/tv_person_name"
+                android:layout_below="@+id/ll_comment_header"
+                android:layout_alignLeft="@+id/ll_comment_header"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:isIndicator="true"
@@ -57,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_commentDate"
                 android:layout_toRightOf="@+id/rating_comment"
-                android:layout_below="@+id/tv_person_name"
+                android:layout_below="@+id/ll_comment_header"
                 android:layout_alignBottom="@+id/rating_comment"
                 android:text="Oct 16, 2015"
                 android:textSize="15sp"
@@ -65,26 +85,13 @@
                 android:gravity="center|bottom"
                 android:layout_alignTop="@+id/rating_comment"
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_comment_category"
-                android:text="Android"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/tv_person_name"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:textColor="#fff"
-                android:gravity="center"
-                android:background="@drawable/post_category_backgnd"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_comDesc"
                 android:layout_below="@+id/rating_comment"
-                android:layout_alignLeft="@+id/tv_person_name"
+                android:layout_alignLeft="@+id/ll_comment_header"
                 android:paddingLeft="0dp"
                 android:text="@string/post_example"
                 android:layout_marginTop="17dp"

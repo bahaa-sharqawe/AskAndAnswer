@@ -65,13 +65,7 @@ public class Timeline extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_timeline, null, false);
-        rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
-//        rv_posts.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_posts.setLayoutManager(llm);
-        return  view;
+        return inflater.inflate(R.layout.fragment_timeline, null, false);
     }
 
     @Override
@@ -99,7 +93,11 @@ public class Timeline extends Fragment {
             }
         });
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-
+        rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
+//        rv_posts.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_posts.setLayoutManager(llm);
         allPosts = new ArrayList<>();
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnPostEventListener() {
 
@@ -160,6 +158,7 @@ public class Timeline extends Fragment {
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,8 +183,6 @@ public class Timeline extends Fragment {
                 }
                 last_id_server = last_id_server == 0?last_id:last_id_server;
                 adapter.addFromServer(latestPosts, false);
-//                allPosts.addAll(latestPosts);
-//                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -193,15 +190,11 @@ public class Timeline extends Fragment {
                 if(pb_loading_main.getVisibility() == View.VISIBLE){
                     pb_loading_main.setVisibility(View.GONE);
                     if(errorCode != 402){//ALL ERRORS EXCEPT NO_POSTS
-//                        if(userPosts.size()>0)
-//                            getFromLocal();
-//                        else {
-
-                      //  }
                         getFromLocal(error);
                     }else{
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(false);
+                        rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/{
                         adapter.addFromServer(null, errorCode != 402?true:false);//CONNECTION ERROR

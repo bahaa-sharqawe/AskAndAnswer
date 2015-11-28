@@ -2,11 +2,13 @@ package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -14,9 +16,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
+import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -30,18 +40,20 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
     private static final int TYPE_FOOTER = 1;
     private final View parent;
     private final OnPostEventListener pe_listener;
+    private final OnLastListReachListener lastListReachListener;
     private ArrayList<Posts> posts;
-    int tempNum;
     private Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
+    private ProgressBar pv_load;
+    private Button btn_reload;
 
-    public CategoryPostRecViewAdapter(Activity activity, ArrayList<Posts> posts, int tempNum, View parent, OnPostEventListener pe_listener) {
+    public CategoryPostRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent, OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
-        this.tempNum = tempNum;
         this.parent = parent;
         this.pe_listener = pe_listener;
+        this.lastListReachListener = lastListReachListener;
     }
 
     @Override
@@ -57,64 +69,64 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
     }
 
     @Override
-    public void onBindViewHolder(final PostViewHolder holder, int position) {
-
+    public void onBindViewHolder(final PostViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
-            if (!loading && isFoundData) {
+            btn_reload.setVisibility(View.GONE);
+            if (!loading && isFoundData && posts.size() > 0) {
+                pv_load.setVisibility(View.VISIBLE);
                 loading = true;
-                ///load data from server
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //                   listener.onReached();
-                        if (tempNum == 30) {
-                            holder.pv_load.setVisibility(View.GONE);
-                            AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
-                            isFoundData = false;
-                            return;
-                        }
-                        tempNum += 10;
-                        notifyDataSetChanged();
-                        loading = false;
-                    }
-                }, 2000);
+                lastListReachListener.onReached();
             }
         } else {
+            Posts currentPost = posts.get(position);
+            final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+            final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+            holder.tv_post_category.setText(postCategory.getName());
+            holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+            holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
+            holder.tv_postContent.setText(currentPost.getText());
 
-//        ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse(postOwner.getPhoto())), holder.iv_person,
-//                null, new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//
-//            }
-//        }, new ImageLoadingProgressListener() {
-//            @Override
-//            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//
-//            }
-//        });
-//
+            holder.ll_comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onCommentPost(posts.get(position).getServerID());
+                }
+            });
+
+            holder.ll_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onSharePost(posts.get(position).getServerID());
+                }
+            });
+            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
+                }
+            });
+            holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pe_listener.onCategoryClick(postCategory.getServerID(), postOwner.getServerID());
+                }
+            });
+
+            String postImage = currentPost.getImage();
+            if(postImage!=null && postImage.length()>0) {
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+                holder.iv_postImage.setVisibility(View.VISIBLE);
+            }else
+                holder.iv_postImage.setVisibility(View.GONE);
+
+            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
+
         }
     }
 
     @Override
     public int getItemCount() {
-        return tempNum + 1;
+        return posts.size() + 1;
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
@@ -128,8 +140,6 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
         CircleImageView iv_profile;
-        ProgressBar pv_load;
-        RelativeLayout rl_post_item;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
@@ -138,6 +148,17 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
             if (viewType == TYPE_FOOTER) {
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
+                btn_reload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setVisibility(View.GONE);
+                        pv_load.setVisibility(View.VISIBLE);
+                        loading = true;
+                        lastListReachListener.onReached();
+                    }
+                });
+
             } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
@@ -178,8 +199,41 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
 
     @Override
     public int getItemViewType(int position) {
-        if (position == tempNum)
+        if (position == posts.size())
             return TYPE_FOOTER;
         return TYPE_HEADER;
     }
+    public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
+        if (newPosts != null && newPosts.size() > 0) {
+            posts.addAll(newPosts);
+            if(pv_load != null)
+                pv_load.setVisibility(View.VISIBLE);
+            isFoundData = true;
+            notifyDataSetChanged();
+        } else {
+            if(isErrorConnection){
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    pv_load.setVisibility(View.GONE);
+                }
+            }else {
+                if(pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
+                isFoundData = false;
+                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+            }
+        }
+        loading = false;
+    }
+
+    public void addFromLocal(ArrayList<Posts> newPosts){
+        posts.addAll(newPosts);
+        if(pv_load != null)
+            pv_load.setVisibility(View.GONE);
+        isFoundData = false;
+        notifyDataSetChanged();
+    }
+
 }

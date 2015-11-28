@@ -58,6 +58,9 @@ public class Operations {
         sendRequest(Request.Method.GET, url, null, listener);
     }
 
+    public void getCategoryPosts(OnLoadFinished listener, String url) {
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
     public void getTimeLine(OnLoadFinished listener, String url) {
         sendRequest(Request.Method.GET, url, null, listener);
     }

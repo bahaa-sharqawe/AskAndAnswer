@@ -63,7 +63,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
                 holder.tv_person_email.setText(user.getEmail());
                 holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-                Picasso.with(context).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
+                Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
                         holder.load_image_progress.setVisibility(View.GONE);
@@ -72,6 +72,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                     @Override
                     public void onError() {
                         holder.load_image_progress.setVisibility(View.GONE);
+                        holder.iv_profile.setImageResource(R.drawable.ic_user);
                     }
                 });
             }

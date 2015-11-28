@@ -56,8 +56,8 @@ public class SplashScreen extends Activity {
         if (mId != -1) {//Someone is logged
             List<User_Categories> categories = User_CategoriesDAO.getAllUserCategories(mId);
             if (categories != null && categories.size() > 0) {//this means that current user selected categories previously
-                updateCategoriesFromServer();
-                updateUserCategories(mId);
+//                updateCategoriesFromServer();
+//                updateUserCategories(mId);
                 mIntent = new Intent(this, MainScreen.class);
             }
             else

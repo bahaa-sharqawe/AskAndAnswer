@@ -15,14 +15,17 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Activity.SplashScreen;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
@@ -48,6 +51,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     private boolean loading = false;
     private boolean isFoundData = true;
     private final OnLastListReachListener lastListReachListener;
+    private long current_user_id;
 
 
     public MyAnswersRecViewAdapter(Activity activity, ArrayList<Comments> comments, View parent, OnUserActionsListener listener, OnLastListReachListener lastListReachListener) {
@@ -56,6 +60,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
         this.listener = listener;
         this.comments = comments;
         this.lastListReachListener = lastListReachListener;
+        current_user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -83,6 +88,17 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
             Comments currentComment = comments.get(position);
             Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
             Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
+            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
+            if(user_actions != null && user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()){
+                //hide like off and show like on
+                //hide unlike on and show unlike off
+            }  else if(user_actions != null && user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
+                //hide like on and show like off
+                //hide unlike off and show unlike on
+            }else{
+                //hide like on and show like off
+                //hide unlike on and show unlike off
+            }
             Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
@@ -172,16 +188,21 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
         if (comments != null && comments.size() > 0) {
             comments.addAll(_comments);
-            pv_load.setVisibility(View.VISIBLE);
+            if(pv_load != null)
+                pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
         } else {
             if (isErrorConnection) {
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    pv_load.setVisibility(View.GONE);
+                }
             } else {
-                pv_load.setVisibility(View.GONE);
-                btn_reload.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
                 isFoundData = false;
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
@@ -190,7 +211,8 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     }
     public void addFromLocal(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> myComments) {
         comments.addAll(myComments);
-        pv_load.setVisibility(View.GONE);
+        if(pv_load != null)
+             pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
     }

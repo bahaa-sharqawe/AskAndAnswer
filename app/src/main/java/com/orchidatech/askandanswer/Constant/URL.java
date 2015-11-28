@@ -24,12 +24,13 @@ public class URL {
     public static final String ADD_POST = SERVER_URL + WEB_SERVICES_PATH + "post/add-post";
     public static final String DELETE_POST = SERVER_URL + WEB_SERVICES_PATH + "post/delete-post";
     public static final String GET_TIME_LINE = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost";
+    public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
+    public static String GET_Category_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpostincategory";
     public static final String ADD_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/add-post-favorite";
     public static final String GET_USER_FAV_POSTS = SERVER_URL + WEB_SERVICES_PATH + "postFav/userfavpost";
     public static final String REMOVE_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/remove-post-favorite";
-    public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
     public static final String ADD_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/add-comment";
-    public static String GET_USER_Comments = "";
+    public static String GET_USER_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/usercomment";
     public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";
 
     public class URLParameters {

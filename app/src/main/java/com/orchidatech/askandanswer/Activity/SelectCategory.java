@@ -227,6 +227,7 @@ public class SelectCategory extends AppCompatActivity {
                         loadingDialog.dismiss();
 //                        AppSnackBar.show(rl_parent, "saved successfully", Color.GREEN, Color.WHITE);
                         startActivity(new Intent(SelectCategory.this, MainScreen.class));
+                        finish();
                     }
 
                     @Override

@@ -145,26 +145,39 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
-                btn_reload.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.setVisibility(View.GONE);
-                        pv_load.setVisibility(View.VISIBLE);
-                        loading = true;
-                        lastListReachListener.onReached();
-                    }
-                });
             } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
+
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
+                tv_post_category.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        pe_listener.onCategoryClick(1);
+//                        postEventsListener.onCategoryClick(posts.get(getAdapterPosition()).getCategoryID());
+                    }
+                });
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
+                ll_comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pe_listener.onCommentPost(1);
+//                        postEventsListener.onCommentPost(posts.get(getAdapterPosition()).getServerID());
+                    }
+                });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pe_listener.onClick(1);
+//                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
+                    }
+                });
 
             }
 
@@ -185,16 +198,21 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     public void addFromServer(ArrayList<Post_Favorite> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            pv_load.setVisibility(View.VISIBLE);
+            if(pv_load != null)
+                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
         } else {
             if(isErrorConnection){
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    pv_load.setVisibility(View.GONE);
+                }
             }else {
-                pv_load.setVisibility(View.GONE);
-                btn_reload.setVisibility(View.GONE);
+                if(pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
                 isFoundData = false;
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
@@ -204,7 +222,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
     public void addFromLocal(ArrayList<Post_Favorite> newPosts){
         posts.addAll(newPosts);
-        pv_load.setVisibility(View.GONE);
+        if(pv_load != null)
+            pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
     }

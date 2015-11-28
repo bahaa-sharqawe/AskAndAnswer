@@ -58,7 +58,7 @@ public class User_CategoriesDAO {
     }
 
     private static boolean isExist(long serverID) {
-        return getUserCategory(serverID) != null ;
+        return (getUserCategory(serverID)!=null) ;
     }
 
 }

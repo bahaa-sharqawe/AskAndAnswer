@@ -124,7 +124,7 @@ public class MyAsks extends Fragment{
         }, new OnLastListReachListener() {
             @Override
             public void onReached() {
-
+                loadNewPosts();
             }
         });
         rv_favorites.setAdapter(adapter);

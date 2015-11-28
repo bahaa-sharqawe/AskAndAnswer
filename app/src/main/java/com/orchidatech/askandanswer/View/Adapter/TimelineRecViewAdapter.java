@@ -31,6 +31,7 @@ import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -111,7 +112,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
             if(postOwner!=null && postOwner.getImage().length()>0)
-                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
+                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.iv_profile.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        holder.iv_profile.setVisibility(View.GONE);
+                    }
+                });
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

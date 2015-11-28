@@ -44,7 +44,7 @@ public class MyFavorites extends Fragment {
     RecyclerView rv_favorites;
     MyFavoritesRecViewAdapter adapter;
     ArrayList<Post_Favorite> myFavorites;
-    LinearLayout ll_parent;
+    RelativeLayout rl_parent;
     private long last_id_server = 0;
     private long user_id;
 
@@ -65,14 +65,14 @@ public class MyFavorites extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.ll_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
         rv_favorites.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myFavorites = new ArrayList<>();
-        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, ll_parent, new OnPostEventListener() {
+        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, rl_parent, new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
@@ -103,13 +103,13 @@ public class MyFavorites extends Fragment {
 
                     @Override
                     public void onSuccess() {
-                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_removed), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_removed), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                         adapter.removePost(position);
                     }
 
                     @Override
                     public void onFail(String error) {
-                        AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
 
                     }
                 });
@@ -126,7 +126,7 @@ public class MyFavorites extends Fragment {
         }, new OnLastListReachListener() {
             @Override
             public void onReached() {
-
+                loadNewPosts();
             }
         });
         rv_favorites.setAdapter(adapter);
@@ -149,7 +149,7 @@ public class MyFavorites extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserFavPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserFavPostFetched() {
+        WebServiceFunctions.getUserFavPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnUserFavPostFetched() {
             @Override
             public void onSuccess(ArrayList<Post_Favorite> userFavPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {

@@ -45,7 +45,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_camera_flat"
+                        android:src="@drawable/ic_camera"
                         android:id="@+id/iv_camera"
                         android:layout_gravity="center_vertical"/>
 
@@ -59,7 +59,7 @@
 
                 </LinearLayout>
                 <RelativeLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:id="@+id/rl_comment_photo_preview"
@@ -71,14 +71,16 @@
                         android:src="@drawable/android_wallpaper"
                         android:id="@+id/iv_comment"
                         android:visibility="visible"
+                        android:layout_centerInParent="true"
                         android:scaleType="centerCrop"/>
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_margin="4dp"
                         android:src="@drawable/ic_close"
                         android:id="@+id/iv_delete"
-                        android:layout_alignParentRight="true"/>
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="4dp"
+                        />
 
 
                 </RelativeLayout>

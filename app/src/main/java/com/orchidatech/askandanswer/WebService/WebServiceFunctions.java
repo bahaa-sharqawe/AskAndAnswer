@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -255,7 +256,7 @@ public class WebServiceFunctions {
 
     public static void getUserCategories(final Context context, final long mId, final OnUserCategoriesFetched listener) {
         String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId;
-        Operations.getInstance(context).getUserCategories(url , new OnLoadFinished() {
+        Operations.getInstance(context).getUserCategories(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -265,7 +266,7 @@ public class WebServiceFunctions {
                     if (status == 0) {
                         ArrayList<User_Categories> allUserCategories = new ArrayList<>();
                         JSONArray data = dataObj.getJSONArray("data");
-                        for(int i = 0; i<data.length(); i++){
+                        for (int i = 0; i < data.length(); i++) {
                             JSONObject userCategory_obj = data.getJSONObject(i);
                             long user_category_id = userCategory_obj.getLong("category_id");
                             JSONObject category_info = userCategory_obj.getJSONObject("category_info");
@@ -275,7 +276,7 @@ public class WebServiceFunctions {
                             allUserCategories.add(user_categories);
                         }
                         listener.onSuccess(allUserCategories);
-                    }else
+                    } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(context.getString(R.string.BR_GNL_001));
@@ -372,7 +373,55 @@ public class WebServiceFunctions {
             }
         }, url);
     }
+    public static void getCategoryPosts(final Context context, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+        String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.USER_ID + "=" + userId +
+                "&" + URL.URLParameters.LIMIT + "=" + limit +
+                "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
+                "&" + URL.URLParameters.OFFSET + "=" + offset +
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Operations.getInstance(context).getCategoryPosts(new OnLoadFinished(){
 
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if(status == 0){
+                        JSONArray data = dataObj.getJSONArray("data");
+                        ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject post = data.getJSONObject(i);
+                            long id = post.getLong("id");
+                            String text = post.getString("text");
+                            String image = post.getString("image");
+                            int is_hidden = post.getInt("is_hidden");
+                            long category_id = post.getLong("category_id");
+                            int comments_no = post.getInt("comment_no");
+                            long created_at = post.getLong("created_at");
+                            Posts postItem = new Posts(id, text, image, created_at, userId, category_id, is_hidden, comments_no);
+                            PostsDAO.addPost(postItem);
+                            fetchedPosts.add(postItem);
+                        }
+                        long last_id = dataObj.getLong("last_id");
+                        PostsDAO.checkRowsCount();
+                        listener.onSuccess(fetchedPosts, last_id);
+
+                    }else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        }, url);
+
+    }
     public static void getUserPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
@@ -433,6 +482,28 @@ public class WebServiceFunctions {
                     if (status == 0) {
                         JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject comment = data.getJSONObject(i);
+                            long comment_id = comment.getLong("id");
+                            String comment_text = comment.getString("comment");
+                            String comment_image = comment.getString("image");
+                            long user_id = comment.getLong("user_id");
+                            long post_id = comment.getLong("post_id");
+                            long comment_date = comment.getLong("created_at");
+                            JSONObject actions = comment.getJSONObject("action");
+                            int likes = actions.getInt("like");
+                            int dislikes = actions.getInt("dislike");
+                            JSONObject user_actionObj = comment.getJSONArray("user_action").getJSONObject(0);
+                            long user_action_id = user_actionObj.getLong("id");
+                            long user_action_comment = user_actionObj.getLong("comment_id");
+                            long user_action_user = user_actionObj.getLong("user_id");
+                            int user_action_action = user_actionObj.getInt("action_type");
+                            User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            CommentsDAO.addComment(comment_item);
+                            fetchedComments.add(comment_item);
+
+                        }
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
                     } else
@@ -449,8 +520,10 @@ public class WebServiceFunctions {
         }, url);
     }
 
-    public static void getPostComments(final Context context, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
-        String url = URL.GET_POST_Comments + "?" + URL.URLParameters.POST_ID + "=" + pid +
+    public static void getPostComments(final Context context, long user_id, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+        String url = URL.GET_POST_Comments + "?" +
+                URL.URLParameters.POST_ID + "=" + pid +
+                "&" + URL.URLParameters.USER_ID + "=" + user_id +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
@@ -475,7 +548,9 @@ public class WebServiceFunctions {
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            CommentsDAO.addComment(new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, likes, dislikes));
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            CommentsDAO.addComment(comment_item);
+                            fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
                             ///comment's user data
                             JSONObject user_info = comment.getJSONArray("user_info").getJSONObject(0);
@@ -491,8 +566,8 @@ public class WebServiceFunctions {
                             int is_public = user_info.getInt("is_public");
                             Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, created_at, active, last_login, mobile, is_public, code);
                             UsersDAO.addUser(_user);
-                            //////////////////////////////////////////////
-                            JSONObject user_action = comment.getJSONArray("data").getJSONObject(0);
+                            /////////////////////////s/////////////////////
+                            JSONObject user_action = comment.getJSONArray("user_action").getJSONObject(0);
                             User_ActionsDAO.addUserAction(new User_Actions(user_action.getLong("id"), user_action.getLong("comment_id"), user_action.getLong("user_id"), System.currentTimeMillis(), user_action.getInt("action_type")));
                         }
                         long last_id = dataObj.getLong("last_id");
@@ -512,7 +587,7 @@ public class WebServiceFunctions {
     }
 
     public static void search(Context context, String textFilter, OnSearchCompleted listener) {
-        String url = URL.SEARCH + "?filter=" + encode(textFilter);
+        String url = URL.SEARCH + "?filter=" + textFilter;
         Operations.getInstance(context).search(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -604,8 +679,7 @@ public class WebServiceFunctions {
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONArray data = dataObj.getJSONArray("data");
-                        JSONObject post_fav = data.getJSONObject(0);
+                        JSONObject post_fav = dataObj.getJSONObject("data");
                         Post_Favorite post_favorite = new Post_Favorite(post_fav.getLong("id"), post_fav.getLong("post_id"), post_fav.getLong("user_id"), System.currentTimeMillis());
                         Post_FavoriteDAO.addPostFavorite(post_favorite);
                         listener.onSuccess();
@@ -733,47 +807,11 @@ public class WebServiceFunctions {
         if (!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         uploadImage.sendRequest();
-
-//        Operations.getInstance(context).addPost(context, user_id, category_id, encode(postDesc), picturePath, date, is_hidden, new OnUploadImageListener() {
-//            @Override
-//            public void onSuccess(String serverResponseMessage) {
-//                try {
-//                    JSONObject response = new JSONObject(serverResponseMessage);
-//                    int status_code = response.getInt("statusCode");
-//                    int status = response.getInt("status");
-//                    if (status == 0) {
-//                        JSONArray data = response.getJSONArray("data");
-//                        JSONObject post = data.getJSONObject(0);
-//                        long id = post.getLong("id");
-//                        String text = post.getString("text");
-//                        String image = post.getString("image");
-//                        int is_hidden = post.getInt("is_hidden");
-//                        long category_id = post.getLong("category_id");
-//                        int comments_no = post.getInt("comment_no");
-//                        long created_at = post.getLong("created_at");
-//                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
-//                        PostsDAO.addPost(postItem);
-//                        listener.onSuccess(context.getResources().getString(R.string.saved));
-//                    } else {
-//                        listener.onFail(GNLConstants.getStatus(status_code));
-//                    }
-//
-//                } catch (JSONException e) {
-//                    listener.onFail(context.getString(R.string.BR_GNL_006));
-//                }
-//            }
-//
-//            @Override
-//            public void onFail(String error) {
-//                listener.onFail(error);
-//
-//            }
-//        });
     }
 
 
     public static void editPost(final Context context, long post_id, long user_id, long category_id, String postDesc, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
-        Operations.getInstance(context).editPost(context, post_id, user_id, category_id, encode(postDesc), picturePath, date, isHidden, new OnUploadImageListener() {
+        Operations.getInstance(context).editPost(context, post_id, user_id, category_id, postDesc, picturePath, date, isHidden, new OnUploadImageListener() {
             @Override
             public void onSuccess(String serverResponseMessage) {
                 try {
@@ -844,7 +882,7 @@ public class WebServiceFunctions {
                 listener.onFail(error);
             }
         });
-        uploadImage.addStringProperty(URL.URLParameters.COMMENT, encode(comment));
+        uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
         uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId+"");
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id+"");
         if(!TextUtils.isEmpty(picturePath))
@@ -886,8 +924,8 @@ public class WebServiceFunctions {
 //        }, url);
     }
     public static void updateProfile(final Context context, long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
-        Operations.getInstance(context).updateProfile(id, encode(fname), encode(lname),
-                encode(password), picturePath, selectedCategories, new OnUploadImageListener() {
+        Operations.getInstance(context).updateProfile(id, fname, lname,
+                password, picturePath, selectedCategories, new OnUploadImageListener() {
                     @Override
                     public void onSuccess(String serverResponseMessage) {
                         try {
