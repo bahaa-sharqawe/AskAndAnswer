@@ -44,7 +44,7 @@ public class MyAsks extends Fragment{
     RecyclerView rv_favorites;
     MyAsksRecViewAdapter adapter;
     ArrayList<Posts> myPosts;
-    LinearLayout ll_parent;
+    RelativeLayout rl_parent;
     private long last_id_server = 0;
     private long user_id;
 
@@ -65,14 +65,14 @@ public class MyAsks extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
         rv_favorites.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myPosts = new ArrayList<>();
-        adapter = new MyAsksRecViewAdapter(getActivity(), myPosts, ll_parent, new OnPostEventListener() {
+        adapter = new MyAsksRecViewAdapter(getActivity(), myPosts, rl_parent, new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
@@ -102,12 +102,12 @@ public class MyAsks extends Fragment{
 
                     @Override
                     public void onSuccess() {
-                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                     }
 
                     @Override
                     public void onFail(String error) {
-                        AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
 
                     }
                 });
@@ -132,6 +132,7 @@ public class MyAsks extends Fragment{
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,6 +173,7 @@ public class MyAsks extends Fragment{
                     } else {
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(false);
+                        rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
                     adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR

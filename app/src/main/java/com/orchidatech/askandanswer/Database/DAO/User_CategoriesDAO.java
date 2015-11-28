@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import android.util.Log;
+
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
@@ -14,6 +16,7 @@ public class User_CategoriesDAO {
     public static void addUserCategory(User_Categories newUserCategory) {
         if(isExist(newUserCategory.getServerID())){
             updateUserCategory(newUserCategory);
+            Log.i("sdsdsds", newUserCategory.getServerID()+" exist");
             return;
         }
 

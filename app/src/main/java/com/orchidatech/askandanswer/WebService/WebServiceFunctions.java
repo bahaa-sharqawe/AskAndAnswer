@@ -256,6 +256,7 @@ public class WebServiceFunctions {
 
     public static void getUserCategories(final Context context, final long mId, final OnUserCategoriesFetched listener) {
         String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId;
+        Log.i("sdsdsds", url);
         Operations.getInstance(context).getUserCategories(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -338,6 +339,7 @@ public class WebServiceFunctions {
         String url = URL.GET_USER_FAV_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit + "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("sdsdsdsdsd", url);
         Operations.getInstance(context).getUserFavPosts(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -427,6 +429,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("fdfdfd0", url);
         Operations.getInstance(context).getUserPosts(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -703,6 +706,7 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, uid + "");
         params.put(URL.URLParameters.POST_ID, postFavId + "");
+        Log.i("dfdffdd", uid + ", " + postFavId);
         Operations.getInstance(context).removePostFavorite(params, new OnLoadFinished() {
 
             @Override

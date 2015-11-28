@@ -115,12 +115,11 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
-                        holder.iv_profile.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onError() {
-                        holder.iv_profile.setVisibility(View.GONE);
+                        holder.iv_profile.setImageResource(R.drawable.ic_user);
                     }
                 });
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
