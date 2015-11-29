@@ -27,7 +27,7 @@ public class MyApplication extends com.activeandroid.app.Application {
         super.onCreate();
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
 
 //        Configuration.Builder builder = new Configuration.Builder(getBaseContext());
 ////        builder.setCacheSize(1024*1024*4);

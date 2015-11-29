@@ -106,6 +106,9 @@ public class GNLConstants {
             case 506:
                 message = "Can't found  category with this id !";
                 break;
+            case 900:
+                message = "No comments found!";
+                break;
             default:
                 message = "An error occurred";
                 break;

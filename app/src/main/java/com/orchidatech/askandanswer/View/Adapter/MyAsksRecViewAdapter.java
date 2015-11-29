@@ -122,13 +122,13 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             });
             String postImage = currentPost.getImage();
             if(postImage!=null && postImage.length()>0) {
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
                 Log.i("jggn", currentPost.getImage());
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
 
-            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
+            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
 
         }
     }

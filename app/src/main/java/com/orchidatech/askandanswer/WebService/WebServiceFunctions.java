@@ -477,6 +477,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("sdsddsdsd", url);
         Operations.getInstance(context).getUserComments(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -494,7 +495,7 @@ public class WebServiceFunctions {
                             String comment_image = comment.getString("image");
                             long user_id = comment.getLong("user_id");
                             long post_id = comment.getLong("post_id");
-                            long comment_date = comment.getLong("created_at");
+                            long comment_date = comment.getLong("updated_at");
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
@@ -827,7 +828,7 @@ public class WebServiceFunctions {
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONObject post = dataObj.getJSONObject("data");
+                        JSONObject post = dataObj.getJSONArray("data").optJSONObject(0);
                         long id = post.getLong("id");
                         String text = post.getString("text");
                         String image = post.getString("image");
@@ -835,7 +836,7 @@ public class WebServiceFunctions {
                         long category_id = post.getLong("category_id");
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
-                        long created_at = post.getLong("created_at");
+                        long created_at = post.getLong("updated_at");
                         Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
                         PostsDAO.checkRowsCount();
@@ -908,19 +909,21 @@ public class WebServiceFunctions {
         UploadImage uploadImage = new UploadImage(context, URL.ADD_COMMENT, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
+                Log.i("sdsdsd", response);
+                Log.i("sdsdsd", URL.ADD_COMMENT);
+
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if(status == 0){
-                        JSONArray data = dataObj.getJSONArray("data");
-                        JSONObject comment = data.getJSONObject(0);
+                        JSONObject comment = dataObj.getJSONObject("data");
                         long comment_id = comment.getLong("id");
                         String comment_text = comment.getString("comment");
                         String comment_image = comment.getString("image");
                         long user_id = comment.getLong("user_id");
                         long post_id = comment.getLong("post_id");
-                        long comment_date = comment.getLong("created_at");
+                        long comment_date = comment.getLong("updated_at");
                         Comments newComment = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, 0, 0);
                         CommentsDAO.addComment(newComment);
                         listener.onAdded(newComment);
@@ -938,6 +941,7 @@ public class WebServiceFunctions {
         });
         uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
         uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId+"");
+        uploadImage.addStringProperty(URL.URLParameters.ID, postId+"");
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id+"");
         if(!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);

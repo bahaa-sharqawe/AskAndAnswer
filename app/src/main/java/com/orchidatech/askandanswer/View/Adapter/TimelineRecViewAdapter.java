@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
@@ -106,28 +108,33 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
+            ImageLoader imageLoader = ImageLoader.getInstance();
             if(postImage!=null && postImage.length()>0) {
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
+//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
+                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage );
+
                 holder.iv_postImage.setVisibility(View.VISIBLE);
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
-            if(postOwner!=null && postOwner.getImage().length()>0)
-                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                    }
 
+            if(postOwner!=null && postOwner.getImage().length()>0)
+                imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
+//                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        holder.iv_profile.setImageResource(R.drawable.ic_user);
+//                    }
+//                });
+                holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onError() {
-                        holder.iv_profile.setImageResource(R.drawable.ic_user);
-                    }
-                });
-            holder.iv_profile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-                            || postOwner.getIsPublicProfile()==0)
-                        goToProfile(postOwner.getServerID());
+                    public void onClick(View v) {
+                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+                                || postOwner.getIsPublicProfile() == 0)
+                            goToProfile(postOwner.getServerID());
                 }
             });
         }

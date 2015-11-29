@@ -91,12 +91,12 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
         loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "deleting");
         WebServiceFunctions.deletePost(this, postId, new OnPostDeletedListener() {
 
             @Override
             public void onDeleted() {
-                if(loadingDialog.isVisible())
                     loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
@@ -109,7 +109,6 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
 
             @Override
             public void onFail(String error) {
-                if(loadingDialog.isVisible())
                     loadingDialog.dismiss();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }

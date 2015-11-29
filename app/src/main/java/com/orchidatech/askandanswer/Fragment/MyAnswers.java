@@ -37,7 +37,7 @@ public class MyAnswers extends Fragment {
     RecyclerView rv_answers;
     MyAnswersRecViewAdapter adapter;
     ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> myAnswers;
-    LinearLayout ll_parent;
+    RelativeLayout rl_parent;
     private long last_id_server = 0;
     private long user_id;
 
@@ -58,14 +58,14 @@ public class MyAnswers extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.ll_parent);
         rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
         rv_answers.setHasFixedSize(true);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_answers.setLayoutManager(llm);
         myAnswers = new ArrayList<>();
-        adapter = new MyAnswersRecViewAdapter(getActivity(), myAnswers, ll_parent, new OnUserActionsListener() {
+        adapter = new MyAnswersRecViewAdapter(getActivity(), myAnswers, rl_parent, new OnUserActionsListener() {
             @Override
             public void onLike(long commentId) {
 
