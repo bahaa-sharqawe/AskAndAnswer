@@ -1031,12 +1031,12 @@ public class WebServiceFunctions {
                             String l_name = user.getString("l_name");
                             String email = user.getString("email");
                             String image = user.getString("image");
-                            int active = user.getInt("active");
+                            int active = Integer.parseInt(user.getString("active"));
                             long created_at = user.getLong("updated_at");
                             long last_login = user.getLong("last_login");
                             String code = user.getString("code");
                             String mobile = user.getString("mobile");
-                            int is_public = user.getInt("is_public");
+                            int is_public = Integer.parseInt(user.getString("is_public"));
                             UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code));
                             listener.onSuccess();
                         }
@@ -1058,10 +1058,9 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
 //        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, sb.toString());
 //        uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, 0+"");
-        uploadImage.addStringProperty(URL.URLParameters.LAST_LOGIN, UsersDAO.getUser(id).getLastLogin()+"");
+        uploadImage.addStringProperty(URL.URLParameters.LAST_LOGIN, UsersDAO.getUser(id).getLastLogin() + "");
         if(!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
-        Log.i("dsddfd", picturePath);
         uploadImage.sendRequest();
 
 
