@@ -17,8 +17,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
@@ -147,11 +149,10 @@ public class SearchAndFavorite extends Fragment {
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.search_questions));
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "search");
-        WebServiceFunctions.search(getActivity(), s, new OnSearchCompleted(){
+        WebServiceFunctions.search(getActivity(), s, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted(){
 
             @Override
             public void onSuccess(ArrayList<Posts> searchResult) {
-                if(loadingDialog.isVisible())
                     loadingDialog.dismiss();
                 posts.addAll(searchResult);
                 adapter.notifyDataSetChanged();
@@ -159,8 +160,9 @@ public class SearchAndFavorite extends Fragment {
 
             @Override
             public void onFail(String error) {
-                if(loadingDialog.isVisible())
                     loadingDialog.dismiss();
+                adapter.notifyDataSetChanged();
+
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
 
             }

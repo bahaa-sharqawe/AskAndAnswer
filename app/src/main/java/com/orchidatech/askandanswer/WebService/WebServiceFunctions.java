@@ -5,9 +5,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
@@ -61,7 +60,7 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.EMAIL, email);
         params.put(URL.URLParameters.PASSWORD, password);
-        params.put(URL.URLParameters.LAST_LOGIN, last_login+"");
+        params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
 
         Operations.getInstance(context).login(params, new OnLoadFinished() {
             @Override
@@ -214,7 +213,7 @@ public class WebServiceFunctions {
     public static void sendUserCategories(final Context context, final long uid, final ArrayList<Category> selectedCats, final OnSendCategoriesListener listener) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < selectedCats.size(); i++)
-            sb.append(selectedCats.get(i).getServerID()).append(i != selectedCats.size()-1 ? "," : "");
+            sb.append(selectedCats.get(i).getServerID()).append(i != selectedCats.size() - 1 ? "," : "");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.CATEGORIES_ID, sb.toString());
         params.put(URL.URLParameters.USER_ID, uid + "");
@@ -294,12 +293,15 @@ public class WebServiceFunctions {
         });
 
     }
+
     public static void getUserInfo(final Context context, long user_id, final OnUserInfoFetched listener) {
         String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id;
+        Log.i("sdsdsd", url);
         Operations.getInstance(context).getUserInfo(new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
+                    Log.i("dsdsd", response);
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
@@ -377,13 +379,14 @@ public class WebServiceFunctions {
             }
         }, url);
     }
+
     public static void getCategoryPosts(final Context context, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.USER_ID + "=" + userId +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
-        Operations.getInstance(context).getCategoryPosts(new OnLoadFinished(){
+        Operations.getInstance(context).getCategoryPosts(new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -391,7 +394,7 @@ public class WebServiceFunctions {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
-                    if(status == 0){
+                    if (status == 0) {
                         JSONArray data = dataObj.getJSONArray("data");
                         ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
                         for (int i = 0; i < data.length(); i++) {
@@ -411,7 +414,7 @@ public class WebServiceFunctions {
                         PostsDAO.checkRowsCount();
                         listener.onSuccess(fetchedPosts, last_id);
 
-                    }else
+                    } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     listener.onFail(context.getString(R.string.BR_GNL_001), 100);
@@ -426,6 +429,7 @@ public class WebServiceFunctions {
         }, url);
 
     }
+
     public static void getUserPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
@@ -592,17 +596,42 @@ public class WebServiceFunctions {
         }, url);
     }
 
-    public static void search(Context context, String textFilter, OnSearchCompleted listener) {
-        String url = URL.SEARCH + "?filter=" + textFilter;
+    public static void search(final Context context, String textFilter, long user_id, final OnSearchCompleted listener) {
+        String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) + "&" + URL.URLParameters.USER_ID + "=" + user_id;
+        Log.i("dsds", url);
         Operations.getInstance(context).search(new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
-
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = dataObj.getJSONArray("data");
+                        ArrayList<Posts> matchedPosts = new ArrayList<Posts>();
+                        for(int i = 0; i < data.length(); i++){
+                            JSONObject post_obj = data.getJSONObject(i);
+                            Posts post = new Posts(post_obj.getLong("id"), post_obj.getString("text"), post_obj.getString("image"),
+                                    post_obj.getLong("updated_at"), post_obj.getLong("user_id"), post_obj.getLong("category_id"), post_obj.getInt("is_hidden"), post_obj.getInt("comment_no"));
+                            JSONObject userObj = post_obj.getJSONArray("user").getJSONObject(0);
+                            Users user = new Users(userObj.getLong("id"), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
+                                    null, userObj.getString("image"), userObj.getLong("updated_at"), userObj.getInt("active"), userObj.getLong("last_login"),
+                                    userObj.getString("mobile"), userObj.getInt("is_public"), userObj.getString("code"));
+                            PostsDAO.addPost(post);
+                            UsersDAO.addUser(user);
+                            matchedPosts.add(post);
+                        }
+                        listener.onSuccess(matchedPosts);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                }
             }
 
             @Override
             public void onFail(String error) {
-
+                listener.onFail(error);
             }
         }, url);
 
@@ -916,7 +945,7 @@ public class WebServiceFunctions {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
-                    if(status == 0){
+                    if (status == 0) {
                         JSONObject comment = dataObj.getJSONObject("data");
                         long comment_id = comment.getLong("id");
                         String comment_text = comment.getString("comment");
@@ -927,7 +956,7 @@ public class WebServiceFunctions {
                         Comments newComment = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, 0, 0);
                         CommentsDAO.addComment(newComment);
                         listener.onAdded(newComment);
-                    }else
+                    } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(context.getString(R.string.BR_GNL_006));
@@ -940,10 +969,10 @@ public class WebServiceFunctions {
             }
         });
         uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
-        uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId+"");
-        uploadImage.addStringProperty(URL.URLParameters.ID, postId+"");
-        uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id+"");
-        if(!TextUtils.isEmpty(picturePath))
+        uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId + "");
+        uploadImage.addStringProperty(URL.URLParameters.ID, postId + "");
+        uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
+        if (!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         uploadImage.sendRequest();
 
@@ -981,6 +1010,7 @@ public class WebServiceFunctions {
 //            }
 //        }, url);
     }
+
     public static void updateProfile(final Context context, long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
         Operations.getInstance(context).updateProfile(id, fname, lname,
                 password, picturePath, selectedCategories, new OnUploadImageListener() {

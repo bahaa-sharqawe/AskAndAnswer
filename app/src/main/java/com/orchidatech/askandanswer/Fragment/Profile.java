@@ -181,6 +181,7 @@ public class Profile extends Fragment {
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,6 +212,8 @@ public class Profile extends Fragment {
             public void onDataFetched(Users user, int no_answer, int no_ask) {
                 tv_person.setText(user.getFname() + " " + user.getLname());
                 Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile);
+                tv_asks.setText(getActivity().getString(R.string.tv_ask_count, no_ask));
+                tv_answers.setText(getActivity().getString(R.string.tv_ask_count, no_answer));
             }
 
             @Override

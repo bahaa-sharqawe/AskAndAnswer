@@ -13,7 +13,7 @@ public class URL {
 
     public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/login";
     public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user";
-    public static final String GET_USER_INFO = "user/user_info";
+    public static final String GET_USER_INFO = SERVER_URL + WEB_SERVICES_PATH + "user/user_info";
     public static final String GET_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "cat/all-categories";
     public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update_profile";
     public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category";
@@ -56,5 +56,6 @@ public class URL {
         public static final String IS_HIDDEN = "is_hidden";
         public static final String COMMENT = "comment";
         public static final String CATEGORY_ID = "category_id";
+        public static final String FILTER = "filter";
     }
 }
