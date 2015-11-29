@@ -1012,73 +1012,127 @@ public class WebServiceFunctions {
     }
 
     public static void updateProfile(final Context context, long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
-        Operations.getInstance(context).updateProfile(id, fname, lname,
-                password, picturePath, selectedCategories, new OnUploadImageListener() {
-                    @Override
-                    public void onSuccess(String serverResponseMessage) {
-                        try {
-                            JSONObject response = new JSONObject(serverResponseMessage);
-                            int status_code = response.getInt("statusCode");
-                            int status = response.getInt("status");
-                            if (status == 0) {
-                                JSONArray data = response.getJSONArray("data");
-                                JSONObject user = data.getJSONObject(0);
-                                long uid = user.getLong("id");
-                                String f_name = user.getString("f_name");
-                                String l_name = user.getString("l_name");
-                                String email = user.getString("email");
-                                String image = user.getString("image");
-                                int active = user.getInt("active");
-                                long created_at = user.getLong("created_at");
-                                long last_login = user.getLong("last_login");
-                                String code = user.getString("code");
-                                String mobile = user.getString("mobile");
-                                int is_public = user.getInt("is_public");
-//                                ArrayList<User_Categories> user_categories = new ArrayList<User_Categories>();
-//                                JSONArray arr_user_category = user.getJSONArray("user_category");
-//                                for (int i = 0; i < arr_user_category.length(); i++) {
-//                                    JSONObject user_category = arr_user_category.getJSONObject(i);
-//                                    long user_category_id = user_category.getLong("id");
-//                                    long category_id = user_category.getLong("category_id");
-//                                    user_categories.add(new User_Categories(user_category_id, uid, category_id));
-//                                }
-//                                ArrayList<User_Categories> allCurrentStored = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
-//                                boolean deleting;
-//                                for (User_Categories currentUserCategory : allCurrentStored) {
-//                                    deleting = false;
-//                                    for (int i = 0; i < user_categories.size(); i++) {
-//                                        if (currentUserCategory.getCategoryID() == user_categories.get(i).getCategoryID()) {
-//                                            deleting = true;
-//                                            break;
-//                                        }
-//                                        if (deleting) {
-//                                            User_CategoriesDAO.deleteUserCategory(currentUserCategory.getServerID(), uid);
-//                                            PostsDAO.deletePostsInCategory(uid, currentUserCategory.getCategoryID());
-//                                            ////find solution to remove favorite posts also, it is solved in getAllUserPostFavorite method
-//                                        }
-//
-//                                    }
-//                                }
-
-                                Users _user = new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
-                                UsersDAO.addUser(_user);
-
-                                listener.onSuccess();
-                                ;
-                            } else {
-                                listener.onFail(GNLConstants.getStatus(status_code));
-                            }
-
-                        } catch (JSONException e) {
-                            listener.onFail(context.getString(R.string.BR_GNL_006));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < selectedCategories.size(); i++)
+            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
+        Log.i("sdsddsfdf", URL.UPDATE_PROFILE);
+            UploadImage uploadImage = new UploadImage(context, URL.UPDATE_PROFILE, new OnLoadFinished() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.i("sdssds", response);
+                    try {
+                        JSONObject data_obbj = new JSONObject(response);
+                        int status_code = data_obbj.getInt("statusCode");
+                        int status = data_obbj.getInt("status");
+                        if (status == 0) {
+                            JSONObject user = data_obbj.getJSONObject("data");
+                            long uid = user.getLong("id");
+                            String f_name = user.getString("f_name");
+                            String l_name = user.getString("l_name");
+                            String email = user.getString("email");
+                            String image = user.getString("image");
+                            int active = user.getInt("active");
+                            long created_at = user.getLong("updated_at");
+                            long last_login = user.getLong("last_login");
+                            String code = user.getString("code");
+                            String mobile = user.getString("mobile");
+                            int is_public = user.getInt("is_public");
+                            UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code));
+                            listener.onSuccess();
                         }
+                        else
+                            listener.onFail(GNLConstants.getStatus(status_code));
+                    } catch (JSONException e) {
+                        listener.onFail(context.getString(R.string.BR_GNL_006));
                     }
+                }
 
-                    @Override
-                    public void onFail(String error) {
+                @Override
+                public void onFail(String error) {
+                    listener.onFail(error);
+                }
+            });
+        uploadImage.addStringProperty(URL.URLParameters.ID, id+"");
+        uploadImage.addStringProperty(URL.URLParameters.FNAME, fname);
+        uploadImage.addStringProperty(URL.URLParameters.LNAME, lname);
+        uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
+//        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, sb.toString());
+//        uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, 0+"");
+        uploadImage.addStringProperty(URL.URLParameters.LAST_LOGIN, UsersDAO.getUser(id).getLastLogin()+"");
+        if(!TextUtils.isEmpty(picturePath))
+            uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
+        Log.i("dsddfd", picturePath);
+        uploadImage.sendRequest();
 
-                    }
-                });
+
+
+//        Operations.getInstance(context).updateProfile(id, fname, lname,
+//                password, picturePath, selectedCategories, new OnUploadImageListener() {
+//                    @Override
+//                    public void onSuccess(String serverResponseMessage) {
+//                        try {
+//                            JSONObject response = new JSONObject(serverResponseMessage);
+//                            int status_code = response.getInt("statusCode");
+//                            int status = response.getInt("status");
+//                            if (status == 0) {
+//                                JSONArray data = response.getJSONArray("data");
+//                                JSONObject user = data.getJSONObject(0);
+//                                long uid = user.getLong("id");
+//                                String f_name = user.getString("f_name");
+//                                String l_name = user.getString("l_name");
+//                                String email = user.getString("email");
+//                                String image = user.getString("image");
+//                                int active = user.getInt("active");
+//                                long created_at = user.getLong("created_at");
+//                                long last_login = user.getLong("last_login");
+//                                String code = user.getString("code");
+//                                String mobile = user.getString("mobile");
+//                                int is_public = user.getInt("is_public");
+////                                ArrayList<User_Categories> user_categories = new ArrayList<User_Categories>();
+////                                JSONArray arr_user_category = user.getJSONArray("user_category");
+////                                for (int i = 0; i < arr_user_category.length(); i++) {
+////                                    JSONObject user_category = arr_user_category.getJSONObject(i);
+////                                    long user_category_id = user_category.getLong("id");
+////                                    long category_id = user_category.getLong("category_id");
+////                                    user_categories.add(new User_Categories(user_category_id, uid, category_id));
+////                                }
+////                                ArrayList<User_Categories> allCurrentStored = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
+////                                boolean deleting;
+////                                for (User_Categories currentUserCategory : allCurrentStored) {
+////                                    deleting = false;
+////                                    for (int i = 0; i < user_categories.size(); i++) {
+////                                        if (currentUserCategory.getCategoryID() == user_categories.get(i).getCategoryID()) {
+////                                            deleting = true;
+////                                            break;
+////                                        }
+////                                        if (deleting) {
+////                                            User_CategoriesDAO.deleteUserCategory(currentUserCategory.getServerID(), uid);
+////                                            PostsDAO.deletePostsInCategory(uid, currentUserCategory.getCategoryID());
+////                                            ////find solution to remove favorite posts also, it is solved in getAllUserPostFavorite method
+////                                        }
+////
+////                                    }
+////                                }
+//
+//                                Users _user = new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
+//                                UsersDAO.addUser(_user);
+//
+//                                listener.onSuccess();
+//                                ;
+//                            } else {
+//                                listener.onFail(GNLConstants.getStatus(status_code));
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            listener.onFail(context.getString(R.string.BR_GNL_006));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFail(String error) {
+//
+//                    }
+//                });
 
 //        UploadImage uploadImage = new UploadImage(context, URL.UPDATE_PROFILE, new OnLoadFinished() {
 //            @Override

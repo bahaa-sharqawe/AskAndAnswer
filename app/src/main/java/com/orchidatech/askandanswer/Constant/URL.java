@@ -15,7 +15,7 @@ public class URL {
     public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user";
     public static final String GET_USER_INFO = SERVER_URL + WEB_SERVICES_PATH + "user/user_info";
     public static final String GET_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "cat/all-categories";
-    public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update_profile";
+    public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update-profile";
     public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category";
     public static final String GET_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/user-categories";
 

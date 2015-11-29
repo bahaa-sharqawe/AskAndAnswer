@@ -34,6 +34,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.HorizontalFlowLayout;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.AutoCompleteAdapter;
@@ -109,7 +110,6 @@ public class UpdateProfile extends AppCompatActivity {
                 selectedCategories.add(selectedCategory);
                 ac_adapter.remove(selectedCategory.getName());
                 Log.i("sdsds", selectedCategory.getName());
-//                ac_adapter.notifyDataSetChanged();
                 auto_categories.setText("");
                 addToSelectedCategories(selectedCategory.getName());
             }
@@ -151,7 +151,6 @@ public class UpdateProfile extends AppCompatActivity {
                 selectedCategories.remove(deletedCategory);
                 unSelectedCategoriesTitles.add(targetCategoryTitle);
                 ac_adapter.add(targetCategoryTitle);
-//                        ac_adapter.notifyDataSetChanged();
             }
         });
 
@@ -236,9 +235,19 @@ public class UpdateProfile extends AppCompatActivity {
             long uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
             if (verifyInputs(fname, lname, email, password, newPassword, confirm_new_password, selectedCategories)) {
                 //save
+                if(TextUtils.isEmpty(password))
+                    password = SplashScreen.pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null);
+                final LoadingDialog loadingDialog = new LoadingDialog();
+                Bundle args = new Bundle();
+                args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
+                loadingDialog.setArguments(args);
+                loadingDialog.setCancelable(false);
+                loadingDialog.show(getFragmentManager(), "updating profile");
+
                 WebServiceFunctions.updateProfile(this, uid, fname, lname, password, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
+                        loadingDialog.dismiss();
                         AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -250,6 +259,7 @@ public class UpdateProfile extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
+                        loadingDialog.dismiss();
                         AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
                     }
                 });
