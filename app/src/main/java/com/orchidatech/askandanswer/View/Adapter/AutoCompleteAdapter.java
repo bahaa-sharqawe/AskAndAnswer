@@ -1,9 +1,11 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -62,7 +64,7 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
     }
 
     public void remove(String removedCategory) {
-        originalUnSelectedCategoriesTitles.add(removedCategory);
+        originalUnSelectedCategoriesTitles.remove(removedCategory);
         notifyDataSetChanged();
     }
 
@@ -80,15 +82,18 @@ public class AutoCompleteAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-            if (constraint != null || constraint.length() == 0) {
+            if (constraint == null || constraint.length() == 0) {
                 ArrayList<String> list = new ArrayList<>(originalUnSelectedCategoriesTitles);
                 results.values = list;
                 results.count = list.size();
             } else {
+                Log.i("sdsdf", constraint.toString());
+
                 String prefixString = constraint.toString().toLowerCase();
                 ArrayList<String> values = new ArrayList<>(originalUnSelectedCategoriesTitles);
                 int count = values.size();
                 ArrayList<String> newValues = new ArrayList<>();
+
                 for (int i = 0; i < count; i++) {
                     String value = values.get(i);
                     String valueText = value.toLowerCase();

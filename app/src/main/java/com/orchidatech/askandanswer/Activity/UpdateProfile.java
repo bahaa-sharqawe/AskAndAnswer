@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UpdateProfile extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
 
-    private static final int WIDTH = RelativeLayout.LayoutParams.WRAP_CONTENT;
+    private static final int WIDTH = 120;
     private static final int HEIGHT = RelativeLayout.LayoutParams.WRAP_CONTENT;
     private static final int MARGIN = 5;
 
@@ -106,39 +107,11 @@ public class UpdateProfile extends AppCompatActivity {
                 selectedCategory.setIsChecked(true);
                 unSelectedCategories.remove(selectedCategory);
                 selectedCategories.add(selectedCategory);
-                ac_adapter.remove(unSelectedCategoriesTitles.remove(position));
+                ac_adapter.remove(selectedCategory.getName());
+                Log.i("sdsds", selectedCategory.getName());
 //                ac_adapter.notifyDataSetChanged();
                 auto_categories.setText("");
-                final View item = LayoutInflater.from(UpdateProfile.this).inflate(R.layout.categories_grid_view_item, null, false);
-                TextView tv_category = (TextView) item.findViewById(R.id.tv_category);
-                tv_category.setText(selectedCategory.getName());
-                LinearLayout ll_delete = (LinearLayout) item.findViewById(R.id.ll_delete);
-                ll_delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LinearLayout parent = (LinearLayout) v.getParent();
-                        TextView targetCategory = (TextView) parent.findViewById(R.id.tv_category);
-                        String targetCategoryTitle = targetCategory.getText().toString();
-                        ll_categories.removeView(item);
-                        Category deletedCategory = null;
-                        for (int i = 0; i < selectedCategories.size(); i++) {
-                            if (selectedCategories.get(i).getName().equals(targetCategoryTitle)) {
-                                deletedCategory = selectedCategories.get(i);
-                                break;
-                            }
-                        }
-                        deletedCategory.setIsChecked(true);
-                        unSelectedCategories.add(deletedCategory);
-                        selectedCategories.remove(deletedCategory);
-                        unSelectedCategoriesTitles.add(targetCategoryTitle);
-                        ac_adapter.add(targetCategoryTitle);
-//                        ac_adapter.notifyDataSetChanged();
-                    }
-                });
-
-                HorizontalFlowLayout.LayoutParams params = new HorizontalFlowLayout.LayoutParams(WIDTH, HEIGHT);
-                params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
-                ll_categories.addView(item, params);
+                addToSelectedCategories(selectedCategory.getName());
             }
         });
 
@@ -152,6 +125,39 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void addToSelectedCategories(String categoryName) {
+        final View item = LayoutInflater.from(UpdateProfile.this).inflate(R.layout.categories_grid_view_item, null, false);
+        TextView tv_category = (TextView) item.findViewById(R.id.tv_category);
+        tv_category.setText(categoryName);
+        LinearLayout ll_delete = (LinearLayout) item.findViewById(R.id.ll_delete);
+        ll_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout parent = (LinearLayout) v.getParent();
+                TextView targetCategory = (TextView) parent.findViewById(R.id.tv_category);
+                String targetCategoryTitle = targetCategory.getText().toString();
+                ll_categories.removeView(item);
+                Category deletedCategory = null;
+                for (int i = 0; i < selectedCategories.size(); i++) {
+                    if (selectedCategories.get(i).getName().equals(targetCategoryTitle)) {
+                        deletedCategory = selectedCategories.get(i);
+                        break;
+                    }
+                }
+                deletedCategory.setIsChecked(true);
+                unSelectedCategories.add(deletedCategory);
+                selectedCategories.remove(deletedCategory);
+                unSelectedCategoriesTitles.add(targetCategoryTitle);
+                ac_adapter.add(targetCategoryTitle);
+//                        ac_adapter.notifyDataSetChanged();
+            }
+        });
+
+        HorizontalFlowLayout.LayoutParams params = new HorizontalFlowLayout.LayoutParams(WIDTH, HEIGHT);
+        params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
+        ll_categories.addView(item, params);
     }
 
     private void initializeFields() {
@@ -181,9 +187,11 @@ public class UpdateProfile extends AppCompatActivity {
         unSelectedCategories = new ArrayList<>();
         unSelectedCategoriesTitles = new ArrayList<>();
         for (Category category : categories) {
-            if (User_CategoriesDAO.getUserCategory(user_id, category.getServerID()) != null)//1 is current user id
+            if (User_CategoriesDAO.getUserCategory(user_id, category.getServerID()) != null) {
                 selectedCategories.add(category);
-            else {
+                addToSelectedCategories(category.getName());
+                Log.i("sdsdds", category.getName());
+            } else {
                 unSelectedCategories.add(category);
                 unSelectedCategoriesTitles.add(category.getName());
             }
@@ -228,7 +236,7 @@ public class UpdateProfile extends AppCompatActivity {
             long uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
             if (verifyInputs(fname, lname, email, password, newPassword, confirm_new_password, selectedCategories)) {
                 //save
-                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, image_str==null?null:picturePath, selectedCategories , new OnUpdateProfileListener() {
+                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
                         AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
@@ -261,7 +269,8 @@ public class UpdateProfile extends AppCompatActivity {
         } else if (!mValidator.isValidUserName(fname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
-        }  if (TextUtils.isEmpty(lname)) {
+        }
+        if (TextUtils.isEmpty(lname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(lname)) {
@@ -283,7 +292,7 @@ public class UpdateProfile extends AppCompatActivity {
             } else if (mValidator.isPasswordsMatched(newPassword, confirm_new_password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
                 return false;
-            }else if(!validCategoriesCount(selectedCategories)){
+            } else if (!validCategoriesCount(selectedCategories)) {
                 return false;
             }
         }
@@ -291,10 +300,10 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private boolean validCategoriesCount(ArrayList<Category> selectedCategories) {
-        if(selectedCategories.size() < SelectCategory.MIN_CATEGORY){
+        if (selectedCategories.size() < SelectCategory.MIN_CATEGORY) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_CATS_001), Color.RED, Color.WHITE);
             return false;
-        }else if(selectedCategories.size() > SelectCategory.MAX_CATEGORY){
+        } else if (selectedCategories.size() > SelectCategory.MAX_CATEGORY) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_CATS_002), Color.RED, Color.WHITE);
             return false;
         }
