@@ -2,18 +2,19 @@ package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,9 +38,9 @@ public class MyAnswers extends Fragment {
     RecyclerView rv_answers;
     MyAnswersRecViewAdapter adapter;
     ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> myAnswers;
-    RelativeLayout rl_parent;
     private long last_id_server = 0;
     private long user_id;
+    RelativeLayout rl_parent;
 
     RelativeLayout rl_error;
     ImageView uncolored_logo;
@@ -58,7 +59,7 @@ public class MyAnswers extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
         rv_answers.setHasFixedSize(true);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -87,6 +88,7 @@ public class MyAnswers extends Fragment {
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +119,7 @@ public class MyAnswers extends Fragment {
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
-                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                    if (errorCode != 404) {//ALL ERRORS EXCEPT NO_COMMENTS
                         if (userComments.size() > 0)
                             getFromLocal();
                         else {
@@ -130,7 +132,7 @@ public class MyAnswers extends Fragment {
                         rl_error.setEnabled(false);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
-                    adapter.addFromServer(null, errorCode != 402 ? true : false);
+                    adapter.addFromServer(null, errorCode != 404 ? true : false);
                 }/*else{
                         getFromLocal();
                     }

@@ -85,6 +85,9 @@ public class GNLConstants {
             case 402:
                 message = "There is no post";
                 break;
+            case 403:
+                message = "There is no favorite posts";
+                break;
             case 406:
                 message = "Can't found Categories for this user";
                 break;

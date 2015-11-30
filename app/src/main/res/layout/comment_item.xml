@@ -41,6 +41,7 @@
                     android:layout_weight="1"
                     android:id="@+id/tv_person_name"
                     android:text="Paco Xiao"
+                    android:gravity="left"
                     android:textColor="#4d4d4d"
                     android:textSize="20sp"
                     android:textStyle="bold"

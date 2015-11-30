@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,6 +156,7 @@ public class MyFavorites extends Fragment {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                 }
+                Log.i("sd222222sd", userFavPosts.size()+"");
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
                 adapter.addFromServer(userFavPosts, false);
             }
@@ -163,7 +165,7 @@ public class MyFavorites extends Fragment {
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
-                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                    if (errorCode != 403) {//ALL ERRORS EXCEPT NO_FAV_POSTS
                         if (userFavPosts.size() > 0)
                             getFromLocal();
                         else {
@@ -176,7 +178,7 @@ public class MyFavorites extends Fragment {
                         rl_error.setEnabled(false);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
-                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                    adapter.addFromServer(null, errorCode != 403 ? true : false);//CONNECTION ERROR
                 }/*else{
                         getFromLocal();
                     }

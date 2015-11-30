@@ -41,6 +41,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -211,7 +212,17 @@ public class Profile extends Fragment {
             @Override
             public void onDataFetched(Users user, int no_answer, int no_ask) {
                 tv_person.setText(user.getFname() + " " + user.getLname());
-                Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile);
+                Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        iv_profile.setImageResource(R.drawable.ic_user);
+                    }
+                });
                 tv_asks.setText(getActivity().getString(R.string.tv_ask_count, no_ask));
                 tv_answers.setText(getActivity().getString(R.string.tv_ask_count, no_answer));
             }

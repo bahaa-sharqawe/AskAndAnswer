@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,12 +107,13 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
             holder.tv_comment_category.setText(commentCategory.getName());
             Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person);
             if (!TextUtils.isEmpty(currentComment.getImage())) {
-                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment);
+                Log.i("sdsdd", currentComment.getImage());
+                        Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment);
                 holder.iv_comment.setVisibility(View.VISIBLE);
             } else
                 holder.iv_comment.setVisibility(View.GONE);
-            holder.tv_unlikes.setText(currentComment.getDisLikes());
-            holder.tv_likes.setText(currentComment.getLikes());
+            holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
+            holder.tv_likes.setText(currentComment.getLikes()+"");
             holder.tv_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -170,7 +172,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
                 rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
                 tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
-                tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
             }
@@ -186,8 +188,9 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
 
 
     public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
-        if (comments != null && comments.size() > 0) {
+        if (_comments != null && _comments.size() > 0) {
             comments.addAll(_comments);
+            Log.i("fdfd", comments.size() + "");
             if(pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
