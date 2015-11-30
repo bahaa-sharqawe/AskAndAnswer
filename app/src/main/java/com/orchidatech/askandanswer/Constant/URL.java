@@ -28,7 +28,7 @@ public class URL {
     public static String GET_Category_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpostincategory";
     public static final String ADD_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/add-post-favorite";
     public static final String GET_USER_FAV_POSTS = SERVER_URL + WEB_SERVICES_PATH + "postFav/user-post-favorite";
-    public static final String REMOVE_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/remove-post-favorite";
+    public static final String REMOVE_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/delete-post-favorite";
     public static final String ADD_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/add-comment";
     public static String GET_USER_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/usercomment";
     public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";

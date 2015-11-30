@@ -99,7 +99,7 @@ public class MyFavorites extends Fragment {
 
             @Override
             public void onFavoritePost(final int position, long pid, long uid) {
-                //remove post from favoritea
+                //remove post from favorite
                 WebServiceFunctions.removePostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
 
                     @Override
@@ -135,6 +135,8 @@ public class MyFavorites extends Fragment {
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,8 +176,9 @@ public class MyFavorites extends Fragment {
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        rl_error.setVisibility(View.VISIBLE);
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
-                        rl_error.setEnabled(false);
+                        rl_error.setEnabled(true);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
                     adapter.addFromServer(null, errorCode != 403 ? true : false);//CONNECTION ERROR

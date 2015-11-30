@@ -32,9 +32,9 @@ public class Post_FavoriteDAO {
         exPost_Favorite.date = post_favorite.getDate();
         exPost_Favorite.save();
     }
-    public static void deletePostFavorite(long postFavoriteServerId, long userServerId){
-        new Delete().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_SERVER_ID +
-                " = ? and " + Post_Favorite.FIELDS.COLUMN_USER_ID + " = ?", postFavoriteServerId, userServerId).execute();
+    public static void deletePostFavorite(long postServerId, long userServerId){
+        new Delete().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_POST_ID +
+                " = ? and " + Post_Favorite.FIELDS.COLUMN_USER_ID + " = ?", postServerId, userServerId).execute();
     }
     public static void deletePostFavoriteByPost(long postServerId){//when post deleted
         new Delete().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_POST_ID +
@@ -54,16 +54,16 @@ public class Post_FavoriteDAO {
     public static ArrayList<Post_Favorite> getAllUserPostFavorite(long userServerId){
         List<Post_Favorite> post_favorites = new Select().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_USER_ID + " = ?", userServerId)
                 .orderBy(Post_Favorite.FIELDS.COLUMN_SERVER_ID).execute();
-        ArrayList<Post_Favorite> net_post_favorites = new ArrayList<>();
-        //to remove all favorite posts in deleted category for this user
-        for(Post_Favorite post_favorite : post_favorites){
-            if(User_CategoriesDAO.getUserCategory(post_favorite.getUserID(),
-                    PostsDAO.getPost(post_favorite.getPostID()).getCategoryID())!=null)
-                net_post_favorites.add(post_favorite);
-            else
-                deletePostFavorite(post_favorite.getServerID(), userServerId);
-        }
-        return net_post_favorites;
+//        ArrayList<Post_Favorite> net_post_favorites = new ArrayList<>();
+//        //to remove all favorite posts in deleted category for this user
+//        for(Post_Favorite post_favorite : post_favorites){
+//            if(User_CategoriesDAO.getUserCategory(post_favorite.getUserID(),
+//                    PostsDAO.getPost(post_favorite.getPostID()).getCategoryID())!=null)
+//                net_post_favorites.add(post_favorite);
+//            else
+//                deletePostFavorite(post_favorite.getServerID(), userServerId);
+//        }
+        return new ArrayList<>(post_favorites);
     }
 
     public static void deleteAllUserPostFavorite(long userServerId){

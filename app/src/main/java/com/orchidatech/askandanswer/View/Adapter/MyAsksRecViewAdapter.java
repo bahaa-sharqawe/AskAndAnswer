@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -105,7 +106,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
+                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                 }
             });
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {

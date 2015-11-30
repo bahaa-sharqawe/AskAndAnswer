@@ -718,13 +718,17 @@ public class WebServiceFunctions {
     }
 
     public static void addPostFavorite(final Context context, final long pid, final long uid, final OnPostFavoriteListener listener) {
-        Map<String, String> params = new HashMap<>();
-        params.put(URL.URLParameters.USER_ID, uid + "");
-        params.put(URL.URLParameters.POST_ID, pid + "");
-        Operations.getInstance(context).addPostFavorite(params, new OnLoadFinished() {
+        String url = URL.ADD_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
+                + URL.URLParameters.POST_ID + "=" + pid;
+//        Map<String, String> params = new HashMap<>();
+//        params.put(URL.URLParameters.USER_ID, uid + "");
+//        params.put(URL.URLParameters.POST_ID, pid + "");
+        Log.i("dsds", url);
+        Operations.getInstance(context).addPostFavorite(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
+                Log.i("dsds", response);
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
@@ -750,21 +754,25 @@ public class WebServiceFunctions {
     }
 
 
-    public static void removePostFavorite(final Context context, final long postFavId, final long uid, final OnPostFavoriteListener listener) {
+    public static void removePostFavorite(final Context context, final long postId, final long uid, final OnPostFavoriteListener listener) {
+        String url = URL.REMOVE_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
+                + URL.URLParameters.POST_ID + "=" + postId;
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, uid + "");
-        params.put(URL.URLParameters.POST_ID, postFavId + "");
-        Log.i("dfdffdd", uid + ", " + postFavId);
-        Operations.getInstance(context).removePostFavorite(params, new OnLoadFinished() {
+        params.put(URL.URLParameters.POST_ID, postId + "");
+        Log.i("dfdffdd", url);
+        Operations.getInstance(context).removePostFavorite(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
+                Log.i("dfdffdd", response);
+
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if (status == 0) {
-                        Post_FavoriteDAO.deletePostFavorite(postFavId, uid);
+                        Post_FavoriteDAO.deletePostFavorite(postId, uid);
                         listener.onSuccess();
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));

@@ -163,12 +163,12 @@ public class Operations {
         }
     }
 
-    public void addPostFavorite(Map<String, String> params, OnLoadFinished listener) {
-        sendRequest(Request.Method.POST, URL.ADD_POST_FAVORITE, params, listener);
+    public void addPostFavorite(String url, OnLoadFinished listener) {
+        sendRequest(Request.Method.GET, url, null, listener);
     }
 
-    public void removePostFavorite(Map<String, String> params, OnLoadFinished listener) {
-        sendRequest(Request.Method.POST, URL.REMOVE_POST_FAVORITE, params, listener);
+    public void removePostFavorite(String url, OnLoadFinished listener) {
+        sendRequest(Request.Method.GET, url, null, listener);
     }
 
     private void sendRequest(int method, final String url, Map<String, String> params, final OnLoadFinished listener) {

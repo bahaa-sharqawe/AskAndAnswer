@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -84,7 +85,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         }else {
             Post_Favorite currentPostFavorite = posts.get(position);
             Posts currentPost = PostsDAO.getPost(currentPostFavorite.getPostID());
-            Users postOwner = UsersDAO.getUser(currentPostFavorite.getUserID());
+            Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+
             Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
@@ -105,7 +107,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
+                    pe_listener.onFavoritePost(position, posts.get(position).getPostID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                 }
             });
             String postImage = currentPost.getImage();
@@ -166,7 +168,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 ll_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pe_listener.onCommentPost(1);
+                        pe_listener.onCommentPost(posts.get(getAdapterPosition()).getPostID());
 //                        postEventsListener.onCommentPost(posts.get(getAdapterPosition()).getServerID());
                     }
                 });
@@ -175,7 +177,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pe_listener.onClick(1);
+                        pe_listener.onClick(posts.get(getAdapterPosition()).getPostID());
 //                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
                     }
                 });

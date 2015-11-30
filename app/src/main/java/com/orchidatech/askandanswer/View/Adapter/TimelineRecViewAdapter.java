@@ -216,7 +216,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 ll_favorite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), posts.get(getAdapterPosition()).getUserID());
+                        pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                     }
                 });
             }
