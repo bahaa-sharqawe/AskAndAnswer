@@ -96,8 +96,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 holder.iv_comment.setVisibility(View.VISIBLE);
             } else
                 holder.iv_comment.setVisibility(View.GONE);
-            holder.tv_unlikes.setText(currentComment.getDisLikes());
-            holder.tv_likes.setText(currentComment.getLikes());
+            holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
+            holder.tv_likes.setText(currentComment.getLikes()+"");
             holder.tv_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -157,7 +157,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
                 tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
-                tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_postDate);
+                tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
             }
@@ -174,7 +174,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
 
     public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
-        if (comments != null && comments.size() > 0) {
+        if (_comments != null && _comments.size() > 0) {
             comments.addAll(_comments);
             if(pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);

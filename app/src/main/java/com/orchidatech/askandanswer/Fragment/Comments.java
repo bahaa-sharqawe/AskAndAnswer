@@ -71,8 +71,8 @@ public class Comments extends DialogFragment {
     ImageView iv_delete;
     ImageView iv_camera;
     ImageView iv_comment;
-    private String picturePath;
-    private String image_str;
+    private String picturePath="";
+    private String image_str="";
     private long user_id;
 
 
@@ -156,8 +156,8 @@ public class Comments extends DialogFragment {
         iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                picturePath = null;
-                image_str = null;
+                picturePath = "";
+                image_str = "";
                 rl_comment_photo_preview.setVisibility(View.GONE);
             }
         });
@@ -174,6 +174,11 @@ public class Comments extends DialogFragment {
 
                         @Override
                         public void onAdded(com.orchidatech.askandanswer.Database.Model.Comments comment) {
+                            picturePath = "";
+                            image_str = "";
+                            rl_comment_photo_preview.setVisibility(View.GONE);
+                            rl_error.setVisibility(View.GONE);
+                            ed_add_comment.setText("");
                             adapter.addComment(comment);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
@@ -212,20 +217,23 @@ public class Comments extends DialogFragment {
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
-                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                    if (errorCode != 404) {//ALL ERRORS EXCEPT NO_POSTS
                         if (postComments.size() > 0)
                             getFromLocal();
                         else {
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
+//                            adapter.addFromLocal(null);
                         }
                     } else {
+                        rl_error.setVisibility(View.VISIBLE);
                         tv_error.setText(getActivity().getString(R.string.no_comments_found));
                         rl_error.setEnabled(false);
+
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
-                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                    adapter.addFromServer(null, errorCode != 404 ? true : false);//CONNECTION ERROR
                 }/*else{
                         getFromLocal();
                     }

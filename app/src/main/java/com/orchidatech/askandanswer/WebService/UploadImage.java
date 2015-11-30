@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.WebService;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 
@@ -67,11 +68,14 @@ public class UploadImage {
         protected String doInBackground(Void... param) {
             String responseString = null;
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
+            Log.i("statd", url);
+
+            HttpPost httpPost = new HttpPost(url.trim());
             try {
                 httpPost.setEntity(entity);
                 HttpResponse response = httpClient.execute(httpPost);
                 HttpEntity r_entity = response.getEntity();
+
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == 200) {
                     responseString = EntityUtils.toString(r_entity);
@@ -93,7 +97,6 @@ public class UploadImage {
             if(TextUtils.isEmpty(s))
                 listener.onFail("Please Chaeck yout internet connection");
             else
-
             listener.onSuccess(s);
         }
     }

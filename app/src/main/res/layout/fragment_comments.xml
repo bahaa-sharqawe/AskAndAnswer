@@ -45,15 +45,18 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_camera"
+                        android:src="@drawable/ic_camera_green"
                         android:id="@+id/iv_camera"
+                        android:layout_marginLeft="10dp"
+
                         android:layout_gravity="center_vertical"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_name_flat"
+                        android:src="@drawable/ic_send"
                         android:id="@+id/iv_add_comment"
+                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_vertical"/>
 
 
@@ -66,13 +69,13 @@
                     android:visibility="gone"
                     >
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:src="@drawable/android_wallpaper"
                         android:id="@+id/iv_comment"
                         android:visibility="visible"
                         android:layout_centerInParent="true"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="fitXY"/>
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -80,6 +83,7 @@
                         android:id="@+id/iv_delete"
                         android:layout_alignParentRight="true"
                         android:layout_margin="4dp"
+
                         />
 
 
@@ -116,7 +120,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="20sp"/>
+                android:textSize="16sp"/>
 
         </RelativeLayout>
 
