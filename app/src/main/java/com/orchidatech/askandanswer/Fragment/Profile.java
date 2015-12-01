@@ -70,6 +70,7 @@ public class Profile extends Fragment {
 
     private long last_id_server = 0;
     private long user_id;
+    Users user;
     RelativeLayout rl_parent;
     RelativeLayout rl_error;
     ImageView uncolored_logo;
@@ -81,6 +82,7 @@ public class Profile extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user_id = getArguments().getLong(USER_ID_KEY, -1);
+        user = UsersDAO.getUser(user_id);
     }
 
     @Nullable
@@ -109,7 +111,21 @@ public class Profile extends Fragment {
         tv_person = (TextView) getActivity().findViewById(R.id.tv_person);
         tv_answers = (TextView) getActivity().findViewById(R.id.tv_answers);
         tv_asks = (TextView) getActivity().findViewById(R.id.tv_asks);
-        getUserInfo(user_id);
+        tv_person.setText(user.getFname() + " " + user.getLname());
+        Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                iv_profile.setImageResource(R.drawable.ic_user);
+            }
+        });
+        tv_asks.setText(getActivity().getString(R.string.tv_ask_count, user.getAsks()));
+        tv_answers.setText(getActivity().getString(R.string.tv_answer_count, user.getAnswers()));
+//        getUserInfo(user_id);
         rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
         rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -224,7 +240,7 @@ public class Profile extends Fragment {
                     }
                 });
                 tv_asks.setText(getActivity().getString(R.string.tv_ask_count, no_ask));
-                tv_answers.setText(getActivity().getString(R.string.tv_ask_count, no_answer));
+                tv_answers.setText(getActivity().getString(R.string.tv_answer_count, no_answer));
             }
 
             @Override

@@ -19,7 +19,7 @@ public class Users extends Model {
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
         public static final String COLUMN_FNAME = "F_NAME";
         public static final String COLUMN_LNAME = "L_NAME";
-        public static final String COLUMN_USERNAME = "username";
+        public static final String COLUMN_USERNAME = "UERNAME";
         public static final String COLUMN_EMAIL = "EMAIL";
         public static final String COLUMN_PASSWORD = "PASSWORD";
         public static final String COLUMN_IMAGE = "IMAGE";
@@ -29,6 +29,8 @@ public class Users extends Model {
         public static final String COLUMN_MOBILE = "MOBILE";
         public static final String COLUMN_IS_PUBLIC_PROFILE = "IS_PUBLIC_PROFILE";
         public static final String COLUMN_CODE = "CODE";
+        public static final String COLUMN_ASKS = "ASKS";
+        public static final String COLUMN_ANSWERS = "ANSWERS";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -70,6 +72,13 @@ public class Users extends Model {
     @Column(name = FIELDS.COLUMN_CODE)
     public String code;
 
+    @Column(name = FIELDS.COLUMN_ANSWERS)
+    public int answers;
+
+    @Column(name = FIELDS.COLUMN_ASKS)
+    public int asks;
+
+
     public Users() {
         super();
     }
@@ -89,6 +98,25 @@ public class Users extends Model {
         this.mobile = mobile;
         this.isPublicProfile = isPublicProfile;
         this.code = code;
+    }
+
+    public Users(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code, int asks, int answers) {
+        super();
+        this.serverID = serverID;
+        this.fname = fname;
+        this.lname = lname;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.image = image;
+        this.creationDate = creationDate;
+        this.active = active;
+        this.lastLogin = lastLogin;
+        this.mobile = mobile;
+        this.isPublicProfile = isPublicProfile;
+        this.code = code;
+        this.asks = asks;
+        this.answers = answers;
     }
 
     public long getServerID() {
@@ -193,5 +221,21 @@ public class Users extends Model {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getAsks() {
+        return asks;
+    }
+
+    public void setAsks(int asks) {
+        this.asks = asks;
+    }
+
+    public int getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(int answers) {
+        this.answers = answers;
     }
 }

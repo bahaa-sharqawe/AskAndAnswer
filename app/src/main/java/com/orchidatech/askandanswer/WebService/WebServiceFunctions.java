@@ -89,7 +89,9 @@ public class WebServiceFunctions {
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
-                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code);
+                        int no_aks = user.getInt("no_ask");
+                        int no_answers = user.getInt("no_answer");
+                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code, no_aks, no_answers);
                         UsersDAO.addUser(_user);
                         ArrayList<Long> user_categories_id = new ArrayList<Long>();
                         JSONArray user_category_arr = user.getJSONArray("user_category");
@@ -154,7 +156,7 @@ public class WebServiceFunctions {
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
                         Users _user = new Users(id, f_name, l_name, null, email, null, image, created_at, active, last_login,
-                                mobile, is_public, code);
+                                mobile, is_public, code,0,0);
                         UsersDAO.addUser(_user);
                         listener.onSuccess(id);
                     } else
@@ -323,7 +325,7 @@ public class WebServiceFunctions {
                         int no_answer = user.getInt("no_answer");
                         int no_ask = user.getInt("no_ask");
                         Users _user = new Users(id, f_name, l_name, null, email, null, image, created_at, active, last_login,
-                                mobile, is_public, code);
+                                mobile, is_public, code, no_ask, no_answer);
                         UsersDAO.addUser(_user);
                         listener.onDataFetched(_user, no_answer, no_ask);
                     } else
@@ -596,7 +598,9 @@ public class WebServiceFunctions {
                             String code = user_info.getString("code");
                             String mobile = user_info.getString("mobile");
                             int is_public = Integer.parseInt(user_info.getString("is_public"));
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, created_at, active, last_login, mobile, is_public, code);
+//                            int no_answer = user.getInt("no_answer");
+//                            int no_ask = user.getInt("no_ask");
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, created_at, active, last_login, mobile, is_public, code, -1, -1);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
                             JSONArray user_action_arr = comment.getJSONArray("user_action");
@@ -641,7 +645,7 @@ public class WebServiceFunctions {
                             JSONObject userObj = post_obj.getJSONArray("user").getJSONObject(0);
                             Users user = new Users(userObj.getLong("id"), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
                                     null, userObj.getString("image"), userObj.getLong("updated_at"), userObj.getInt("active"), userObj.getLong("last_login"),
-                                    userObj.getString("mobile"), userObj.getInt("is_public"), userObj.getString("code"));
+                                    userObj.getString("mobile"), userObj.getInt("is_public"), userObj.getString("code"), -1, -1);
                             PostsDAO.addPost(post);
                             UsersDAO.addUser(user);
                             matchedPosts.add(post);
@@ -703,7 +707,7 @@ public class WebServiceFunctions {
                             String mobile = user.getString("mobile");
                             int is_public = user.getInt("is_public");
                             /////////////////////////////////////////////////////////////
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, user_created_at, active, last_login, mobile, is_public, code);
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, user_created_at, active, last_login, mobile, is_public, code, -1, -1);
                             UsersDAO.addUser(_user);
                             Posts postItem = new Posts(id, text, image, post_created_at, user_id, category_id, is_hidden, comments_no);
                             PostsDAO.addPost(postItem);
@@ -1071,7 +1075,7 @@ public class WebServiceFunctions {
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = Integer.parseInt(user.getString("is_public"));
-                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code));
+                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image, created_at, active, last_login, mobile, is_public, code, -1, -1));
                         listener.onSuccess();
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
