@@ -44,7 +44,7 @@ public class CategoryPosts extends AppCompatActivity {
     RecyclerView rv_posts;
     CategoryPostRecViewAdapter adapter;
     ArrayList<Posts> posts;
-    LinearLayout ll_parent;
+    RelativeLayout rl_parent;
     private Toolbar toolbar;
     private long categoryId;
     private long userId;
@@ -69,9 +69,9 @@ public class CategoryPosts extends AppCompatActivity {
 
     private void initializeFields() {
         posts = new ArrayList<>(PostsDAO.getAllPosts(userId, categoryId));
-        ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         rv_posts = (RecyclerView) this.findViewById(R.id.rv_posts);
-        adapter = new CategoryPostRecViewAdapter(this, posts, ll_parent, new OnPostEventListener() {
+        adapter = new CategoryPostRecViewAdapter(this, posts, rl_parent, new OnPostEventListener() {
             @Override
             public void onClick(long pid) {
                 Intent intent = new Intent(CategoryPosts.this, ViewPost.class);
@@ -101,12 +101,12 @@ public class CategoryPosts extends AppCompatActivity {
 
                     @Override
                     public void onSuccess() {
-                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                     }
 
                     @Override
                     public void onFail(String error) {
-                        AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
 
                     }
                 });

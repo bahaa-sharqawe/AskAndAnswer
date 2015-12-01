@@ -7,23 +7,28 @@ import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Activity.SplashScreen;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.R;
@@ -82,9 +87,10 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 lastListReachListener.onReached();
             }
         }else {
-            com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
+            final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
             Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
             Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
+            User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), currentComment.getServerID());
             Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
@@ -97,19 +103,43 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             } else
                 holder.iv_comment.setVisibility(View.GONE);
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
-            holder.tv_likes.setText(currentComment.getLikes()+"");
-            holder.tv_likes.setOnClickListener(new View.OnClickListener() {
+            holder.tv_likes.setText(currentComment.getLikes() + "");
+//            holder.tv_likes.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    listener.onLike(comments.get(position).getServerID());
+//                }
+//            });
+//            holder.tv_unlikes.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    listener.onDislike(comments.get(position).getServerID());
+//                }
+//            });
+            if(user_actions != null && user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()){
+                holder.iv_unlike.setImageResource(R.drawable.unlike);
+                holder.iv_like.setImageResource(R.drawable.ic_like_on);
+            }else if(user_actions != null && user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
+                holder.iv_unlike.setImageResource(R.drawable.ic_dislike_on);
+                holder.iv_like.setImageResource(R.drawable.like);
+            }else{
+                holder.iv_unlike.setImageResource(R.drawable.unlike);
+                holder.iv_like.setImageResource(R.drawable.like);
+            }
+            holder.ll_like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onLike(comments.get(position).getServerID());
+                    Log.i("vcvc", currentComment.getServerID()+"");
+                    listener.onLike(currentComment.getServerID());
                 }
             });
-            holder.tv_unlikes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDislike(comments.get(position).getServerID());
-                }
-            });
+           holder.ll_unlike.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   Log.i("vcvc", currentComment.getServerID()+"");
+                   listener.onDislike(currentComment.getServerID());
+               }
+           });
 
         }
     }
@@ -129,7 +159,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         TextView tv_commentDesc;
         TextView tv_likes;
         TextView tv_unlikes;
+        LinearLayout ll_unlike;
+        LinearLayout ll_like;
         ImageView iv_comment;
+        ImageView iv_like;
+        ImageView iv_unlike;
         RelativeLayout rl_comment_item;
         int viewType;
 
@@ -160,6 +194,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
+                iv_like = (ImageView) itemView.findViewById(R.id.iv_like);
+                iv_unlike = (ImageView) itemView.findViewById(R.id.iv_unlike);
+                ll_like = (LinearLayout) itemView.findViewById(R.id.ll_like);
+                ll_unlike = (LinearLayout) itemView.findViewById(R.id.ll_unlike);
+
             }
         }
 

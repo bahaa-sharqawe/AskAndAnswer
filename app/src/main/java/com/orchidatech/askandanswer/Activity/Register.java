@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -75,6 +77,12 @@ public class Register extends Activity {
             }
         });
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        ll_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
         mValidator = Validator.getInstance();
     }
 
@@ -148,5 +156,11 @@ public class Register extends Activity {
         iv_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         iv_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
-
+    private void hideSoftKeyboard() {
+        View view = Register.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

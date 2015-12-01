@@ -103,10 +103,11 @@ public class Timeline extends Fragment {
 
             @Override
             public void onClick(long pid) {
-//                Intent intent = new Intent(getActivity(), ViewPost.class);
-//                intent.putExtra(ViewPost.POST_ID, pid);
-//                startActivity(intent);
-
+                Bundle args = new Bundle();
+                args.putLong(ViewPost.POST_ID, pid);
+                Comments comments = new Comments();
+                comments.setArguments(args);
+                comments.show(getFragmentManager(), "Comments");
             }
 
             @Override
@@ -130,6 +131,7 @@ public class Timeline extends Fragment {
                     @Override
                     public void onSuccess() {
                         AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added),getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override

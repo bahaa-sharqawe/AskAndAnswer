@@ -32,6 +32,7 @@ public class URL {
     public static final String ADD_COMMENT = "http://softplaystore.com/askandanswer_ws/public/comment/add-comment";
     public static String GET_USER_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/usercomment";
     public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";
+    public static String ADD_ACTION = SERVER_URL + WEB_SERVICES_PATH + "commentAction/add-comment-action";
 
     public class URLParameters {
         public static final String ID = "id";
@@ -57,5 +58,7 @@ public class URL {
         public static final String COMMENT = "comment";
         public static final String CATEGORY_ID = "category_id";
         public static final String FILTER = "filter";
+        public static final String COMMENT_ID = "comment_id";
+        public static final String ACTION_TYPE = "action_type";
     }
 }

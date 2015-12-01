@@ -97,12 +97,12 @@ public class MyAsks extends Fragment{
 
             @Override
             public void onFavoritePost(final int position, long pid, long uid) {
-                //add post to favorites
-                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
+                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener(){
 
                     @Override
                     public void onSuccess() {
-                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added),getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -111,7 +111,6 @@ public class MyAsks extends Fragment{
 
                     }
                 });
-
             }
 
             @Override
@@ -172,7 +171,7 @@ public class MyAsks extends Fragment{
                         }
                     } else {
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
-                        rl_error.setEnabled(false);
+                        rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {

@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.WebService;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
+import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
@@ -400,10 +402,13 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("dfddv", url);
+
         Operations.getInstance(context).getCategoryPosts(new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
+                Log.i("dfddv", response);
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
@@ -419,7 +424,7 @@ public class WebServiceFunctions {
                             int is_hidden = post.getInt("is_hidden");
                             long category_id = post.getLong("category_id");
                             int comments_no = post.getInt("comment_no");
-                            long created_at = post.getLong("created_at");
+                            long created_at = post.getLong("updated_at");
                             Posts postItem = new Posts(id, text, image, created_at, userId, category_id, is_hidden, comments_no);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
@@ -518,7 +523,7 @@ public class WebServiceFunctions {
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
                             JSONArray user_action_arr = comment.getJSONArray("user_action");
-                            if(user_action_arr != null && user_action_arr.length() > 0) {
+                            if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_actionObj = user_action_arr.getJSONObject(0);
                                 long user_action_id = user_actionObj.getLong("id");
                                 long user_action_comment = user_actionObj.getLong("comment_id");
@@ -526,7 +531,7 @@ public class WebServiceFunctions {
                                 int user_action_action = user_actionObj.getInt("action_type");
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?"":comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? "" : comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                         }
@@ -566,16 +571,16 @@ public class WebServiceFunctions {
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject comment = data.getJSONObject(i);
-                            long comment_id = comment.getLong("id");
+                            long comment_id = Long.parseLong(comment.getString("id"));
                             String comment_text = comment.getString("comment");
                             String comment_image = comment.getString("image");
-                            long user_id = comment.getLong("user_id");
-                            long post_id = comment.getLong("post_id");
+                            long user_id = Long.parseLong(comment.getString("user_id"));
+                            long post_id = Long.parseLong(comment.getString("post_id"));
                             long comment_date = comment.getLong("created_at");
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?"":comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
@@ -585,19 +590,22 @@ public class WebServiceFunctions {
                             String l_name = user_info.getString("l_name");
                             String email = user_info.getString("email");
                             String user_image = user_info.getString("image");
-                            int active = user_info.getInt("active");
+                            int active = Integer.parseInt(user_info.getString("active"));
                             long created_at = user_info.getLong("created_at");
                             long last_login = user_info.getLong("last_login");
                             String code = user_info.getString("code");
                             String mobile = user_info.getString("mobile");
-                            int is_public = user_info.getInt("is_public");
+                            int is_public = Integer.parseInt(user_info.getString("is_public"));
                             Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image, created_at, active, last_login, mobile, is_public, code);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
-                            JSONObject user_action = comment.getJSONArray("user_action").getJSONObject(0);
-                            User_ActionsDAO.addUserAction(new User_Actions(user_action.getLong("id"), user_action.getLong("comment_id"), user_action.getLong("user_id"), System.currentTimeMillis(), user_action.getInt("action_type")));
-                        }
-                        long last_id = dataObj.getLong("last_id");
+                            JSONArray user_action_arr = comment.getJSONArray("user_action");
+                                    if(user_action_arr.length() > 0) {
+                                        JSONObject user_action = user_action_arr.getJSONObject(0);
+                                        User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
+                                                , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), user_action.getInt("action_type")));
+                                    }}
+                        long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedComments, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -820,6 +828,43 @@ public class WebServiceFunctions {
 
     }
 
+    public static void addCommentAction(final Context context, final long commentId, long userId, final int action, final OnCommentActionListener listener) {
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.USER_ID, userId + "");
+        params.put(URL.URLParameters.COMMENT_ID, commentId + "");
+        params.put(URL.URLParameters.ACTION_TYPE, action + "");
+        Log.i("cxcxcx", commentId + ", " + URL.ADD_ACTION);
+
+        Operations.getInstance(context).addAction(params, new OnLoadFinished() {
+
+            @Override
+            public void onSuccess(String response) {
+                Log.i("cxcxcx", response);
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        JSONObject data = dataObj.getJSONObject("data");
+                        long id = data.getLong("id");
+                        long comment_id = data.getLong("comment_id");
+                        long user_id = data.getLong("user_id");
+                        int action_type = data.getInt("action_type");
+                        User_ActionsDAO.addUserAction(new User_Actions(id, commentId, user_id, System.currentTimeMillis(), action_type));
+                        listener.onActionSent();
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+            }
+        });
+    }
     public static void addPost(final Context context, final long user_id, long category_id, String text, String picturePath, long date, int is_hidden, final OnAddPostListener listener) {
 
         UploadImage uploadImage = new UploadImage(context, URL.ADD_POST, new OnLoadFinished() {

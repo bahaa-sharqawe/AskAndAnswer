@@ -25,6 +25,7 @@ import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
@@ -99,11 +100,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-                       || postOwner.getIsPublicProfile()==0)
-                   goToProfile(postOwner.getServerID());
+                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+                            || postOwner.getIsPublicProfile() == 0)
+                        goToProfile(postOwner.getServerID());
                 }
             });
+
+        if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(),
+                SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY,-1)) != null)
+            holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
+        else
+            holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
 
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
@@ -169,7 +176,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
+        LinearLayout ll_post;
         CircleImageView iv_profile;
+        ImageView iv_favorite;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
@@ -195,7 +204,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
-
+                iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
@@ -217,6 +226,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     @Override
                     public void onClick(View v) {
                         pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                    }
+                });
+                ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
+                ll_post.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
                     }
                 });
             }

@@ -89,7 +89,12 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_navigation.setLayoutManager(llm);
         rv_navigation.setAdapter(adapter);
-        startEvent(0);
+//        startEvent(0);
+
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.fragment_host, new Timeline());
+        ft.commit();
+        mFragmentManager.executePendingTransactions();
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
 //        mDrawerLayout.openDrawer(rv_navigation);
@@ -185,8 +190,8 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             oldPosition = position;
             defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
+            ft.addToBackStack("dfdffdfd");
             ft.replace(R.id.fragment_host, fragment);
-//            ft.addToBackStack(null);
             ft.commit();
             mFragmentManager.executePendingTransactions();
             setTitle(position == 0 ? "Questions" : itemsTitles.get(position));
@@ -216,4 +221,12 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +31,14 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
+import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
@@ -112,12 +116,68 @@ public class Comments extends DialogFragment {
         adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent, new OnUserActionsListener() {
             @Override
             public void onLike(long commentId) {
+               final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
 
+                int action = (user_actions==null||user_actions.getActionType()!=Enum.USER_ACTIONS.LIKE.getNumericType())?0:2;
+                final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+
+                WebServiceFunctions.addCommentAction(getActivity(), commentId,
+                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener(){
+
+                    @Override
+                    public void onActionSent() {
+                        AppSnackBar.show(rl_parent, "like", Color.RED, Color.WHITE);
+
+                        if(user_actions == null){
+                            Log.i("vcvc", "null");
+                            comment.likes++;
+                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
+                            Log.i("vcvc", "like");
+                            comment.disLikes--;
+                            comment.likes++;
+                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()){
+                            Log.i("vcvc", "dislike");
+                            comment.likes--;
+                        }
+                        CommentsDAO.updateComment(comment);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFail(String error) {
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                    }
+                });
             }
 
             @Override
             public void onDislike(long commentId) {
+                final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+                final int action = (user_actions==null||user_actions.getActionType()!=Enum.USER_ACTIONS.DISLIKE.getNumericType())?1:2;
+                final com.orchidatech.askandanswer.Database.Model.Comments comments = CommentsDAO.getComment(commentId);
+                WebServiceFunctions.addCommentAction(getActivity(), commentId,
+                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener(){
+                    @Override
+                    public void onActionSent() {
+                        AppSnackBar.show(rl_parent, "dislike", Color.RED, Color.WHITE);
 
+                        if(user_actions == null){
+                            comments.disLikes++;
+                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()) {
+                            comments.likes--;
+                            comments.disLikes++;
+                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
+                            comments.disLikes--;
+                        }
+                        CommentsDAO.updateComment(comments);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFail(String error) {
+                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                    }
+                });
             }
         }, new OnLastListReachListener() {
             @Override
@@ -229,8 +289,8 @@ public class Comments extends DialogFragment {
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
                         tv_error.setText(getActivity().getString(R.string.no_comments_found));
-                        rl_error.setEnabled(false);
-
+                        rl_error.setEnabled(true);
+//                        getFromLocal();
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
                     adapter.addFromServer(null, errorCode != 404 ? true : false);//CONNECTION ERROR

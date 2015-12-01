@@ -117,6 +117,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
+            holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
 
             Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
 
@@ -139,6 +140,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
         CircleImageView iv_profile;
+        ImageView iv_favorite;
+
         int viewType;
 
         public FavoriteViewHolder(View itemView, int viewType) {
@@ -174,6 +177,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
+                iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

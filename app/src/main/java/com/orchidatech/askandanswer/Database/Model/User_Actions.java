@@ -43,6 +43,7 @@ public class User_Actions extends Model {
 
     public User_Actions(long serverID, long commentID, long userID, long date, int actionType) {
         super();
+
         this.serverID = serverID;
         this.commentID = commentID;
         this.userID = userID;

@@ -129,7 +129,8 @@ public class MyAnswers extends Fragment {
                         }
                     } else {
                         tv_error.setText(getActivity().getString(R.string.no_comments_found));
-                        rl_error.setEnabled(false);
+                        rl_error.setEnabled(true);
+                        rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
                     adapter.addFromServer(null, errorCode != 404 ? true : false);

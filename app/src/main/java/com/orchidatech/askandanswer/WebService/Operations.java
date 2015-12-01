@@ -82,10 +82,6 @@ public class Operations {
         sendRequest(Request.Method.GET, URL.GET_CATEGORIES, null, listener);
     }
 
-    public void addComment(OnLoadFinished listener, String url) {
-        sendRequest(Request.Method.GET, url, null, listener);
-    }
-
     public void getUserCategories(String url, OnLoadFinished listener) {
         sendRequest(Request.Method.GET, url, null, listener);
     }
@@ -99,6 +95,10 @@ public class Operations {
 
     public void search(OnLoadFinished listener, String url) {
         sendRequest(Request.Method.GET, url, null, listener);
+    }
+
+    public void addAction(Map<String, String> params, OnLoadFinished listener) {
+        sendRequest(Request.Method.POST, URL.ADD_ACTION, params, listener);
     }
     public void addPost(Context context, long user_id, long category_id, String text, String picturePath, long date, int is_hidden, OnUploadImageListener listener) {
 

@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -56,6 +58,7 @@ public class UpdateProfile extends AppCompatActivity {
     private static final int MARGIN = 5;
 
     LinearLayout ll_parent;
+    LinearLayout ll_content;
     AutoCompleteTextView auto_categories;
     EditText ed_fname;
     EditText ed_lname;
@@ -165,6 +168,7 @@ public class UpdateProfile extends AppCompatActivity {
         picturePath = user.getImage();
         mValidator = Validator.getInstance();
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        ll_content = (LinearLayout) this.findViewById(R.id.ll_content);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.setText(user.getFname());
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
@@ -196,6 +200,12 @@ public class UpdateProfile extends AppCompatActivity {
             }
         }
         ac_adapter = new AutoCompleteAdapter(this, unSelectedCategoriesTitles);
+        ll_content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
     }
 
     private void pickPhoto() {
@@ -374,6 +384,13 @@ public class UpdateProfile extends AppCompatActivity {
         bmpFactoryOptions.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
+    }
+    private void hideSoftKeyboard() {
+        View view = UpdateProfile.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }

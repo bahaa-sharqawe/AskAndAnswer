@@ -48,7 +48,7 @@ public class Post_FavoriteDAO {
 
 
     public static Post_Favorite getPost_FavoriteByPostId(long postId, long userId) {
-        return new Select().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_POST_ID + " = ? and " + Post_Favorite.FIELDS.COLUMN_USER_ID, postId, userId)
+        return new Select().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_POST_ID + " = ? and " + Post_Favorite.FIELDS.COLUMN_USER_ID + " = ?", postId, userId)
                 .executeSingle();
     }
     public static ArrayList<Post_Favorite> getAllUserPostFavorite(long userServerId){

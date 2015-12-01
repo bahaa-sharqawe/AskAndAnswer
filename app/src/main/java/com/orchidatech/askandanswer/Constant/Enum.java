@@ -20,9 +20,9 @@ public final class Enum {
         }
     }
     public enum USER_ACTIONS {//Enum.USER_ACTIONS.LIKE.getNumericType();
-        NO_ACTIONS(0),
-        LIKE(1),
-        DISLIKE(2);
+        NO_ACTIONS(2),
+        LIKE(0),
+        DISLIKE(1);
         private int type;
         USER_ACTIONS(int i) {
             this.type = i;

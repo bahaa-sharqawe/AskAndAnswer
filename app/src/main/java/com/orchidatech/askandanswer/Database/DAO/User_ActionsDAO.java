@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import android.util.Log;
+
 import com.activeandroid.query.Select;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
 
@@ -13,6 +15,7 @@ public class User_ActionsDAO {
     public static void addUserAction(User_Actions newUserAction) {
         if(isExist(newUserAction.getServerID())){
             updateUserAction(newUserAction);
+            Log.i("xcxcvc", "exist" + ", " + newUserAction.getActionType());
             return;
         }
         User_Actions user_actions = new User_Actions();

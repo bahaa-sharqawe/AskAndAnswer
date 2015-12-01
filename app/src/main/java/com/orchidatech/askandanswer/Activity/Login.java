@@ -1,8 +1,10 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,14 +79,14 @@ public class Login extends AppCompatActivity {
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
-                            loadingDialog.getDialog().dismiss();
+                        loadingDialog.getDialog().dismiss();
                         SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         SplashScreen.prefEditor.commit();
-                        if(user_categories != null && user_categories.size() > 0){
-                              startActivity(new Intent(Login.this, MainScreen.class));
-                        }else{
-                              startActivity(new Intent(Login.this, TermsActivity.class));
+                        if (user_categories != null && user_categories.size() > 0) {
+                            startActivity(new Intent(Login.this, MainScreen.class));
+                        } else {
+                            startActivity(new Intent(Login.this, TermsActivity.class));
                         }
                         finish();
                     }
@@ -102,9 +105,17 @@ public class Login extends AppCompatActivity {
         googleAuth.mGoogleApiClient.connect();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        mCoordinatorLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              hideSoftKeyboard();
+            }
+        });
         mValidator = Validator.getInstance();
         ed_name = (EditText) this.findViewById(R.id.ed_name);
+        ed_name.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         btn_login = (Button) this.findViewById(R.id.btn_login);
         tv_signup_now = (TextView) this.findViewById(R.id.tv_signup_now);
         btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
@@ -125,7 +136,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this, Register.class));
-                finish();
+//                finish();
             }
         });
 
@@ -177,6 +188,14 @@ public class Login extends AppCompatActivity {
         });
 
 
+    }
+
+    private void hideSoftKeyboard() {
+        View view = Login.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private boolean verifyInputs(String username, String password) {

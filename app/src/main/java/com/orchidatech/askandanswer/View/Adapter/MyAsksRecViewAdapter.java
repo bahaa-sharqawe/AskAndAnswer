@@ -19,6 +19,7 @@ import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
@@ -130,6 +131,11 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 holder.iv_postImage.setVisibility(View.GONE);
 
             Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
+            if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(),
+                    SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)) != null)
+                holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
+            else
+                holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
 
         }
     }
@@ -151,6 +157,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         LinearLayout ll_comment;
         LinearLayout ll_post;
         CircleImageView iv_profile;
+        ImageView iv_favorite;
         int viewType;
 
         public AskViewHolder(View itemView, int viewType) {
@@ -180,6 +187,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
+                iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
 
 
