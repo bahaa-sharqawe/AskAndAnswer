@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -65,6 +66,7 @@ public class MyFavorites extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
@@ -200,5 +202,11 @@ public class MyFavorites extends Fragment {
         display.getSize(screenSize); // store size in screenSize
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Favorite");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

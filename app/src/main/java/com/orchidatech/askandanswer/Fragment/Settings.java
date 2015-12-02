@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class Settings extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         sw_notification = (Switch) getActivity().findViewById(R.id.sw_notification);
         sw_notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -53,5 +55,11 @@ public class Settings extends Fragment {
                 iv_checkbox.setVisibility(View.VISIBLE);
             }
         });
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

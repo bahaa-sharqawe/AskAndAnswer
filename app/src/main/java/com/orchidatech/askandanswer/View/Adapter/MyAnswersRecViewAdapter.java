@@ -117,13 +117,13 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
             holder.tv_likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onLike(comments.get(position).getServerID());
+                    listener.onLike(comments.get(position).getServerID(), position);
                 }
             });
             holder.tv_unlikes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onDislike(comments.get(position).getServerID());
+                    listener.onDislike(comments.get(position).getServerID(), position);
                 }
             });
 

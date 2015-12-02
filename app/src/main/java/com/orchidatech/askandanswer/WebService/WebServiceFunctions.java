@@ -28,6 +28,7 @@ import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
+import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
@@ -156,7 +157,7 @@ public class WebServiceFunctions {
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
                         Users _user = new Users(id, f_name, l_name, null, email, null, image, created_at, active, last_login,
-                                mobile, is_public, code,0,0);
+                                mobile, is_public, code, 0, 0);
                         UsersDAO.addUser(_user);
                         listener.onSuccess(id);
                     } else
@@ -582,7 +583,7 @@ public class WebServiceFunctions {
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?"":comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? "" : comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
@@ -604,11 +605,12 @@ public class WebServiceFunctions {
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
                             JSONArray user_action_arr = comment.getJSONArray("user_action");
-                                    if(user_action_arr.length() > 0) {
-                                        JSONObject user_action = user_action_arr.getJSONObject(0);
-                                        User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
-                                                , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), user_action.getInt("action_type")));
-                                    }}
+                            if (user_action_arr.length() > 0) {
+                                JSONObject user_action = user_action_arr.getJSONObject(0);
+                                User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
+                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), user_action.getInt("action_type")));
+                            }
+                        }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedComments, last_id);
                     } else
@@ -889,7 +891,7 @@ public class WebServiceFunctions {
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("created_at");
-                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0);
+                        Posts postItem = new Posts(id, text, image.equals("null")?"":image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
                         PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
@@ -939,7 +941,7 @@ public class WebServiceFunctions {
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("updated_at");
-                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0);
+                        Posts postItem = new Posts(id, text, image.equals("null")?"":image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
                         PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
@@ -1106,4 +1108,36 @@ public class WebServiceFunctions {
         return Uri.encode(s, "utf-8");
     }
 
+    public static void deletComment(final Context context, final long commentId, final OnDeleteCommentListener listener) {
+        String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
+        Operations.getInstance(context).deleteComment(url, new OnLoadFinished(){
+
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject data_obbj = new JSONObject(response);
+                    int status_code = data_obbj.getInt("statusCode");
+                    int status = data_obbj.getInt("status");
+                    if (status == 0) {
+                        CommentsDAO.deleteComment(commentId);
+                        User_ActionsDAO.delteActionByComment(commentId);
+                        listener.onDeleted();
+                    }else{
+                        listener.onFail(GNLConstants.getStatus(status_code));
+
+                    }
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+
+            }
+        });
+
+    }
 }

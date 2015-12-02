@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,7 @@ import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bahaa on 7/11/2015.
@@ -46,7 +48,7 @@ import java.util.ArrayList;
 public class Timeline extends Fragment {
     RecyclerView rv_posts;
     TimelineRecViewAdapter adapter;
-    ArrayList<Posts> allPosts;
+    List<Posts> allPosts;
     FloatingActionButton fab_add_post;
     RelativeLayout rl_num_notifications;
     RelativeLayout rl_parent;
@@ -59,7 +61,7 @@ public class Timeline extends Fragment {
     ImageView uncolored_logo;
     TextView tv_error;
     ProgressBar pb_loading_main;
-    private ArrayList<Posts> allStoredPosts;
+    private List<Posts> allStoredPosts;
 
 
     @Nullable
@@ -71,6 +73,7 @@ public class Timeline extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
 //        mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.notif_drawer);
 //        rv_notifications = (RecyclerView) getActivity().findViewById(R.id.rv_notifications);
@@ -83,8 +86,6 @@ public class Timeline extends Fragment {
 //                mDrawerLayout.openDrawer(rv_notifications);
             }
         });
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Questions");
         fab_add_post = (FloatingActionButton) getActivity().findViewById(R.id.fab_add_post);
         fab_add_post.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +100,7 @@ public class Timeline extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         allPosts = new ArrayList<>();
-        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnPostEventListener() {
+        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent/*, new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
@@ -149,7 +150,7 @@ public class Timeline extends Fragment {
 //                intent.putExtra(CategoryPosts.USER_ID, uid);
 //                startActivity(intent);
             }
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
@@ -174,6 +175,13 @@ public class Timeline extends Fragment {
         resizeLogo();
         allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
         loadNewPosts();
+    }
+
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Questions");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.VISIBLE);
     }
 
     private void loadNewPosts() {

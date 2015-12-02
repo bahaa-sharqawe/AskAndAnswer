@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,13 +18,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,27 +32,26 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.*;
-import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
-import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
-import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
-import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
+import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
+import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bahaa on 15/11/2015.
  */
-public class Comments extends DialogFragment {
+public class Comments extends DialogFragment implements DeleteComment.OnDeleteListener{
     private static final int RESULT_LOAD_IMAGE = 1;
 
     AlertDialog dialog;
@@ -65,8 +65,8 @@ public class Comments extends DialogFragment {
     TextView tv_error;
     ProgressBar pb_loading_main;
     private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments;
-    private RelativeLayout rl_parent;
-    private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments;
+    private LinearLayout rl_parent;
+    private List<com.orchidatech.askandanswer.Database.Model.Comments> comments;
 
 
     EditText ed_add_comment;
@@ -75,9 +75,10 @@ public class Comments extends DialogFragment {
     ImageView iv_delete;
     ImageView iv_camera;
     ImageView iv_comment;
-    private String picturePath="";
-    private String image_str="";
+    private String picturePath = "";
+    private String image_str = "";
     private long user_id;
+    private int numOfAddedComment = 0;
 
 
     @Override
@@ -99,90 +100,109 @@ public class Comments extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_comments, null, false);
-        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        rl_parent = (LinearLayout) view.findViewById(R.id.rl_parent);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_comments);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         comments = new ArrayList<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent, new OnUserActionsListener() {
+        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent/*, new OnUserActionsListener() {
             @Override
-            public void onLike(long commentId) {
-               final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
-
-                int action = (user_actions==null||user_actions.getActionType()!=Enum.USER_ACTIONS.LIKE.getNumericType())?0:2;
+            public void onLike(long commentId, final int position) {
+                final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+                final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
+                final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
                 final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
 
                 WebServiceFunctions.addCommentAction(getActivity(), commentId,
-                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener(){
+                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener() {
 
-                    @Override
-                    public void onActionSent() {
-                        AppSnackBar.show(rl_parent, "like", Color.RED, Color.WHITE);
+                            @Override
+                            public void onActionSent() {
+                                AppSnackBar.show(rl_parent, "like", Color.RED, Color.WHITE);
 
-                        if(user_actions == null){
-                            Log.i("vcvc", "null");
-                            comment.likes++;
-                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                            Log.i("vcvc", "like");
-                            comment.disLikes--;
-                            comment.likes++;
-                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()){
-                            Log.i("vcvc", "dislike");
-                            comment.likes--;
-                        }
-                        CommentsDAO.updateComment(comment);
-                        adapter.notifyDataSetChanged();
-                    }
+                                if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
+                                    comment.likes++;
+                                    Log.i("vcvc", "null: " + comment.likes);
 
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-                    }
-                });
+                                } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
+                                    comment.disLikes--;
+                                    comment.likes++;
+                                    Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes);
+                                } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
+                                    comment.likes--;
+                                    Log.i("vcvc", "dilike: " + comment.likes);
+
+                                }
+                                comments.get(position).setDisLikes(comment.disLikes);
+                                comments.get(position).setLikes(comment.likes);
+                                Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes + ",---" + prevAction + ", " + action);
+                                CommentsDAO.updateComment(comment);
+
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFail(String error) {
+                                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                            }
+                        });
             }
 
             @Override
-            public void onDislike(long commentId) {
+            public void onDislike(long commentId, final int position) {
                 final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
-                final int action = (user_actions==null||user_actions.getActionType()!=Enum.USER_ACTIONS.DISLIKE.getNumericType())?1:2;
-                final com.orchidatech.askandanswer.Database.Model.Comments comments = CommentsDAO.getComment(commentId);
+                final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
+                final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
+                final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
                 WebServiceFunctions.addCommentAction(getActivity(), commentId,
-                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener(){
-                    @Override
-                    public void onActionSent() {
-                        AppSnackBar.show(rl_parent, "dislike", Color.RED, Color.WHITE);
+                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener() {
+                            @Override
+                            public void onActionSent() {
+                                AppSnackBar.show(rl_parent, "dislike", Color.RED, Color.WHITE);
 
-                        if(user_actions == null){
-                            comments.disLikes++;
-                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                            comments.likes--;
-                            comments.disLikes++;
-                        }else if(user_actions.getActionType() == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                            comments.disLikes--;
-                        }
-                        CommentsDAO.updateComment(comments);
-                        adapter.notifyDataSetChanged();
-                    }
+                                if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
+                                    comment.disLikes++;
+                                } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
+                                    comment.likes--;
+                                    comment.disLikes++;
+                                } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
+                                    comment.disLikes--;
+                                }
+                                comments.get(position).disLikes = comment.disLikes;
+                                comments.get(position).likes = comment.likes;
+                                CommentsDAO.updateComment(comment);
+                                Log.i("vcvc", "dilike: " + comment.likes + " , " + comment.disLikes + ",---" + user_actions.getActionType() + ", " + action);
+                                adapter.notifyDataSetChanged();
+                            }
 
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-                    }
-                });
+                            @Override
+                            public void onFail(String error) {
+                                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                            }
+                        });
             }
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
+            }
+        }, new OnCommentOptionListener() {
+
+            @Override
+            public void onEditComment(long commentId, Drawable commentImage) {
+                editComment(commentId, commentImage);
+            }
+
+            @Override
+            public void onDeleteComment(long commentId, int position) {
+                deleteComment(commentId, position);
             }
         });
         mRecyclerView.setAdapter(adapter);
@@ -227,10 +247,10 @@ public class Comments extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String comment = ed_add_comment.getText().toString().trim();
-                if(!TextUtils.isEmpty(comment)){
+                if (!TextUtils.isEmpty(comment)) {
                     iv_add_comment.setEnabled(false);
                     iv_camera.setEnabled(false);
-                    WebServiceFunctions.addComment(getActivity(), comment, picturePath, postId, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener(){
+                    WebServiceFunctions.addComment(getActivity(), comment, picturePath, postId, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener() {
 
                         @Override
                         public void onAdded(com.orchidatech.askandanswer.Database.Model.Comments comment) {
@@ -239,6 +259,7 @@ public class Comments extends DialogFragment {
                             rl_comment_photo_preview.setVisibility(View.GONE);
                             rl_error.setVisibility(View.GONE);
                             ed_add_comment.setText("");
+                            numOfAddedComment++;
                             adapter.addComment(comment);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
@@ -257,13 +278,34 @@ public class Comments extends DialogFragment {
         return view;
     }
 
+    private void deleteComment(long commentId, int position) {
+        DeleteComment deletePost = new DeleteComment();
+        Bundle args = new Bundle();
+        args.putLong(DeleteComment.COMMENT_ID, commentId);
+        args.putInt(DeleteComment.COMMENT_POS, position);
+        deletePost.setArguments(args);
+        deletePost.show(getFragmentManager(), getString(R.string.delete_comment));
+
+    }
+
+    private void editComment(long commentId, Drawable commentDrawable) {
+       com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+        ed_add_comment.setText(comment.getText());
+        if(!TextUtils.isEmpty(comment.getImage())){
+            rl_comment_photo_preview.setVisibility(View.VISIBLE);
+            iv_comment.setVisibility(View.VISIBLE);
+            iv_comment.setImageDrawable(commentDrawable);
+        }
+
+    }
+
     private void pickPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 
     private void loadNewComments() {
-        WebServiceFunctions.getPostComments(getActivity(), user_id, postId, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnCommentFetchListener() {
+        WebServiceFunctions.getPostComments(getActivity(), user_id, postId, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount()-1-numOfAddedComment, last_id_server, new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
@@ -372,4 +414,29 @@ public class Comments extends DialogFragment {
         return bitmap;
     }
 
+    @Override
+    public void onDelete(long commentId, final int commentPos) {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
+        loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
+        loadingDialog.show(getFragmentManager(), "deleting");
+        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener(){
+
+            @Override
+            public void onDeleted() {
+                loadingDialog.dismiss();
+                comments.remove(commentPos);
+                adapter.notifyDataSetChanged();
+                AppSnackBar.show(rl_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+            }
+
+            @Override
+            public void onFail(String error) {
+                loadingDialog.dismiss();
+                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+            }
+        });
+    }
 }

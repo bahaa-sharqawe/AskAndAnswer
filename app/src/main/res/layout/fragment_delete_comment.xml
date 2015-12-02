@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:paddingTop="10dp"
+
+    android:background="@drawable/fr_contact_backgnd"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_delCommentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_delCommentTitle"
+        android:textSize="20sp"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_delCommtAttention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_delCommentAttention"
+        android:layout_marginBottom="35dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#b3b3b3"
+        />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_confirm"
+            android:layout_toLeftOf="@+id/tv_cancel"
+            android:textSize="17sp"
+            android:paddingTop="25dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingBottom="17dp"
+            android:id="@+id/tv_confirm"
+            android:textColor="#51a697"
+            android:background="@drawable/btns_contactus_backgnd"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_cancel"
+            android:layout_alignParentRight="true"
+            android:textSize="17sp"
+            android:paddingTop="25dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingBottom="17dp"
+            android:id="@+id/tv_cancel"
+            android:textColor="#51a697"
+            android:background="@drawable/btns_contactus_backgnd"/>
+    </RelativeLayout>
+
+</LinearLayout>

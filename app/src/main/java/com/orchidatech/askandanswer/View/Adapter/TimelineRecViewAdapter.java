@@ -4,10 +4,18 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +28,10 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
+import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -30,14 +40,19 @@ import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,20 +65,18 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final View parent;
     private ProgressBar pv_load;
     private Button btn_reload;
-    private ArrayList<Posts> posts;
+    private List<Posts> posts;
     private Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
-    private OnPostEventListener pe_listener;
     OnLastListReachListener lastListReachListener;
 
 
-    public TimelineRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent,
-                                  OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
+    public TimelineRecViewAdapter(Activity activity, List<Posts> posts, View parent,
+                                  OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
-        this.pe_listener = pe_listener;
         this.lastListReachListener = lastListReachListener;
     }
 
@@ -80,7 +93,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     }
 
     @Override
-    public void onBindViewHolder(final PostViewHolder holder, int position) {
+    public void onBindViewHolder(final PostViewHolder holder, final int position) {
 
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
@@ -94,7 +107,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         } else {
             Posts currentPost = posts.get(position);
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
-            Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+            final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +149,40 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                        holder.iv_profile.setImageResource(R.drawable.ic_user);
 //                    }
 //                });
-                holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+
+            holder.ll_comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    commentPost(posts.get(position).getServerID());
+                }
+            });
+            holder.ll_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sharePost(posts.get(position), holder.iv_postImage.getDrawable());
+//                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
+                }
+            });
+            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
+                }
+            });
+            holder.ll_post.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    commentPost(posts.get(position).getServerID());
+                }
+            });
+            holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoryClick(postCategory.getServerID(), postOwner.getServerID());
+                }
+            });
+
+            holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
@@ -146,6 +192,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             });
         }
     }
+
 
     private void goToProfile(long userId) {
         MainScreen.oldPosition = -1;
@@ -208,33 +255,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
-                ll_comment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onCommentPost(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
-                ll_share.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                ll_favorite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onFavoritePost(getAdapterPosition(), posts.get(getAdapterPosition()).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
-                    }
-                });
                 ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
-                ll_post.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
+
             }
 
         }
@@ -252,6 +276,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             if(pv_load != null)
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            if(posts.size() > GNLConstants.MAX_POSTS_ROWS){
+                posts = posts.subList(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size());
+            }
             notifyDataSetChanged();
         } else {
             if(isErrorConnection){
@@ -272,11 +299,101 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         loading = false;
     }
 
-    public void addFromLocal(ArrayList<Posts> newPosts){
+    public void addFromLocal(List<Posts> newPosts){
         posts.addAll(newPosts);
         if(pv_load != null)
             pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
     }
+
+    private void sharePost(Posts post, Drawable postPhoto) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_TEXT, post.getText());
+        if(postPhoto != null) {
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), drawableToBitmap(postPhoto), "", null);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+        }
+            activity.startActivity(Intent.createChooser(intent, "Share using"));
+    }
+
+    private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
+        if(Post_FavoriteDAO.getPost_FavoriteByPostId(post_id, user_id) == null){
+            //add to favorite
+            WebServiceFunctions.addPostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+
+                @Override
+                public void onSuccess() {
+                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_added), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                    adapter.notifyDataSetChanged();
+                    iv_favorite.setImageResource(R.drawable.ic_fav_on);
+                }
+
+                @Override
+                public void onFail(String error) {
+                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+                }
+            });
+        }else{
+            //remove from favorite
+            WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+
+                @Override
+                public void onSuccess() {
+                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                    posts.remove(position);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFail(String error) {
+                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+
+                }
+            });
+
+        }
+    }
+
+    private void commentPost(long postId) {
+        Bundle args = new Bundle();
+        args.putLong(ViewPost.POST_ID, postId);
+        Comments comments = new Comments();
+        comments.setArguments(args);
+        comments.show(activity.getFragmentManager(), "Comments");
+    }
+
+    private void categoryClick(long category_id, long user_id) {
+        Intent intent = new Intent(activity, CategoryPosts.class);
+        intent.putExtra(CategoryPosts.CATEGORY_KEY, category_id);
+        intent.putExtra(CategoryPosts.USER_ID, user_id);
+        activity.startActivity(intent);
+    }
+
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+
 }

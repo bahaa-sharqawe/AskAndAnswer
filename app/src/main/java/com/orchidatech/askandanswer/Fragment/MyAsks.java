@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -64,6 +65,7 @@ public class MyAsks extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
@@ -72,7 +74,7 @@ public class MyAsks extends Fragment{
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myPosts = new ArrayList<>();
-        adapter = new MyAsksRecViewAdapter(getActivity(), myPosts, rl_parent, new OnPostEventListener() {
+        adapter = new MyAsksRecViewAdapter(getActivity(), myPosts, rl_parent/*, new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
@@ -120,7 +122,7 @@ public class MyAsks extends Fragment{
                 intent.putExtra(CategoryPosts.USER_ID, uid);
                 startActivity(intent);
             }
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
@@ -194,5 +196,11 @@ public class MyAsks extends Fragment{
         display.getSize(screenSize); // store size in screenSize
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My Asks");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

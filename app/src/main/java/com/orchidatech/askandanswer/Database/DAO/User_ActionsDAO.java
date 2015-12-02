@@ -2,7 +2,9 @@ package com.orchidatech.askandanswer.Database.DAO;
 
 import android.util.Log;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
 
 import java.util.List;
@@ -61,4 +63,8 @@ public class User_ActionsDAO {
     }
 
 
+    public static void delteActionByComment(long commentId) {
+        new Delete().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_COMMENT_ID + " = ?", commentId).execute();
+
+    }
 }

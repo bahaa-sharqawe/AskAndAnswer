@@ -32,6 +32,7 @@ public class URL {
     public static final String ADD_COMMENT = "http://softplaystore.com/askandanswer_ws/public/comment/add-comment";
     public static String GET_USER_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/usercomment";
     public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";
+    public static final String DELETE_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/delete-comment";
     public static String ADD_ACTION = SERVER_URL + WEB_SERVICES_PATH + "commentAction/add-comment-action";
 
     public class URLParameters {

@@ -1,25 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rl_parent"
     android:paddingTop="8dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="8dp"
+    android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_comments"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/rv_comments"
-                android:divider="@null"
-                android:listSelector="@android:color/transparent"
-                />
+            android:layout_centerInParent="true"
+            android:id="@+id/rl_error"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/uncolored_logo"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/uncolored_logo"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/tv_your_questions"
+                android:id="@+id/tv_error"
+                android:layout_below="@+id/uncolored_logo"
+                android:layout_centerHorizontal="true"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/pb_loading_main" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
 
             <View android:layout_height="0.1dp"
                 android:layout_width="match_parent"
@@ -66,16 +109,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:id="@+id/rl_comment_photo_preview"
-                    android:visibility="gone"
+                    android:visibility="visible"
+                    android:gravity="center"
                     >
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:src="@drawable/android_wallpaper"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/ic_user"
                         android:id="@+id/iv_comment"
                         android:visibility="visible"
-                        android:layout_centerInParent="true"
-                        android:scaleType="fitXY"/>
+                        android:layout_alignParentRight="true"
+                        android:scaleType="centerCrop"/>
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -83,7 +127,6 @@
                         android:id="@+id/iv_delete"
                         android:layout_alignParentRight="true"
                         android:layout_margin="4dp"
-
                         />
 
 
@@ -91,46 +134,4 @@
                       </LinearLayout>
 
         </LinearLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/rl_error"
-            android:visibility="visible">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/uncolored_logo"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/uncolored_logo"
-                android:layout_marginBottom="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/tv_your_questions"
-                android:id="@+id/tv_error"
-                android:layout_below="@+id/uncolored_logo"
-                android:layout_centerHorizontal="true"
-                android:textSize="16sp"/>
-
-        </RelativeLayout>
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/pb_loading_main" />
-
-    </RelativeLayout>
-
-</RelativeLayout>

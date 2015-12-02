@@ -57,6 +57,7 @@ public class SearchAndFavorite extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
 //        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
         ed_search = (MaterialEditText) getActivity().findViewById(R.id.ed_search);
@@ -162,10 +163,15 @@ public class SearchAndFavorite extends Fragment {
             public void onFail(String error) {
                     loadingDialog.dismiss();
                 adapter.notifyDataSetChanged();
-
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
 
             }
         });
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Search");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

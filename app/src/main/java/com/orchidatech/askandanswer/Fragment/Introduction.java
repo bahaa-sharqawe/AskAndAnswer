@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,17 @@ public class Introduction extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setActionBar();
         tv_intro = (TextView) getActivity().findViewById(R.id.tv_intro);
         tv_intro_content = (TextView) getActivity().findViewById(R.id.tv_intro_content);
         mFontManager = FontManager.getInstance(getActivity().getAssets());
         tv_intro.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
         tv_intro_content.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("About");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

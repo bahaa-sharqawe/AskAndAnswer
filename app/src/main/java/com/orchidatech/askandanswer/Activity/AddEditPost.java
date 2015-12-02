@@ -159,7 +159,7 @@ public class AddEditPost extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.done) {
             String postDesc = ed_postDesc.getText().toString();
-            if (verifyInputs(picturePath, postDesc)) {
+            if (verifyInputs(postDesc)) {
                 ///SEND TO SERVER
                 if(editPostId == -1){//add case
                     addPost(user_id, selectedCategory.getCategoryID(), postDesc, picturePath, System.currentTimeMillis(), 0);
@@ -230,11 +230,11 @@ public class AddEditPost extends AppCompatActivity {
         });
     }
 
-    private boolean verifyInputs(String picturePath, String postDesc) {
-        if (TextUtils.isEmpty(picturePath)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_AEP_001), Color.RED, Color.WHITE);
-            return false;
-        }
+    private boolean verifyInputs(String postDesc) {
+//        if (TextUtils.isEmpty(picturePath)) {
+//            AppSnackBar.show(ll_parent, getString(R.string.BR_AEP_001), Color.RED, Color.WHITE);
+//            return false;
+//        }
         if (TextUtils.isEmpty(postDesc)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_AEP_002), Color.RED, Color.WHITE);
             return false;

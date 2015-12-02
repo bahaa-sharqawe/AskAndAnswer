@@ -1,8 +1,10 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
+import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -26,9 +30,12 @@ import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,7 +48,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAdapter.AskViewHolder> {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
-    private final OnPostEventListener pe_listener;
     private final OnLastListReachListener lastListReachListener;
     private View parent;
     private ProgressBar pv_load;
@@ -52,11 +58,10 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
     private boolean isFoundData = true;
 
     public MyAsksRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent,
-                                     OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
+                                OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
-        this.pe_listener = pe_listener;
         this.lastListReachListener = lastListReachListener;
     }
 
@@ -94,32 +99,32 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onCommentPost(posts.get(position).getServerID());
+                    commentPost(posts.get(position).getServerID());
                 }
             });
 
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onSharePost(posts.get(position).getServerID());
+                    sharePost(posts.get(position).getServerID());
                 }
             });
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onFavoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                    favoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
                 }
             });
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onCategoryClick(postCategory.getServerID(), postOwner.getServerID());
+                   categoryClick(postCategory.getServerID(), postOwner.getServerID());
                 }
             });
             holder.ll_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onClick(posts.get(position).getServerID());
+                    viewPost(posts.get(position).getServerID());
                 }
             });
             String postImage = currentPost.getImage();
@@ -139,6 +144,8 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
 
         }
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -237,6 +244,69 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
+    }
+
+    private void sharePost(long postId) {
+
+    }
+
+    private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
+        if(Post_FavoriteDAO.getPost_FavoriteByPostId(post_id, user_id) == null){
+            //add to favorite
+            WebServiceFunctions.addPostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+
+                @Override
+                public void onSuccess() {
+                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_added), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                    adapter.notifyDataSetChanged();
+                    iv_favorite.setImageResource(R.drawable.ic_fav_on);
+                }
+
+                @Override
+                public void onFail(String error) {
+                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+                }
+            });
+        }else{
+            //remove from favorite
+            WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+
+                @Override
+                public void onSuccess() {
+                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                    posts.remove(position);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFail(String error) {
+                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+
+                }
+            });
+
+        }
+    }
+
+    private void commentPost(long postId) {
+        Bundle args = new Bundle();
+        args.putLong(ViewPost.POST_ID, postId);
+        Comments comments = new Comments();
+        comments.setArguments(args);
+        comments.show(activity.getFragmentManager(), "Comments");
+    }
+
+    private void categoryClick(long category_id, long user_id) {
+        Intent intent = new Intent(activity, CategoryPosts.class);
+        intent.putExtra(CategoryPosts.CATEGORY_KEY, category_id);
+        intent.putExtra(CategoryPosts.USER_ID, user_id);
+        activity.startActivity(intent);
+    }
+
+    private void viewPost(long post_id) {
+        Intent intent = new Intent(activity, ViewPost.class);
+        intent.putExtra(ViewPost.POST_ID, post_id);
+        activity.startActivity(intent);
     }
 
 }

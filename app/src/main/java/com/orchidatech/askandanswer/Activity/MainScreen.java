@@ -118,18 +118,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         getSupportActionBar().setTitle(title);
     }
 
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        mDrawerToggle.syncState();
-//    }
-//
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        mDrawerToggle.onConfigurationChanged(newConfig);
-//    }
-
     public void startEvent(int position) {
         Fragment fragment = null;
         switch (position) {
@@ -167,7 +155,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 //logout
                 SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
                 SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
-
                 Intent intent = new Intent(this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -188,22 +175,15 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         }
         if (fragment != null) {
             oldPosition = position;
-            defaultState();
+//            defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
-            ft.addToBackStack("dfdffdfd");
+            ft.addToBackStack("");
             ft.replace(R.id.fragment_host, fragment);
             ft.commit();
             mFragmentManager.executePendingTransactions();
-            setTitle(position == 0 ? "Questions" : itemsTitles.get(position));
         }
 
 
-    }
-
-    private void defaultState() {
-        getSupportActionBar().show();
-        ed_search.setVisibility(View.GONE);
-        rl_num_notifications.setVisibility(View.GONE);
     }
 
     private void fillData() {
@@ -223,7 +203,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();

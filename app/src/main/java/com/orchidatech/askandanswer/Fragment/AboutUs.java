@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class AboutUs extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        setActionBar();
         rl_contact = (RelativeLayout) getActivity().findViewById(R.id.rl_contact);
         rl_contact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,8 +45,15 @@ public class AboutUs extends Fragment {
             @Override
             public void onClick(View v) {
                 MainScreen.oldPosition = -1;
-                getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Introduction()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Introduction()).addToBackStack("").commit();
+                getFragmentManager().executePendingTransactions();
             }
         });
+    }
+    private void setActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("About");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }
