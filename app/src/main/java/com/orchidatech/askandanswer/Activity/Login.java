@@ -79,7 +79,7 @@ public class Login extends AppCompatActivity {
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
-                        loadingDialog.getDialog().dismiss();
+                        loadingDialog.dismiss();
                         SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         SplashScreen.prefEditor.commit();
@@ -93,7 +93,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
-                        loadingDialog.getDialog().dismiss();
+                        loadingDialog.dismiss();
                         AppSnackBar.show(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
                     }
                 });

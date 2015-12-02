@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -125,7 +126,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                    categoryClick(postCategory.getServerID(), postOwner.getServerID());
                 }
             });
-            holder.ll_post.setOnClickListener(new View.OnClickListener() {
+            holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewPost(posts.get(position).getServerID(), holder.iv_postImage.getDrawable());
@@ -166,7 +167,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
-        LinearLayout ll_post;
+        CardView card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
         int viewType;
@@ -199,7 +200,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
-                ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
+                card_post = (CardView) itemView.findViewById(R.id.card_post);
 
 
             }

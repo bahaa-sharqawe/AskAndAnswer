@@ -209,8 +209,13 @@ public class Profile extends Fragment {
         });
         userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
+        if(user_id == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) || user.getIsPublicProfile() == 0) {
+            loadNewPosts();
+        }else{
+            pb_loading_main.setVisibility(View.GONE);
+        }
         resizeLogo();
-        loadNewPosts();
+
 
     }
 

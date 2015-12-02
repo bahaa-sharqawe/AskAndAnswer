@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:id="@+id/scroll_comments"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
-<LinearLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/ll_post"
-    >
+
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/card_post"
     xmlns:app="http://schemas.android.com/apk/res-auto"
    >
     <RelativeLayout
@@ -85,7 +75,7 @@
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/rl_post_desc"
             android:layout_marginRight="10dp"
             android:layout_alignLeft="@+id/rl_post_desc"
@@ -94,8 +84,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
                 android:id="@+id/iv_postImage"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/android_wallpaper"
+                android:visibility="gone"
                 />
             <View android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -262,7 +253,3 @@
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
-
-
-</LinearLayout>
-    </ScrollView>

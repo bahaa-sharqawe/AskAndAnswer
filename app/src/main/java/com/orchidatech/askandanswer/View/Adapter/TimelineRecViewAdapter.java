@@ -14,8 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,8 +115,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-                            || postOwner.getIsPublicProfile() == 0)
+//                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+//                            || postOwner.getIsPublicProfile() == 0)
                         goToProfile(postOwner.getServerID());
                 }
             });
@@ -129,16 +131,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
             ImageLoader imageLoader = ImageLoader.getInstance();
-            if(postImage!=null && postImage.length()>0) {
+            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
 //                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
-                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage );
-
+                Log.i("fhfhjgh",postImage);
+                imageLoader.displayImage(postImage, holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
 
             if(postOwner!=null && postOwner.getImage().length()>0)
                 imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
+
 //                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
 //                    @Override
 //                    public void onSuccess() {
@@ -169,7 +172,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     favoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
                 }
             });
-            holder.ll_post.setOnClickListener(new View.OnClickListener() {
+            holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     commentPost(posts.get(position).getServerID());
@@ -223,7 +226,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
-        LinearLayout ll_post;
+        CardView card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
         int viewType;
@@ -257,7 +260,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                ll_post = (LinearLayout) itemView.findViewById(R.id.ll_post);
+                card_post = (CardView) itemView.findViewById(R.id.card_post);
 
             }
 

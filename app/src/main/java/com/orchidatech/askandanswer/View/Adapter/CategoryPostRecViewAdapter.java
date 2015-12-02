@@ -235,5 +235,4 @@ public class CategoryPostRecViewAdapter extends RecyclerView.Adapter<CategoryPos
         isFoundData = false;
         notifyDataSetChanged();
     }
-
 }

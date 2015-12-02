@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -119,6 +121,12 @@ public class AddEditPost extends AppCompatActivity {
     private void initializeFields() {
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        ll_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
         spinnerItems = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(user_id));
         spinner = (Spinner) this.findViewById(R.id.spinner);
         adapter = new SpinAdapter(this, spinnerItems);
@@ -161,10 +169,10 @@ public class AddEditPost extends AppCompatActivity {
             String postDesc = ed_postDesc.getText().toString();
             if (verifyInputs(postDesc)) {
                 ///SEND TO SERVER
-                if(editPostId == -1){//add case
+                if (editPostId == -1) {//add case
                     addPost(user_id, selectedCategory.getCategoryID(), postDesc, picturePath, System.currentTimeMillis(), 0);
-                }else{//edit case
-                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, image_str==null?null:picturePath/*to know if picture changed */, editPost.getIsHidden());
+                } else {//edit case
+                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, image_str == null ? null : picturePath/*to know if picture changed */, editPost.getIsHidden());
                 }
             }
             return true;
@@ -187,7 +195,7 @@ public class AddEditPost extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        finish();
+                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
                     }
                 }, 3000);
             }
@@ -217,7 +225,7 @@ public class AddEditPost extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        finish();
+                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
                     }
                 }, 3000);
             }
@@ -299,5 +307,14 @@ public class AddEditPost extends AppCompatActivity {
         bmpFactoryOptions.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
+    }
+
+    private void hideSoftKeyboard() {
+        View view = AddEditPost.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
     }
 }
