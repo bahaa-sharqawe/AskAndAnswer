@@ -315,7 +315,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if(postPhoto != null) {
+        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
             String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
@@ -346,8 +346,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onSuccess() {
                     AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    posts.remove(position);
-                    notifyDataSetChanged();
+                    iv_favorite.setImageResource(R.drawable.ic_favorite);
                 }
 
                 @Override

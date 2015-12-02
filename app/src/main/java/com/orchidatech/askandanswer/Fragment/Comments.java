@@ -18,10 +18,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,14 +53,13 @@ import java.util.List;
 /**
  * Created by Bahaa on 15/11/2015.
  */
-public class Comments extends DialogFragment implements DeleteComment.OnDeleteListener{
+public class Comments extends DialogFragment implements DeleteComment.OnDeleteListener {
     private static final int RESULT_LOAD_IMAGE = 1;
-
     AlertDialog dialog;
     RecyclerView mRecyclerView;
     CommentsRecViewAdapter adapter;
     long postId;
-    private long last_id_server = 0;
+    public static long last_id_server = 0;
 
     RelativeLayout rl_error;
     ImageView uncolored_logo;
@@ -78,7 +79,7 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
     private String picturePath = "";
     private String image_str = "";
     private long user_id;
-    private int numOfAddedComment = 0;
+    private int numOfFetchedFromServer = 0;
 
 
     @Override
@@ -86,6 +87,7 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         super.onCreate(savedInstanceState);
         postId = getArguments().getLong(ViewPost.POST_ID);
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        last_id_server = 0;
     }
 
     @Override
@@ -106,6 +108,13 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_comments, null, false);
         rl_parent = (LinearLayout) view.findViewById(R.id.rl_parent);
+        rl_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("fdfdf", "pressed");
+                hideSoftKeyboard();
+            }
+        });
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_comments);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -259,10 +268,11 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
                             rl_comment_photo_preview.setVisibility(View.GONE);
                             rl_error.setVisibility(View.GONE);
                             ed_add_comment.setText("");
-                            numOfAddedComment++;
                             adapter.addComment(comment);
+                            Log.i("newCOMEE", comment.getServerID()+"");
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
+//                            numOfAddedComment++;
                         }
 
                         @Override
@@ -289,9 +299,9 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
     }
 
     private void editComment(long commentId, Drawable commentDrawable) {
-       com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+        com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
         ed_add_comment.setText(comment.getText());
-        if(!TextUtils.isEmpty(comment.getImage())){
+        if (!TextUtils.isEmpty(comment.getImage())) {
             rl_comment_photo_preview.setVisibility(View.VISIBLE);
             iv_comment.setVisibility(View.VISIBLE);
             iv_comment.setImageDrawable(commentDrawable);
@@ -305,13 +315,16 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
     }
 
     private void loadNewComments() {
-        WebServiceFunctions.getPostComments(getActivity(), user_id, postId, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount()-1-numOfAddedComment, last_id_server, new OnCommentFetchListener() {
+        WebServiceFunctions.getPostComments(getActivity(), user_id, postId, GNLConstants.COMMENTS_LIMIT, numOfFetchedFromServer, last_id_server, new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                 }
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
+
+                numOfFetchedFromServer += comments.size();
+                Log.i("fdfdf", last_id_server+"");
                 adapter.addFromServer(comments, false);
             }
 
@@ -422,7 +435,7 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "deleting");
-        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener(){
+        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener() {
 
             @Override
             public void onDeleted() {
@@ -438,5 +451,16 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
                 AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
             }
         });
+    }
+
+    private void hideSoftKeyboard() {
+//        View view = getActivity().getCurrentFocus();
+//        if (view != null) {
+//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//        }
+//        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
     }
 }

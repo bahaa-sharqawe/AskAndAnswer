@@ -1051,11 +1051,11 @@ public class WebServiceFunctions {
         uploadImage.sendRequest();
     }
 
-    public static void updateProfile(final Context context, long id, String fname, String lname, String password, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < selectedCategories.size(); i++)
-            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
-        Log.i("sdsddsfdf", URL.UPDATE_PROFILE);
+    public static void updateProfile(final Context context, long id, String fname, String lname, String password, int is_public, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < selectedCategories.size(); i++)
+//            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
+//        Log.i("sdsddsfdf", URL.UPDATE_PROFILE);
         UploadImage uploadImage = new UploadImage(context, URL.UPDATE_PROFILE, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -1095,7 +1095,8 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.FNAME, fname);
         uploadImage.addStringProperty(URL.URLParameters.LNAME, lname);
         uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
-        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, sb.toString());
+        uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, is_public+"");
+//        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, sb.toString());
 //        uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, 0+"");
         uploadImage.addStringProperty(URL.URLParameters.LAST_LOGIN, UsersDAO.getUser(id).getLastLogin() + "");
         if (!TextUtils.isEmpty(picturePath))

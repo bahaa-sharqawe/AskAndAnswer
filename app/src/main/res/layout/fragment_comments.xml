@@ -83,6 +83,8 @@
                         android:layout_weight="1"
                         android:textSize="20sp"
                         android:hint="add comment"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
                         android:id="@+id/ed_add_comment"
                         android:background="@drawable/ed_add_comment_backgnd"/>
                     <ImageView

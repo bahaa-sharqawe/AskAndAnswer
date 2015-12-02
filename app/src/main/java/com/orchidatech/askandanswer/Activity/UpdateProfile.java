@@ -254,7 +254,7 @@ public class UpdateProfile extends AppCompatActivity {
                 loadingDialog.setCancelable(false);
                 loadingDialog.show(getFragmentManager(), "updating profile");
 
-                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
+                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, 0, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
                         loadingDialog.dismiss();
@@ -262,7 +262,7 @@ public class UpdateProfile extends AppCompatActivity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                finish();
+                                startActivity(new Intent(UpdateProfile.this, MainScreen.class));
                             }
                         }, 3000);
                     }

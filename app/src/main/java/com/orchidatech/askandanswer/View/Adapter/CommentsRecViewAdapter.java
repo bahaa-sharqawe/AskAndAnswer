@@ -88,7 +88,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void onBindViewHolder(final CommentsViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && comments.size() > 0) {
+            if (!loading && isFoundData && Comments.last_id_server > 0) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -281,7 +281,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     public void addComment(com.orchidatech.askandanswer.Database.Model.Comments comment) {
-        comments.add(comment);
+        comments.add(0, comment);
         notifyDataSetChanged();
     }
 
