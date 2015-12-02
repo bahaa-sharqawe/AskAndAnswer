@@ -2,7 +2,10 @@ package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +41,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -124,7 +128,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             holder.ll_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewPost(posts.get(position).getServerID());
+                    viewPost(posts.get(position).getServerID(), holder.iv_postImage.getDrawable());
                 }
             });
             String postImage = currentPost.getImage();
@@ -303,9 +307,16 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         activity.startActivity(intent);
     }
 
-    private void viewPost(long post_id) {
+    private void viewPost(long post_id, Drawable postPhoto) {
         Intent intent = new Intent(activity, ViewPost.class);
         intent.putExtra(ViewPost.POST_ID, post_id);
+        if(postPhoto != null){
+            Bitmap bitmap = GNLConstants.drawableToBitmap(postPhoto);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            intent.putExtra("picture", b);
+        }
         activity.startActivity(intent);
     }
 

@@ -1,6 +1,8 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +38,11 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         setContentView(R.layout.activity_view_post);
         setCustomActionBar();
         postId = getIntent().getLongExtra(POST_ID, -1);
+//        if(getIntent().getByteArrayExtra("picture") != null){
+//            byte[] b = getIntent().getByteArrayExtra("picture");
+//            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+//            iv_post.setImageBitmap(bmp);
+//        }
         post = PostsDAO.getPost(postId);
         if(post != null) {
             iv_post = (ImageView) this.findViewById(R.id.iv_post);
