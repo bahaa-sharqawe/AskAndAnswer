@@ -279,10 +279,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             if(pv_load != null)
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
-            if(posts.size() > GNLConstants.MAX_POSTS_ROWS){
-                posts = posts.subList(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size());
-            }
+//
+//            if(posts.size() > GNLConstants.MAX_POSTS_ROWS){
+//                posts = posts.subList(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size());
+//
+////                notifyItemRangeChanged(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size()-(posts.size()-GNLConstants.MAX_POSTS_ROWS));
+//
+//            }
             notifyDataSetChanged();
+
         } else {
             if(isErrorConnection){
                 if(pv_load != null && btn_reload != null) {

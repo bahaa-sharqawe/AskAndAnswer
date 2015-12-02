@@ -433,7 +433,6 @@ public class WebServiceFunctions {
                             fetchedPosts.add(postItem);
                         }
                         long last_id = dataObj.getLong("last_id");
-                        PostsDAO.checkRowsCount();
                         listener.onSuccess(fetchedPosts, last_id);
 
                     } else
@@ -482,7 +481,6 @@ public class WebServiceFunctions {
                             fetchedPosts.add(postItem);
                         }
                         long last_id = dataObj.getLong("last_id");
-                        PostsDAO.checkRowsCount();
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -716,7 +714,7 @@ public class WebServiceFunctions {
                             fetchedPosts.add(postItem);
                         }
                         long last_id = dataObj.getLong("last_id");
-                        PostsDAO.checkRowsCount();
+
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -893,7 +891,6 @@ public class WebServiceFunctions {
                         long created_at = post.getLong("created_at");
                         Posts postItem = new Posts(id, text, image.equals("null")?"":image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
-                        PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -943,7 +940,6 @@ public class WebServiceFunctions {
                         long created_at = post.getLong("updated_at");
                         Posts postItem = new Posts(id, text, image.equals("null")?"":image, created_at, user_id, category_id, is_hidden, 0);
                         PostsDAO.addPost(postItem);
-                        PostsDAO.checkRowsCount();
                         listener.onSuccess(context.getResources().getString(R.string.saved));
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));

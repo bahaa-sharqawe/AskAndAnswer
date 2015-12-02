@@ -192,6 +192,7 @@ public class Timeline extends Fragment {
                     pb_loading_main.setVisibility(View.GONE);
                 }
                 last_id_server = last_id_server == 0?last_id:last_id_server;
+
                 adapter.addFromServer(latestPosts, false);
             }
 

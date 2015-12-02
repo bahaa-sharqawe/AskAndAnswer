@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
@@ -37,9 +39,12 @@ public class PostsDAO {
     public static void checkRowsCount() {
         ArrayList<Posts> allPosts = new ArrayList<>(getAllPosts());
         int count = allPosts.size();
+        Log.i("fdfdf", count + ", " + (count-GNLConstants.MAX_POSTS_ROWS));
         Collections.reverse(allPosts);
-            for(int i = 0; i < count-GNLConstants.MAX_POSTS_ROWS; i++)
-                deletePost(allPosts.get(0).getServerID());
+            for(int i = 0; i < count-GNLConstants.MAX_POSTS_ROWS; i++) {
+                deletePost(allPosts.get(i).getServerID());
+                CommentsDAO.deleteCommentByPost(allPosts.get(i).getServerID());
+            }
     }
 
     public static void deletePost(long postServerId){
@@ -63,7 +68,7 @@ public class PostsDAO {
     }
 
     public static List<Posts> getAllPosts(){
-        return new Select().from(Posts.class).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
+        return new Select().from(Posts.class).orderBy(Posts.FIELDS.COLUMN_DATE + " desc").execute();
     }
 
     public static List<Posts> getUserPosts(long userId){
