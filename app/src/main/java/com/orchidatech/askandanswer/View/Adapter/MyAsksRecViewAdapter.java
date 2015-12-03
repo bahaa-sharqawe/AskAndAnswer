@@ -8,8 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,7 +113,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sharePost(posts.get(position).getServerID());
+                    sharePost(posts.get(position), holder.iv_postImage.getDrawable());
                 }
             });
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +135,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 }
             });
             String postImage = currentPost.getImage();
-            if(postImage!=null && postImage.length()>0) {
+            if(!TextUtils.isEmpty(postImage) && postImage != "null") {
                 Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
                 Log.i("jggn", currentPost.getImage());
@@ -201,8 +203,6 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 card_post = (CardView) itemView.findViewById(R.id.card_post);
-
-
             }
 
         }
@@ -251,7 +251,17 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         notifyDataSetChanged();
     }
 
-    private void sharePost(long postId) {
+    private void sharePost(Posts post, Drawable postPhoto) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_TEXT, post.getText());
+        Log.i("GHJHGJGHH", post.getImage());
+        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+        }
+        activity.startActivity(Intent.createChooser(intent, "Share using"));
+
 
     }
 
@@ -279,8 +289,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
                 @Override
                 public void onSuccess() {
                     AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    posts.remove(position);
-                    notifyDataSetChanged();
+                    iv_favorite.setImageResource(R.drawable.ic_favorite);
                 }
 
                 @Override
@@ -311,13 +320,13 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
     private void viewPost(long post_id, Drawable postPhoto) {
         Intent intent = new Intent(activity, ViewPost.class);
         intent.putExtra(ViewPost.POST_ID, post_id);
-        if(postPhoto != null){
-            Bitmap bitmap = GNLConstants.drawableToBitmap(postPhoto);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] b = baos.toByteArray();
-            intent.putExtra("picture", b);
-        }
+//        if(postPhoto != null){
+//            Bitmap bitmap = GNLConstants.drawableToBitmap(postPhoto);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//            byte[] b = baos.toByteArray();
+//            intent.putExtra("picture", b);
+//        }
         activity.startActivity(intent);
     }
 

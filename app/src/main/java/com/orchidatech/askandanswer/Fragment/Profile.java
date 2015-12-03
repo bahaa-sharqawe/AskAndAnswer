@@ -27,14 +27,15 @@ import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.UpdateProfile;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
@@ -59,7 +60,7 @@ public class Profile extends Fragment {
 
 
     RecyclerView rv_posts;
-    ProfileRecViewAdapter adapter;
+    TimelineRecViewAdapter adapter;
     ArrayList<Posts> posts;
     TextView tv_person;
     RatingBar rating_person;
@@ -132,67 +133,12 @@ public class Profile extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new ProfileRecViewAdapter(getActivity(), posts, rl_parent, new OnPostEventListener() {
-
-            @Override
-            public void onClick(long pid) {
-
-            }
-
-            @Override
-            public void onSharePost(long pid) {
-
-            }
-
-            @Override
-            public void onCommentPost(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "comments");
-//                Toast.makeText(getActivity(), pid+"", Toast.LENGTH_LONG).show();
-//                Bundle args = new Bundle();
-//                args.putLong(ViewPost.POST_ID, pid);
-//                Comments comments = new Comments();
-//                comments.setArguments(args);
-//                getFragmentManager().beginTransaction().replace(R.id.comment_fragment_container, comments).commit();
-//                getFragmentManager().executePendingTransactions();
-            }
-
-            @Override
-            public void onFavoritePost(final int position, long pid, long uid) {
-                //add post to favorites
-                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCategoryClick(long cid, long uid) {
-                Intent intent = new Intent(getActivity(), CategoryPosts.class);
-                Bundle args = new Bundle();
-                args.putLong(CategoryPosts.CATEGORY_KEY, cid);
-                startActivity(intent);
-
-            }
-
-        }, new OnLastListReachListener() {
+        adapter = new TimelineRecViewAdapter(getActivity(), posts, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
-        });
+        }, Enum.POSTS_FRAGMENTS.PROFILE.getNumericType());
         rv_posts.setAdapter(adapter);
         rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);

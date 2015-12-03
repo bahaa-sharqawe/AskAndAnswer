@@ -26,15 +26,17 @@ public class DeleteComment extends DialogFragment {
     TextView tv_cancel;
     long commentId;
     int commentPos;
-    private Fragment fragment;
     private OnDeleteListener listener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        commentId = getArguments().getLong(COMMENT_ID, -1);
-        commentPos = getArguments().getInt(COMMENT_POS, -1);
+//        commentId = getArguments().getLong(COMMENT_ID, -1);
+//        commentPos = getArguments().getInt(COMMENT_POS, -1);
 
+    }
+    public DeleteComment(OnDeleteListener listener){
+        this.listener = listener;
     }
 
     @Override
@@ -46,15 +48,6 @@ public class DeleteComment extends DialogFragment {
         return dialog;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        fragment = (Fragment) getHost();
-        if(fragment != null && fragment instanceof OnDeleteListener){
-            listener = (OnDeleteListener) fragment;
-        }
-    }
-
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_delete_comment, null, false);
@@ -64,8 +57,8 @@ public class DeleteComment extends DialogFragment {
             public void onClick(View v) {
                 //delete comment here then
 //                performDeleting();
-                listener.onDelete(commentId, commentPos);
                 dialog.dismiss();
+                listener.onDelete();
             }
         });
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
@@ -79,6 +72,6 @@ public class DeleteComment extends DialogFragment {
     }
 
     public interface OnDeleteListener{
-        void onDelete(long commentId, int commentPos);
+        void onDelete();
     }
 }

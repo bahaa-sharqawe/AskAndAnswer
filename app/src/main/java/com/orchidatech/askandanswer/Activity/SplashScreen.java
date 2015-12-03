@@ -16,9 +16,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
@@ -48,6 +50,7 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash);
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
         PostsDAO.checkRowsCount();
+        CommentsDAO.checkRowsCount();
 
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);

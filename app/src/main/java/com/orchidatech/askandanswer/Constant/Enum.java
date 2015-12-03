@@ -44,5 +44,29 @@ public final class Enum {
         }
 
     }
+    public enum POSTS_FRAGMENTS {
+        TIMELINE(0),
+        MY_ASKS(1),
+        PROFILE(2);
+        private int type;
+        POSTS_FRAGMENTS(int i) {
+            this.type = i;
+        }
+        public int getNumericType() {
+            return type;
+        }
+    }
+    public enum COMMENTS_FRAGMENTS {
+        COMMENTS(0),
+        MY_ANSSWERS(1);
+        private int type;
+        COMMENTS_FRAGMENTS(int i) {
+            this.type = i;
+        }
+        public int getNumericType() {
+            return type;
+        }
+    }
+
 
 }

@@ -77,24 +77,24 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="8dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_camera_flat"
+                        android:id="@+id/iv_camera"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="center_vertical"/>
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="20sp"
                         android:hint="add comment"
-                        android:inputType="text"
-                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:singleLine="false"
                         android:id="@+id/ed_add_comment"
                         android:background="@drawable/ed_add_comment_backgnd"/>
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_camera_green"
-                        android:id="@+id/iv_camera"
-                        android:layout_marginLeft="10dp"
 
-                        android:layout_gravity="center_vertical"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -132,8 +132,7 @@
                         />
 
 
-                </RelativeLayout>
-                      </LinearLayout>
+                </RelativeLayout></LinearLayout>
 
         </LinearLayout>
 

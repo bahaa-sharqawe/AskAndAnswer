@@ -27,8 +27,8 @@ import android.widget.TextView;
 import com.orchidatech.askandanswer.Activity.AddEditPost;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
@@ -155,7 +155,7 @@ public class Timeline extends Fragment {
             public void onReached() {
                 loadNewPosts();
             }
-        });
+        }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
         rv_posts.setAdapter(adapter);
         rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);

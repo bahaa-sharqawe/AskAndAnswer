@@ -506,6 +506,8 @@ public class WebServiceFunctions {
             @Override
             public void onSuccess(String response) {
                 try {
+                    Log.i("sdsddsdsd", response);
+
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
@@ -676,6 +678,8 @@ public class WebServiceFunctions {
             @Override
             public void onSuccess(String response) {
                 try {
+                    Log.i("sdsadsadsds", response);
+
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");

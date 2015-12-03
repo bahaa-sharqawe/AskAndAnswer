@@ -34,8 +34,8 @@ import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
@@ -65,6 +65,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final View parent;
+    private final int fragment_numeric;
+    private final long current_user_id;
     private ProgressBar pv_load;
     private Button btn_reload;
     private List<Posts> posts;
@@ -75,11 +77,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
 
     public TimelineRecViewAdapter(Activity activity, List<Posts> posts, View parent,
-                                  OnLastListReachListener lastListReachListener) {
+                                  OnLastListReachListener lastListReachListener, int fragment_numeric) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
         this.lastListReachListener = lastListReachListener;
+        this.fragment_numeric = fragment_numeric;
+        this.current_user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 pv_load.setVisibility(View.GONE);
 
         } else {
-            Posts currentPost = posts.get(position);
+            final Posts currentPost = posts.get(position);
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
             final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
@@ -117,7 +121,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 public void onClick(View v) {
 //                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
 //                            || postOwner.getIsPublicProfile() == 0)
-                        goToProfile(postOwner.getServerID());
+                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
+                                goToProfile(postOwner.getServerID());
                 }
             });
 
@@ -175,7 +180,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    commentPost(posts.get(position).getServerID());
+                    if(fragment_numeric == Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType()
+                       || (fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
+                            current_user_id != posts.get(position).getUserID()))
+                        commentPost(posts.get(position).getServerID());
+                    else
+                        viewPost(posts.get(position).getServerID());
                 }
             });
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
@@ -188,8 +198,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-                                || postOwner.getIsPublicProfile() == 0)
+//                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+//                                || postOwner.getIsPublicProfile() == 0)
+                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
                             goToProfile(postOwner.getServerID());
                 }
             });
@@ -378,7 +389,18 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         intent.putExtra(CategoryPosts.USER_ID, user_id);
         activity.startActivity(intent);
     }
-
+    private void viewPost(long post_id) {
+        Intent intent = new Intent(activity, ViewPost.class);
+        intent.putExtra(ViewPost.POST_ID, post_id);
+//        if(postPhoto != null){
+//            Bitmap bitmap = GNLConstants.drawableToBitmap(postPhoto);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//            byte[] b = baos.toByteArray();
+//            intent.putExtra("picture", b);
+//        }
+        activity.startActivity(intent);
+    }
 
 
 

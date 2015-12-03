@@ -75,7 +75,7 @@ public class MyFavorites extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myFavorites = new ArrayList<>();
-        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, rl_parent, new OnPostEventListener() {
+        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, rl_parent/* new OnPostEventListener() {
 
             @Override
             public void onClick(long pid) {
@@ -126,7 +126,7 @@ public class MyFavorites extends Fragment {
                 intent.putExtra(CategoryPosts.USER_ID, uid);
                 startActivity(intent);
             }
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();

@@ -141,7 +141,8 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="post_favorite_added">Post added to favorite</string>
     <string name="post_favorite_removed">Post removed from favorite</string>
     <string name="no_comments_found">No Comments Found</string>
-    <string name="tv_delCommentTitle">Delete Comment?</string>
-    <string name="tv_delCommentAttention">Deleting the comment is forever, There is no undo.</string>
+    <string name="tv_delCommentTitle">Delete</string>
+    <string name="tv_delCommentAttention">This comment will be deleted.</string>
     <string name="delete_comment">Delete Comment</string>
+    <string name="delete">DELETE</string>
 </resources>

@@ -10,35 +10,41 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.MyAnswersRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
+import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bahaa on 18/11/2015.
  */
 public class MyAnswers extends Fragment {
     RecyclerView rv_answers;
-    MyAnswersRecViewAdapter adapter;
-    ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> myAnswers;
+    CommentsRecViewAdapter adapter;
+    List<com.orchidatech.askandanswer.Database.Model.Comments> myAnswers;
     private long last_id_server = 0;
     private long user_id;
     RelativeLayout rl_parent;
@@ -63,12 +69,14 @@ public class MyAnswers extends Fragment {
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
+//        registerForContextMenu(rv_answers);
+
         rv_answers.setHasFixedSize(true);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_answers.setLayoutManager(llm);
         myAnswers = new ArrayList<>();
-        adapter = new MyAnswersRecViewAdapter(getActivity(), myAnswers, rl_parent, new OnUserActionsListener() {
+        adapter = new CommentsRecViewAdapter(getActivity(), myAnswers, rl_parent/*, new OnUserActionsListener() {
             @Override
             public void onLike(long commentId, int positon) {
 
@@ -79,13 +87,24 @@ public class MyAnswers extends Fragment {
             }
 
 
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
             }
-        });
+        }, new OnCommentOptionListener() {
+            @Override
+            public void onEditComment(long commentId) {
+
+            }
+
+            @Override
+            public void onDeleteComment(long commentId) {
+
+            }
+        }, Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType());
         rv_answers.setAdapter(adapter);
+
         rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
         tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
@@ -121,7 +140,7 @@ public class MyAnswers extends Fragment {
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
-                    if (errorCode != 404) {//ALL ERRORS EXCEPT NO_COMMENTS
+                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_COMMENTS
                         if (userComments.size() > 0)
                             getFromLocal();
                         else {
@@ -135,7 +154,7 @@ public class MyAnswers extends Fragment {
                         rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
-                    adapter.addFromServer(null, errorCode != 404 ? true : false);
+                    adapter.addFromServer(null, errorCode != 402 ? true : false);
                 }/*else{
                         getFromLocal();
                     }
@@ -161,5 +180,33 @@ public class MyAnswers extends Fragment {
         ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
         (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
+//
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        MenuInflater inflater = getActivity().getMenuInflater();
+//        menu.setHeaderTitle("Comment Options:");
+//        inflater.inflate(R.menu.comment_menu, menu);
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        long id = item.getItemId();
+        if(id == R.id.delete_comment){
+            final int position = adapter.getPosition();
+            Log.i("dgdgfhffdhfpost", position+"");
+            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener(){
+
+                @Override
+                public void onDelete() {
+
+                    adapter.performDeleting(position);
+                }
+            });
+            deletePost.show(getActivity().getFragmentManager(), getActivity().getString(R.string.delete_comment));
+        }
+        return super.onContextItemSelected(item);
+    }
+
 
 }

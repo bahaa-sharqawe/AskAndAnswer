@@ -19,11 +19,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,8 +37,8 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
@@ -53,7 +56,7 @@ import java.util.List;
 /**
  * Created by Bahaa on 15/11/2015.
  */
-public class Comments extends DialogFragment implements DeleteComment.OnDeleteListener {
+public class Comments extends DialogFragment {
     private static final int RESULT_LOAD_IMAGE = 1;
     AlertDialog dialog;
     RecyclerView mRecyclerView;
@@ -205,15 +208,15 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         }, new OnCommentOptionListener() {
 
             @Override
-            public void onEditComment(long commentId, Drawable commentImage) {
-                editComment(commentId, commentImage);
+            public void onEditComment(long commentId) {
+                editComment(commentId);
             }
 
             @Override
-            public void onDeleteComment(long commentId, int position) {
-                deleteComment(commentId, position);
+            public void onDeleteComment(long commentId) {
+                deleteComment(commentId);
             }
-        });
+        }, Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType());
         mRecyclerView.setAdapter(adapter);
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
@@ -288,24 +291,23 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         return view;
     }
 
-    private void deleteComment(long commentId, int position) {
-        DeleteComment deletePost = new DeleteComment();
-        Bundle args = new Bundle();
-        args.putLong(DeleteComment.COMMENT_ID, commentId);
-        args.putInt(DeleteComment.COMMENT_POS, position);
-        deletePost.setArguments(args);
-        deletePost.show(getFragmentManager(), getString(R.string.delete_comment));
+    private void deleteComment(long commentId) {
+//        DeleteComment deletePost = new DeleteComment();
+//        Bundle args = new Bundle();
+//        args.putLong(DeleteComment.COMMENT_ID, commentId);
+//        deletePost.setArguments(args);
+//        deletePost.show(getFragmentManager(), getString(R.string.delete_comment));
 
     }
 
-    private void editComment(long commentId, Drawable commentDrawable) {
-        com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
-        ed_add_comment.setText(comment.getText());
-        if (!TextUtils.isEmpty(comment.getImage())) {
-            rl_comment_photo_preview.setVisibility(View.VISIBLE);
-            iv_comment.setVisibility(View.VISIBLE);
-            iv_comment.setImageDrawable(commentDrawable);
-        }
+    private void editComment(long commentId) {
+//        com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+//        ed_add_comment.setText(comment.getText());
+//        if (!TextUtils.isEmpty(comment.getImage())) {
+//            rl_comment_photo_preview.setVisibility(View.VISIBLE);
+//            iv_comment.setVisibility(View.VISIBLE);
+//            iv_comment.setImageDrawable(commentDrawable);
+//        }
 
     }
 
@@ -324,7 +326,7 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
 
                 numOfFetchedFromServer += comments.size();
-                Log.i("fdfdf", last_id_server+"");
+                Log.i("fdfcdfdf", last_id_server+"");
                 adapter.addFromServer(comments, false);
             }
 
@@ -426,32 +428,32 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
     }
-
-    @Override
-    public void onDelete(long commentId, final int commentPos) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "deleting");
-        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener() {
-
-            @Override
-            public void onDeleted() {
-                loadingDialog.dismiss();
-                comments.remove(commentPos);
-                adapter.notifyDataSetChanged();
-                AppSnackBar.show(rl_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-            }
-
-            @Override
-            public void onFail(String error) {
-                loadingDialog.dismiss();
-                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-            }
-        });
-    }
+//
+//    @Override
+//    public void onDelete(long commentId, final int commentPos) {
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "deleting");
+//        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener() {
+//
+//            @Override
+//            public void onDeleted() {
+//                loadingDialog.dismiss();
+//                comments.remove(commentPos);
+//                adapter.notifyDataSetChanged();
+//                AppSnackBar.show(rl_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//            }
+//
+//            @Override
+//            public void onFail(String error) {
+//                loadingDialog.dismiss();
+//                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+//            }
+//        });
+//    }
 
     private void hideSoftKeyboard() {
 //        View view = getActivity().getCurrentFocus();
@@ -463,4 +465,23 @@ public class Comments extends DialogFragment implements DeleteComment.OnDeleteLi
 //        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 
     }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        long id = item.getItemId();
+        if(id == R.id.delete_comment){
+            final int position = adapter.getPosition();
+            Log.i("dgdgfhffdhfpost", position+"");
+            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener(){
+
+                @Override
+                public void onDelete() {
+
+                    adapter.performDeleting(position);
+                }
+            });
+            deletePost.show(getActivity().getFragmentManager(), getActivity().getString(R.string.delete_comment));
+        }
+        return super.onContextItemSelected(item);
+    }
+
 }

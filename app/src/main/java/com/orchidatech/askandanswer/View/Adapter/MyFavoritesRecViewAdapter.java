@@ -1,10 +1,20 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +25,29 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orchidatech.askandanswer.Activity.CategoryPosts;
+import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Activity.ViewPost;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.Comments;
+import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,7 +60,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesRecViewAdapter.FavoriteViewHolder> {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
-    private final OnPostEventListener pe_listener;
     private final OnLastListReachListener lastListReachListener;
     private View parent;
     private ProgressBar pv_load;
@@ -52,11 +70,10 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private boolean isFoundData = true;
 
     public MyFavoritesRecViewAdapter(Activity activity, ArrayList<Post_Favorite> posts, View parent,
-                                     OnPostEventListener pe_listener, OnLastListReachListener lastListReachListener) {
+                                      OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
-        this.pe_listener = pe_listener;
         this.lastListReachListener = lastListReachListener;
     }
 
@@ -84,37 +101,69 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             }
         }else {
             Post_Favorite currentPostFavorite = posts.get(position);
-            Posts currentPost = PostsDAO.getPost(currentPostFavorite.getPostID());
-            Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+            final Posts currentPost = PostsDAO.getPost(currentPostFavorite.getPostID());
+            final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
 
-            Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+            final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+            holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+//                            || postOwner.getIsPublicProfile() == 0)
+                    goToProfile(postOwner.getServerID());
+                }
+            });
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onCommentPost(posts.get(position).getPostID());
+                    commentPost(posts.get(position).getPostID());
                 }
             });
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onSharePost(posts.get(position).getPostID());
+                    sharePost(currentPost, holder.iv_postImage.getDrawable());
                 }
             });
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pe_listener.onFavoritePost(position, posts.get(position).getPostID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                    favoritePost(position, posts.get(position).getPostID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                }
+            });
+            holder.card_post.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        viewPost(posts.get(position).getPostID());
+                }
+            });
+            holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoryClick(postCategory.getServerID(), postOwner.getServerID());
+                }
+            });
+            holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+//                                || postOwner.getIsPublicProfile() == 0)
+                        goToProfile(postOwner.getServerID());
                 }
             });
             String postImage = currentPost.getImage();
-            if(postImage!=null && postImage.length()>0) {
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
-                holder.iv_postImage.setVisibility(View.VISIBLE);
+            ImageLoader imageLoader = ImageLoader.getInstance();
 
+            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
+//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
+                Log.i("fhfhjgh", postImage);
+                imageLoader.displayImage(postImage, holder.iv_postImage);
+                holder.iv_postImage.setVisibility(View.VISIBLE);
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
@@ -122,6 +171,19 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
 
         }
+    }
+    private void goToProfile(long userId) {
+        MainScreen.oldPosition = -1;
+        Fragment fragment = new Profile();
+        Bundle args = new Bundle();
+        args.putLong(Profile.USER_ID_KEY, userId);
+        fragment.setArguments(args);
+        FragmentManager mFragmentManager = activity.getFragmentManager();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.fragment_host, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+        mFragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -135,13 +197,13 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         TextView tv_postContent;
         TextView tv_post_category;  //change visibility
         ImageView iv_postImage;
+        CardView card_post;
         RelativeLayout rl_postEvents; //change visibility
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
         CircleImageView iv_profile;
         ImageView iv_favorite;
-
         int viewType;
 
         public FavoriteViewHolder(View itemView, int viewType) {
@@ -159,32 +221,13 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                tv_post_category.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        pe_listener.onCategoryClick(1);
-//                        postEventsListener.onCategoryClick(posts.get(getAdapterPosition()).getCategoryID());
-                    }
-                });
+
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
-                ll_comment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onCommentPost(posts.get(getAdapterPosition()).getPostID());
-//                        postEventsListener.onCommentPost(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pe_listener.onClick(posts.get(getAdapterPosition()).getPostID());
-//                        pe_listener.onClick(posts.get(getAdapterPosition()).getServerID());
-                    }
-                });
+                card_post = (CardView) itemView.findViewById(R.id.card_post);
 
             }
 
@@ -234,6 +277,64 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         isFoundData = false;
         notifyDataSetChanged();
     }
+
+    private void sharePost(Posts post, Drawable postPhoto) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_TEXT, post.getText());
+        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+        }
+        activity.startActivity(Intent.createChooser(intent, "Share using"));
+    }
+
+    private void favoritePost(final int position, final long post_id, long user_id) {
+            //remove from favorite
+            WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+
+                @Override
+                public void onSuccess() {
+                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                    removePost(position);
+                }
+
+                @Override
+                public void onFail(String error) {
+                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+
+                }
+            });
+
+    }
+    private void commentPost(long postId) {
+        Bundle args = new Bundle();
+        args.putLong(ViewPost.POST_ID, postId);
+        Comments comments = new Comments();
+        comments.setArguments(args);
+        comments.show(activity.getFragmentManager(), "Comments");
+    }
+
+    private void categoryClick(long category_id, long user_id) {
+        Intent intent = new Intent(activity, CategoryPosts.class);
+        intent.putExtra(CategoryPosts.CATEGORY_KEY, category_id);
+        intent.putExtra(CategoryPosts.USER_ID, user_id);
+        activity.startActivity(intent);
+    }
+    private void viewPost(long post_id) {
+        Intent intent = new Intent(activity, ViewPost.class);
+        intent.putExtra(ViewPost.POST_ID, post_id);
+//        if(postPhoto != null){
+//            Bitmap bitmap = GNLConstants.drawableToBitmap(postPhoto);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//            byte[] b = baos.toByteArray();
+//            intent.putExtra("picture", b);
+//        }
+        activity.startActivity(intent);
+    }
+
 
 }
 

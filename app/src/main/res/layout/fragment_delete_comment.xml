@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_delCommentTitle"
         android:textSize="20sp"
+        android:gravity="left"
         android:paddingLeft="10dp"
         android:layout_marginBottom="20dp"/>
 
@@ -22,21 +23,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_delCommentAttention"
-        android:layout_marginBottom="35dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#b3b3b3"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="#b3b3b3"-->
+        <!--/>-->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_confirm"
+            android:text="@string/delete"
             android:layout_toLeftOf="@+id/tv_cancel"
             android:textSize="17sp"
             android:paddingTop="25dp"
