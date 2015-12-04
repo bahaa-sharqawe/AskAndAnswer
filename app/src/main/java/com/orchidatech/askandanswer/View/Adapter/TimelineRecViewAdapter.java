@@ -226,19 +226,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     }
 
 
-    private void goToProfile(long userId) {
-        MainScreen.oldPosition = -1;
-        Fragment fragment = new Profile();
-        Bundle args = new Bundle();
-        args.putLong(Profile.USER_ID_KEY, userId);
-        fragment.setArguments(args);
-        FragmentManager mFragmentManager = activity.getFragmentManager();
-        FragmentTransaction ft = mFragmentManager.beginTransaction();
-        ft.replace(R.id.fragment_host, fragment);
-        ft.addToBackStack(null);
-        ft.commit();
-        mFragmentManager.executePendingTransactions();
-    }
 
     @Override
     public int getItemCount() {
@@ -424,6 +411,19 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         activity.startActivity(intent);
     }
 
+    private void goToProfile(long userId) {
+        MainScreen.oldPosition = -1;
+        Fragment fragment = new Profile();
+        Bundle args = new Bundle();
+        args.putLong(Profile.USER_ID_KEY, userId);
+        fragment.setArguments(args);
+        FragmentManager mFragmentManager = activity.getFragmentManager();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.fragment_host, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+        mFragmentManager.executePendingTransactions();
+    }
 
 
 }

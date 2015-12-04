@@ -1,6 +1,9 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
+import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
@@ -29,6 +33,7 @@ import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
+import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.squareup.picasso.Callback;
@@ -134,6 +139,12 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         holder.tv_comments.setText(activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()));
         holder.tv_unlikes.setText(posts.get(position).getNum_dislikes()+"");
         holder.tv_likes.setText(posts.get(position).getNum_likes()+"");
+        holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToProfile(postOwner.getServerID());
+            }
+        });
         Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
             @Override
             public void onSuccess() {
@@ -213,4 +224,18 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         intent.putExtra(CategoryPosts.USER_ID, user_id);
         activity.startActivity(intent);
     }
+    private void goToProfile(long userId) {
+        MainScreen.oldPosition = -1;
+        Fragment fragment = new Profile();
+        Bundle args = new Bundle();
+        args.putLong(Profile.USER_ID_KEY, userId);
+        fragment.setArguments(args);
+        FragmentManager mFragmentManager = activity.getFragmentManager();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.fragment_host, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+        mFragmentManager.executePendingTransactions();
+    }
+
 }

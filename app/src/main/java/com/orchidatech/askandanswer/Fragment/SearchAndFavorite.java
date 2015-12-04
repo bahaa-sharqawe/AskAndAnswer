@@ -48,6 +48,7 @@ public class SearchAndFavorite extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        posts = new ArrayList<>();
     }
 
     @Nullable
@@ -80,7 +81,6 @@ public class SearchAndFavorite extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
-        posts = new ArrayList<>();
         adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent);
         rv_posts.setAdapter(adapter);
 
