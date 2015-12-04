@@ -18,6 +18,7 @@ public class URL {
     public static final String UPDATE_PROFILE = SERVER_URL + WEB_SERVICES_PATH + "user/update-profile";
     public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category";
     public static final String GET_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/user-categories";
+    public static final String UPDATE_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/edit-user-category";
 
     public static final String GET_USER_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpost";
     public static final String EDIT_POST = SERVER_URL + WEB_SERVICES_PATH + "post/edit-post";

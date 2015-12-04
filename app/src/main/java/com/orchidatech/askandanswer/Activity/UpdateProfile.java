@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ import com.orchidatech.askandanswer.View.Adapter.AutoCompleteAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -84,7 +86,11 @@ public class UpdateProfile extends AppCompatActivity {
     private String picturePath;
     long user_id;
     private Users user;
+    Button btn_update_categories;
 
+    ImageView iv_checkbox;
+    ImageView iv_checked;
+    int isPublic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +171,7 @@ public class UpdateProfile extends AppCompatActivity {
     private void initializeFields() {
         user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
+        isPublic = user.getIsPublicProfile();//0 public 1 not public
         picturePath = user.getImage();
         mValidator = Validator.getInstance();
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
@@ -181,7 +188,17 @@ public class UpdateProfile extends AppCompatActivity {
         ll_newPassword = (LinearLayout) findViewById(R.id.ll_newPassword);
         iv_camera = (ImageView) this.findViewById(R.id.iv_camera);
         profile_image = (CircleImageView) this.findViewById(R.id.profile_image);
-        Picasso.with(this).load(Uri.parse(user.getImage())).into(profile_image);
+        Picasso.with(this).load(Uri.parse(user.getImage())).into(profile_image, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                profile_image.setImageResource(R.drawable.ic_user);
+            }
+        });
         auto_categories = (AutoCompleteTextView) this.findViewById(R.id.auto_categories);
         ll_categories = (HorizontalFlowLayout) findViewById(R.id.hf_categories);
         iv_update_password = (ImageView) findViewById(R.id.iv_update_password);
@@ -204,6 +221,39 @@ public class UpdateProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hideSoftKeyboard();
+            }
+        });
+        btn_update_categories = (Button) this.findViewById(R.id.btn_update_categories);
+        btn_update_categories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UpdateProfile.this, UpdateCategory.class));
+            }
+        });
+
+        iv_checkbox = (ImageView) this.findViewById(R.id.iv_checkbox);
+        iv_checked = (ImageView) this.findViewById(R.id.iv_checked);
+        if(isPublic == 0){
+            iv_checkbox.setVisibility(View.GONE);
+            iv_checked.setVisibility(View.VISIBLE);
+        }else{
+            iv_checkbox.setVisibility(View.VISIBLE);
+            iv_checked.setVisibility(View.GONE);
+        }
+        iv_checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                iv_checked.setVisibility(View.VISIBLE);
+                isPublic = 0;
+            }
+        });
+        iv_checked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                iv_checkbox.setVisibility(View.VISIBLE);
+                isPublic = 1;
             }
         });
     }
@@ -254,7 +304,7 @@ public class UpdateProfile extends AppCompatActivity {
                 loadingDialog.setCancelable(false);
                 loadingDialog.show(getFragmentManager(), "updating profile");
 
-                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, 0, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
+                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
                         loadingDialog.dismiss();

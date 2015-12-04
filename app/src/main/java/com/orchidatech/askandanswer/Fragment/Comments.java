@@ -470,14 +470,16 @@ public class Comments extends DialogFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         long id = item.getItemId();
+        final int position = adapter.getPosition();
+        Log.i("dgdgfhffdhfpost", position+"");
+
         if(id == R.id.delete_comment){
-            final int position = adapter.getPosition();
+//            final int position = adapter.getPosition();
             Log.i("dgdgfhffdhfpost", position+"");
             DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener(){
 
                 @Override
                 public void onDelete() {
-
                     adapter.performDeleting(position);
                 }
             });

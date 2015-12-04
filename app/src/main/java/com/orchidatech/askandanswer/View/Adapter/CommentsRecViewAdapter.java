@@ -59,7 +59,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Bahaa on 15/11/2015.
  */
-public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecViewAdapter.CommentsViewHolder> {
+public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecViewAdapter.CommentsViewHolder> implements View.OnCreateContextMenuListener {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final int fragment_numeric;
@@ -149,7 +149,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 });
             }else{
                 holder.pb_photo_load.setVisibility(View.GONE);
-                holder.iv_comment.setVisibility(View.INVISIBLE);
+                holder.iv_comment.setVisibility(View.GONE);
 
             }
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
@@ -192,7 +192,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //                   list0ener.onDislike(currentComment.getServerID(), position);
                }
            });
-            holder.tv_commentDesc.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.rl_comment_item.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
 //                    if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType() ||
@@ -202,6 +202,10 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                     return false;
                 }
             });
+            if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType()
+   /*                 || (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType() &&
+                         comments.get(position).getUserID() == current_user_id)*/)
+               holder.rl_comment_item.setOnCreateContextMenuListener(this);
 
 
         }
@@ -219,7 +223,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 /*if(id == R.id.edit_comment){
                     commentOptionListener.onEditComment(commentId);
                     return true;
-                }else */if(id == R.id.delete_comment){
+                }else */
+                if (id == R.id.delete_comment) {
                     deleteComment(position);
                     return true;
                 }
@@ -272,6 +277,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void remove(int position) {
         comments.remove(position);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = activity.getMenuInflater();
+//            menu.setHeaderTitle("Comment Options:");
+        inflater.inflate(R.menu.comment_menu, menu);
     }
 
 
@@ -332,8 +344,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 iv_comment_options = (ImageView) itemView.findViewById(R.id.iv_comment_options);
                 card_comment = (CardView) itemView.findViewById(R.id.card_comment);
                 Log.i("Ffhghg", getAdapterPosition()+"");
-                if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType())
-                     rl_comment_item.setOnCreateContextMenuListener(this);
+//                if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType())
+//                     rl_comment_item.setOnCreateContextMenuListener(this);
                 pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
                 pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }

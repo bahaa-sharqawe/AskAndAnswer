@@ -204,7 +204,7 @@ public class Timeline extends Fragment {
                         getFromLocal(error);
                     }else{
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
-                        rl_error.setEnabled(false);
+                        rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/{

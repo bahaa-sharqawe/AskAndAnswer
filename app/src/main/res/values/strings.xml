@@ -145,4 +145,5 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="tv_delCommentAttention">This comment will be deleted.</string>
     <string name="delete_comment">Delete Comment</string>
     <string name="delete">DELETE</string>
+    <string name="update_categories">Update Categories</string>
 </resources>

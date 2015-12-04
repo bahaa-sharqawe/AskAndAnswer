@@ -4,16 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,11 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
+import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CategoriesAdapter;
@@ -37,14 +40,14 @@ import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SelectCategory extends AppCompatActivity {
+public class UpdateCategory extends AppCompatActivity {
     private String TAG = SelectCategory.class.getSimpleName();
     public static  final int MIN_CATEGORY = 1;
     public static final int MAX_CATEGORY = 20;
 
     RelativeLayout rl_parent;
     ListView lv_categories;
-//    CircularProgressView pv_load;
+    //    CircularProgressView pv_load;
     ProgressBar pv_load;
     CategoriesAdapter adapter;
     ArrayList<Category> categories;
@@ -56,10 +59,11 @@ public class SelectCategory extends AppCompatActivity {
     ImageView uncolored_logo;
     TextView tv_error;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_category);
+        setContentView(R.layout.activity_update_category);
         setCustomActionBar();
         initializeFields();
         loadCategories();
@@ -88,7 +92,7 @@ public class SelectCategory extends AppCompatActivity {
                 lv_categories.setVisibility(View.VISIBLE);
                 categories.addAll(newCategories);
                 original_categories.addAll(newCategories);
-                categories.get(0).setIsChecked(true);
+                setSelectedCategories(categories);
                 adapter.notifyDataSetChanged();
             }
 
@@ -105,8 +109,10 @@ public class SelectCategory extends AppCompatActivity {
         pv_load.setVisibility(View.GONE);
         lv_categories.setVisibility(View.VISIBLE);
         if(categories.size() > 0) {
-            original_categories.get(0).setIsChecked(true);
-            categories.get(0).setIsChecked(true);
+
+            setSelectedCategories(categories);
+//            original_categories.get(0).setIsChecked(true);
+//            categories.get(0).setIsChecked(true);
             adapter.notifyDataSetChanged();
         } else {
             rl_error.setVisibility(View.VISIBLE);
@@ -115,8 +121,29 @@ public class SelectCategory extends AppCompatActivity {
         }
     }
 
+    private void setSelectedCategories(ArrayList<Category> categories) {
+        ArrayList<User_Categories> allUserCategories = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
+        for(Category category : categories)
+            category.setIsChecked(false);
+
+        for(Category category : categories){
+            for(User_Categories user_category : allUserCategories){
+                if(user_category.getCategoryID() == category.getServerID()) {
+                    category.setIsChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
     private void initializeFields() {
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
+        rl_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
         pv_load = (ProgressBar) this.findViewById(R.id.pv_load);
         pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
@@ -168,7 +195,7 @@ public class SelectCategory extends AppCompatActivity {
 
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.categories));
+        toolbar.setTitle(getString(R.string.update_categories));
         toolbar.setTitleTextColor(this.getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_search);
 
@@ -179,15 +206,15 @@ public class SelectCategory extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.categories_menu, menu);
+        getMenuInflater().inflate(R.menu.edit_profile_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.next) {
-            if (validSelectedCount()) {
+        if (id == R.id.done) {
+            if (validSelectedCount() && isChanged()) {
                 sendSelectedCategories();
             }
             return true;
@@ -208,37 +235,57 @@ public class SelectCategory extends AppCompatActivity {
         return false;
     }
 
-    private void sendSelectedCategories() {
-        final ArrayList<Category> selectedCats = new ArrayList<>();
-        for (Category category : original_categories) {
-            if (category.isChecked())
-                selectedCats.add(category);
+    private boolean isChanged() {
+        ArrayList<Category> selected = getSelectedCats();
+        ArrayList<User_Categories> user_categories = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
+        if(selected.size() != user_categories.size())
+            return true;
+        int counter = user_categories.size();
+        for(Category category : selected){
+            for(User_Categories user_category : user_categories){
+                if(user_category.getCategoryID() == category.getServerID()) {
+                    counter--;
+                }
+            }
         }
-        final LoadingDialog loadingDialog = new LoadingDialog();
+        return counter==0?false:true;
+    }
+
+    private void sendSelectedCategories() {
+               final LoadingDialog loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "sending");
         //send selected categories to server
-                WebServiceFunctions.sendUserCategories(this, uid, selectedCats, new OnSendCategoriesListener() {
+        WebServiceFunctions.updateUserCategories(this, uid, getSelectedCats(), new OnSendCategoriesListener() {
 
-                    @Override
-                    public void onSendingSuccess() {
-                        loadingDialog.dismiss();
+            @Override
+            public void onSendingSuccess() {
+                loadingDialog.dismiss();
 //                        AppSnackBar.show(rl_parent, "saved successfully", Color.GREEN, Color.WHITE);
-                        startActivity(new Intent(SelectCategory.this, MainScreen.class));
-                        finish();
-                    }
-
-                    @Override
-                    public void onSendingFail(String error) {
-                            loadingDialog.dismiss();
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
+                startActivity(new Intent(UpdateCategory.this, MainScreen.class));
+                finish();
             }
+
+            @Override
+            public void onSendingFail(String error) {
+                loadingDialog.dismiss();
+                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+
+            }
+        });
+    }
+
+    private ArrayList<Category> getSelectedCats() {
+        final ArrayList<Category> selectedCats = new ArrayList<>();
+        for (Category category : original_categories) {
+            if (category.isChecked())
+                selectedCats.add(category);
+        }
+        return selectedCats;
+    }
 
     private boolean validSelectedCount() {
         int numSelected = 0;
@@ -265,4 +312,11 @@ public class SelectCategory extends AppCompatActivity {
     }
 
 
+    private void hideSoftKeyboard() {
+        View view = UpdateCategory.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

@@ -38,6 +38,7 @@ import com.orchidatech.askandanswer.View.Adapter.SpinAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -62,6 +63,7 @@ public class AddEditPost extends AppCompatActivity {
     private String image_str;
     long user_id;
     private String picturePath;
+    private boolean isPostHasImagePrev;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,24 @@ public class AddEditPost extends AppCompatActivity {
             iv_camera.setEnabled(false);
             ed_postDesc.setText(editPost.getText());
             picturePath = editPost.getImage();
-            Picasso.with(this).load(Uri.parse(editPost.getImage())).into(iv_post);
+            if(!TextUtils.isEmpty(picturePath)) {
+                isPostHasImagePrev = true;
+                Picasso.with(this).load(Uri.parse(editPost.getImage())).into(iv_post, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        iv_post.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+            else {
+                iv_post.setVisibility(View.INVISIBLE);
+                isPostHasImagePrev = false;
+            }
             for (int i = 0; i < spinnerItems.size(); i++) {
                 if (editPost.getCategoryID() == spinnerItems.get(i).getCategoryID()) {
                     spinner.setSelection(i);
@@ -181,13 +200,31 @@ public class AddEditPost extends AppCompatActivity {
     }
 
     private void editPost(long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
+        int imageState;
+        if(isPostHasImagePrev){
+            if(picturePath == null)
+                imageState = 0;//remove post photo from DB... do not send photo to server
+            else {
+                if (editPost.getImage() == picturePath)
+                    imageState = 1;//post photo did not changed.. do not send photo to server
+                else
+                    imageState = 2;//post photo changed.. send photo to server
+            }
+        } else {
+            if(picturePath == null)
+                imageState = 1;//post photo did not changed.. do not send photo to server
+            else
+                imageState = 2;//post photo changed.. send photo to server
+        }
         final LoadingDialog loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "Saving...");
-        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, picturePath, date, isHidden, new OnEditPostListener() {
+
+
+        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState==2?picturePath:null, date, isHidden, new OnEditPostListener() {
             @Override
             public void onSuccess(String message) {
                 loadingDialog.dismiss();

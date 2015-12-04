@@ -18,8 +18,7 @@ import com.orchidatech.askandanswer.R;
  */
 public class Settings extends Fragment {
     Switch sw_notification;
-    ImageView iv_checkbox;
-    ImageView iv_checked;
+
 
     @Nullable
     @Override
@@ -39,22 +38,7 @@ public class Settings extends Fragment {
                 //   SettingsDAO.updateSettings(1, GNLConstants.Settings_Keys.NOTIFICATIONS_SOUND, isChecked?1:0);
             }
         });
-        iv_checkbox = (ImageView) getActivity().findViewById(R.id.iv_checkbox);
-        iv_checked = (ImageView) getActivity().findViewById(R.id.iv_checked);
-        iv_checkbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setVisibility(View.GONE);
-                iv_checked.setVisibility(View.VISIBLE);
-            }
-        });
-        iv_checked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setVisibility(View.GONE);
-                iv_checkbox.setVisibility(View.VISIBLE);
-            }
-        });
+
     }
     private void setActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");

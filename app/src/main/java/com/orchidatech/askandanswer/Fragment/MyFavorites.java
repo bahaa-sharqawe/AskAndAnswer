@@ -179,7 +179,7 @@ public class MyFavorites extends Fragment {
                         }
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
-                        tv_error.setText(getActivity().getString(R.string.no_posts_found));
+                        tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {

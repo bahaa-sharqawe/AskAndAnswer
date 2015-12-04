@@ -129,7 +129,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             });
 
         if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(),
-                SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY,-1)) != null)
+                SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY,-1)) != null ||
+                posts.get(position).getIsFavorite()==1)
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
         else
             holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
@@ -348,7 +349,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     }
 
     private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
-        if(Post_FavoriteDAO.getPost_FavoriteByPostId(post_id, user_id) == null){
+        if(Post_FavoriteDAO.getPost_FavoriteByPostId(post_id, user_id) == null && posts.get(position).getIsFavorite()!=1){
             //add to favorite
             WebServiceFunctions.addPostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 

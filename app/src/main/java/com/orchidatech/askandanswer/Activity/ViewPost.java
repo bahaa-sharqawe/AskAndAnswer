@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteListener{
@@ -48,7 +51,20 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             iv_post = (ImageView) this.findViewById(R.id.iv_post);
             tv_post = (TextView) this.findViewById(R.id.tv_post);
             tv_post.setText(post.getText());
-            Picasso.with(this).load(Uri.parse(post.getImage())).into(iv_post);
+            if(!TextUtils.isEmpty(post.getImage()))
+                   Picasso.with(this).load(Uri.parse(post.getImage())).into(iv_post, new Callback() {
+                       @Override
+                       public void onSuccess() {
+
+                       }
+
+                       @Override
+                       public void onError() {
+                           iv_post.setVisibility(View.INVISIBLE);
+                       }
+                   });
+            else
+                iv_post.setVisibility(View.INVISIBLE);
         }
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
     }

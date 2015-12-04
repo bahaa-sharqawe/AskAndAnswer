@@ -154,6 +154,7 @@
                    android:layout_marginTop="15dp"
                    />
            </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,6 +187,93 @@
                     android:paddingLeft="0dp"
                     android:inputType="textPassword"/>
             </LinearLayout>
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/rl_publicl_profile_row"
+               android:paddingTop="20dp"
+               android:paddingBottom="15dp"
+               android:layout_below="@+id/ll_newPassword"
+               >
+               <ImageView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/iv_show_profile"
+                   android:layout_alignParentLeft="true"
+                   android:layout_marginRight="10dp"
+                   android:src="@drawable/ic_name_flat"/>
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@+id/iv_show_profile">
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textAppearance="?android:attr/textAppearanceMedium"
+                       android:text="@string/profile_setting_title"
+                       android:textSize="15sp"
+                       android:textColor="#333333"
+                       android:layout_marginBottom="7dp"
+                       android:id="@+id/tv_show_profile_setting_title" />
+                   <TextView
+                       android:layout_width="250dp"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/tv_show_profile_setting_desc"
+                       android:text="@string/profile_setting_desc"
+                       android:textSize="12sp"
+                       android:textColor="#878686"
+                       android:layout_below="@+id/tv_show_profile_setting_title"
+                       android:layout_alignLeft="@+id/tv_show_profile_setting_title"/>
+
+                   <View android:layout_height="1dp"
+                       android:layout_width="match_parent"
+                       android:background="#bbbbbb"
+                       android:layout_below="@+id/tv_show_profile_setting_desc"
+                       android:layout_marginTop="10dp"
+                       android:layout_alignLeft="@+id/tv_show_profile_setting_title"
+                       />
+
+               </RelativeLayout>
+               <RelativeLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentRight="true"
+                   android:id="@+id/sw_show_profile"
+                   android:layout_marginLeft="20dp"
+                   >
+                   <ImageView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/iv_checkbox"
+                       android:layout_alignParentTop="true"
+                       android:layout_alignParentLeft="true"
+                       android:layout_alignParentStart="true"
+                       android:src="@drawable/ic_checkbox"
+                       android:visibility="visible"
+                       />
+                   <ImageView
+                       android:id="@+id/iv_checked"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentTop="true"
+                       android:layout_alignParentLeft="true"
+                       android:layout_alignParentStart="true"
+                       android:src="@drawable/ic_checked"
+                       android:visibility="gone"
+                       />
+
+               </RelativeLayout>
+
+
+           </RelativeLayout>
+
+           <Button
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/rl_publicl_profile_row"
+               android:text="@string/update_categories"
+               android:id="@+id/btn_update_categories"
+               />
            <AutoCompleteTextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -200,7 +288,8 @@
                android:completionThreshold="2"
                android:layout_below="@+id/ll_newPassword"
                android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true" />
+               android:layout_alignParentStart="true"
+               android:visibility="gone"/>
            <!--<GridView-->
                <!--android:layout_width="match_parent"-->
                <!--android:layout_height="wrap_content"-->
@@ -215,7 +304,8 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/hf_categories"
-               android:layout_below="@+id/auto_categories">
+               android:layout_below="@+id/auto_categories"
+               android:visibility="gone">
 
            </com.orchidatech.askandanswer.Logic.HorizontalFlowLayout>
 

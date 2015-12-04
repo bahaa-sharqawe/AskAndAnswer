@@ -89,6 +89,9 @@ public class Operations {
         sendRequest(Request.Method.POST, URL.SEND_USER_CATEGORIES, params, listener);
     }
 
+    public void update_user_categories(Map<String, String> params, OnLoadFinished listener) {
+        sendRequest(Request.Method.POST, URL.UPDATE_USER_CATEGORIES, params, listener);
+    }
     public void deletePost(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.DELETE_POST, params, listener);
     }
@@ -169,12 +172,12 @@ public class Operations {
         }
     }
 
-    public void addPostFavorite(String url, OnLoadFinished listener) {
-        sendRequest(Request.Method.GET, url, null, listener);
+    public void addPostFavorite(Map<String, String> params , OnLoadFinished listener) {
+        sendRequest(Request.Method.POST, URL.ADD_POST_FAVORITE, params, listener);
     }
 
-    public void removePostFavorite(String url, OnLoadFinished listener) {
-        sendRequest(Request.Method.GET, url, null, listener);
+    public void removePostFavorite(Map<String, String> params, OnLoadFinished listener) {
+        sendRequest(Request.Method.POST, URL.REMOVE_POST_FAVORITE, params, listener);
     }
 
     private void sendRequest(int method, final String url, Map<String, String> params, final OnLoadFinished listener) {
@@ -188,7 +191,7 @@ public class Operations {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
 //                        Log.i("cxccx", volleyError.getMessage());
-                        listener.onFail(context.getString(R.string.BR_GNL_001) );
+                        listener.onFail(context.getString(R.string.BR_GNL_001));
                     }
                 });
     }

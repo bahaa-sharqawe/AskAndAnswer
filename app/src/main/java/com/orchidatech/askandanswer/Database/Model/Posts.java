@@ -23,6 +23,9 @@ public class Posts extends Model {
         public static final String COLUMN_CATEGORY_ID = "CATEGORY_ID";
         public static final String COLUMN_IS_HIDDEN = "IS_HIDDEN";
         public static final String COLUMN_COMMENTS_NO = "COMMENTS_NO";
+        public static final String IS_FAVORITE = "IS_FAVORITE";
+        public static final String LIKES_NO = "LIKES_NO";
+        public static final String DISLIKES_NO = "DISLIKES_NO";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -49,14 +52,20 @@ public class Posts extends Model {
     @Column(name = FIELDS.COLUMN_COMMENTS_NO)
     public int comments_no;
 
-    private int num_likes;
-    private int num_dislikes;
+    @Column(name = FIELDS.IS_FAVORITE)
+    public int isFavorite;
+
+    @Column(name = FIELDS.LIKES_NO)
+    public int num_likes;
+
+    @Column(name = FIELDS.DISLIKES_NO)
+    public int num_dislikes;
 
     public Posts() {
         super();
     }
 
-    public Posts(long serverID, String text, String image, long date, long userID, long categoryID, int isHidden, int comments_no) {
+    public Posts(long serverID, String text, String image, long date, long userID, long categoryID, int isHidden, int comments_no, int isFavorite, int num_likes, int num_dislikes) {
         super();
         this.serverID = serverID;
         this.text = text;
@@ -66,6 +75,9 @@ public class Posts extends Model {
         this.categoryID = categoryID;
         this.isHidden = isHidden;
         this.comments_no = comments_no;
+        this.isFavorite = isFavorite;
+        this.num_likes = num_likes;
+        this.num_dislikes = num_dislikes;
     }
 
     public long getServerID() {
@@ -146,5 +158,13 @@ public class Posts extends Model {
 
     public void setNum_dislikes(int num_dislikes) {
         this.num_dislikes = num_dislikes;
+    }
+
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }

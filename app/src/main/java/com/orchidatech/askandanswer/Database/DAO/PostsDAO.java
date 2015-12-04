@@ -32,7 +32,14 @@ public class PostsDAO {
         post.serverID = newPost.getServerID();
         post.userID = newPost.getUserID();
         post.text = newPost.getText();
-        post.comments_no = newPost.getComments_no();
+        if(newPost.getComments_no() != -1)
+             post.comments_no = newPost.getComments_no();
+        if(newPost.getNum_likes() != -1){
+            post.num_likes = newPost.num_dislikes;
+            post.num_likes = newPost.num_likes;
+        }
+        if(newPost.isFavorite != -1)
+           post.isFavorite = newPost.getIsFavorite();
         post.save();
     }
 
@@ -63,7 +70,15 @@ public class PostsDAO {
         existPost.text = post.getText();
         existPost.userID = post.getUserID();
         existPost.categoryID = post.getCategoryID();
-        existPost.comments_no = post.getComments_no();
+        if(post.getComments_no() != -1)
+            existPost.comments_no = post.getComments_no();
+        if(post.getNum_likes() != -1){
+            existPost.num_likes = post.num_dislikes;
+            existPost.num_likes = post.num_likes;
+        }
+        if(post.isFavorite != -1)
+            existPost.isFavorite = post.getIsFavorite();
+
         existPost.save();
     }
 
