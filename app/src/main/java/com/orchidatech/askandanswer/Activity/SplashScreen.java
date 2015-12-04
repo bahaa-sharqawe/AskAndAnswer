@@ -65,7 +65,7 @@ public class SplashScreen extends Activity {
         if (mId != -1) {//Someone is logged
             List<User_Categories> categories = User_CategoriesDAO.getAllUserCategories(mId);
             if (categories != null && categories.size() > 0) {//this means that current user selected categories previously
-//                updateCategoriesFromServer();
+                updateCategoriesFromServer();
                 updateUserCategories(mId);
                 mIntent = new Intent(this, MainScreen.class);
             }
@@ -106,7 +106,7 @@ public class SplashScreen extends Activity {
         WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
             public void onSuccess(ArrayList<Category> categories) {
-//                AppSnackBar.show(rl_parent, "Categories updated...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                AppSnackBar.show(rl_parent, "Categories updated...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
 
             }
 

@@ -400,8 +400,7 @@ public class WebServiceFunctions {
     }
 
     public static void getCategoryPosts(final Context context, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
-        String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.USER_ID + "=" + userId +
-                "&" + URL.URLParameters.LIMIT + "=" + limit +
+        String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
@@ -429,6 +428,24 @@ public class WebServiceFunctions {
                             int comments_no = post.getInt("comment_no");
                             long created_at = post.getLong("updated_at");
                             Posts postItem = new Posts(id, text, image, created_at, userId, category_id, is_hidden, comments_no);
+                            JSONObject user = post.getJSONArray("user").getJSONObject(0);
+                            long user_id = user.getLong("id");
+                            String f_name = user.getString("f_name");
+                            String l_name = user.getString("l_name");
+                            String email = user.getString("email");
+                            String user_image = user.getString("image");
+                            int active = user.getInt("active");
+                            long user_created_at = user.getLong("created_at");
+                            long last_login = user.getLong("last_login");
+                            String code = user.getString("code");
+                            String mobile = user.getString("mobile");
+                            int is_public = user.getInt("is_public");
+                            JSONObject askandanswer = user.getJSONObject("askandanswer");
+                            int no_answer = askandanswer.getInt("no_answer");
+                            int no_ask = askandanswer.getInt("no_ask");
+                            Users _user = new Users(id, f_name, l_name, null, email, null, user_image, user_created_at, active, last_login,
+                                    mobile, is_public, code, no_ask, no_answer);
+                            UsersDAO.addUser(_user);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
@@ -627,7 +644,7 @@ public class WebServiceFunctions {
         }, url);
     }
 
-    public static void search(final Context context, String textFilter, long user_id, final OnSearchCompleted listener) {
+    public static void search(final Context context, String textFilter, final long user_id, final OnSearchCompleted listener) {
         String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) + "&" + URL.URLParameters.USER_ID + "=" + user_id;
         Log.i("dsds", url);
         Operations.getInstance(context).search(new OnLoadFinished() {
@@ -642,12 +659,18 @@ public class WebServiceFunctions {
                         ArrayList<Posts> matchedPosts = new ArrayList<Posts>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post_obj = data.getJSONObject(i);
-                            Posts post = new Posts(post_obj.getLong("id"), post_obj.getString("text"), post_obj.getString("image"),
-                                    post_obj.getLong("updated_at"), post_obj.getLong("user_id"), post_obj.getLong("category_id"), post_obj.getInt("is_hidden"), post_obj.getInt("comment_no"));
+                            Posts post = new Posts(Long.parseLong(post_obj.getString("id")), post_obj.getString("text"), post_obj.getString("image").equals("null")?null:post_obj.getString("image"),
+                                    post_obj.getLong("updated_at"), Long.parseLong(post_obj.getString("user_id")), Long.parseLong(post_obj.getString("category_id")), Integer.parseInt(post_obj.getString("is_hidden")), post_obj.getInt("comment_no"));
+                            JSONObject comment_action = post_obj.getJSONObject("comment_action");
+                            int num_likes = comment_action.getInt("like");
+                            int num_dislikes = comment_action.getInt("dislike");
                             JSONObject userObj = post_obj.getJSONArray("user").getJSONObject(0);
-                            Users user = new Users(userObj.getLong("id"), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
-                                    null, userObj.getString("image"), userObj.getLong("updated_at"), userObj.getInt("active"), userObj.getLong("last_login"),
-                                    userObj.getString("mobile"), userObj.getInt("is_public"), userObj.getString("code"), -1, -1);
+                            Users user = new Users(Long.parseLong(userObj.getString("id")), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
+                                    null, userObj.getString("image"), userObj.getLong("updated_at"), Integer.parseInt(userObj.getString("active")), userObj.getLong("last_login"),
+                                    userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"));
+                            Log.i("cxcdvcv", userObj.getString("mobile").length()+"");
+                           post.setNum_dislikes(num_dislikes);
+                           post.setNum_likes(num_likes);
                             PostsDAO.addPost(post);
                             UsersDAO.addUser(user);
                             matchedPosts.add(post);

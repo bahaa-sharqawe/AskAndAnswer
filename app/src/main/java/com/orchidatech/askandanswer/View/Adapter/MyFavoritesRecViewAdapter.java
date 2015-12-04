@@ -48,6 +48,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -167,8 +168,17 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
+            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
+                @Override
+                public void onSuccess() {
+                }
 
-            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
+                @Override
+                public void onError() {
+                    holder.iv_profile.setImageResource(R.drawable.ic_user);
+                }
+            });
+
 
         }
     }

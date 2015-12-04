@@ -49,6 +49,9 @@ public class Posts extends Model {
     @Column(name = FIELDS.COLUMN_COMMENTS_NO)
     public int comments_no;
 
+    private int num_likes;
+    private int num_dislikes;
+
     public Posts() {
         super();
     }
@@ -127,5 +130,21 @@ public class Posts extends Model {
 
     public void setComments_no(int comments_no) {
         this.comments_no = comments_no;
+    }
+
+    public int getNum_likes() {
+        return num_likes;
+    }
+
+    public void setNum_likes(int num_likes) {
+        this.num_likes = num_likes;
+    }
+
+    public int getNum_dislikes() {
+        return num_dislikes;
+    }
+
+    public void setNum_dislikes(int num_dislikes) {
+        this.num_dislikes = num_dislikes;
     }
 }

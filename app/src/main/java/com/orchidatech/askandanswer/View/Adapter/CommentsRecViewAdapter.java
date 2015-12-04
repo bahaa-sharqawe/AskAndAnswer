@@ -48,6 +48,7 @@ import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -103,7 +104,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void onBindViewHolder(final CommentsViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType()?Comments.last_id_server > 0:comments.size()>0) {
+            if (!loading && isFoundData && (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType()?Comments.last_id_server >0:comments.size()>0)) {
+
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -118,12 +120,38 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.tv_commentDesc.setText(currentComment.getText());
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.tv_comment_category.setText(commentCategory.getName());
-            Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person);
-            if (!TextUtils.isEmpty(currentComment.getImage())) {
-                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment);
-                holder.iv_comment.setVisibility(View.VISIBLE);
-            } else
-                holder.iv_comment.setVisibility(View.GONE);
+
+            Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
+                @Override
+                public void onSuccess() {
+                }
+
+                @Override
+                public void onError() {
+                    holder.iv_person.setImageResource(R.drawable.ic_user);
+                }
+            });
+            holder.pb_photo_load.setVisibility(View.VISIBLE);
+            holder.iv_comment.setVisibility(View.INVISIBLE);
+            if(!TextUtils.isEmpty(currentComment.getImage()) && currentComment.getImage() != "null") {
+                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_comment.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_comment.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }else{
+                holder.pb_photo_load.setVisibility(View.GONE);
+                holder.iv_comment.setVisibility(View.INVISIBLE);
+
+            }
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
             holder.tv_likes.setText(currentComment.getLikes() + "");
 //            holder.tv_likes.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +189,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                public void onClick(View v) {
                    Log.i("vcvc", currentComment.getServerID() + "");
                    dislikeComment(currentComment.getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
-//                   listener.onDislike(currentComment.getServerID(), position);
+//                   list0ener.onDislike(currentComment.getServerID(), position);
                }
            });
             holder.tv_commentDesc.setOnLongClickListener(new View.OnLongClickListener() {
@@ -212,7 +240,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     public void performDeleting(final int position) {
-        Log.i("ddsdgggfcv", position+"");
         final LoadingDialog loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, activity.getString(R.string.delteing));
@@ -265,15 +292,19 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         ImageView iv_unlike;
         RelativeLayout rl_comment_item;
         CardView card_comment;
+        ProgressBar pb_photo_load;
         int viewType;
 
         public CommentsViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
             if (viewType == TYPE_FOOTER) {
+
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
+                btn_reload.setVisibility(View.GONE);
+
                 btn_reload.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -303,6 +334,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 Log.i("Ffhghg", getAdapterPosition()+"");
                 if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType())
                      rl_comment_item.setOnCreateContextMenuListener(this);
+                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
+                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }
 
         }

@@ -119,6 +119,7 @@ public class MyAnswers extends Fragment {
             }
         });
         rl_error.setVisibility(View.GONE);
+        pb_loading_main.setVisibility(View.VISIBLE);
         resizeLogo();
         loadNewComments();
         userComments = new ArrayList<>(CommentsDAO.getAllComments(user_id));
@@ -139,6 +140,8 @@ public class MyAnswers extends Fragment {
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                    Log.i("gfddv", "from adffdff");
+
                     pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_COMMENTS
                         if (userComments.size() > 0)
@@ -154,7 +157,9 @@ public class MyAnswers extends Fragment {
                         rl_error.setVisibility(View.VISIBLE);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
+                    Log.i("gfddv", "from erver");
                     adapter.addFromServer(null, errorCode != 402 ? true : false);
+
                 }/*else{
                         getFromLocal();
                     }
@@ -164,6 +169,7 @@ public class MyAnswers extends Fragment {
     }
 
     private void getFromLocal() {
+        Log.i("fdcxzcx", "dsdsdlocal");
         adapter.addFromLocal(userComments);
     }
 

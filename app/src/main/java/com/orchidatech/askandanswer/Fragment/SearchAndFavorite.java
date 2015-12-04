@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
@@ -60,62 +62,26 @@ public class SearchAndFavorite extends Fragment {
         setActionBar();
 //        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         ll_parent = (LinearLayout) getActivity().findViewById(R.id.ll_parent);
+        ll_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
         ed_search = (MaterialEditText) getActivity().findViewById(R.id.ed_search);
         rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
+        rv_posts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+            }
+        });
         rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent, new OnPostEventListener() {
-            @Override
-            public void onClick(long pid) {
-                Intent intent = new Intent(getActivity(), ViewPost.class);
-                intent.putExtra(ViewPost.POST_ID, pid);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onSharePost(long pid) {
-
-            }
-
-            @Override
-            public void onCommentPost(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "Comments");
-
-            }
-
-            @Override
-            public void onFavoritePost(int position, long pid, long uid) {
-                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        AppSnackBar.show(ll_parent, getString(R.string.post_favorite_added), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCategoryClick(long cid, long uid) {
-                Intent intent = new Intent(getActivity(), CategoryPosts.class);
-                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
-                intent.putExtra(CategoryPosts.USER_ID, uid);
-                startActivity(intent);
-            }
-        });
+        adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent);
         rv_posts.setAdapter(adapter);
 
     }
@@ -135,8 +101,11 @@ public class SearchAndFavorite extends Fragment {
                 return true;
             } else {
                 //perform searching
-                    posts.clear();
+                posts.clear();
+                if (ed_search.getText().toString().length() > 0) {
+                    hideSoftKeyboard();
                     performSearching(ed_search.getText().toString());
+                }
                 return true;
             }
         }
@@ -150,28 +119,38 @@ public class SearchAndFavorite extends Fragment {
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.search_questions));
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "search");
-        WebServiceFunctions.search(getActivity(), s, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted(){
+        loadingDialog.setCancelable(false);
+        WebServiceFunctions.search(getActivity(), s, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted() {
 
             @Override
             public void onSuccess(ArrayList<Posts> searchResult) {
-                    loadingDialog.dismiss();
+                loadingDialog.dismiss();
                 posts.addAll(searchResult);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFail(String error) {
-                    loadingDialog.dismiss();
+                loadingDialog.dismiss();
                 adapter.notifyDataSetChanged();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
 
             }
         });
     }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Search");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Search");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+    }
+
+    private void hideSoftKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

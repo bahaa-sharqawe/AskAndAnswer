@@ -78,6 +78,9 @@ public class PostsDAO {
         return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? and " +
                 Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", userId, categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
     }
+    public static List<Posts> getAllPostsInCategory(long categoryId){
+        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_DATE + " desc").execute();
+    }
 
     public static void deleteAllPosts(){
         new Delete().from(Posts.class).execute();

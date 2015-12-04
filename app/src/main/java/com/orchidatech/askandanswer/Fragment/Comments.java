@@ -222,6 +222,8 @@ public class Comments extends DialogFragment {
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

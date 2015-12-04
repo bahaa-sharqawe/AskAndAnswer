@@ -19,8 +19,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
@@ -28,6 +29,7 @@ import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CategoryPostRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
@@ -42,7 +44,7 @@ public class CategoryPosts extends AppCompatActivity {
     public static final String USER_ID = "USER";
 
     RecyclerView rv_posts;
-    CategoryPostRecViewAdapter adapter;
+    TimelineRecViewAdapter adapter;
     ArrayList<Posts> posts;
     RelativeLayout rl_parent;
     private Toolbar toolbar;
@@ -71,7 +73,7 @@ public class CategoryPosts extends AppCompatActivity {
         posts = new ArrayList<>(PostsDAO.getAllPosts(userId, categoryId));
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         rv_posts = (RecyclerView) this.findViewById(R.id.rv_posts);
-        adapter = new CategoryPostRecViewAdapter(this, posts, rl_parent, new OnPostEventListener() {
+        adapter = new TimelineRecViewAdapter(this, posts, rl_parent/*, new OnPostEventListener() {
             @Override
             public void onClick(long pid) {
                 Intent intent = new Intent(CategoryPosts.this, ViewPost.class);
@@ -117,12 +119,12 @@ public class CategoryPosts extends AppCompatActivity {
             public void onCategoryClick(long cid, long uid) {
 
             }
-        }, new OnLastListReachListener() {
+        }*/, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
-        });
+        }, Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType());
         rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -132,6 +134,7 @@ public class CategoryPosts extends AppCompatActivity {
         uncolored_logo = (ImageView) this.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) this.findViewById(R.id.tv_error);
         pb_loading_main = (ProgressBar) this.findViewById(R.id.pb_loading_main);
+        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,9 +146,15 @@ public class CategoryPosts extends AppCompatActivity {
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         loadNewPosts();
-        storedPosts = new ArrayList<>(PostsDAO.getAllPosts(userId, categoryId));
-
+        storedPosts = new ArrayList<>(PostsDAO.getAllPostsInCategory(categoryId));
+        setTitle(CategoriesDAO.getCategory(categoryId).getName());
     }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        getSupportActionBar().setTitle(title);
+    }
+
 
     private void loadNewPosts() {
         WebServiceFunctions.getCategoryPosts(this, userId, categoryId, GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnUserPostFetched() {

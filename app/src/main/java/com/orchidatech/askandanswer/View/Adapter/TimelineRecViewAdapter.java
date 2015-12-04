@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -135,28 +137,42 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
-            ImageLoader imageLoader = ImageLoader.getInstance();
             if(!TextUtils.isEmpty(postImage) && postImage != "null"){
-//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
-                Log.i("fhfhjgh",postImage);
-                imageLoader.displayImage(postImage, holder.iv_postImage);
-                holder.iv_postImage.setVisibility(View.VISIBLE);
-            }else
+
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_postImage.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_postImage.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+                Log.i("fhfhjgh", postImage);
+            }else {
                 holder.iv_postImage.setVisibility(View.GONE);
+                holder.pb_photo_load.setVisibility(View.GONE);
+
+            }
 
             if(postOwner!=null && postOwner.getImage().length()>0)
-                imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
+//                imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
 
-//                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        holder.iv_profile.setImageResource(R.drawable.ic_user);
-//                    }
-//                });
+                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onError() {
+                        holder.iv_profile.setImageResource(R.drawable.ic_user);
+                    }
+                });
 
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -181,8 +197,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onClick(View v) {
                     if(fragment_numeric == Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType()
-                       || (fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
-                            current_user_id != posts.get(position).getUserID()))
+                       || ((fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType()
+                       || fragment_numeric == Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
+                       && current_user_id != posts.get(position).getUserID()))
                         commentPost(posts.get(position).getServerID());
                     else
                         viewPost(posts.get(position).getServerID());
@@ -191,6 +208,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
                     categoryClick(postCategory.getServerID(), postOwner.getServerID());
                 }
             });
@@ -200,7 +218,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     public void onClick(View v) {
 //                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
 //                                || postOwner.getIsPublicProfile() == 0)
-                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
+                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() && fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
                             goToProfile(postOwner.getServerID());
                 }
             });
@@ -240,6 +258,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         CardView card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
+        ProgressBar  pb_photo_load;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
@@ -272,6 +291,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 card_post = (CardView) itemView.findViewById(R.id.card_post);
+                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
+                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+
 
             }
 
