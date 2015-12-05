@@ -29,7 +29,7 @@ import java.util.ArrayList;
  */
 public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdapter.ItemViewHolder> {
 
-    private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
+    private static final int TYPE_HEADER = 0;
     private static final int TYPE_MENU = 1;
     private SharedPreferences pref;
 

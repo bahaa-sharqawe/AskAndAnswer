@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -24,10 +25,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.UpdateProfile;
-import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -35,11 +33,8 @@ import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -225,26 +220,32 @@ public class Profile extends Fragment {
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                        if (userPosts.size() > 0)
-                            getFromLocal();
-                        else {
+                        if (userPosts.size() > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb_loading_main.setVisibility(View.GONE);
+                                    getFromLocal();
+
+                                }
+                            }, 3000);
+                        }else {
+                            pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
-                } else /*if(adapter.getItemCount() > 0)*/ {
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
-                }/*else{
-                        getFromLocal();
-                    }
-*/
+                }
             }
         });
     }

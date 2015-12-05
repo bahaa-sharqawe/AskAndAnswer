@@ -29,6 +29,7 @@ import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -205,12 +206,15 @@ public class Login extends AppCompatActivity {
 
     private boolean verifyInputs(String username, String password) {
         if (TextUtils.isEmpty(username)) {
+            ViewAnimation.blink(Login.this, ed_name);
             AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(username)) {
+            ViewAnimation.blink(Login.this, ed_name);
             AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
+            ViewAnimation.blink(Login.this, ed_password);
             AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);
             return false;
         }

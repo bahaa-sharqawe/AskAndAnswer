@@ -126,6 +126,7 @@ public class GNLConstants {
     }
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
+
         Bitmap bitmap = null;
 
         if (drawable instanceof BitmapDrawable) {

@@ -132,41 +132,29 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                     holder.iv_person.setImageResource(R.drawable.ic_user);
                 }
             });
-            holder.pb_photo_load.setVisibility(View.VISIBLE);
-            holder.iv_comment.setVisibility(View.INVISIBLE);
+//            holder.pb_photo_load.setVisibility(View.VISIBLE);
+            holder.iv_comment.setVisibility(View.GONE);
             if(!TextUtils.isEmpty(currentComment.getImage()) && currentComment.getImage() != "null") {
                 Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment, new Callback() {
                     @Override
                     public void onSuccess() {
-                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        holder.pb_photo_load.setVisibility(View.GONE);
                         holder.iv_comment.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onError() {
-                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        holder.pb_photo_load.setVisibility(View.GONE);
                         holder.iv_comment.setVisibility(View.INVISIBLE);
                     }
                 });
             }else{
-                holder.pb_photo_load.setVisibility(View.GONE);
+//                holder.pb_photo_load.setVisibility(View.GONE);
                 holder.iv_comment.setVisibility(View.GONE);
 
             }
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
             holder.tv_likes.setText(currentComment.getLikes() + "");
-//            holder.tv_likes.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    listener.onLike(comments.get(position).getServerID());
-//                }
-//            });
-//            holder.tv_unlikes.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    listener.onDislike(comments.get(position).getServerID());
-//                }
-//            });
             if(user_actions != null && user_actions.getActionType() == Enum.USER_ACTIONS.LIKE.getNumericType()){
                 holder.iv_unlike.setImageResource(R.drawable.unlike);
                 holder.iv_like.setImageResource(R.drawable.ic_like_on);
@@ -180,25 +168,18 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.ll_like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("vcvc", currentComment.getServerID() + "");
                     likeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
-//                    listener.onLike(currentComment.getServerID(), position);
                 }
             });
            holder.ll_unlike.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-                   Log.i("vcvc", currentComment.getServerID() + "");
                    dislikeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
-//                   list0ener.onDislike(currentComment.getServerID(), position);
                }
            });
             holder.rl_comment_item.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-//                    if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType() ||
-//                            (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType() && current_user_id == comments.get(position).getUserID()))
-////                        viewOptionsMenu(position, v);
                     setPosition(position);
                     return false;
                 }
@@ -207,8 +188,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
    /*                 || (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType() &&
                          comments.get(position).getUserID() == current_user_id)*/)
                holder.rl_comment_item.setOnCreateContextMenuListener(this);
-
-
         }
     }
 
@@ -288,7 +267,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
 
-    public class CommentsViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public class CommentsViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_comment_options;
         CircleImageView iv_person;
         TextView tv_person_name;
@@ -305,7 +284,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         ImageView iv_unlike;
         RelativeLayout rl_comment_item;
         CardView card_comment;
-        ProgressBar pb_photo_load;
+//        ProgressBar pb_photo_load;
         int viewType;
 
         public CommentsViewHolder(View itemView, int viewType) {
@@ -345,22 +324,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 iv_comment_options = (ImageView) itemView.findViewById(R.id.iv_comment_options);
                 card_comment = (CardView) itemView.findViewById(R.id.card_comment);
                 Log.i("Ffhghg", getAdapterPosition()+"");
-//                if(fragment_numeric == Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType())
-//                     rl_comment_item.setOnCreateContextMenuListener(this);
-                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
-                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+//                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
+//                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }
 
         }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            MenuInflater inflater = activity.getMenuInflater();
-//            menu.setHeaderTitle("Comment Options:");
-            inflater.inflate(R.menu.comment_menu, menu);
-        }
-
-
     }
 
     @Override
@@ -415,7 +383,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
-       Log.i("dislike", prevAction + "," + action);
         WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
             @Override
             public void onActionSent(User_Actions user_actions) {
@@ -423,22 +390,17 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 int currentLikes = Integer.parseInt(tv_likes.getText().toString());
                 int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-//                    comment.disLikes++;
                     currentDisLikes++;
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.ic_dislike_on);
 
                 } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-//                    comment.likes--;
-//                    comment.disLikes++;
                     currentLikes--;
                     currentDisLikes++;
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.ic_dislike_on);
                 } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-//                    comment.disLikes--;
                     currentDisLikes--;
-
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.unlike);
                 }
@@ -448,8 +410,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 comments.get(position).likes = currentLikes;
                 CommentsDAO.updateComment(comments.get(position));
                 User_ActionsDAO.addUserAction(user_actions);
-//                        Log.i("vcvc", "dilike: " + comment.likes + " , " + comment.disLikes + ",---" + user_actions.getActionType() + ", " + action);
-//                        adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -464,8 +424,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
-        Log.i("like", prevAction + "," + action + ", " + comment.likes);
-
         WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
 
             @Override
@@ -474,24 +432,17 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 int currentLikes = Integer.parseInt(tv_likes.getText().toString());
                 int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-//                    comment.likes++;
-
                     currentLikes++;
                     iv_like.setImageResource(R.drawable.ic_like_on);
                     iv_unlike.setImageResource(R.drawable.unlike);
 
                 } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-//                    comment.disLikes--;
-//                    comment.likes++;
                     currentDisLikes--;
                     currentLikes++;
                     iv_like.setImageResource(R.drawable.ic_like_on);
                     iv_unlike.setImageResource(R.drawable.unlike);
-                    Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes);
                 } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-//                    comment.likes--;
                     currentLikes--;
-                    Log.i("vcvc", "dilike: " + comment.likes);
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.unlike);
                 }
@@ -499,11 +450,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 tv_unlikes.setText(currentDisLikes + "");
                 comments.get(position).disLikes = currentDisLikes;
                 comments.get(position).likes = currentLikes;
-                Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes + ",---" + prevAction + ", " + action);
                 CommentsDAO.updateComment(comments.get(position));
-                                        User_ActionsDAO.addUserAction(user_actions);
-//
-//                        adapter.notifyDataSetChanged();
+                User_ActionsDAO.addUserAction(user_actions);
             }
 
             @Override

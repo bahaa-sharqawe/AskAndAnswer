@@ -42,6 +42,7 @@ import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
@@ -126,8 +127,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-//                            || postOwner.getIsPublicProfile() == 0)
                     if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
                         goToProfile(postOwner.getServerID());
                 }
@@ -149,30 +148,27 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     pref.edit().remove("new_image").commit();
                 }else
                     requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage()));
-               requestCreator.into(holder.iv_postImage, new Callback() {
+                holder.iv_postImage.setVisibility(View.GONE);
+                requestCreator.into(holder.iv_postImage, new Callback() {
                    @Override
                    public void onSuccess() {
-                       holder.pb_photo_load.setVisibility(View.GONE);
+//                       holder.pb_photo_load.setVisibility(View.GONE);
                        holder.iv_postImage.setVisibility(View.VISIBLE);
                    }
 
                    @Override
                    public void onError() {
-                       holder.pb_photo_load.setVisibility(View.GONE);
+//                       holder.pb_photo_load.setVisibility(View.GONE);
                        holder.iv_postImage.setVisibility(View.INVISIBLE);
 
                    }
                });
-                Log.i("fhfhjgh", postImage);
             }else {
                 holder.iv_postImage.setVisibility(View.GONE);
-                holder.pb_photo_load.setVisibility(View.GONE);
-
+//                holder.pb_photo_load.setVisibility(View.GONE);
             }
 
             if(postOwner!=null && postOwner.getImage().length()>0)
-//                imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
-
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -226,9 +222,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
-//                                || postOwner.getIsPublicProfile() == 0)
-                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() && fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
+                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
+                                fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
                             goToProfile(postOwner.getServerID());
                 }
             });
@@ -246,16 +241,16 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         TextView tv_person_name;
         TextView tv_postDate;
         TextView tv_postContent;
-        TextView tv_post_category;  //change visibility
+        TextView tv_post_category;
         ImageView iv_postImage;
-        RelativeLayout rl_postEvents; //change visibility
+        RelativeLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
         CardView card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
-        ProgressBar  pb_photo_load;
+//        ProgressBar  pb_photo_load;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
@@ -288,12 +283,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 card_post = (CardView) itemView.findViewById(R.id.card_post);
-                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
-                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-
+//                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
+//                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }
-
         }
     }
 
@@ -309,13 +301,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             if(pv_load != null)
             pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
-//
-//            if(posts.size() > GNLConstants.MAX_POSTS_ROWS){
-//                posts = posts.subList(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size());
-//
-////                notifyItemRangeChanged(posts.size()-GNLConstants.MAX_POSTS_ROWS, posts.size()-(posts.size()-GNLConstants.MAX_POSTS_ROWS));
-//
-//            }
             notifyDataSetChanged();
 
         } else {
@@ -331,11 +316,21 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     btn_reload.setVisibility(View.GONE);
                 }
                 isFoundData = false;
-
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+//                optimizeLocalDB();
             }
         }
         loading = false;
+    }
+
+    private void optimizeLocalDB() {
+        String s = "(";
+        for(int i = 0; i < posts.size(); i++){
+            s += posts.get(i).getServerID();
+            s += i!=posts.size()-1?",":"";
+        }
+        s += ")";
+        PostsDAO.deleteUnNeeded(s);
     }
 
     public void addFromLocal(List<Posts> newPosts){
@@ -351,7 +346,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+        if(postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
             String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
@@ -366,7 +361,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onSuccess() {
                     AppSnackBar.show(parent, activity.getString(R.string.post_favorite_added), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-//                    adapter.notifyDataSetChanged();
                     iv_favorite.setImageResource(R.drawable.ic_fav_on);
                 }
 
@@ -437,6 +431,4 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ft.commit();
         mFragmentManager.executePendingTransactions();
     }
-
-
 }

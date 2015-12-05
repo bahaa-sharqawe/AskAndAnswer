@@ -2,11 +2,11 @@ package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,24 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.MyAsksRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -43,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by Bahaa on 24/11/2015.
  */
-public class MyAsks extends Fragment{
+public class MyAsks extends Fragment {
     RecyclerView rv_favorites;
     TimelineRecViewAdapter adapter;
     ArrayList<Posts> myPosts;
@@ -78,55 +71,7 @@ public class MyAsks extends Fragment{
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myPosts = new ArrayList<>();
-        adapter = new TimelineRecViewAdapter(getActivity(), myPosts, rl_parent/*, new OnPostEventListener() {
-
-            @Override
-            public void onClick(long pid) {
-                Intent intent = new Intent(getActivity(), ViewPost.class);
-                intent.putExtra(ViewPost.POST_ID, pid);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onSharePost(long pid) {
-
-            }
-
-            @Override
-            public void onCommentPost(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "Comments");
-            }
-
-            @Override
-            public void onFavoritePost(final int position, long pid, long uid) {
-                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener(){
-
-                    @Override
-                    public void onSuccess() {
-                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added),getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCategoryClick(long cid, long uid) {
-                Intent intent = new Intent(getActivity(), CategoryPosts.class);
-                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
-                intent.putExtra(CategoryPosts.USER_ID, uid);
-                startActivity(intent);
-            }
-        }*/, new OnLastListReachListener() {
+        adapter = new TimelineRecViewAdapter(getActivity(), myPosts, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
@@ -153,7 +98,7 @@ public class MyAsks extends Fragment{
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
@@ -166,26 +111,32 @@ public class MyAsks extends Fragment{
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                        if (userPosts.size() > 0)
-                            getFromLocal();
-                        else {
+                        if (userPosts.size() > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb_loading_main.setVisibility(View.GONE);
+                                    getFromLocal();
+
+                                }
+                            }, 3000);
+                        } else {
+                            pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
-                } else /*if(adapter.getItemCount() > 0)*/ {
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
-                }/*else{
-                        getFromLocal();
-                    }
-*/
+                }
             }
         });
     }
@@ -201,10 +152,11 @@ public class MyAsks extends Fragment{
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My Asks");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Asks");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

@@ -106,6 +106,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_GNL_004">Please, username contains only letters, numbers, ., _, -</string>
     <string name="BR_GNL_005">No more data to load it</string>
     <string name="BR_GNL_006">An Error Occurred, retry</string>
+    <string name="BR_GNL_007">Please enter valid message</string>
 
     <string name="BR_LOGIN_001">Please enter your username</string>
     <string name="BR_LOGIN_002">Please enter your password</string>
@@ -146,4 +147,5 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="delete_comment">Delete Comment</string>
     <string name="delete">DELETE</string>
     <string name="update_categories">Update Categories</string>
+    <string name="message_sent">Messsage sent successfully..</string>
 </resources>

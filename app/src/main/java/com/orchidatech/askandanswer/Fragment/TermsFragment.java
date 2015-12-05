@@ -62,11 +62,12 @@ public class TermsFragment extends Fragment {
     public interface OnDrawerIconClickListener {
         public void onClick();
     }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 
 }

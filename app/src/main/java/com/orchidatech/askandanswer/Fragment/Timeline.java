@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
@@ -201,22 +202,28 @@ public class Timeline extends Fragment {
             }
 
             @Override
-            public void onFail(String error, int errorCode) {
+            public void onFail(final String error, int errorCode) {
                 if(pb_loading_main.getVisibility() == View.VISIBLE){
-                    pb_loading_main.setVisibility(View.GONE);
                     if(errorCode != 402){//ALL ERRORS EXCEPT NO_POSTS
-                        getFromLocal(error);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pb_loading_main.setVisibility(View.GONE);
+                                getFromLocal(error);
+
+                            }
+                        },3000);
                     }else{
+                        pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
-                } else /*if(adapter.getItemCount() > 0)*/{
-                        adapter.addFromServer(null, errorCode != 402?true:false);//CONNECTION ERROR
-                    }/*else{
-                        getFromLocal();
-                    }
-*/            }
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
+
+                    adapter.addFromServer(null, errorCode != 402?true:false);//CONNECTION ERROR
+                    }            }
         });
     }
 

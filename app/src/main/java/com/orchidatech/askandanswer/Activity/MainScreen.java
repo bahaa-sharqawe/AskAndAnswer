@@ -90,10 +90,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         adapter = new DrawerRecViewAdapter(this, items, new OnMainDrawerItemClickListener() {
             @Override
             public void onClick(int position) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 startEvent(position);
 
 //                mDrawerLayout.closeDrawer(rv_navigation);
-                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
         rv_navigation.setHasFixedSize(true);
@@ -102,12 +102,12 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         rv_navigation.setLayoutManager(llm);
         rv_navigation.setAdapter(adapter);
 //        startEvent(0);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.fragment_host, new Timeline());
         ft.commit();
         mFragmentManager.executePendingTransactions();
-        mDrawerLayout.closeDrawer(GravityCompat.START);
 
 //        mDrawerLayout.openDrawer(rv_navigation);
     }
@@ -216,7 +216,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             }
             ft.replace(R.id.fragment_host, fragment);
             ft.commit();
-            mFragmentManager.executePendingTransactions();
+//            mFragmentManager.executePendingTransactions();
         }
 
 

@@ -66,4 +66,9 @@ public class Validator {
         }
         return (numDigits == 0 || numLetters == 0)?false:true;
     }
+
+    public String getSafeText(String message) {
+            return  message.replaceAll("\\<[^>]*>","");
+
+    }
 }

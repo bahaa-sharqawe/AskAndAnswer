@@ -2,11 +2,11 @@ package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,23 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.MyFavoritesRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -78,58 +71,7 @@ public class MyFavorites extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_favorites.setLayoutManager(llm);
         myFavorites = new ArrayList<>();
-        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, rl_parent/* new OnPostEventListener() {
-
-            @Override
-            public void onClick(long pid) {
-                Intent intent = new Intent(getActivity(), ViewPost.class);
-                intent.putExtra(ViewPost.POST_ID, pid);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onSharePost(long pid) {
-
-            }
-
-            @Override
-            public void onCommentPost(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "Comments");
-
-            }
-
-            @Override
-            public void onFavoritePost(final int position, long pid, long uid) {
-                //remove post from favorite
-                WebServiceFunctions.removePostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_removed), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                        adapter.removePost(position);
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCategoryClick(long cid, long uid) {
-                Intent intent = new Intent(getActivity(), CategoryPosts.class);
-                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
-                intent.putExtra(CategoryPosts.USER_ID, uid);
-                startActivity(intent);
-            }
-        }*/, new OnLastListReachListener() {
+        adapter = new MyFavoritesRecViewAdapter(getActivity(), myFavorites, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
@@ -163,7 +105,6 @@ public class MyFavorites extends Fragment {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                 }
-                Log.i("sd222222sd", userFavPosts.size()+"");
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
                 adapter.addFromServer(userFavPosts, false);
             }
@@ -171,26 +112,32 @@ public class MyFavorites extends Fragment {
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 403) {//ALL ERRORS EXCEPT NO_FAV_POSTS
-                        if (userFavPosts.size() > 0)
-                            getFromLocal();
-                        else {
+                        if (userFavPosts.size() > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb_loading_main.setVisibility(View.GONE);
+                                    getFromLocal();
+
+                                }
+                            }, 3000);
+                        } else {
+                            pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        pb_loading_main.setVisibility(View.GONE);
                         rl_error.setVisibility(View.VISIBLE);
                         tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                     }
-                } else /*if(adapter.getItemCount() > 0)*/ {
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 403 ? true : false);//CONNECTION ERROR
-                }/*else{
-                        getFromLocal();
-                    }
-*/
+                }
             }
         });
     }
@@ -206,10 +153,11 @@ public class MyFavorites extends Fragment {
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Favorite");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Favorite");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 }

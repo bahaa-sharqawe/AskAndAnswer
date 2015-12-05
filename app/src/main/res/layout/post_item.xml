@@ -80,30 +80,26 @@
             android:layout_marginRight="10dp"
             android:layout_alignLeft="@+id/rl_post_desc"
             android:id="@+id/rl_post_photo">
-           <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/rl_photo">
+
                <ImageView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:id="@+id/iv_postImage"
                    android:scaleType="centerCrop"
                    android:src="@drawable/android_wallpaper"
-                   android:visibility="visible"
+                   android:visibility="gone"
                    />
 
-               <ProgressBar
-                   style="?android:attr/progressBarStyleSmall"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerInParent="true"
-                   android:id="@+id/pb_photo_load" />
-           </RelativeLayout>
+               <!--<ProgressBar-->
+                   <!--style="?android:attr/progressBarStyleSmall"-->
+                   <!--android:layout_width="wrap_content"-->
+                   <!--android:layout_height="wrap_content"-->
+                   <!--android:layout_centerInParent="true"-->
+                   <!--android:id="@+id/pb_photo_load" />-->
                      <View android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:id="@+id/divider"
-                android:layout_below="@+id/rl_photo"
+                android:layout_below="@+id/iv_postImage"
                 android:layout_marginTop="10dp"
                 android:background="#e6e6e6" />
             <android.support.design.widget.FloatingActionButton

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Display;
@@ -56,10 +57,15 @@ public class Register extends Activity {
         prefEditor = pref.edit();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
+        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
+        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_email = (EditText) this.findViewById(R.id.ed_email);
+        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_repassword = (EditText) this.findViewById(R.id.ed_repassword);
+        ed_repassword.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         btn_signup = (Button) this.findViewById(R.id.btn_signup);
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override

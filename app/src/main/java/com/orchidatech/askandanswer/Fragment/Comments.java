@@ -117,7 +117,6 @@ public class Comments extends DialogFragment {
         rl_parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("fdfdf", "pressed");
                 hideSoftKeyboard();
             }
         });
@@ -127,83 +126,7 @@ public class Comments extends DialogFragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         comments = new ArrayList<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent/*, new OnUserActionsListener() {
-            @Override
-            public void onLike(long commentId, final int position) {
-                final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
-                final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
-                final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
-                final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
-
-                WebServiceFunctions.addCommentAction(getActivity(), commentId,
-                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener() {
-
-                            @Override
-                            public void onActionSent() {
-                                AppSnackBar.show(rl_parent, "like", Color.RED, Color.WHITE);
-
-                                if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-                                    comment.likes++;
-                                    Log.i("vcvc", "null: " + comment.likes);
-
-                                } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                                    comment.disLikes--;
-                                    comment.likes++;
-                                    Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes);
-                                } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                                    comment.likes--;
-                                    Log.i("vcvc", "dilike: " + comment.likes);
-
-                                }
-                                comments.get(position).setDisLikes(comment.disLikes);
-                                comments.get(position).setLikes(comment.likes);
-                                Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes + ",---" + prevAction + ", " + action);
-                                CommentsDAO.updateComment(comment);
-
-                                adapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onFail(String error) {
-                                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-                            }
-                        });
-            }
-
-            @Override
-            public void onDislike(long commentId, final int position) {
-                final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
-                final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
-                final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
-                final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
-                WebServiceFunctions.addCommentAction(getActivity(), commentId,
-                        SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), action, new OnCommentActionListener() {
-                            @Override
-                            public void onActionSent() {
-                                AppSnackBar.show(rl_parent, "dislike", Color.RED, Color.WHITE);
-
-                                if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-                                    comment.disLikes++;
-                                } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                                    comment.likes--;
-                                    comment.disLikes++;
-                                } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                                    comment.disLikes--;
-                                }
-                                comments.get(position).disLikes = comment.disLikes;
-                                comments.get(position).likes = comment.likes;
-                                CommentsDAO.updateComment(comment);
-                                Log.i("vcvc", "dilike: " + comment.likes + " , " + comment.disLikes + ",---" + user_actions.getActionType() + ", " + action);
-                                adapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onFail(String error) {
-                                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-                            }
-                        });
-            }
-        }*/, new OnLastListReachListener() {
+        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
@@ -277,10 +200,8 @@ public class Comments extends DialogFragment {
                             rl_error.setVisibility(View.GONE);
                             ed_add_comment.setText("");
                             adapter.addComment(comment);
-                            Log.i("newCOMEE", comment.getServerID()+"");
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
-//                            numOfAddedComment++;
                         }
 
                         @Override
@@ -346,20 +267,15 @@ public class Comments extends DialogFragment {
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
-//                            adapter.addFromLocal(null);
                         }
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
                         tv_error.setText(getActivity().getString(R.string.no_comments_found));
                         rl_error.setEnabled(true);
-//                        getFromLocal();
                     }
-                } else /*if(adapter.getItemCount() > 0)*/ {
+                } else {
                     adapter.addFromServer(null, errorCode != 404 ? true : false);//CONNECTION ERROR
-                }/*else{
-                        getFromLocal();
-                    }
-*/
+                }
             }
         });
     }
@@ -433,32 +349,6 @@ public class Comments extends DialogFragment {
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
     }
-//
-//    @Override
-//    public void onDelete(long commentId, final int commentPos) {
-//        final LoadingDialog loadingDialog = new LoadingDialog();
-//        Bundle args = new Bundle();
-//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
-//        loadingDialog.setArguments(args);
-//        loadingDialog.setCancelable(false);
-//        loadingDialog.show(getFragmentManager(), "deleting");
-//        WebServiceFunctions.deletComment(getActivity(), commentId, new OnDeleteCommentListener() {
-//
-//            @Override
-//            public void onDeleted() {
-//                loadingDialog.dismiss();
-//                comments.remove(commentPos);
-//                adapter.notifyDataSetChanged();
-//                AppSnackBar.show(rl_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-//            }
-//
-//            @Override
-//            public void onFail(String error) {
-//                loadingDialog.dismiss();
-//                AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-//            }
-//        });
-//    }
 
     private void hideSoftKeyboard() {
 //        View view = getActivity().getCurrentFocus();
@@ -474,11 +364,7 @@ public class Comments extends DialogFragment {
     public boolean onContextItemSelected(MenuItem item) {
         long id = item.getItemId();
         final int position = adapter.getPosition();
-        Log.i("dgdgfhffdhfpost", position+"");
-
         if(id == R.id.delete_comment){
-//            final int position = adapter.getPosition();
-            Log.i("dgdgfhffdhfpost", position+"");
             DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener(){
 
                 @Override

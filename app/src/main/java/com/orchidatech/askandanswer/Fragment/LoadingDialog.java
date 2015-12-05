@@ -44,19 +44,6 @@ public class LoadingDialog extends DialogFragment {
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
-//
-//    @Nullable
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//         View view = inflater.inflate(R.layout.loading_dialog, container);
-//        pb_loading = (ProgressBar) view.findViewById(R.id.pb_loading);
-//        pb_loading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-//        tv_loading = (TextView) view.findViewById(R.id.tv_loading);
-//        tv_loading.setText(dialogTxt);
-//        return view;
-//
-//    }
-
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.loading_dialog, null, false);
@@ -70,6 +57,5 @@ public class LoadingDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        getDialog().getWindow().setLayout(350, 150);
     }
 }

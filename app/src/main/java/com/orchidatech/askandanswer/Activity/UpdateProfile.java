@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -134,6 +135,10 @@ public class UpdateProfile extends AppCompatActivity {
                 ed_password.setHint(getString(R.string.current_password));
                 v.setVisibility(View.GONE);
                 ll_newPassword.setVisibility(View.VISIBLE);
+                ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+                ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+                ed_confirm_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+
             }
         });
 
@@ -182,8 +187,12 @@ public class UpdateProfile extends AppCompatActivity {
         ll_content = (LinearLayout) this.findViewById(R.id.ll_content);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.setText(user.getFname());
+        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
         ed_lname.setText(user.getLname());
+        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+
         ed_email = (EditText) this.findViewById(R.id.ed_email);
         ed_email.setText(user.getEmail());
         ed_password = (EditText) this.findViewById(R.id.ed_password);

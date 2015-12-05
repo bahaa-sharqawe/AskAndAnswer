@@ -6,28 +6,24 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
@@ -72,25 +68,13 @@ public class MyAnswers extends Fragment {
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
-//        registerForContextMenu(rv_answers);
 
         rv_answers.setHasFixedSize(true);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_answers.setLayoutManager(llm);
         myAnswers = new ArrayList<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), myAnswers, rl_parent/*, new OnUserActionsListener() {
-            @Override
-            public void onLike(long commentId, int positon) {
-
-            }
-
-            @Override
-            public void onDislike(long commentId, int positon) {
-            }
-
-
-        }*/, new OnLastListReachListener() {
+        adapter = new CommentsRecViewAdapter(getActivity(), myAnswers, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
@@ -143,36 +127,40 @@ public class MyAnswers extends Fragment {
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    Log.i("gfddv", "from adffdff");
-
-                    pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_COMMENTS
-                        if (userComments.size() > 0)
-                            getFromLocal();
-                        else {
+                        if (userComments.size() > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb_loading_main.setVisibility(View.GONE);
+                                    getFromLocal();
+
+                                }
+                            }, 3000);
+
+                        } else {
+                            pb_loading_main.setVisibility(View.GONE);
+
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getActivity().getString(R.string.no_comments_found));
                         rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }
-                } else /*if(adapter.getItemCount() > 0)*/ {
-                    Log.i("gfddv", "from erver");
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 402 ? true : false);
 
-                }/*else{
-                        getFromLocal();
-                    }
-*/
+                }
             }
         });
     }
 
     private void getFromLocal() {
-        Log.i("fdcxzcx", "dsdsdlocal");
         adapter.addFromLocal(userComments);
     }
 
@@ -183,32 +171,23 @@ public class MyAnswers extends Fragment {
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My Answers");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Answers");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
-//
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//        MenuInflater inflater = getActivity().getMenuInflater();
-//        menu.setHeaderTitle("Comment Options:");
-//        inflater.inflate(R.menu.comment_menu, menu);
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         long id = item.getItemId();
-        if(id == R.id.delete_comment){
+        if (id == R.id.delete_comment) {
             final int position = adapter.getPosition();
-            Log.i("dgdgfhffdhfpost", position+"");
-            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener(){
+            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener() {
 
                 @Override
                 public void onDelete() {
-
                     adapter.performDeleting(position);
                 }
             });
@@ -216,6 +195,4 @@ public class MyAnswers extends Fragment {
         }
         return super.onContextItemSelected(item);
     }
-
-
 }

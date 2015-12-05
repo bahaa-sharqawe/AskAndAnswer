@@ -6,6 +6,8 @@ import com.activeandroid.Model;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.Model.Comments;
+import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 
@@ -122,7 +124,6 @@ public class PostsDAO {
             s += i!=user_categories.size()-1?",":"";
         }
         s+=")";
-        Log.i("ghfgh", s);
 
         return  new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " in "+s).orderBy(Posts.FIELDS.COLUMN_DATE + " DESC").execute();
     }
@@ -130,5 +131,11 @@ public class PostsDAO {
     private static List<Posts> getAllPostsByCategory(long categoryId) {
         return new Select().from(Posts.class).where(
                 Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_DATE + " desc").execute();
+    }
+
+    public static void deleteUnNeeded(String s) {
+        new Delete().from(Posts.class).where(Posts.FIELDS.COLUMN_SERVER_ID + " not in " + s).execute();
+        new Delete().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " not in " + s).execute();
+        new Delete().from(Post_Favorite.class).where(Post_Favorite.FIELDS.COLUMN_POST_ID + " not in " + s).execute();
     }
 }

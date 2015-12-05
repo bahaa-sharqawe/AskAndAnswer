@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareLinkContent;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -38,6 +36,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
 import com.orchidatech.askandanswer.View.Interface.OnSendCategoriesListener;
+import com.orchidatech.askandanswer.View.Interface.OnSendMessageListener;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
@@ -62,8 +61,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.EMAIL, email);
         params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
-
-        Operations.getInstance(context).login(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.LOGIN, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -94,7 +92,7 @@ public class WebServiceFunctions {
                         int no_aks = user.getInt("no_ask");
 
                         int no_answers = user.getInt("no_answer");
-                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image.equals("null")?null:image, created_at, active, last_login, mobile, is_public, code, no_aks, no_answers);
+                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_aks, no_answers);
                         UsersDAO.addUser(_user);
                         ArrayList<Long> user_categories_id = new ArrayList<Long>();
                         JSONArray user_category_arr = user.getJSONArray("user_category");
@@ -132,7 +130,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
 //        params.put(URL.URLParameters.MOBILE, mobile);
         params.put(URL.URLParameters.IS_PUBLIC, is_public + "");
-        Operations.getInstance(context).register(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.REGISTER, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 ///Check o content then decide success or fail..
@@ -158,7 +156,7 @@ public class WebServiceFunctions {
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
-                        Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null")?null:image, created_at, active, last_login,
+                        Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login,
                                 mobile, is_public, code, 0, 0);
                         UsersDAO.addUser(_user);
                         listener.onSuccess(id);
@@ -178,7 +176,7 @@ public class WebServiceFunctions {
     }
 
     public static void getCategories(final Context context, final OnCategoriesFetchedListener listener) {
-        Operations.getInstance(context).getCategories(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(URL.GET_CATEGORIES, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -224,7 +222,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.USER_ID, uid + "");
         Log.i("gfgfdgfdgfdgfdgfdgfdg", uid + ", " + sb.toString());
 
-        Operations.getInstance(context).sendUserCategories(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.SEND_USER_CATEGORIES, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -267,7 +265,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.USER_ID, uid + "");
         String url = URL.UPDATE_USER_CATEGORIES + "?" + URL.URLParameters.CATEGORIES_ID + "=" + sb.toString() +
                 "&" + URL.URLParameters.USER_ID + "=" + uid;
-        Operations.getInstance(context).update_user_categories(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.UPDATE_USER_CATEGORIES, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -304,7 +302,7 @@ public class WebServiceFunctions {
     public static void getUserCategories(final Context context, final long mId, final OnUserCategoriesFetched listener) {
         String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId;
         Log.i("sdsdsds", url);
-        Operations.getInstance(context).getUserCategories(url, new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -346,7 +344,7 @@ public class WebServiceFunctions {
     public static void getUserInfo(final Context context, long user_id, final OnUserInfoFetched listener) {
         String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id;
         Log.i("sdsdsd", url);
-        Operations.getInstance(context).getUserInfo(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -370,7 +368,7 @@ public class WebServiceFunctions {
                         int is_public = user.getInt("is_public");
                         int no_answer = user.getInt("no_answer");
                         int no_ask = user.getInt("no_ask");
-                        Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null")?null:image, created_at, active, last_login,
+                        Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login,
                                 mobile, is_public, code, no_ask, no_answer);
                         UsersDAO.addUser(_user);
                         listener.onDataFetched(_user, no_answer, no_ask);
@@ -386,7 +384,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error);
             }
-        }, url);
+        });
     }
 
     public static void getUserFavPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserFavPostFetched listener) {
@@ -394,7 +392,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LIMIT + "=" + limit + "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Log.i("sdsdsdsdsd", url);
-        Operations.getInstance(context).getUserFavPosts(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("dfddggg", response);
@@ -422,7 +420,7 @@ public class WebServiceFunctions {
                             long category_id = Long.parseLong(post_obj.getString("category_id"));
 //                            int comments_no = post_obj.getInt("comment_no");
                             long created_at = post_obj.getLong("updated_at");
-                            Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0, 1, -1, -1 );
+                            Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0, 1, -1, -1);
                             PostsDAO.addPost(postItem);
 
                             fetchedPosts.add(favPostItem);
@@ -441,7 +439,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
     }
 
     public static void getCategoryPosts(final Context context, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
@@ -451,8 +449,14 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id +
                 "&" + URL.URLParameters.USER_ID + "=" + userId;
         Log.i("dfddv", url);
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.CATEGORIES_ID, categoryId+"");
+        params.put(URL.URLParameters.USER_ID, userId+"");
+        params.put(URL.URLParameters.LIMIT, limit+"");
+        params.put(URL.URLParameters.OFFSET, offset+"");
+        params.put(URL.URLParameters.LAST_ID, last_id+"");
 
-        Operations.getInstance(context).getCategoryPosts(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -473,8 +477,8 @@ public class WebServiceFunctions {
                             long category_id = Long.parseLong(post.getString("category_id"));
                             int comments_no = post.getInt("comment_no");
                             long created_at = post.getLong("updated_at");
-                            int isFavorite = post.getBoolean("is_postfavorite")?1:0;
-                            Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, userId, category_id, is_hidden, comments_no, isFavorite, -1, -1);
+                            int isFavorite = post.getBoolean("is_postfavorite") ? 1 : 0;
+                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, userId, category_id, is_hidden, comments_no, isFavorite, -1, -1);
                             JSONObject user = post.getJSONArray("user").getJSONObject(0);
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
@@ -489,7 +493,7 @@ public class WebServiceFunctions {
                             JSONObject askandanswer = user.getJSONObject("askandanswer");
                             int no_answer = askandanswer.getInt("no_answer");
                             int no_ask = askandanswer.getInt("no_ask");
-                            Users _user = new Users(id, f_name, l_name, null, email, null, user_image.equals("null")?null:user_image, user_created_at, active, last_login,
+                            Users _user = new Users(id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login,
                                     mobile, is_public, code, no_ask, no_answer);
                             UsersDAO.addUser(_user);
                             PostsDAO.addPost(postItem);
@@ -510,7 +514,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
 
     }
 
@@ -520,7 +524,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Log.i("fdfdfd0", url);
-        Operations.getInstance(context).getUserPosts(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -539,8 +543,8 @@ public class WebServiceFunctions {
                             long category_id = post.getLong("category_id");
                             int comments_no = post.getInt("comment_no");
                             long created_at = post.getLong("updated_at");
-                            int isFavorite = post.getBoolean("is_postfavorite")?1:0;
-                            Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, uid, category_id, is_hidden, comments_no, isFavorite, -1, -1);
+                            int isFavorite = post.getBoolean("is_postfavorite") ? 1 : 0;
+                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, uid, category_id, is_hidden, comments_no, isFavorite, -1, -1);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
@@ -557,7 +561,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
     }
 
     public static void getUserComments(final Context context, final long uid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
@@ -566,7 +570,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Log.i("sdsddsdsd", url);
-        Operations.getInstance(context).getUserComments(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -602,7 +606,7 @@ public class WebServiceFunctions {
                             PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
                                     pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
                                     Integer.parseInt(pos_obj.getString("is_hidden")), -1, -1, -1, -1));
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?null:comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                         }
@@ -619,7 +623,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
     }
 
     public static void getPostComments(final Context context, long user_id, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
@@ -629,7 +633,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
-        Operations.getInstance(context).getPostComments(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("sds", response);
@@ -651,7 +655,7 @@ public class WebServiceFunctions {
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?null:comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
@@ -669,7 +673,7 @@ public class WebServiceFunctions {
                             int is_public = Integer.parseInt(user_info.getString("is_public"));
 //                            int no_answer = user.getInt("no_answer");
 //                            int no_ask = user.getInt("no_ask");
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null")?null:user_image, created_at, active, last_login, mobile, is_public, code, -1, -1);
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, created_at, active, last_login, mobile, is_public, code, -1, -1);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
                             JSONArray user_action_arr = comment.optJSONArray("user_action");
@@ -692,13 +696,13 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
     }
 
     public static void search(final Context context, String textFilter, final long user_id, final OnSearchCompleted listener) {
         String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) + "&" + URL.URLParameters.USER_ID + "=" + user_id;
         Log.i("dsds", url);
-        Operations.getInstance(context).search(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -717,7 +721,7 @@ public class WebServiceFunctions {
                                     post_obj.getLong("updated_at"), Long.parseLong(post_obj.getString("user_id")), Long.parseLong(post_obj.getString("category_id")), Integer.parseInt(post_obj.getString("is_hidden")), post_obj.getInt("comment_no"), -1, num_likes, num_dislikes);
                             JSONObject userObj = post_obj.getJSONArray("user").getJSONObject(0);
                             Users user = new Users(Long.parseLong(userObj.getString("id")), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
-                                    null, userObj.getString("image").equals("null")?null:userObj.getString("image"), userObj.getLong("updated_at"), Integer.parseInt(userObj.getString("active")), userObj.getLong("last_login"),
+                                    null, userObj.getString("image").equals("null") ? null : userObj.getString("image"), userObj.getLong("updated_at"), Integer.parseInt(userObj.getString("active")), userObj.getLong("last_login"),
                                     userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"));
                             Log.i("cxcdvcv", userObj.getString("mobile").length() + "");
                             PostsDAO.addPost(post);
@@ -736,7 +740,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error);
             }
-        }, url);
+        });
 
     }
 
@@ -746,7 +750,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
         Log.i("sdsadsadsds", url);
-        Operations.getInstance(context).getTimeLine(new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -786,9 +790,9 @@ public class WebServiceFunctions {
                             int no_asks = askandanswer.getInt("no_ask");
                             int no_answers = askandanswer.getInt("no_answer");
                             /////////////////////////////////////////////////////////////
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null")?null:user_image, user_created_at, active, last_login, mobile, is_public, code, no_asks, no_answers);
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_asks, no_answers);
                             UsersDAO.addUser(_user);
-                            Posts postItem = new Posts(id, text, image.equals("null")?null:image, post_created_at, user_id, category_id, is_hidden, comments_no, post.getBoolean("is_postfavorite")?1:0, -1, -1);
+                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, post_created_at, user_id, category_id, is_hidden, comments_no, post.getBoolean("is_postfavorite") ? 1 : 0, -1, -1);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
@@ -806,7 +810,7 @@ public class WebServiceFunctions {
             public void onFail(String error) {
                 listener.onFail(error, 100);
             }
-        }, url);
+        });
     }
 
     public static void addPostFavorite(final Context context, final long pid, final long uid, final OnPostFavoriteListener listener) {
@@ -816,7 +820,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.USER_ID, uid + "");
         params.put(URL.URLParameters.POST_ID, pid + "");
         Log.i("dsds", url);
-        Operations.getInstance(context).addPostFavorite(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.ADD_POST_FAVORITE, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -853,7 +857,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.USER_ID, uid + "");
         params.put(URL.URLParameters.POST_ID, postId + "");
         Log.i("dfdffdd", url);
-        Operations.getInstance(context).removePostFavorite(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.REMOVE_POST_FAVORITE, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -883,7 +887,7 @@ public class WebServiceFunctions {
     public static void deletePost(final Context context, final long user_id, final long postId, final OnPostDeletedListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.POST_ID, postId + "");
-        Operations.getInstance(context).deletePost(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.DELETE_POST, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -896,7 +900,7 @@ public class WebServiceFunctions {
                         CommentsDAO.deleteCommentByPost(postId);
                         Post_FavoriteDAO.deletePostFavoriteByPost(postId);
                         Users user = UsersDAO.getUser(user_id);
-                        user.asks = user.asks-1;
+                        user.asks = user.asks - 1;
                         user.save();
 
                         listener.onDeleted();
@@ -915,6 +919,40 @@ public class WebServiceFunctions {
 
     }
 
+    public static void sendMessage(final Context context, long user_id, String message, final OnSendMessageListener listener) {
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.USER_ID, user_id + "");
+        params.put(URL.URLParameters.MESSAGE, message);
+        Operations.getInstance(context).sendPostRequest(URL.CONTACT_US, params, new OnLoadFinished() {
+
+            @Override
+            public void onSuccess(String response) {
+                Log.i("cxx", response);
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        listener.onSuccess();
+                    }else{
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                    }
+
+                } catch (JSONException e) {
+                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+
+            }
+        });
+
+    }
+
     public static void addCommentAction(final Context context, final long commentId, long userId, final int action, final OnCommentActionListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, userId + "");
@@ -922,7 +960,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.ACTION_TYPE, action + "");
         Log.i("cxcxcx", commentId + ", " + URL.ADD_ACTION);
 
-        Operations.getInstance(context).addAction(params, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.ADD_ACTION, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -973,10 +1011,10 @@ public class WebServiceFunctions {
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("updated_at");
-                        Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, user_id, category_id, is_hidden, 0, 0, 0, 0);
+                        Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_id, category_id, is_hidden, 0, 0, 0, 0);
                         PostsDAO.addPost(postItem);
                         Users user = UsersDAO.getUser(user_id);
-                        user.asks = user.asks+1;
+                        user.asks = user.asks + 1;
                         user.save();
 
                         listener.onSuccess(context.getResources().getString(R.string.saved));
@@ -1026,7 +1064,7 @@ public class WebServiceFunctions {
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("updated_at");
-                        Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, user_id, category_id, is_hidden, -1, -1, -1, -1);
+                        Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_id, category_id, is_hidden, -1, -1, -1, -1);
                         PostsDAO.addPost(postItem);
                         listener.onSuccess(context.getResources().getString(R.string.saved));
                     } else {
@@ -1053,45 +1091,6 @@ public class WebServiceFunctions {
         if (!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         uploadImage.sendRequest();
-//        Operations.getInstance(context).editPost(context, post_id, user_id, category_id, postDesc, picturePath, date, isHidden, new OnUploadImageListener() {
-//            @Override
-//            public void onSuccess(String serverResponseMessage) {
-//                Log.i("sdss", serverResponseMessage);
-//                try {
-//                    JSONObject response = new JSONObject(serverResponseMessage);
-//                    int status_code = response.getInt("statusCode");
-//                    int status = response.getInt("status");
-//                    if (status == 0) {
-//                        JSONArray data = response.getJSONArray("data");
-//                        JSONObject post = data.getJSONObject(0);
-//                        long id = post.getLong("id");
-//                        String text = post.getString("text");
-//                        String image = post.getString("image");
-//                        int is_hidden = post.getInt("is_hidden");
-//                        long user_id = post.getLong("user_id");
-//                        long category_id = post.getLong("category_id");
-//                        int comments_no = post.getInt("comment_no");
-//                        int comments_no = post.getInt("comment_no");
-//                        long created_at = post.getLong("created_at");
-//                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
-//                        PostsDAO.updatePost(postItem);
-//                        listener.onSuccess(context.getResources().getString(R.string.saved));
-//                        ;
-//                    } else {
-//                        listener.onFail(GNLConstants.getStatus(status_code));
-//                    }
-//
-//                } catch (JSONException e) {
-//                    listener.onFail(context.getString(R.string.BR_GNL_006));
-//                }
-//            }
-//
-//            @Override
-//            public void onFail(String error) {
-//                listener.onFail(error);
-//            }
-//        });
-
     }
 
     public static void addComment(final Context context, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
@@ -1113,10 +1112,10 @@ public class WebServiceFunctions {
                         long user_id = comment.getLong("user_id");
                         long post_id = comment.getLong("post_id");
                         long comment_date = comment.getLong("updated_at");
-                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null")?null:comment_image, comment_date, user_id, post_id, 0, 0);
+                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0);
                         CommentsDAO.addComment(newComment);
-                       Users user = UsersDAO.getUser(user_id);
-                        user.answers = user.answers+1;
+                        Users user = UsersDAO.getUser(user_id);
+                        user.answers = user.answers + 1;
                         user.save();
                         listener.onAdded(newComment);
                     } else
@@ -1204,7 +1203,7 @@ public class WebServiceFunctions {
 
     public static void deletComment(final Context context, final long user_id, final long commentId, final OnDeleteCommentListener listener) {
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
-        Operations.getInstance(context).deleteComment(url, new OnLoadFinished() {
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -1216,7 +1215,7 @@ public class WebServiceFunctions {
                         CommentsDAO.deleteComment(commentId);
                         User_ActionsDAO.delteActionByComment(commentId);
                         Users user = UsersDAO.getUser(user_id);
-                        user.answers = user.answers-1;
+                        user.answers = user.answers - 1;
                         user.save();
 
                         listener.onDeleted();

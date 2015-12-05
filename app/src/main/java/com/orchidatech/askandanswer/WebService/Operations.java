@@ -96,6 +96,10 @@ public class Operations {
         sendRequest(Request.Method.POST, URL.DELETE_POST, params, listener);
     }
 
+    public void sendMesage(Map<String, String> params, OnLoadFinished listener) {
+        sendRequest(Request.Method.POST, URL.CONTACT_US, params, listener);
+
+    }
     public void search(OnLoadFinished listener, String url) {
         sendRequest(Request.Method.GET, url, null, listener);
     }
@@ -178,6 +182,13 @@ public class Operations {
 
     public void removePostFavorite(Map<String, String> params, OnLoadFinished listener) {
         sendRequest(Request.Method.POST, URL.REMOVE_POST_FAVORITE, params, listener);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void sendGetRequest(String url, OnLoadFinished listener){
+        sendRequest(Request.Method.GET, url, null, listener);
+    }
+    public void sendPostRequest(String url, Map<String, String> params, OnLoadFinished listener){
+        sendRequest(Request.Method.POST, url, params, listener);
     }
 
     private void sendRequest(int method, final String url, Map<String, String> params, final OnLoadFinished listener) {

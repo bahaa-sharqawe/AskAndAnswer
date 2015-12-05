@@ -115,25 +115,25 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 //            }
 //        });
         String postImage = currentPost.getImage();
-        holder.pb_photo_load.setVisibility(View.VISIBLE);
-        holder.iv_postImage.setVisibility(View.INVISIBLE);
+//        holder.pb_photo_load.setVisibility(View.VISIBLE);
+        holder.iv_postImage.setVisibility(View.GONE);
 
         if(postImage!=null && postImage.length()>0) {
             Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
                 @Override
                 public void onSuccess() {
-                    holder.pb_photo_load.setVisibility(View.GONE);
+//                    holder.pb_photo_load.setVisibility(View.GONE);
                     holder.iv_postImage.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onError() {
-                    holder.pb_photo_load.setVisibility(View.GONE);
+//                    holder.pb_photo_load.setVisibility(View.GONE);
                     holder.iv_postImage.setVisibility(View.VISIBLE);
                 }
             });
         } else {
-            holder.pb_photo_load.setVisibility(View.GONE);
+//            holder.pb_photo_load.setVisibility(View.GONE);
             holder.iv_postImage.setVisibility(View.GONE);
         }
         holder.tv_comments.setText(activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()));
@@ -174,7 +174,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         TextView tv_likes;
         TextView tv_unlikes;
         TextView tv_comments;
-        ProgressBar pb_photo_load;
+//        ProgressBar pb_photo_load;
         CardView card_post;
         int viewType;
 
@@ -195,7 +195,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
                 tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
-                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
+//                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
                 card_post = (CardView) itemView.findViewById(R.id.card_post);
 
 //                ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);

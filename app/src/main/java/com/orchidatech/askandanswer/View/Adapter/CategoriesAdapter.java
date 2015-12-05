@@ -55,7 +55,6 @@ public class CategoriesAdapter extends BaseAdapter {
         tv_category = (TextView) convertView.findViewById(R.id.tv_category);
         tv_category.setText(categories.get(position).getName());
         if(categories.get(position).isChecked()){
-//            selectedCategories.add(categories.get(position));
             iv_checkbox.setVisibility(View.INVISIBLE);
             iv_checked.setVisibility(View.VISIBLE);
         }else{
@@ -63,25 +62,6 @@ public class CategoriesAdapter extends BaseAdapter {
             iv_checked.setVisibility(View.INVISIBLE);
         }
 
-//        iv_checkbox.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                selectedCategories.add(categories.get(position));
-//                v.setVisibility(View.INVISIBLE);
-//                iv_checked.setVisibility(View.VISIBLE);
-//            }
-//        });
-//        iv_checked.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                selectedCategories.remove(categories.get(position));
-//                v.setVisibility(View.INVISIBLE);
-//                iv_checkbox.setVisibility(View.VISIBLE);
-//            }
-//        });
         return convertView;
     }
-//    public ArrayList<Categories> getSelectedCategories(){ // called when next pressed
-//        return selectedCategories;
-//    }
 }

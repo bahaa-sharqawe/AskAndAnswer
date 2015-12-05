@@ -1,10 +1,10 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,18 +21,11 @@ import android.widget.TextView;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
-import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
-import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
-import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Adapter.CategoryPostRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
-import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -70,7 +62,7 @@ public class CategoryPosts extends AppCompatActivity {
     }
 
     private void initializeFields() {
-        posts = new ArrayList<>(PostsDAO.getAllPosts(userId, categoryId));
+        posts = new ArrayList<>();
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         rv_posts = (RecyclerView) this.findViewById(R.id.rv_posts);
         adapter = new TimelineRecViewAdapter(this, posts, rl_parent/*, new OnPostEventListener() {
@@ -170,20 +162,29 @@ public class CategoryPosts extends AppCompatActivity {
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                        if (posts.size() > 0)
-                            getFromLocal();
-                        else {
+                        if (storedPosts.size() > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pb_loading_main.setVisibility(View.GONE);
+                                    getFromLocal();
+
+                                }
+                            }, 3000);
+                        } else {
+                            pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
+                        pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(false);
                     }
                 } else /*if(adapter.getItemCount() > 0)*/ {
+                    pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
                 }/*else{
                         getFromLocal();

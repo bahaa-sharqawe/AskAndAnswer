@@ -7,6 +7,5 @@ import org.json.JSONObject;
  */
 public interface OnLoadFinished {
     void onSuccess(String response);
-
     void onFail(String error);
 }
