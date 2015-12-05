@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -91,6 +92,8 @@ public class UpdateProfile extends AppCompatActivity {
     ImageView iv_checkbox;
     ImageView iv_checked;
     int isPublic;
+    private SharedPreferences pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,7 +172,8 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private void initializeFields() {
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
         isPublic = user.getIsPublicProfile();//0 public 1 not public
         picturePath = user.getImage();
@@ -290,13 +294,13 @@ public class UpdateProfile extends AppCompatActivity {
             String lname = ed_lname.getText().toString().trim();
             String email = ed_email.getText().toString().trim();
             String password = ed_password.getText().toString();
-            String newPassword = ed_new_password.getText().toString();
+            final String newPassword = ed_new_password.getText().toString();
             String confirm_new_password = ed_confirm_new_password.getText().toString();
-            long uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+            long uid = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
             if (verifyInputs(fname, lname, email, password, newPassword, confirm_new_password, selectedCategories)) {
                 //save
                 if(TextUtils.isEmpty(password))
-                    password = SplashScreen.pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null);
+                    password = pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null);
                 final LoadingDialog loadingDialog = new LoadingDialog();
                 Bundle args = new Bundle();
                 args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
@@ -304,7 +308,7 @@ public class UpdateProfile extends AppCompatActivity {
                 loadingDialog.setCancelable(false);
                 loadingDialog.show(getFragmentManager(), "updating profile");
 
-                WebServiceFunctions.updateProfile(this, uid, fname, lname, password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
+                WebServiceFunctions.updateProfile(this, uid, fname, lname, !TextUtils.isEmpty(newPassword)?newPassword:password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
                         loadingDialog.dismiss();
@@ -350,7 +354,7 @@ public class UpdateProfile extends AppCompatActivity {
             if (TextUtils.isEmpty(password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_EP_002), Color.RED, Color.WHITE);
                 return false;
-            } else if (!SplashScreen.pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null).equals(password)) {
+            } else if (!pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null).equals(password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_EP_003), Color.RED, Color.WHITE);
                 return false;
             } else if (TextUtils.isEmpty(password)) {
@@ -359,7 +363,7 @@ public class UpdateProfile extends AppCompatActivity {
             } else if (!mValidator.isValidPassword(password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
                 return false;
-            } else if (mValidator.isPasswordsMatched(newPassword, confirm_new_password)) {
+            } else if (!mValidator.isPasswordsMatched(newPassword, confirm_new_password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
                 return false;
             } else if (!validCategoriesCount(selectedCategories)) {

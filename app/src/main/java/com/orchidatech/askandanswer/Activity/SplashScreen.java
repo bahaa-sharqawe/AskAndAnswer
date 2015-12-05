@@ -38,8 +38,8 @@ public class SplashScreen extends Activity {
     private Handler mHandler;
     private Intent mIntent;
     ImageView iv_logo;
-    public static SharedPreferences pref;
-    public static SharedPreferences.Editor prefEditor;
+    public  SharedPreferences pref;
+    public  SharedPreferences.Editor prefEditor;
     boolean mFirstTime;
     long mId;
     String mPassword;

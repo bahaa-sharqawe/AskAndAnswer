@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
@@ -57,6 +58,8 @@ public class Login extends AppCompatActivity {
 
     public static AppGoogleAuth googleAuth;
     private Validator mValidator;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor prefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +83,9 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
                         loadingDialog.dismiss();
-                        SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
-                        SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
-                        SplashScreen.prefEditor.commit();
+                        prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
+                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        prefEditor.commit();
                         if (user_categories != null && user_categories.size() > 0) {
                             startActivity(new Intent(Login.this, MainScreen.class));
                         } else {
@@ -101,6 +104,8 @@ public class Login extends AppCompatActivity {
     }
 
     private void initializeFields() {
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        prefEditor = pref.edit();
         googleAuth = new AppGoogleAuth(this);
         googleAuth.mGoogleApiClient.connect();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);

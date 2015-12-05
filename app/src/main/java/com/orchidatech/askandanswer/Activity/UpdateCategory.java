@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,7 @@ public class UpdateCategory extends AppCompatActivity {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
+    private SharedPreferences pref;
 
 
     @Override
@@ -188,7 +190,8 @@ public class UpdateCategory extends AppCompatActivity {
         original_categories = new ArrayList<>();
         adapter = new CategoriesAdapter(this, categories);
         lv_categories.setAdapter(adapter);
-        uid = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        uid = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         resizeLogo();
 
     }

@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
@@ -78,12 +79,14 @@ public class Profile extends Fragment {
     TextView tv_error;
     ProgressBar pb_loading_main;
     private ArrayList<Posts> userPosts;
+    private SharedPreferences pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user_id = getArguments().getLong(USER_ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Nullable
@@ -96,6 +99,7 @@ public class Profile extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
+
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         fab_edit_profile = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +108,7 @@ public class Profile extends Fragment {
                 startActivity(new Intent(getActivity(), UpdateProfile.class));
             }
         });
-        if (SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) != user_id)
+        if (pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) != user_id)
             fab_edit_profile.setVisibility(View.GONE);
 
         rating_person = (RatingBar) getActivity().findViewById(R.id.rating_person);
@@ -155,7 +159,7 @@ public class Profile extends Fragment {
         });
         userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
-        if(user_id == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) || user.getIsPublicProfile() == 0) {
+        if(user_id == pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) || user.getIsPublicProfile() == 0) {
             loadNewPosts();
         }else{
             pb_loading_main.setVisibility(View.GONE);
@@ -231,7 +235,7 @@ public class Profile extends Fragment {
                             rl_error.setEnabled(true);
                         }
                     } else {
-                        tv_error.setText(getActivity().getString(R.string.no_posts_found));
+                        tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                         rl_error.setVisibility(View.VISIBLE);
                     }

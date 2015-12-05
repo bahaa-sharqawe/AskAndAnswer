@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class MyAsks extends Fragment{
     TextView tv_error;
     ProgressBar pb_loading_main;
     private ArrayList<Posts> userPosts;
+    private SharedPreferences pref;
 
 
     @Nullable
@@ -67,7 +69,8 @@ public class MyAsks extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
         rv_favorites.setHasFixedSize(true);

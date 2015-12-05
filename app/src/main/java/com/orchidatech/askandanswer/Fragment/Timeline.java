@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -62,11 +63,14 @@ public class Timeline extends Fragment {
     TextView tv_error;
     ProgressBar pb_loading_main;
     private List<Posts> allStoredPosts;
+    private SharedPreferences pref;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         return inflater.inflate(R.layout.fragment_timeline, null, false);
     }
 
@@ -74,7 +78,6 @@ public class Timeline extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
 //        mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.notif_drawer);
 //        rv_notifications = (RecyclerView) getActivity().findViewById(R.id.rv_notifications);
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);

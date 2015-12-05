@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -64,6 +65,7 @@ public class AddEditPost extends AppCompatActivity {
     long user_id;
     private String picturePath;
     private boolean isPostHasImagePrev;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,8 @@ public class AddEditPost extends AppCompatActivity {
     }
 
     private void initializeFields() {
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
         ll_parent.setOnClickListener(new View.OnClickListener() {
             @Override

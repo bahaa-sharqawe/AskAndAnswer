@@ -1,6 +1,8 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.internal.cu;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -60,6 +63,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private static final int TYPE_FOOTER = 1;
     private final int fragment_numeric;
     private final long current_user_id;
+    private  SharedPreferences pref;
     private  OnCommentOptionListener commentOptionListener;
     private View parent;
     private ProgressBar pv_load;
@@ -79,7 +83,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         this.lastListReachListener = lastListReachListener;
         this.commentOptionListener = commentOptionListener;
         this.fragment_numeric = fragment_numeric;
-        this.current_user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
 
@@ -110,7 +115,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
             Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
             Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
-            User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), currentComment.getServerID());
+            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
             Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
@@ -176,7 +181,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 @Override
                 public void onClick(View v) {
                     Log.i("vcvc", currentComment.getServerID() + "");
-                    likeComment(currentComment.getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                    likeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
 //                    listener.onLike(currentComment.getServerID(), position);
                 }
             });
@@ -184,7 +189,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                @Override
                public void onClick(View v) {
                    Log.i("vcvc", currentComment.getServerID() + "");
-                   dislikeComment(currentComment.getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                   dislikeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
 //                   list0ener.onDislike(currentComment.getServerID(), position);
                }
            });
@@ -247,7 +252,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(activity.getFragmentManager(), "deleting");
-        WebServiceFunctions.deletComment(activity, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), comments.get(position).getServerID(), new OnDeleteCommentListener() {
+        WebServiceFunctions.deletComment(activity, current_user_id, comments.get(position).getServerID(), new OnDeleteCommentListener() {
 
             @Override
             public void onDeleted() {
@@ -405,13 +410,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         notifyDataSetChanged();
     }
 
-    private void dislikeComment(long commentId, long user_id, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+    private void dislikeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
+        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
        Log.i("dislike", prevAction + "," + action);
-        WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
+        WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
             @Override
             public void onActionSent(User_Actions user_actions) {
                 AppSnackBar.show(parent, "dislike", Color.RED, Color.WHITE);
@@ -454,14 +459,14 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         });
     }
 
-    private void likeComment(long commentId, long user_id, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+    private void likeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
+        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
         Log.i("like", prevAction + "," + action + ", " + comment.likes);
 
-        WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
+        WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
 
             @Override
             public void onActionSent(User_Actions user_actions) {

@@ -1,6 +1,8 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -51,6 +53,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecViewAdapter.AnswerViewHolder> {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
+    private SharedPreferences pref;
     private OnCommentOptionListener commentOptionListener;
     private View parent;
     private OnUserActionsListener listener;
@@ -70,7 +73,8 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
         this.comments = comments;
         this.lastListReachListener = lastListReachListener;
         this.commentOptionListener = commentOptionListener;
-        current_user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -98,7 +102,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
             final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
             Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
             Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
-            User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), currentComment.getServerID());
+            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
             Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
@@ -138,7 +142,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
                 @Override
                 public void onClick(View v) {
                     Log.i("vcvc", currentComment.getServerID() + "");
-                    likeComment(currentComment.getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                    likeComment(currentComment.getServerID(),current_user_id, position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
 //                    listener.onLike(currentComment.getServerID(), position);
                 }
             });
@@ -146,7 +150,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
                 @Override
                 public void onClick(View v) {
                     Log.i("vcvc", currentComment.getServerID() + "");
-                    dislikeComment(currentComment.getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                    dislikeComment(currentComment.getServerID(),current_user_id, position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
 //                   listener.onDislike(currentComment.getServerID(), position);
                 }
             });
@@ -283,7 +287,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     }
 
     private void dislikeComment(long commentId, long user_id, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
@@ -324,7 +328,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
     }
 
     private void likeComment(long commentId, long user_id, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), commentId);
+        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);

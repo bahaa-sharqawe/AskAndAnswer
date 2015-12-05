@@ -1,6 +1,8 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -36,12 +38,15 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     ImageView iv_post;
     TextView tv_post;
     LinearLayout ll_parent;
+    private SharedPreferences pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
         setCustomActionBar();
         postId = getIntent().getLongExtra(POST_ID, -1);
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 //        if(getIntent().getByteArrayExtra("picture") != null){
 //            byte[] b = getIntent().getByteArrayExtra("picture");
 //            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
@@ -117,7 +122,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "deleting");
-        WebServiceFunctions.deletePost(this, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), postId, new OnPostDeletedListener() {
+        WebServiceFunctions.deletePost(this, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), postId, new OnPostDeletedListener() {
 
             @Override
             public void onDeleted() {

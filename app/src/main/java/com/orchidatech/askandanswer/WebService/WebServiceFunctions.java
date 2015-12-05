@@ -1131,7 +1131,7 @@ public class WebServiceFunctions {
         uploadImage.sendRequest();
     }
 
-    public static void updateProfile(final Context context, long id, String fname, String lname, String password, int is_public, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
+    public static void updateProfile(final Context context, long id, String fname, String lname, final String password, int is_public, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < selectedCategories.size(); i++)
 //            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
@@ -1159,7 +1159,10 @@ public class WebServiceFunctions {
                         int is_public = Integer.parseInt(user.getString("is_public"));
                         int no_tasks = user.getInt("no_ask");
                         int no_answers = user.getInt("no_answer");
-                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image.equals("null")?null:image, created_at, active, last_login, mobile, is_public, code, no_tasks, no_answers));
+                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_tasks, no_answers));
+                        context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                                .edit().putString(GNLConstants.SharedPreference.PASSWORD_KEY, password).commit();
+
                         listener.onSuccess();
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));

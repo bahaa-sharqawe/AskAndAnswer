@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
 
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_MENU = 1;
+    private SharedPreferences pref;
 
     ArrayList<DrawerItem> items;
     Context context;
@@ -39,6 +41,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         this.context = context;
         this.items = items;
         this.listener = listener;
+        pref = context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {//Display the data at the specified position
         if (holder.viewType == TYPE_HEADER) {//complete the code here
-            Users user = UsersDAO.getUser(SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+            Users user = UsersDAO.getUser(pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
             if (user != null) {
                 holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
                 holder.tv_person_email.setText(user.getEmail());

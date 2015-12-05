@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -62,6 +64,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final OnLastListReachListener lastListReachListener;
+    private SharedPreferences pref;
     private View parent;
     private ProgressBar pv_load;
     private Button btn_reload;
@@ -76,6 +79,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         this.posts = posts;
         this.parent = parent;
         this.lastListReachListener = lastListReachListener;
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -133,7 +137,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    favoritePost(position, posts.get(position).getPostID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                    favoritePost(position, posts.get(position).getPostID(), pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                 }
             });
             holder.card_post.setOnClickListener(new View.OnClickListener() {

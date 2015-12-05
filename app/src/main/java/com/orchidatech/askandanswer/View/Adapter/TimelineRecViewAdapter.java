@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -69,6 +71,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final View parent;
     private final int fragment_numeric;
     private final long current_user_id;
+    private final SharedPreferences pref;
     private ProgressBar pv_load;
     private Button btn_reload;
     private List<Posts> posts;
@@ -85,7 +88,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         this.parent = parent;
         this.lastListReachListener = lastListReachListener;
         this.fragment_numeric = fragment_numeric;
-        this.current_user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -128,8 +132,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 }
             });
 
-        if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(),
-                SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY,-1)) != null ||
+        if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(), current_user_id) != null ||
                 posts.get(position).getIsFavorite()==1)
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
         else
@@ -164,7 +167,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             if(postOwner!=null && postOwner.getImage().length()>0)
 //                imageLoader.displayImage(postOwner.getImage(), holder.iv_profile);
 
-                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
+                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
                     }
@@ -191,7 +194,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    favoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
+                    favoritePost(position, posts.get(position).getServerID(), current_user_id, holder.iv_favorite);
                 }
             });
             holder.card_post.setOnClickListener(new View.OnClickListener() {

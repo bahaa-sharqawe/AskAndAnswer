@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ public class Register extends Activity {
     ImageView iv_logo;
     ImageView iv_back;
     LinearLayout ll_parent;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor prefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,8 @@ public class Register extends Activity {
     }
 
     private void initializeFields() {
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        prefEditor = pref.edit();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
@@ -97,10 +102,10 @@ public class Register extends Activity {
                 new OnRegisterListener() {
                     @Override
                     public void onSuccess(long uid) {
-                            loadingDialog.dismiss();
-                        SplashScreen.prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
-                        SplashScreen.prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
-                        SplashScreen.prefEditor.commit();
+                        loadingDialog.dismiss();
+                        prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
+                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        prefEditor.commit();
                         startActivity(new Intent(Register.this, TermsActivity.class));
                         finish();
                     }

@@ -3,6 +3,7 @@ package com.orchidatech.askandanswer.Fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,12 +44,14 @@ public class SearchAndFavorite extends Fragment {
     ArrayList<Posts> posts;
     MaterialEditText ed_search;
     LinearLayout ll_parent;
+    private SharedPreferences pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         posts = new ArrayList<>();
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Nullable
@@ -120,7 +123,7 @@ public class SearchAndFavorite extends Fragment {
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "search");
         loadingDialog.setCancelable(false);
-        WebServiceFunctions.search(getActivity(), s, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted() {
+        WebServiceFunctions.search(getActivity(), s, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted() {
 
             @Override
             public void onSuccess(ArrayList<Posts> searchResult) {

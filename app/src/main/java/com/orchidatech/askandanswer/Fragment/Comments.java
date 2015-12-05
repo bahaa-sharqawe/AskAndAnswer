@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -83,13 +84,15 @@ public class Comments extends DialogFragment {
     private String image_str = "";
     private long user_id;
     private int numOfFetchedFromServer = 0;
+    private SharedPreferences pref;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         postId = getArguments().getLong(ViewPost.POST_ID);
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         last_id_server = 0;
     }
 
@@ -264,7 +267,7 @@ public class Comments extends DialogFragment {
                 if (!TextUtils.isEmpty(comment)) {
                     iv_add_comment.setEnabled(false);
                     iv_camera.setEnabled(false);
-                    WebServiceFunctions.addComment(getActivity(), comment, picturePath, postId, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener() {
+                    WebServiceFunctions.addComment(getActivity(), comment, picturePath, postId, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener() {
 
                         @Override
                         public void onAdded(com.orchidatech.askandanswer.Database.Model.Comments comment) {

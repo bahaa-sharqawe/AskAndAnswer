@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ public class MyAnswers extends Fragment {
     TextView tv_error;
     ProgressBar pb_loading_main;
     private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> userComments;
+    private SharedPreferences pref;
 
 
     @Nullable
@@ -66,7 +68,8 @@ public class MyAnswers extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
-        user_id = SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
         rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
 //        registerForContextMenu(rv_answers);

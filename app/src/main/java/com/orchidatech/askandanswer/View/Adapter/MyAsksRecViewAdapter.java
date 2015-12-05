@@ -1,7 +1,9 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -56,6 +58,8 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final OnLastListReachListener lastListReachListener;
+    private long user_id;
+    private SharedPreferences pref;
     private View parent;
     private ProgressBar pv_load;
     private Button btn_reload;
@@ -70,6 +74,8 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
         this.posts = posts;
         this.parent = parent;
         this.lastListReachListener = lastListReachListener;
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
     }
 
     @Override
@@ -119,7 +125,7 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    favoritePost(position, posts.get(position).getServerID(), SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
+                    favoritePost(position, posts.get(position).getServerID(), pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), holder.iv_favorite);
                 }
             });
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
@@ -136,15 +142,15 @@ public class MyAsksRecViewAdapter  extends RecyclerView.Adapter<MyAsksRecViewAda
             });
             String postImage = currentPost.getImage();
             if(!TextUtils.isEmpty(postImage) && postImage != "null") {
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).skipMemoryCache().into(holder.iv_postImage);
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage);
                 holder.iv_postImage.setVisibility(View.VISIBLE);
                 Log.i("jggn", currentPost.getImage());
             }else
                 holder.iv_postImage.setVisibility(View.GONE);
 
-            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile);
+            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile);
             if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(),
-                    SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)) != null)
+                    user_id) != null)
                 holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
             else
                 holder.iv_favorite.setImageResource(R.drawable.ic_favorite);

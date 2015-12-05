@@ -3,7 +3,9 @@ package com.orchidatech.askandanswer.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -48,6 +50,9 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     RelativeLayout rl_num_notifications;
     FragmentManager mFragmentManager;
     public static int oldPosition = -1;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor prefEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         setContentView(R.layout.activity_main);
         setCustomActionBar();
         fillData();
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        prefEditor = pref.edit();
         mFragmentManager = getFragmentManager();
         ed_search = (MaterialEditText) findViewById(R.id.ed_search);
         rl_num_notifications = (RelativeLayout) findViewById(R.id.rl_num_notifications);
@@ -144,7 +151,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 //profile
                 fragment = new Profile();
                 Bundle args = new Bundle();
-                args.putLong(Profile.USER_ID_KEY, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+                args.putLong(Profile.USER_ID_KEY, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
                 fragment.setArguments(args);
                 break;
             case 5:
@@ -153,10 +160,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //logout
-                SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
-                SplashScreen.prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
+                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
                 Intent intent = new Intent(this, Login.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
                 break;
