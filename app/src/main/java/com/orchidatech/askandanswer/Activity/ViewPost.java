@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.DeletePost;
@@ -116,7 +117,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "deleting");
-        WebServiceFunctions.deletePost(this, postId, new OnPostDeletedListener() {
+        WebServiceFunctions.deletePost(this, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), postId, new OnPostDeletedListener() {
 
             @Override
             public void onDeleted() {
@@ -125,7 +126,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        finish();
+                        startActivity(new Intent(ViewPost.this, MainScreen.class));
                     }
                 }, 3000);
             }

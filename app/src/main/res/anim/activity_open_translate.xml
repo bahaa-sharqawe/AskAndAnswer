@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- Opening transition animations.
+
+Translate from right to left animation for the new activity
+• A simple translate animation from right to left with a duration
+-->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromXDelta="100%"
+        android:toXDelta="0%" />
+
+</set>

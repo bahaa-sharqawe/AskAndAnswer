@@ -289,7 +289,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
         WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
             @Override
-            public void onActionSent() {
+            public void onActionSent(User_Actions user_actions) {
                 AppSnackBar.show(parent, "dislike", Color.RED, Color.WHITE);
 
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
@@ -332,7 +332,7 @@ public class MyAnswersRecViewAdapter extends RecyclerView.Adapter<MyAnswersRecVi
         WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
 
             @Override
-            public void onActionSent() {
+            public void onActionSent(User_Actions user_actions) {
                 AppSnackBar.show(parent, "like", Color.RED, Color.WHITE);
 
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {

@@ -177,7 +177,30 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             oldPosition = position;
 //            defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
-            ft.addToBackStack("");
+//           if(oldPosition != position)
+                ft.addToBackStack("");
+            switch (position){
+                case 0:
+                case 1:
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    break;
+                case 2:
+                    ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                    break;
+                case 3:
+                case 4:
+                case 7:
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    break;
+
+                case 8:
+                case 9:
+                case 5:
+                    ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                    break;
+
+
+            }
             ft.replace(R.id.fragment_host, fragment);
             ft.commit();
             mFragmentManager.executePendingTransactions();

@@ -390,7 +390,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         args.putLong(ViewPost.POST_ID, postId);
         Comments comments = new Comments();
         comments.setArguments(args);
-        comments.show(activity.getFragmentManager(), "Comments");
+        FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down,R.animator.slide_up, R.animator.slide_down);
+        comments.show(ft, "Comments");
     }
 
     private void categoryClick(long category_id, long user_id) {

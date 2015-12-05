@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- Closing transition animations
+
+Scale up animation for the new activity
+• A scale down animation from 80% to 100% with a pivot point from the center of the activity,
+an alpha opacity to from 0.5 to 1.0 and a duration.
+-->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <scale
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromXScale="80%p"
+        android:fromYScale="80%p"
+        android:pivotX="50%p"
+        android:pivotY="50%p"
+        android:toXScale="100%p"
+        android:toYScale="100%p" />
+
+    <alpha
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromAlpha="0.5"
+        android:toAlpha="1.0" />
+
+</set>

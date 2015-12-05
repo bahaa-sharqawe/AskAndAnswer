@@ -110,16 +110,21 @@ public class PostsDAO {
 
     }
 
-    public static ArrayList<Posts> getPostsInUserCategories(long user_id) {
-        ArrayList<Long> user_categories_id = new ArrayList<>();
-        ArrayList<Posts> allPosts = new ArrayList<>();
-        for(User_Categories user_categories : User_CategoriesDAO.getAllUserCategories(user_id))
-            user_categories_id.add(user_categories.getCategoryID());
-        for(long categoryId : user_categories_id){
-            allPosts.addAll(new ArrayList<Posts>(getAllPostsByCategory(categoryId)));
-        }
+    public static List<Posts> getPostsInUserCategories(long user_id) {
 
-        return allPosts;
+        ArrayList<Long> user_categories_id = new ArrayList<>();
+        ArrayList<User_Categories> user_categories = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(user_id));
+        Long[] ids = new Long[user_categories.size()];
+        String s = "(";
+        for(int i = 0; i< user_categories.size(); i++){
+            ids[i] = user_categories.get(i).getCategoryID();
+            s += user_categories.get(i).getCategoryID();
+            s += i!=user_categories.size()-1?",":"";
+        }
+        s+=")";
+        Log.i("ghfgh", s);
+
+        return  new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " in "+s).orderBy(Posts.FIELDS.COLUMN_DATE + " DESC").execute();
     }
 
     private static List<Posts> getAllPostsByCategory(long categoryId) {

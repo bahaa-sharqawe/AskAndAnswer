@@ -1,11 +1,9 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,7 +43,6 @@ import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
 import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -251,7 +247,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(activity.getFragmentManager(), "deleting");
-        WebServiceFunctions.deletComment(activity, comments.get(position).getServerID(), new OnDeleteCommentListener() {
+        WebServiceFunctions.deletComment(activity, SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), comments.get(position).getServerID(), new OnDeleteCommentListener() {
 
             @Override
             public void onDeleted() {
@@ -414,31 +410,39 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+       Log.i("dislike", prevAction + "," + action);
         WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
             @Override
-            public void onActionSent() {
+            public void onActionSent(User_Actions user_actions) {
                 AppSnackBar.show(parent, "dislike", Color.RED, Color.WHITE);
-
+                int currentLikes = Integer.parseInt(tv_likes.getText().toString());
+                int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-                    comment.disLikes++;
+//                    comment.disLikes++;
+                    currentDisLikes++;
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.ic_dislike_on);
 
                 } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                    comment.likes--;
-                    comment.disLikes++;
+//                    comment.likes--;
+//                    comment.disLikes++;
+                    currentLikes--;
+                    currentDisLikes++;
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.ic_dislike_on);
                 } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                    comment.disLikes--;
+//                    comment.disLikes--;
+                    currentDisLikes--;
+
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.unlike);
                 }
-                tv_likes.setText(comment.likes + "");
-                tv_unlikes.setText(comment.disLikes + "");
-                comments.get(position).disLikes = comment.disLikes;
-                comments.get(position).likes = comment.likes;
-                CommentsDAO.updateComment(comment);
+                tv_likes.setText(currentLikes + "");
+                tv_unlikes.setText(currentDisLikes + "");
+                comments.get(position).disLikes = currentDisLikes;
+                comments.get(position).likes = currentLikes;
+                CommentsDAO.updateComment(comments.get(position));
+                User_ActionsDAO.addUserAction(user_actions);
 //                        Log.i("vcvc", "dilike: " + comment.likes + " , " + comment.disLikes + ",---" + user_actions.getActionType() + ", " + action);
 //                        adapter.notifyDataSetChanged();
             }
@@ -455,40 +459,45 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         final int prevAction = user_actions == null ? -1 : user_actions.getActionType();
         final int action = (user_actions == null || user_actions.getActionType() != Enum.USER_ACTIONS.LIKE.getNumericType()) ? 0 : 2;
         final com.orchidatech.askandanswer.Database.Model.Comments comment = CommentsDAO.getComment(commentId);
+        Log.i("like", prevAction + "," + action + ", " + comment.likes);
 
         WebServiceFunctions.addCommentAction(activity, commentId, user_id, action, new OnCommentActionListener() {
 
             @Override
-            public void onActionSent() {
+            public void onActionSent(User_Actions user_actions) {
                 AppSnackBar.show(parent, "like", Color.RED, Color.WHITE);
-
+                int currentLikes = Integer.parseInt(tv_likes.getText().toString());
+                int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
                 if (prevAction == -1 || prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-                    comment.likes++;
-                    Log.i("vcvc", "null: " + comment.likes);
+//                    comment.likes++;
+
+                    currentLikes++;
                     iv_like.setImageResource(R.drawable.ic_like_on);
                     iv_unlike.setImageResource(R.drawable.unlike);
 
                 } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
-                    comment.disLikes--;
-                    comment.likes++;
+//                    comment.disLikes--;
+//                    comment.likes++;
+                    currentDisLikes--;
+                    currentLikes++;
                     iv_like.setImageResource(R.drawable.ic_like_on);
                     iv_unlike.setImageResource(R.drawable.unlike);
                     Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes);
                 } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                    comment.likes--;
+//                    comment.likes--;
+                    currentLikes--;
                     Log.i("vcvc", "dilike: " + comment.likes);
                     iv_like.setImageResource(R.drawable.like);
                     iv_unlike.setImageResource(R.drawable.unlike);
                 }
-//                        comments.get(position).setDisLikes(comment.disLikes);
-//                        comments.get(position).setLikes(comment.likes);
-                tv_likes.setText(comment.likes + "");
-                tv_unlikes.setText(comment.disLikes + "");
-                comments.get(position).disLikes = comment.disLikes;
-                comments.get(position).likes = comment.likes;
+                tv_likes.setText(currentLikes + "");
+                tv_unlikes.setText(currentDisLikes + "");
+                comments.get(position).disLikes = currentDisLikes;
+                comments.get(position).likes = currentLikes;
                 Log.i("vcvc", "like: " + comment.likes + " , " + comment.disLikes + ",---" + prevAction + ", " + action);
-                CommentsDAO.updateComment(comment);
-
+                CommentsDAO.updateComment(comments.get(position));
+                                        User_ActionsDAO.addUserAction(user_actions);
+//
 //                        adapter.notifyDataSetChanged();
             }
 

@@ -62,8 +62,8 @@ public class UsersDAO {
         existUser.mobile = user.getMobile();
         existUser.password = user.getPassword();
         if(user.answers != -1){
-            user.answers = user.getAnswers();
-            user.asks = user.getAsks();
+            existUser.answers = user.getAnswers();
+            existUser.asks = user.getAsks();
         }
         existUser.save();
     }

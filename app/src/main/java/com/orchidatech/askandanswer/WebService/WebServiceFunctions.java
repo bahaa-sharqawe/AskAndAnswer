@@ -585,7 +585,7 @@ public class WebServiceFunctions {
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            JSONArray user_action_arr = comment.getJSONArray("user_action");
+                            JSONArray user_action_arr = comment.optJSONArray("user_action");
                             if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_actionObj = user_action_arr.getJSONObject(0);
                                 long user_action_id = user_actionObj.getLong("id");
@@ -664,11 +664,11 @@ public class WebServiceFunctions {
                             Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null")?null:user_image, created_at, active, last_login, mobile, is_public, code, -1, -1);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
-                            JSONArray user_action_arr = comment.getJSONArray("user_action");
-                            if (user_action_arr.length() > 0) {
+                            JSONArray user_action_arr = comment.optJSONArray("user_action");
+                            if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_action = user_action_arr.getJSONObject(0);
                                 User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
-                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), user_action.getInt("action_type")));
+                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), Integer.parseInt(user_action.getString("action_type"))));
                             }
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
@@ -872,7 +872,7 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void deletePost(final Context context, final long postId, final OnPostDeletedListener listener) {
+    public static void deletePost(final Context context, final long user_id, final long postId, final OnPostDeletedListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.POST_ID, postId + "");
         Operations.getInstance(context).deletePost(params, new OnLoadFinished() {
@@ -887,6 +887,10 @@ public class WebServiceFunctions {
                         //CASCADE
                         CommentsDAO.deleteCommentByPost(postId);
                         Post_FavoriteDAO.deletePostFavoriteByPost(postId);
+                        Users user = UsersDAO.getUser(user_id);
+                        user.asks = user.asks-1;
+                        user.save();
+
                         listener.onDeleted();
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -921,12 +925,12 @@ public class WebServiceFunctions {
                     int status = dataObj.getInt("status");
                     if (status == 0) {
                         JSONObject data = dataObj.getJSONObject("data");
-                        long id = data.getLong("id");
-                        long comment_id = data.getLong("comment_id");
-                        long user_id = data.getLong("user_id");
-                        int action_type = data.getInt("action_type");
-                        User_ActionsDAO.addUserAction(new User_Actions(id, commentId, user_id, System.currentTimeMillis(), action_type));
-                        listener.onActionSent();
+                        long id = Long.parseLong(data.getString("id"));
+                        long comment_id = Long.parseLong(data.getString("comment_id"));
+                        long user_id = Long.parseLong(data.getString("user_id"));
+                        int action_type = Integer.parseInt(data.getString("action_type"));
+//                        User_ActionsDAO.addUserAction();
+                        listener.onActionSent(new User_Actions(id, comment_id, user_id, System.currentTimeMillis(), action_type));
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
@@ -963,6 +967,10 @@ public class WebServiceFunctions {
                         long created_at = post.getLong("created_at");
                         Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, user_id, category_id, is_hidden, 0, 0, 0, 0);
                         PostsDAO.addPost(postItem);
+                        Users user = UsersDAO.getUser(user_id);
+                        user.asks = user.asks+1;
+                        user.save();
+
                         listener.onSuccess(context.getResources().getString(R.string.saved));
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1055,6 +1063,7 @@ public class WebServiceFunctions {
 //                        long user_id = post.getLong("user_id");
 //                        long category_id = post.getLong("category_id");
 //                        int comments_no = post.getInt("comment_no");
+//                        int comments_no = post.getInt("comment_no");
 //                        long created_at = post.getLong("created_at");
 //                        Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, comments_no);
 //                        PostsDAO.updatePost(postItem);
@@ -1098,6 +1107,9 @@ public class WebServiceFunctions {
                         long comment_date = comment.getLong("updated_at");
                         Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null")?null:comment_image, comment_date, user_id, post_id, 0, 0);
                         CommentsDAO.addComment(newComment);
+                       Users user = UsersDAO.getUser(user_id);
+                        user.answers = user.answers+1;
+                        user.save();
                         listener.onAdded(newComment);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1179,7 +1191,7 @@ public class WebServiceFunctions {
         return Uri.encode(s, "utf-8");
     }
 
-    public static void deletComment(final Context context, final long commentId, final OnDeleteCommentListener listener) {
+    public static void deletComment(final Context context, final long user_id, final long commentId, final OnDeleteCommentListener listener) {
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
         Operations.getInstance(context).deleteComment(url, new OnLoadFinished() {
 
@@ -1192,6 +1204,10 @@ public class WebServiceFunctions {
                     if (status == 0) {
                         CommentsDAO.deleteComment(commentId);
                         User_ActionsDAO.delteActionByComment(commentId);
+                        Users user = UsersDAO.getUser(user_id);
+                        user.answers = user.answers-1;
+                        user.save();
+
                         listener.onDeleted();
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
