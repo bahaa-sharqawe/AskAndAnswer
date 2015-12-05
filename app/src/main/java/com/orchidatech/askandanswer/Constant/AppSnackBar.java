@@ -11,6 +11,8 @@ import android.widget.TextView;
 public class AppSnackBar {
 
     public static void show(View view, String message, int background, int textColor) {
+        if(view.getParent() == null)
+            return;
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(textColor);
         View snackBarView = snackbar.getView();
@@ -21,6 +23,8 @@ public class AppSnackBar {
     }
 
     public static void show(View view, String message, int background) {
+        if(view.getParent() == null)
+            return;
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(background);
@@ -30,6 +34,8 @@ public class AppSnackBar {
     }
 
     public static void show(View view, String message) {
+        if(view.getParent() == null)
+            return;
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         TextView tv = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);

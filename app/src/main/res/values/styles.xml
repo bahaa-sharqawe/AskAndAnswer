@@ -20,5 +20,21 @@
         <item name="colorAccent">#249885</item>
         <item name="colorControlNormal">#249885</item>
     </style>
+    <style name="MyCustomTheme">
+        <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
+        <item name="android:windowBackground">@color/commentDialogBackground</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="MyAnimation.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/slide_in_up_dialog</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down_dialog</item>
+    </style>
 
 </resources>

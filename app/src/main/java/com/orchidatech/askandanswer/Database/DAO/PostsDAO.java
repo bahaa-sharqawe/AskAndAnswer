@@ -87,7 +87,7 @@ public class PostsDAO {
     }
 
     public static List<Posts> getUserPosts(long userId){
-        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? ", userId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
+        return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? ", userId).orderBy(Posts.FIELDS.COLUMN_DATE + " desc").execute();
     }
     public static List<Posts> getAllPosts(long userId, long categoryId){
         return new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_USER_ID + " = ? and " +
@@ -129,6 +129,6 @@ public class PostsDAO {
 
     private static List<Posts> getAllPostsByCategory(long categoryId) {
         return new Select().from(Posts.class).where(
-                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_SERVER_ID + " desc").execute();
+                Posts.FIELDS.COLUMN_CATEGORY_ID + " = ?", categoryId).orderBy(Posts.FIELDS.COLUMN_DATE + " desc").execute();
     }
 }

@@ -85,8 +85,8 @@
                android:layout_height="wrap_content"
                android:id="@+id/rl_photo">
                <ImageView
-                   android:layout_width="match_parent"
-                   android:layout_height="140dp"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
                    android:id="@+id/iv_postImage"
                    android:scaleType="centerCrop"
                    android:src="@drawable/android_wallpaper"

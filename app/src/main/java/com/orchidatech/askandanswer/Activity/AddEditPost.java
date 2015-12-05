@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -105,7 +106,7 @@ public class AddEditPost extends AppCompatActivity {
         if (editPostId != -1) {
             editPost = PostsDAO.getPost(editPostId);
             rl_post_photo.setVisibility(View.VISIBLE);
-            iv_camera.setEnabled(false);
+            iv_camera.setEnabled(true);
             ed_postDesc.setText(editPost.getText());
             picturePath = editPost.getImage();
             if(!TextUtils.isEmpty(picturePath)) {
@@ -202,8 +203,8 @@ public class AddEditPost extends AppCompatActivity {
         return false;
     }
 
-    private void editPost(long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
-        int imageState;
+    private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
+        final int imageState;
         if(isPostHasImagePrev){
             if(picturePath == null)
                 imageState = 0;//remove post photo from DB... do not send photo to server
@@ -231,6 +232,10 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 loadingDialog.dismiss();
+                Log.i("imagestate", imageState+"");
+                if(imageState == 2){
+                    pref.edit().putLong("new_image",postId).commit();
+                }
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -314,7 +319,8 @@ public class AddEditPost extends AppCompatActivity {
                 return;
             }
             rl_post_photo.setVisibility(View.VISIBLE);
-            iv_camera.setEnabled(false);
+            iv_post.setVisibility(View.VISIBLE);
+            iv_camera.setEnabled(true);
             iv_post.setImageBitmap(bitmap);
 
         /*

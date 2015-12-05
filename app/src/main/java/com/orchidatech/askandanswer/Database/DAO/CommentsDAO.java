@@ -71,7 +71,7 @@ public class CommentsDAO {
     }
 
     public static List<Comments> getAllCommentsByPost(long postServerId) {
-        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).execute();
+        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).orderBy(Comments.FIELDS.COLUMN_DATE + " desc").execute();
     }
 
     private static boolean isExist(long serverID) {
@@ -91,5 +91,9 @@ public class CommentsDAO {
     private static List<Comments> getAllComments() {
         return new Select().from(Comments.class).orderBy(Comments.FIELDS.COLUMN_DATE + " desc").execute();
 
+    }
+
+    public static void deleteAllComments() {
+        new Delete().from(Comments.class).execute();
     }
 }

@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -446,7 +448,8 @@ public class WebServiceFunctions {
         String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id +
+                "&" + URL.URLParameters.USER_ID + "=" + userId;
         Log.i("dfddv", url);
 
         Operations.getInstance(context).getCategoryPosts(new OnLoadFinished() {
@@ -463,14 +466,15 @@ public class WebServiceFunctions {
                         ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post = data.getJSONObject(i);
-                            long id = post.getLong("id");
+                            long id = Long.parseLong(post.getString("id"));
                             String text = post.getString("text");
                             String image = post.getString("image");
-                            int is_hidden = post.getInt("is_hidden");
-                            long category_id = post.getLong("category_id");
+                            int is_hidden = Integer.parseInt(post.getString("is_hidden"));
+                            long category_id = Long.parseLong(post.getString("category_id"));
                             int comments_no = post.getInt("comment_no");
                             long created_at = post.getLong("updated_at");
-                            Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, userId, category_id, is_hidden, comments_no, -1, -1, -1);
+                            int isFavorite = post.getBoolean("is_postfavorite")?1:0;
+                            Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, userId, category_id, is_hidden, comments_no, isFavorite, -1, -1);
                             JSONObject user = post.getJSONArray("user").getJSONObject(0);
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
@@ -481,7 +485,7 @@ public class WebServiceFunctions {
                             long last_login = user.getLong("last_login");
                             String code = user.getString("code");
                             String mobile = user.getString("mobile");
-                            int is_public = user.getInt("is_public");
+                            int is_public = Integer.parseInt(user.getString("is_public"));
                             JSONObject askandanswer = user.getJSONObject("askandanswer");
                             int no_answer = askandanswer.getInt("no_answer");
                             int no_ask = askandanswer.getInt("no_ask");
@@ -534,7 +538,7 @@ public class WebServiceFunctions {
                             int is_hidden = post.getInt("is_hidden");
                             long category_id = post.getLong("category_id");
                             int comments_no = post.getInt("comment_no");
-                            long created_at = post.getLong("created_at");
+                            long created_at = post.getLong("updated_at");
                             int isFavorite = post.getBoolean("is_postfavorite")?1:0;
                             Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, uid, category_id, is_hidden, comments_no, isFavorite, -1, -1);
                             PostsDAO.addPost(postItem);
@@ -594,6 +598,10 @@ public class WebServiceFunctions {
                                 int user_action_action = user_actionObj.getInt("action_type");
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
+                            JSONObject pos_obj = comment.getJSONObject("post");
+                            PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
+                                    pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
+                                    Integer.parseInt(pos_obj.getString("is_hidden")), -1, -1, -1, -1));
                             Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null")?null:comment_image, comment_date, user_id, post_id, likes, dislikes);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
@@ -639,7 +647,7 @@ public class WebServiceFunctions {
                             String comment_image = comment.getString("image");
                             long user_id = Long.parseLong(comment.getString("user_id"));
                             long post_id = Long.parseLong(comment.getString("post_id"));
-                            long comment_date = comment.getLong("created_at");
+                            long comment_date = comment.getLong("updated_at");
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
@@ -760,7 +768,7 @@ public class WebServiceFunctions {
                             int is_hidden = post.getInt("is_hidden");
                             long category_id = post.getLong("category_id");
                             int comments_no = post.getInt("comment_no");
-                            long post_created_at = post.getLong("created_at");
+                            long post_created_at = post.getLong("updated_at");
                             /////////////////////////////////////////////////////////////
                             ///data for post's user to store him/her if does not stored in local db
                             JSONObject user = post.getJSONArray("user").getJSONObject(0);
@@ -964,7 +972,7 @@ public class WebServiceFunctions {
                         long category_id = post.getLong("category_id");
                         long user_id = post.getLong("user_id");
 //                        int comments_no = post.getInt("comment_no");
-                        long created_at = post.getLong("created_at");
+                        long created_at = post.getLong("updated_at");
                         Posts postItem = new Posts(id, text, image.equals("null")?null:image, created_at, user_id, category_id, is_hidden, 0, 0, 0, 0);
                         PostsDAO.addPost(postItem);
                         Users user = UsersDAO.getUser(user_id);
@@ -1152,7 +1160,7 @@ public class WebServiceFunctions {
                         String email = user.getString("email");
                         String image = user.getString("image");
                         int active = Integer.parseInt(user.getString("active"));
-                        long created_at = user.getLong("updated_at");
+                        long created_at = user.getLong("created_at");
                         long last_login = user.getLong("last_login");
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");

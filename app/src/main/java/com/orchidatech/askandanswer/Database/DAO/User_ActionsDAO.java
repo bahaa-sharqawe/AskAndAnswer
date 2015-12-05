@@ -67,4 +67,8 @@ public class User_ActionsDAO {
         new Delete().from(User_Actions.class).where(User_Actions.FIELDS.COLUMN_COMMENT_ID + " = ?", commentId).execute();
 
     }
+
+    public static void deleteAllUserActions() {
+        new Delete().from(User_Actions.class).execute();
+    }
 }

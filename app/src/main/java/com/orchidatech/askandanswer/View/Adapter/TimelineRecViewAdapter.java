@@ -55,6 +55,7 @@ import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,8 +128,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 public void onClick(View v) {
 //                    if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
 //                            || postOwner.getIsPublicProfile() == 0)
-                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
-                                goToProfile(postOwner.getServerID());
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
+                        goToProfile(postOwner.getServerID());
                 }
             });
 
@@ -142,21 +143,26 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
             if(!TextUtils.isEmpty(postImage) && postImage != "null"){
+                RequestCreator requestCreator;
+                if(pref.getLong("new_image", -1)==currentPost.getServerID()) {
+                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage())).fit().skipMemoryCache();
+                    pref.edit().remove("new_image").commit();
+                }else
+                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage()));
+               requestCreator.into(holder.iv_postImage, new Callback() {
+                   @Override
+                   public void onSuccess() {
+                       holder.pb_photo_load.setVisibility(View.GONE);
+                       holder.iv_postImage.setVisibility(View.VISIBLE);
+                   }
 
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_postImage.setVisibility(View.VISIBLE);
-                    }
+                   @Override
+                   public void onError() {
+                       holder.pb_photo_load.setVisibility(View.GONE);
+                       holder.iv_postImage.setVisibility(View.INVISIBLE);
 
-                    @Override
-                    public void onError() {
-                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_postImage.setVisibility(View.INVISIBLE);
-
-                    }
-                });
+                   }
+               });
                 Log.i("fhfhjgh", postImage);
             }else {
                 holder.iv_postImage.setVisibility(View.GONE);
@@ -325,6 +331,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     btn_reload.setVisibility(View.GONE);
                 }
                 isFoundData = false;
+
                 AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
         }

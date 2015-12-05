@@ -74,4 +74,7 @@ public class Post_FavoriteDAO {
         return getPost_Favorite(serverID) != null ;
     }
 
+    public static void deleteAllUserPostFavorite() {
+        new Delete().from(Post_Favorite.class).execute();
+    }
 }

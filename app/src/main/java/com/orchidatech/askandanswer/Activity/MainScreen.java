@@ -19,6 +19,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
+import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.Fragment.AboutUs;
 import com.orchidatech.askandanswer.Fragment.MyAnswers;
@@ -160,6 +165,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //logout
+                clearLocalDB();
                 prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
                 prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
                 Intent intent = new Intent(this, Login.class);
@@ -214,6 +220,13 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         }
 
 
+    }
+
+    private void clearLocalDB() {
+        PostsDAO.deleteAllPosts();;
+        CommentsDAO.deleteAllComments();
+        User_ActionsDAO.deleteAllUserActions();
+        Post_FavoriteDAO.deleteAllUserPostFavorite();
     }
 
     private void fillData() {
