@@ -1044,7 +1044,7 @@ public class WebServiceFunctions {
     }
 
 
-    public static void editPost(final Context context, long post_id, long user_id, long category_id, String postDesc, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
+    public static void editPost(final Context context, long post_id, long user_id, long category_id, String postDesc, int imageState, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
 
         UploadImage uploadImage = new UploadImage(context, URL.EDIT_POST, new OnLoadFinished() {
             @Override
@@ -1088,8 +1088,10 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.TEXT, postDesc);
 //        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
         uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, isHidden + "");
-        if (!TextUtils.isEmpty(picturePath))
+        if (imageState == 2)
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
+        else
+            uploadImage.addStringProperty(URL.URLParameters.IMAGE, picturePath==null?"":picturePath);
         uploadImage.sendRequest();
     }
 

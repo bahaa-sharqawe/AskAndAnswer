@@ -210,13 +210,13 @@ public class AddEditPost extends AppCompatActivity {
                 imageState = 0;//remove post photo from DB... do not send photo to server
             else {
                 if (editPost.getImage() == picturePath)
-                    imageState = 1;//post photo did not changed.. do not send photo to server
+                    imageState = 1;//post photo did not changed.. send photo url to server
                 else
                     imageState = 2;//post photo changed.. send photo to server
             }
         } else {
             if(picturePath == null)
-                imageState = 1;//post photo did not changed.. do not send photo to server
+                imageState = 0;//post photo did not changed.. do not send photo to server
             else
                 imageState = 2;//post photo changed.. send photo to server
         }
@@ -226,13 +226,13 @@ public class AddEditPost extends AppCompatActivity {
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "Saving...");
+        Log.i("imagestate", imageState + "");
 
 
-        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState==2?picturePath:null, date, isHidden, new OnEditPostListener() {
+        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState, imageState==1?editPost.getImage():picturePath, date, isHidden, new OnEditPostListener() {
             @Override
             public void onSuccess(String message) {
                 loadingDialog.dismiss();
-                Log.i("imagestate", imageState+"");
                 if(imageState == 2){
                     pref.edit().putLong("new_image",postId).commit();
                 }
