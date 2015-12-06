@@ -2,6 +2,7 @@ package com.orchidatech.askandanswer.Application;
 
 import com.activeandroid.ActiveAndroid;
 import com.alexbbb.uploadservice.UploadService;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sromku.simple.fb.Permission;
@@ -20,14 +21,16 @@ public class MyApplication extends com.activeandroid.app.Application {
             Permission.EMAIL,
             Permission.PUBLISH_ACTION
     };
+    private static final int MAX_IMAGE_LOADER_CACH_SIZE = 2 * 1024 * 1024;
     ;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
+        ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(this)
+                .memoryCache(new LruMemoryCache(MAX_IMAGE_LOADER_CACH_SIZE)).build();
+                ImageLoader.getInstance().init(config);
 
 //        Configuration.Builder builder = new Configuration.Builder(getBaseContext());
 ////        builder.setCacheSize(1024*1024*4);

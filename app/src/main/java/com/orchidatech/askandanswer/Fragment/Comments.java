@@ -270,7 +270,7 @@ public class Comments extends DialogFragment {
                         }
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
-                        tv_error.setText(getActivity().getString(R.string.no_comments_found));
+                        tv_error.setText(getString(R.string.no_comments_found));
                         rl_error.setEnabled(true);
                     }
                 } else {

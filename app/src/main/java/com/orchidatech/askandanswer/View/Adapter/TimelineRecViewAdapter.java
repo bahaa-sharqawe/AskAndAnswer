@@ -58,6 +58,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -141,28 +142,64 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
-            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
-                RequestCreator requestCreator;
-                if(pref.getLong("new_image", -1)==currentPost.getServerID()) {
-                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage())).fit().skipMemoryCache();
-                    pref.edit().remove("new_image").commit();
-                }else
-                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage()));
-                holder.iv_postImage.setVisibility(View.GONE);
-                requestCreator.into(holder.iv_postImage, new Callback() {
-                   @Override
-                   public void onSuccess() {
-//                       holder.pb_photo_load.setVisibility(View.GONE);
-                       holder.iv_postImage.setVisibility(View.VISIBLE);
-                   }
+            ImageLoader imageLoader = ImageLoader.getInstance();
 
-                   @Override
-                   public void onError() {
-//                       holder.pb_photo_load.setVisibility(View.GONE);
+            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
+                if(pref.getLong(currentPost.getServerID()+"", -1)==currentPost.getServerID()) {
+                    File imageFile = imageLoader.getDiscCache().get(postImage);
+                    if (imageFile.exists()) {
+                        imageFile.delete();
+                        Log.i("xcxc", "xxz2");
+                    }
+                    Log.i("xcxc", "xxz: " + postImage);
+                    pref.edit().remove(currentPost.getServerID()+"").commit();
+
+                }
+                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                        holder.iv_postImage.setVisibility(View.INVISIBLE);
 
-                   }
-               });
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                       holder.iv_postImage.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+//                RequestCreator requestCreator;
+//                if(pref.getLong("new_image", -1)==currentPost.getServerID()) {
+//                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage())).fit().skipMemoryCache();
+//                    pref.edit().remove("new_image").commit();
+//                }else
+//                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage()));
+//                holder.iv_postImage.setVisibility(View.GONE);
+//                requestCreator.into(holder.iv_postImage, new Callback() {
+//                   @Override
+//                   public void onSuccess() {
+////                       holder.pb_photo_load.setVisibility(View.GONE);
+//                       holder.iv_postImage.setVisibility(View.VISIBLE);
+//                   }
+//
+//                   @Override
+//                   public void onError() {
+////                       holder.pb_photo_load.setVisibility(View.GONE);
+//                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+//
+//                   }
+//               });
             }else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);

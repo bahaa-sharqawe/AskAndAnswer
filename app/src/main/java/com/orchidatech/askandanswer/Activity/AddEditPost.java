@@ -28,6 +28,9 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -111,17 +114,44 @@ public class AddEditPost extends AppCompatActivity {
             picturePath = editPost.getImage();
             if(!TextUtils.isEmpty(picturePath)) {
                 isPostHasImagePrev = true;
-                Picasso.with(this).load(Uri.parse(editPost.getImage())).into(iv_post, new Callback() {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.displayImage(picturePath, iv_post, new ImageLoadingListener() {
                     @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError() {
+                    public void onLoadingStarted(String imageUri, View view) {
                         iv_post.setVisibility(View.INVISIBLE);
                     }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        iv_post.setVisibility(View.INVISIBLE);
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        iv_post.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                        iv_post.setVisibility(View.INVISIBLE);
+
+                    }
                 });
+
+//                Picasso.with(this).load(Uri.parse(editPost.getImage())).into(iv_post, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        iv_post.setVisibility(View.INVISIBLE);
+//                    }
+//                });
+
             }
             else {
                 iv_post.setVisibility(View.INVISIBLE);
@@ -234,7 +264,7 @@ public class AddEditPost extends AppCompatActivity {
             public void onSuccess(String message) {
                 loadingDialog.dismiss();
                 if(imageState == 2){
-                    pref.edit().putLong("new_image",postId).commit();
+                    pref.edit().putLong(postId+"",postId).commit();
                 }
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {

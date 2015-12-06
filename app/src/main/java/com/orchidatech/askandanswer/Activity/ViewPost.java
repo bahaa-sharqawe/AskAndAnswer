@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -57,19 +60,44 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             iv_post = (ImageView) this.findViewById(R.id.iv_post);
             tv_post = (TextView) this.findViewById(R.id.tv_post);
             tv_post.setText(post.getText());
-            if(!TextUtils.isEmpty(post.getImage()))
-                   Picasso.with(this).load(Uri.parse(post.getImage())).into(iv_post, new Callback() {
-                       @Override
-                       public void onSuccess() {
+            if(!TextUtils.isEmpty(post.getImage())) {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.displayImage(post.getImage(), iv_post, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        iv_post.setVisibility(View.INVISIBLE);
+                    }
 
-                       }
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        iv_post.setVisibility(View.INVISIBLE);
 
-                       @Override
-                       public void onError() {
-                           iv_post.setVisibility(View.INVISIBLE);
-                       }
-                   });
-            else
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        iv_post.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                        iv_post.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+//                   Picasso.with(this).load(Uri.parse(post.getImage())).into(iv_post, new Callback() {
+//                       @Override
+//                       public void onSuccess() {
+//
+//                       }
+//
+//                       @Override
+//                       public void onError() {
+//                           iv_post.setVisibility(View.INVISIBLE);
+//                       }
+//                   });
+            } else
                 iv_post.setVisibility(View.INVISIBLE);
         }
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
