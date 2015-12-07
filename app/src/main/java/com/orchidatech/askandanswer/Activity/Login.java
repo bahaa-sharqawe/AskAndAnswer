@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.facebook.login.widget.LoginButton;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.SocialUser;
@@ -169,7 +170,8 @@ public class Login extends AppCompatActivity {
         ////////
         btn_fb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
+                v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
                 if (mSimpleFacebook.isLogin()) {
                     getFbProfile();
                 } else {
@@ -183,16 +185,17 @@ public class Login extends AppCompatActivity {
 
                         @Override
                         public void onCancel() {
-
+                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
                         }
 
                         @Override
                         public void onException(Throwable throwable) {
-
+                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
                         }
 
                         @Override
                         public void onFail(String reason) {
+                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
                         }
                     });
                 }
@@ -200,16 +203,21 @@ public class Login extends AppCompatActivity {
         });
         btn_gplus.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
+                v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
                 if (!googleAuth.mGoogleApiClient.isConnected())
                     googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
                         @Override
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
+                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
                             Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname() , Toast.LENGTH_LONG).show();
                         }
                     });
+                else
+                    v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
             }
         });
 
@@ -286,6 +294,8 @@ public class Login extends AppCompatActivity {
                // startActivity(new Intent(Login.this, TermsActivity.class));
 
                 Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
+                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
             }
         });
     }
