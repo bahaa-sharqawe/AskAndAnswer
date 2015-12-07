@@ -115,6 +115,7 @@
                 android:paddingLeft="10dp"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/btn_fb"
+                android:clickable="true"
                 android:background="@drawable/btn_social_backgnd">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -143,11 +144,14 @@
                 android:layout_alignTop="@+id/btn_fb"
                 android:layout_alignBottom="@+id/btn_fb"
                 android:id="@+id/btn_gplus"
+                android:clickable="true"
+                android:focusable="true"
                 android:background="@drawable/btn_social_backgnd">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_google"
+                    android:clickable="true"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -156,6 +160,7 @@
                     android:textColor="#fff"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:clickable="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
             </RelativeLayout>

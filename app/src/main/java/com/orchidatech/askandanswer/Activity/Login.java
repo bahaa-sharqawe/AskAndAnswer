@@ -26,8 +26,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidadvance.topsnackbar.TSnackbar;
-import com.facebook.login.widget.LoginButton;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.SocialUser;
@@ -63,7 +61,7 @@ public class Login extends AppCompatActivity {
     RelativeLayout btn_gplus;
     private SimpleFacebook mSimpleFacebook;
     private String TAG = Login.class.getSimpleName();
-        LinearLayout ll_form;
+    LinearLayout ll_form;
     public static AppGoogleAuth googleAuth;
     private Validator mValidator;
     private SharedPreferences pref;
@@ -128,7 +126,7 @@ public class Login extends AppCompatActivity {
         mCoordinatorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              hideSoftKeyboard();
+                hideSoftKeyboard();
             }
         });
         mValidator = Validator.getInstance();
@@ -137,7 +135,7 @@ public class Login extends AppCompatActivity {
         ed_name.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
         ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-        logoTranslate  = AnimationUtils.loadAnimation(Login.this, R.anim.translate_top_bottom);
+        logoTranslate = AnimationUtils.loadAnimation(Login.this, R.anim.translate_top_bottom);
         animFade = AnimationUtils.loadAnimation(Login.this, R.anim.fade);
         form_translate = AnimationUtils.loadAnimation(Login.this, R.anim.translate_bottom_top);
 
@@ -152,7 +150,7 @@ public class Login extends AppCompatActivity {
                 String username = ed_name.getText().toString().toLowerCase().trim();
                 String password = ed_password.getText().toString();
                 if (verifyInputs(username, password)) {
-                      v.startAnimation(animFade);
+                    v.startAnimation(animFade);
                     login(username, password);
                 }
             }
@@ -161,6 +159,7 @@ public class Login extends AppCompatActivity {
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
                 startActivity(new Intent(Login.this, Register.class));
                 overridePendingTransition(R.anim.slide_in_up_dialog, R.anim.slide_out_down_dialog);
 //                finish();
@@ -211,12 +210,13 @@ public class Login extends AppCompatActivity {
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
-                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname() , Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
                         }
                     });
                 else
-                    v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
+
 
             }
         });
@@ -227,7 +227,7 @@ public class Login extends AppCompatActivity {
     private void hideSoftKeyboard() {
         View view = Login.this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -263,6 +263,8 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == googleAuth.RC_SIGN_IN) {
+            btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
             if (resultCode == RESULT_OK) {
                 googleAuth.signedInUser = false;
             }
@@ -291,10 +293,9 @@ public class Login extends AppCompatActivity {
             public void onComplete(Profile response) {
                 super.onComplete(response);
 //                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
-               // startActivity(new Intent(Login.this, TermsActivity.class));
-
-                Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
+                // startActivity(new Intent(Login.this, TermsActivity.class));
                 btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+                Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
 
             }
         });

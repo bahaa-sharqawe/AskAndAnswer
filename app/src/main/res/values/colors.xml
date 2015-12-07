@@ -6,4 +6,7 @@
     <color name="colorMenuItem">#FFF</color>
     <color name="white">#FFF</color>
     <color name="commentDialogBackground">#f8f8f8</color>
+    <color name="btn_fb_on">#3B5998</color>
+    <color name="btn_gplus_on">#dd4b39</color>
+    <color name="btn_social_off">#959595</color>
 </resources>
