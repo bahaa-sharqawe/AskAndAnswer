@@ -15,10 +15,13 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,11 +59,14 @@ public class Login extends AppCompatActivity {
     RelativeLayout btn_gplus;
     private SimpleFacebook mSimpleFacebook;
     private String TAG = Login.class.getSimpleName();
-
+        LinearLayout ll_form;
     public static AppGoogleAuth googleAuth;
     private Validator mValidator;
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
+    Animation logoTranslate;
+    private Animation animFade;
+    private Animation form_translate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,9 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initializeFields();
         resizeLogo();
+        iv_logo.startAnimation(logoTranslate);
+        ll_form.startAnimation(form_translate);
+
     }
 
     ///////
@@ -98,7 +107,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onFail(String cause) {
                         loadingDialog.dismiss();
-                        AppSnackBar.show(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
+                        AppSnackBar.showTopSnackbar(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
                     }
                 });
 
@@ -118,10 +127,15 @@ public class Login extends AppCompatActivity {
             }
         });
         mValidator = Validator.getInstance();
+        ll_form = (LinearLayout) this.findViewById(R.id.ll_form);
         ed_name = (EditText) this.findViewById(R.id.ed_name);
         ed_name.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
         ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        logoTranslate  = AnimationUtils.loadAnimation(Login.this, R.anim.translate_top_bottom);
+        animFade = AnimationUtils.loadAnimation(Login.this, R.anim.fade);
+        form_translate = AnimationUtils.loadAnimation(Login.this, R.anim.translate_bottom_top);
+
         btn_login = (Button) this.findViewById(R.id.btn_login);
         tv_signup_now = (TextView) this.findViewById(R.id.tv_signup_now);
         btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
@@ -129,10 +143,11 @@ public class Login extends AppCompatActivity {
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String username = ed_name.getText().toString().toLowerCase().trim();
                 String password = ed_password.getText().toString();
                 if (verifyInputs(username, password)) {
+                      v.startAnimation(animFade);
                     login(username, password);
                 }
             }
@@ -187,7 +202,7 @@ public class Login extends AppCompatActivity {
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
-                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname()+ ", " + user.getLname() , Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname() , Toast.LENGTH_LONG).show();
                         }
                     });
             }

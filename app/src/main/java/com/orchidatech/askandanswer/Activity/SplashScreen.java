@@ -69,8 +69,10 @@ public class SplashScreen extends Activity {
                 updateUserCategories(mId);
                 mIntent = new Intent(this, MainScreen.class);
             }
-            else
-                mIntent = new Intent(this, TermsActivity.class);
+            else {
+                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY).commit();
+                mIntent = new Intent(this, Login.class);
+            }
         } else {
             mIntent = new Intent(this, Login.class);
         }

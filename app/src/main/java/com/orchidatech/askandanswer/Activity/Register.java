@@ -8,10 +8,13 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +26,7 @@ import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -39,9 +43,10 @@ public class Register extends Activity {
     Validator mValidator;
     ImageView iv_logo;
     ImageView iv_back;
-    LinearLayout ll_parent;
+    CoordinatorLayout ll_parent;
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
+    private Animation animFade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,7 @@ public class Register extends Activity {
                 String password = ed_password.getText().toString();
                 String repassword = ed_repassword.getText().toString();
                 if (verifyInputs(fname, lname, email, password, repassword)) {
+                    v.startAnimation(animFade);
                     register(fname, lname, email, password);
                 }
             }
@@ -87,7 +93,7 @@ public class Register extends Activity {
                 finish();
             }
         });
-        ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        ll_parent = (CoordinatorLayout) this.findViewById(R.id.ll_parent);
         ll_parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +101,8 @@ public class Register extends Activity {
             }
         });
         mValidator = Validator.getInstance();
+        animFade = AnimationUtils.loadAnimation(Register.this, R.anim.fade);
+
     }
 
     private void register(String fname, String lname, String email, final String password) {
@@ -119,42 +127,53 @@ public class Register extends Activity {
                     @Override
                     public void onFail(String cause) {
                             loadingDialog.dismiss();
-                        AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
+                        AppSnackBar.showTopSnackbar(ll_parent, cause, Color.RED, Color.WHITE);
                     }
                 });
     }
 
     private boolean verifyInputs(String fname, String lname, String email, String password, String repassword) {
         if (TextUtils.isEmpty(fname)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_fname);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(fname)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_fname);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
         }
         if (TextUtils.isEmpty(lname)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_lname);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(lname)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_lname);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(email)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_email);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(email)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_email);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_002), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_password);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_002), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidPassword(password)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_password);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(repassword)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_003), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_repassword);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_003), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isPasswordsMatched(password, repassword)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
+            ViewAnimation.blink(Register.this, ed_password);
+            ViewAnimation.blink(Register.this, ed_repassword);
+            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
             return false;
         }
         return true;
