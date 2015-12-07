@@ -48,7 +48,8 @@ public final class Enum {
         TIMELINE(0),
         MY_ASKS(1),
         PROFILE(2),
-        CATEGORY_POST(3);
+        CATEGORY_POST(3),
+        MY_ANSWERS_POSTS(4);
         private int type;
         POSTS_FRAGMENTS(int i) {
             this.type = i;

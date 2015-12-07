@@ -82,6 +82,9 @@ public class AppGoogleAuth implements GoogleApiClient.ConnectionCallbacks, Googl
                 String personName = currentPerson.getDisplayName();
                 String personPhotoUrl = currentPerson.getImage().getUrl();
                 String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                Person.Name name = currentPerson.getName();
+                String fNAME = name.getGivenName();
+                String lNAME = name.getFamilyName();
 
                 // new LoadProfileImage(image).execute(personPhotoUrl);
                 result = personName + " \n" + personPhotoUrl + " \n" + email;
@@ -90,6 +93,8 @@ public class AppGoogleAuth implements GoogleApiClient.ConnectionCallbacks, Googl
                 socialUser.avatarURL = personPhotoUrl;
                 socialUser.network = SocialUser.NetworkType.GOOGLEPLUS;
                 socialUser.email = email;
+                socialUser.fname = fNAME;
+                socialUser.lname = lNAME;
 
                 listener.onSuccess(socialUser);
             }

@@ -260,7 +260,7 @@ public class Comments extends DialogFragment {
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
-                    if (errorCode != 404) {//ALL ERRORS EXCEPT NO_POSTS
+                    if (errorCode != 404) {//ALL ERRORS EXCEPT NO_COMMENTS
                         if (postComments.size() > 0)
                             getFromLocal();
                         else {

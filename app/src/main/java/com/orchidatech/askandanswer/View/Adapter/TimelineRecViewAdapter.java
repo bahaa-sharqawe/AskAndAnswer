@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -142,28 +143,35 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
-            ImageLoader imageLoader = ImageLoader.getInstance();
 
-            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
-                if(pref.getLong(currentPost.getServerID()+"", -1)==currentPost.getServerID()) {
-                    File imageFile = imageLoader.getDiscCache().get(postImage);
+            ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(activity)
+                    .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
+            ImageLoader.getInstance().init(config);
+
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            if(pref.getLong(currentPost.getServerID()+"", -1)==currentPost.getServerID()) {
+                if(!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+                    File imageFile = imageLoader.getDiscCache().get(pref.getString("prevImage", null));
                     if (imageFile.exists()) {
                         imageFile.delete();
                         Log.i("xcxc", "xxz2");
                     }
-                    Log.i("xcxc", "xxz: " + postImage);
-                    pref.edit().remove(currentPost.getServerID()+"").commit();
-
                 }
-                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
+                Log.i("xcxc", "xxz: " + postImage);
+                pref.edit().remove(currentPost.getServerID()+"").commit();
+                pref.edit().remove("prevImage").commit();
+            }
+
+            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
+                                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
-                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+                       holder.iv_postImage.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+                       holder.iv_postImage.setVisibility(View.GONE);
 
                     }
 
@@ -175,7 +183,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                     @Override
                     public void onLoadingCancelled(String imageUri, View view) {
-                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+                       holder.iv_postImage.setVisibility(View.GONE);
 
                     }
                 });
@@ -332,6 +340,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             return TYPE_FOOTER;
         return TYPE_HEADER;
     }
+
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);

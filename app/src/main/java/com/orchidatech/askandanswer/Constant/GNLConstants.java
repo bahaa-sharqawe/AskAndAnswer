@@ -18,6 +18,9 @@ public class GNLConstants {
     public static final int MAX_POSTS_ROWS = 6;
     public static final int MAX_COMMENTS_ROWS = 100;
     public static final int COMMENTS_LIMIT = 10;
+    public static final int MAX_NUMBER_REQUESTS_A_TIME = 10;
+    public static final int MAX_IMAGE_LOADER_CACH_SIZE = 2 * 1024 * 1024;
+
 
 
     public final static class Settings_Keys {

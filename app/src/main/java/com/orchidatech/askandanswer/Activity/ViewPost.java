@@ -19,7 +19,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
@@ -61,6 +63,9 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             tv_post = (TextView) this.findViewById(R.id.tv_post);
             tv_post.setText(post.getText());
             if(!TextUtils.isEmpty(post.getImage())) {
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                        .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
+                ImageLoader.getInstance().init(config);
                 ImageLoader imageLoader = ImageLoader.getInstance();
                 imageLoader.displayImage(post.getImage(), iv_post, new ImageLoadingListener() {
                     @Override

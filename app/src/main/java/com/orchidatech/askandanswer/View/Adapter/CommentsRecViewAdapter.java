@@ -468,4 +468,5 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void setPosition(int position) {
         this.position = position;
     }
+
 }

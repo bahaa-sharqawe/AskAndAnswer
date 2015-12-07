@@ -94,7 +94,7 @@ public class UpdateProfile extends AppCompatActivity {
     ImageView iv_checked;
     int isPublic;
     private SharedPreferences pref;
-
+Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -277,7 +277,7 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private void setCustomActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.edit_profile));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -347,7 +347,7 @@ public class UpdateProfile extends AppCompatActivity {
 
     private boolean verifyInputs(String fname, String lname, String email, String password, String newPassword, String confirm_new_password, ArrayList<Category> selectedCategories) {
         if (TextUtils.isEmpty(fname)) {
-            AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
+            AppSnackBar.showTopSnackbar(toolbar, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(fname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);

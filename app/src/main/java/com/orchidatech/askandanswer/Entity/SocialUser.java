@@ -8,6 +8,8 @@ public class SocialUser {
     public String email;
     public String name;
     public String id;
+    public String fname;
+    public String lname;
 
     public String getAvatarURL() {
         return avatarURL;
@@ -55,5 +57,21 @@ public class SocialUser {
     public static class NetworkType {
         public static final int GOOGLEPLUS = 1;
         public static final int FACEBOOK = 2;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
     }
 }

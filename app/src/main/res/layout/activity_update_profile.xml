@@ -272,6 +272,7 @@
                android:layout_height="wrap_content"
                android:layout_below="@+id/rl_publicl_profile_row"
                android:text="@string/update_categories"
+               android:enabled="false"
                android:id="@+id/btn_update_categories"
                />
            <AutoCompleteTextView

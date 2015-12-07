@@ -28,7 +28,9 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
@@ -67,7 +69,7 @@ public class AddEditPost extends AppCompatActivity {
     private Posts editPost;
     private String image_str;
     long user_id;
-    private String picturePath;
+    private String picturePath = null;
     private boolean isPostHasImagePrev;
     private SharedPreferences pref;
 
@@ -114,6 +116,10 @@ public class AddEditPost extends AppCompatActivity {
             picturePath = editPost.getImage();
             if(!TextUtils.isEmpty(picturePath)) {
                 isPostHasImagePrev = true;
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                        .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
+                ImageLoader.getInstance().init(config);
+
                 ImageLoader imageLoader = ImageLoader.getInstance();
                 imageLoader.displayImage(picturePath, iv_post, new ImageLoadingListener() {
                     @Override
@@ -225,7 +231,7 @@ public class AddEditPost extends AppCompatActivity {
                 if (editPostId == -1) {//add case
                     addPost(user_id, selectedCategory.getCategoryID(), postDesc, picturePath, System.currentTimeMillis(), 0);
                 } else {//edit case
-                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, image_str == null ? null : picturePath/*to know if picture changed */, editPost.getIsHidden());
+                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, picturePath/*to know if picture changed */, editPost.getIsHidden());
                 }
             }
             return true;
@@ -236,7 +242,9 @@ public class AddEditPost extends AppCompatActivity {
     private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
         final int imageState;
         if(isPostHasImagePrev){
-            if(picturePath == null)
+            Log.i("vxvcv", editPost.getImage()+"xcx");
+
+            if(TextUtils.isEmpty(picturePath))
                 imageState = 0;//remove post photo from DB... do not send photo to server
             else {
                 if (editPost.getImage() == picturePath)
@@ -263,8 +271,9 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 loadingDialog.dismiss();
-                if(imageState == 2){
+                if(imageState == 2 || imageState == 0){
                     pref.edit().putLong(postId+"",postId).commit();
+                    pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {

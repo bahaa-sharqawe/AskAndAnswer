@@ -55,17 +55,12 @@ public class MyAsks extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_asks, null, false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_my_asks, null, false);
         setActionBar();
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-        rv_favorites = (RecyclerView) getActivity().findViewById(R.id.rv_favorites);
+        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        rv_favorites = (RecyclerView) view.findViewById(R.id.rv_favorites);
         rv_favorites.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -78,10 +73,10 @@ public class MyAsks extends Fragment {
             }
         }, Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType());
         rv_favorites.setAdapter(adapter);
-        rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
-        uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
-        tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
+        uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
+        tv_error = (TextView) view.findViewById(R.id.tv_error);
+        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
         pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +90,12 @@ public class MyAsks extends Fragment {
         resizeLogo();
         loadNewPosts();
         userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void loadNewPosts() {

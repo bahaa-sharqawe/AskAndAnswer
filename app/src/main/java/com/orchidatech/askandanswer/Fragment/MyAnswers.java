@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,8 +26,11 @@ import android.widget.TextView;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
@@ -40,7 +44,7 @@ import java.util.List;
  */
 public class MyAnswers extends Fragment {
     RecyclerView rv_answers;
-    CommentsRecViewAdapter adapter;
+    TimelineRecViewAdapter adapter;
     List<com.orchidatech.askandanswer.Database.Model.Comments> myAnswers;
     private long last_id_server = 0;
     private long user_id;
@@ -50,52 +54,39 @@ public class MyAnswers extends Fragment {
     ImageView uncolored_logo;
     TextView tv_error;
     ProgressBar pb_loading_main;
-    private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> userComments;
+    private ArrayList<com.orchidatech.askandanswer.Database.Model.Posts> allFetchedCommentedPosts;
     private SharedPreferences pref;
+    ArrayList<Posts> allStoredCommentedPost;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_answers, null, false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         setActionBar();
+        View view  =  inflater.inflate(R.layout.fragment_my_answers, null, false);
+
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-        rv_answers = (RecyclerView) getActivity().findViewById(R.id.rv_answers);
+        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        rv_answers = (RecyclerView) view.findViewById(R.id.rv_answers);
 
         rv_answers.setHasFixedSize(true);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_answers.setLayoutManager(llm);
-        myAnswers = new ArrayList<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), myAnswers, rl_parent, new OnLastListReachListener() {
+        allFetchedCommentedPosts = new ArrayList<>();
+        adapter = new TimelineRecViewAdapter(getActivity(), allFetchedCommentedPosts, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
             }
-        }, new OnCommentOptionListener() {
-            @Override
-            public void onEditComment(long commentId) {
-
-            }
-
-            @Override
-            public void onDeleteComment(long commentId) {
-
-            }
-        }, Enum.COMMENTS_FRAGMENTS.MY_ANSSWERS.getNumericType());
+        }, Enum.POSTS_FRAGMENTS.MY_ANSWERS_POSTS.getNumericType());
         rv_answers.setAdapter(adapter);
 
-        rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
-        uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
-        tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
+        uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
+        tv_error = (TextView) view.findViewById(R.id.tv_error);
+        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
         pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,10 +99,25 @@ public class MyAnswers extends Fragment {
         rl_error.setVisibility(View.GONE);
         pb_loading_main.setVisibility(View.VISIBLE);
         resizeLogo();
+        myAnswers = new ArrayList<>(CommentsDAO.getAllComments(user_id));
+        allStoredCommentedPost  = new ArrayList<>();
+        for(int i = 0; i < myAnswers.size(); i++){
+            Posts post = PostsDAO.getPost(myAnswers.get(i).getPostID());
+            boolean isExist = false;
+            for(int x = 0; x < allStoredCommentedPost.size(); x++){
+                if(allStoredCommentedPost.get(x).getServerID() == post.getServerID()){
+                    isExist = true;
+                    break;
+                }
+            }
+            if(!isExist)
+                allStoredCommentedPost.add(post);
+        }
         loadNewComments();
-        userComments = new ArrayList<>(CommentsDAO.getAllComments(user_id));
 
+        return view;
     }
+
 
     private void loadNewComments() {
         WebServiceFunctions.getUserComments(getActivity(), user_id, GNLConstants.COMMENTS_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnCommentFetchListener() {
@@ -121,26 +127,39 @@ public class MyAnswers extends Fragment {
                     pb_loading_main.setVisibility(View.GONE);
                 }
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
-                adapter.addFromServer(comments, false);
+                Log.i("list size",allFetchedCommentedPosts.size()+"" );
+                ArrayList<Posts> newCommentedPost = new ArrayList<Posts>();
+                for(int i = 0; i < comments.size(); i++){
+                    Posts post = PostsDAO.getPost(comments.get(i).getPostID());
+                    boolean isExist = false;
+                    for(int x = 0; x < allFetchedCommentedPosts.size(); x++){
+                        if(allFetchedCommentedPosts.get(x).getServerID() == post.getServerID()){
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if(!isExist)
+                        newCommentedPost.add(post);
+
+                }
+                adapter.addFromServer(newCommentedPost, false);
             }
 
             @Override
             public void onFail(String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_COMMENTS
-                        if (userComments.size() > 0) {
+                        if (myAnswers.size() > 0) {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     pb_loading_main.setVisibility(View.GONE);
                                     getFromLocal();
-
                                 }
                             }, 3000);
 
                         } else {
                             pb_loading_main.setVisibility(View.GONE);
-
                             rl_error.setVisibility(View.VISIBLE);
                             tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
@@ -154,14 +173,13 @@ public class MyAnswers extends Fragment {
                 } else {
                     pb_loading_main.setVisibility(View.GONE);
                     adapter.addFromServer(null, errorCode != 402 ? true : false);
-
                 }
             }
         });
     }
 
     private void getFromLocal() {
-        adapter.addFromLocal(userComments);
+        adapter.addFromLocal(allStoredCommentedPost);
     }
 
     private void resizeLogo() {
@@ -179,20 +197,20 @@ public class MyAnswers extends Fragment {
         (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        long id = item.getItemId();
-        if (id == R.id.delete_comment) {
-            final int position = adapter.getPosition();
-            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener() {
-
-                @Override
-                public void onDelete() {
-                    adapter.performDeleting(position);
-                }
-            });
-            deletePost.show(getActivity().getFragmentManager(), getActivity().getString(R.string.delete_comment));
-        }
-        return super.onContextItemSelected(item);
-    }
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        long id = item.getItemId();
+//        if (id == R.id.delete_comment) {
+//            final int position = adapter.getPosition();
+//            DeleteComment deletePost = new DeleteComment(new DeleteComment.OnDeleteListener() {
+//
+//                @Override
+//                public void onDelete() {
+//                    adapter.performDeleting(position);
+//                }
+//            });
+//            deletePost.show(getActivity().getFragmentManager(), getActivity().getString(R.string.delete_comment));
+//        }
+//        return super.onContextItemSelected(item);
+//    }
 }

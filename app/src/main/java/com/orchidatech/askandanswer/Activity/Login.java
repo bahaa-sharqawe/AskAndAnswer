@@ -187,7 +187,7 @@ public class Login extends AppCompatActivity {
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
-                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getName(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname()+ ", " + user.getLname() , Toast.LENGTH_LONG).show();
                         }
                     });
             }
@@ -207,15 +207,16 @@ public class Login extends AppCompatActivity {
     private boolean verifyInputs(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             ViewAnimation.blink(Login.this, ed_name);
-            AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
+
+            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(username)) {
             ViewAnimation.blink(Login.this, ed_name);
-            AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
+            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
             ViewAnimation.blink(Login.this, ed_password);
-            AppSnackBar.show(mCoordinatorLayout, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);
+            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);
             return false;
         }
         return true;
@@ -252,6 +253,8 @@ public class Login extends AppCompatActivity {
                 .add(Profile.Properties.NAME)
                 .add(Profile.Properties.PICTURE)
                 .add(Profile.Properties.EMAIL)
+                .add(Profile.Properties.FIRST_NAME)
+                .add(Profile.Properties.LAST_NAME)
                 .build();
         mSimpleFacebook.getProfile(properties, new OnProfileListener() {
             @Override
@@ -260,7 +263,7 @@ public class Login extends AppCompatActivity {
 //                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
                // startActivity(new Intent(Login.this, TermsActivity.class));
 
-                Toast.makeText(Login.this, response.getName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
             }
         });
     }

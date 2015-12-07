@@ -87,16 +87,11 @@ public class Profile extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, null, false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+       View view = inflater.inflate(R.layout.fragment_profile, null, false);
         setActionBar();
 
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-        fab_edit_profile = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
+        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        fab_edit_profile = (FloatingActionButton) view.findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,11 +101,11 @@ public class Profile extends Fragment {
         if (pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) != user_id)
             fab_edit_profile.setVisibility(View.GONE);
 
-        rating_person = (RatingBar) getActivity().findViewById(R.id.rating_person);
-        iv_profile = (CircleImageView) getActivity().findViewById(R.id.iv_profile);
-        tv_person = (TextView) getActivity().findViewById(R.id.tv_person);
-        tv_answers = (TextView) getActivity().findViewById(R.id.tv_answers);
-        tv_asks = (TextView) getActivity().findViewById(R.id.tv_asks);
+        rating_person = (RatingBar) view.findViewById(R.id.rating_person);
+        iv_profile = (CircleImageView) view.findViewById(R.id.iv_profile);
+        tv_person = (TextView) view.findViewById(R.id.tv_person);
+        tv_answers = (TextView) view.findViewById(R.id.tv_answers);
+        tv_asks = (TextView) view.findViewById(R.id.tv_asks);
         tv_person.setText(user.getFname() + " " + user.getLname());
         Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
             @Override
@@ -123,10 +118,10 @@ public class Profile extends Fragment {
                 iv_profile.setImageResource(R.drawable.ic_user);
             }
         });
-        tv_asks.setText(getActivity().getString(R.string.tv_ask_count, user.getAsks()));
-        tv_answers.setText(getActivity().getString(R.string.tv_answer_count, user.getAnswers()));
+        tv_asks.setText(getString(R.string.tv_ask_count, user.getAsks()));
+        tv_answers.setText(getString(R.string.tv_answer_count, user.getAnswers()));
 //        getUserInfo(user_id);
-        rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
+        rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
         rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -139,10 +134,10 @@ public class Profile extends Fragment {
             }
         }, Enum.POSTS_FRAGMENTS.PROFILE.getNumericType());
         rv_posts.setAdapter(adapter);
-        rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
-        uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
-        tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
+        uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
+        tv_error = (TextView) view.findViewById(R.id.tv_error);
+        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
         pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +157,13 @@ public class Profile extends Fragment {
         resizeLogo();
 
 
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void setActionBar() {

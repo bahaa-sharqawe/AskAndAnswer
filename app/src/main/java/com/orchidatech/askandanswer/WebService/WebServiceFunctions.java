@@ -418,9 +418,10 @@ public class WebServiceFunctions {
                             String image = post_obj.getString("image");
                             int is_hidden = Integer.parseInt(post_obj.getString("is_hidden"));
                             long category_id = Long.parseLong(post_obj.getString("category_id"));
+                            long post_user_id = Long.parseLong(post_obj.getString("user_id"));
 //                            int comments_no = post_obj.getInt("comment_no");
                             long created_at = post_obj.getLong("updated_at");
-                            Posts postItem = new Posts(id, text, image, created_at, user_id, category_id, is_hidden, 0, 1, -1, -1);
+                            Posts postItem = new Posts(post_id, text, image, created_at, post_user_id, category_id, is_hidden, 0, 1, -1, -1);
                             PostsDAO.addPost(postItem);
 
                             fetchedPosts.add(favPostItem);
@@ -431,6 +432,7 @@ public class WebServiceFunctions {
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
 
                 } catch (JSONException e) {
+                    Log.i("Cxcxc", "exception");
                     listener.onFail(context.getString(R.string.BR_GNL_001), 100);
                 }
             }
@@ -1088,10 +1090,11 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.TEXT, postDesc);
 //        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
         uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, isHidden + "");
+//        Log.i("cxcxcvc", picturePath);
         if (imageState == 2)
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         else
-            uploadImage.addStringProperty(URL.URLParameters.IMAGE, picturePath==null?"":picturePath);
+            uploadImage.addStringProperty(URL.URLParameters.IMAGE, picturePath==null?"null":picturePath);
         uploadImage.sendRequest();
     }
 

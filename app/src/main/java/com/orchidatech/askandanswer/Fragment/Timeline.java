@@ -16,6 +16,7 @@ import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,106 +67,44 @@ public class Timeline extends Fragment {
     ProgressBar pb_loading_main;
     private List<Posts> allStoredPosts;
     private SharedPreferences pref;
+    private int numOfTries;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_timeline, null, false);
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-        return inflater.inflate(R.layout.fragment_timeline, null, false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         setActionBar();
 //        mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.notif_drawer);
 //        rv_notifications = (RecyclerView) getActivity().findViewById(R.id.rv_notifications);
-        rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
-        rl_num_notifications.setVisibility(View.VISIBLE);
-        rl_num_notifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                mDrawerLayout.openDrawer(GravityCompat.END);
-//                mDrawerLayout.openDrawer(rv_notifications);
-            }
-        });
-        fab_add_post = (FloatingActionButton) getActivity().findViewById(R.id.fab_add_post);
+
+        fab_add_post = (FloatingActionButton) view.findViewById(R.id.fab_add_post);
         fab_add_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), AddEditPost.class));
             }
         });
-        rl_parent = (RelativeLayout) getActivity().findViewById(R.id.rl_parent);
-        rv_posts = (RecyclerView) getActivity().findViewById(R.id.rv_posts);
+        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
 //        rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         allPosts = new ArrayList<>();
-        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent/*, new OnPostEventListener() {
-
-            @Override
-            public void onClick(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "Comments");
-            }
-
-            @Override
-            public void onSharePost(long pid) {
-
-            }
-
-            @Override
-            public void onCommentPost(long pid) {
-                Bundle args = new Bundle();
-                args.putLong(ViewPost.POST_ID, pid);
-                    Comments comments = new Comments();
-                comments.setArguments(args);
-                comments.show(getFragmentManager(), "Comments");
-            }
-
-            @Override
-            public void onFavoritePost(int position, long pid, long uid) {
-                WebServiceFunctions.addPostFavorite(getActivity(), pid, uid, new OnPostFavoriteListener(){
-
-                    @Override
-                    public void onSuccess() {
-                        AppSnackBar.show(rl_parent, getString(R.string.post_favorite_added),getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCategoryClick(long cid, long uid) {
-//            Intent intent = new Intent(getActivity(), CategoryPosts.class);
-//                intent.putExtra(CategoryPosts.CATEGORY_KEY, cid);
-//                intent.putExtra(CategoryPosts.USER_ID, uid);
-//                startActivity(intent);
-            }
-        }*/, new OnLastListReachListener() {
+        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
         }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
         rv_posts.setAdapter(adapter);
-        rl_error = (RelativeLayout) getActivity().findViewById(R.id.rl_error);
-        uncolored_logo = (ImageView) getActivity().findViewById(R.id.uncolored_logo);
-        tv_error = (TextView) getActivity().findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) getActivity().findViewById(R.id.pb_loading_main);
+        rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
+        uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
+        tv_error = (TextView) view.findViewById(R.id.tv_error);
+        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
         pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,7 +118,24 @@ public class Timeline extends Fragment {
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
+        numOfTries = GNLConstants.MAX_NUMBER_REQUESTS_A_TIME;
         loadNewPosts();
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
+        rl_num_notifications.setVisibility(View.VISIBLE);
+        rl_num_notifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                mDrawerLayout.openDrawer(GravityCompat.END);
+//                mDrawerLayout.openDrawer(rv_notifications);
+            }
+        });
+
     }
 
     private void setActionBar() {
@@ -190,30 +146,30 @@ public class Timeline extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
-                if(pb_loading_main.getVisibility() == View.VISIBLE){
+                if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                 }
-                last_id_server = last_id_server == 0?last_id:last_id_server;
+                last_id_server = last_id_server == 0 ? last_id : last_id_server;
 
                 adapter.addFromServer(latestPosts, false);
             }
 
             @Override
             public void onFail(final String error, int errorCode) {
-                if(pb_loading_main.getVisibility() == View.VISIBLE){
-                    if(errorCode != 402){//ALL ERRORS EXCEPT NO_POSTS
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                pb_loading_main.setVisibility(View.GONE);
-                                getFromLocal(error);
+                if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                        if (numOfTries-- == 0) {
+                            pb_loading_main.setVisibility(View.GONE);
+                            getFromLocal(error);
+                        } else {
+                            Log.i("TRY", numOfTries + "");
+                            loadNewPosts();
+                        }
 
-                            }
-                        },3000);
-                    }else{
+                    } else {
                         pb_loading_main.setVisibility(View.GONE);
                         tv_error.setText(getActivity().getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
@@ -222,8 +178,9 @@ public class Timeline extends Fragment {
                 } else {
                     pb_loading_main.setVisibility(View.GONE);
 
-                    adapter.addFromServer(null, errorCode != 402?true:false);//CONNECTION ERROR
-                    }            }
+                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                }
+            }
         });
     }
 
