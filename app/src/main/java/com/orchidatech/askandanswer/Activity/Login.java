@@ -110,6 +110,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onFail(String cause) {
                         loadingDialog.dismiss();
+                        Crouton.cancelAllCroutons();
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
                     }
                 });

@@ -130,6 +130,7 @@ public class Register extends Activity {
                     @Override
                     public void onFail(String cause) {
                             loadingDialog.dismiss();
+                        Crouton.cancelAllCroutons();
                         AppSnackBar.showTopSnackbar(Register.this, cause, Color.RED, Color.WHITE);
                     }
                 });
