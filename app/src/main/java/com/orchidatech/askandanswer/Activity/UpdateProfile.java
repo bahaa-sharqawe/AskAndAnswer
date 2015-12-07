@@ -53,6 +53,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class UpdateProfile extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -347,7 +348,8 @@ Toolbar toolbar;
 
     private boolean verifyInputs(String fname, String lname, String email, String password, String newPassword, String confirm_new_password, ArrayList<Category> selectedCategories) {
         if (TextUtils.isEmpty(fname)) {
-            AppSnackBar.showTopSnackbar(toolbar, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(UpdateProfile.this, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(fname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
@@ -456,4 +458,10 @@ Toolbar toolbar;
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Crouton.cancelAllCroutons();
+
+    }
 }

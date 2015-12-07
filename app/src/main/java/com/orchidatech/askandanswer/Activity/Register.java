@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.telecom.Call;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class Register extends Activity {
     private String TAG = Register.class.getSimpleName();
@@ -90,7 +93,7 @@ public class Register extends Activity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         ll_parent = (CoordinatorLayout) this.findViewById(R.id.ll_parent);
@@ -127,7 +130,7 @@ public class Register extends Activity {
                     @Override
                     public void onFail(String cause) {
                             loadingDialog.dismiss();
-                        AppSnackBar.showTopSnackbar(ll_parent, cause, Color.RED, Color.WHITE);
+                        AppSnackBar.showTopSnackbar(Register.this, cause, Color.RED, Color.WHITE);
                     }
                 });
     }
@@ -135,45 +138,55 @@ public class Register extends Activity {
     private boolean verifyInputs(String fname, String lname, String email, String password, String repassword) {
         if (TextUtils.isEmpty(fname)) {
             ViewAnimation.blink(Register.this, ed_fname);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(fname)) {
             ViewAnimation.blink(Register.this, ed_fname);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
         }
         if (TextUtils.isEmpty(lname)) {
             ViewAnimation.blink(Register.this, ed_lname);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_007), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidUserName(lname)) {
             ViewAnimation.blink(Register.this, ed_lname);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(email)) {
             ViewAnimation.blink(Register.this, ed_email);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(email)) {
             ViewAnimation.blink(Register.this, ed_email);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
             ViewAnimation.blink(Register.this, ed_password);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_002), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_002), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidPassword(password)) {
             ViewAnimation.blink(Register.this, ed_password);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(repassword)) {
             ViewAnimation.blink(Register.this, ed_repassword);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_003), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_003), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isPasswordsMatched(password, repassword)) {
             ViewAnimation.blink(Register.this, ed_password);
             ViewAnimation.blink(Register.this, ed_repassword);
-            AppSnackBar.showTopSnackbar(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Register.this, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
             return false;
         }
         return true;
@@ -192,5 +205,20 @@ public class Register extends Activity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        Intent intent = new Intent(Register.this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Crouton.cancelAllCroutons();
+
     }
 }

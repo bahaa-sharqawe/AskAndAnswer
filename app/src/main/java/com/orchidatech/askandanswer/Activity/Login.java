@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.SocialUser;
@@ -44,6 +45,8 @@ import com.sromku.simple.fb.listeners.OnProfileListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class Login extends AppCompatActivity {
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
@@ -107,7 +110,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onFail(String cause) {
                         loadingDialog.dismiss();
-                        AppSnackBar.showTopSnackbar(mCoordinatorLayout, cause, Color.RED, Color.WHITE);
+                        AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
                     }
                 });
 
@@ -157,6 +160,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this, Register.class));
+                overridePendingTransition(R.anim.slide_in_up_dialog, R.anim.slide_out_down_dialog);
 //                finish();
             }
         });
@@ -222,16 +226,18 @@ public class Login extends AppCompatActivity {
     private boolean verifyInputs(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             ViewAnimation.blink(Login.this, ed_name);
-
-            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Login.this, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(username)) {
             ViewAnimation.blink(Login.this, ed_name);
-            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Login.this, getString(R.string.BR_GNL_002), Color.RED, Color.WHITE);
             return false;
         } else if (TextUtils.isEmpty(password)) {
             ViewAnimation.blink(Login.this, ed_password);
-            AppSnackBar.showTopSnackbar(mCoordinatorLayout, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);
+            Crouton.cancelAllCroutons();
+            AppSnackBar.showTopSnackbar(Login.this, getString(R.string.BR_LOGIN_002), Color.RED, Color.WHITE);
             return false;
         }
         return true;
@@ -289,4 +295,9 @@ public class Login extends AppCompatActivity {
         mSimpleFacebook = SimpleFacebook.getInstance(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Crouton.cancelAllCroutons();
+    }
 }
