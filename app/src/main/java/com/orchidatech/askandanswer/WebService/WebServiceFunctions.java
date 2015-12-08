@@ -21,6 +21,7 @@ import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
@@ -69,6 +70,71 @@ public class WebServiceFunctions {
 
                     Log.i("gfgfdgfdgfdgfdgfdgfdg", response);
                     //fill user info from o then store it and pass it to onSuccess
+                    ///Check o content then decide success or fail..
+                    //if user not found then listener.onFail(context.getString(R.string.BR_LOGIN_004))
+                    //if username or password incorrect then listener.onFail(context.getString(R.string.BR_LOGIN_003))
+                    //else listener.onSuccess()
+                    //store in local DB
+                    JSONObject data = new JSONObject(response);
+                    int status_code = data.getInt("statusCode");
+                    int status = data.getInt("status");
+                    if (status == 0) {
+                        JSONObject user = data.getJSONObject("data");
+                        long user_id = user.getLong("id");
+                        String f_name = user.getString("f_name");
+                        String l_name = user.getString("l_name");
+                        String email = user.getString("email");
+                        String image = user.getString("image");
+                        int active = user.getInt("active");
+                        long created_at = user.getLong("created_at");
+                        long last_login = user.getLong("last_login");
+                        String code = user.getString("code");
+                        String mobile = user.getString("mobile");
+                        int is_public = user.getInt("is_public");
+                        int no_aks = user.getInt("no_ask");
+                        int no_answers = user.getInt("no_answer");
+                        float user_rating = Float.parseFloat(user.get("no_of_stars") + "");
+
+
+                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_answers, no_aks, user_rating);
+                        UsersDAO.addUser(_user);
+                        ArrayList<Long> user_categories_id = new ArrayList<Long>();
+                        JSONArray user_category_arr = user.getJSONArray("user_category");
+                        for (int i = 0; i < user_category_arr.length(); i++) {
+                            JSONObject category_obj = user_category_arr.getJSONObject(i);
+                            User_CategoriesDAO.addUserCategory(new User_Categories(category_obj.getLong("id"), category_obj.getLong("user_id"), category_obj.getLong("category_id")));
+                            user_categories_id.add(category_obj.getLong("id"));
+                            JSONObject category_info = category_obj.getJSONObject("Category_info");
+                            CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
+                        }
+                        listener.onSuccess(user_id, user_categories_id);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(GNLConstants.getStatus(100));
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+            }
+        });
+    }
+    public static void socialLogin(final Context context, SocialUser socialUser, final OnLoginListener listener) {
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.EMAIL, socialUser.getEmail());
+        params.put(URL.URLParameters.FNAME, socialUser.getFname());
+        params.put(URL.URLParameters.LNAME, socialUser.getLname());
+        params.put(URL.URLParameters.IMAGE, socialUser.getAvatarURL() + "");
+        Operations.getInstance(context).sendPostRequest(URL.SOCIAL_LOGIN, params, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+
+                    Log.i("gfgfdgfdgfdgfdgfdgfdg", response);
+                    //fill user info from o then store it and pass it to onSuccess
+                    //fill user info efrom o then store it and pass it to onSuccess
                     ///Check o content then decide success or fail..
                     //if user not found then listener.onFail(context.getString(R.string.BR_LOGIN_004))
                     //if username or password incorrect then listener.onFail(context.getString(R.string.BR_LOGIN_003))
@@ -1262,6 +1328,8 @@ public class WebServiceFunctions {
             @Override
             public void onSuccess(String response) {
                 try {
+
+                    Log.i("cvcv", response);
                     JSONObject data_obbj = new JSONObject(response);
                     int status_code = data_obbj.getInt("statusCode");
                     int status = data_obbj.getInt("status");

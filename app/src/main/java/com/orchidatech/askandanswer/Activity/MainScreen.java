@@ -18,7 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -38,6 +39,8 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.DrawerRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnMainDrawerItemClickListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,13 +168,29 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //logout
-                clearLocalDB();
-                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
-                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY).commit();
-                Intent intent = new Intent(this, Login.class);
+                final Intent intent = new Intent(this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                clearLocalDB();
+                int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
+                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE).commit();
+                if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+                    SimpleFacebook.getInstance(this).logout(new OnLogoutListener() {
+                        @Override
+                        public void onLogout() {
+                         startActivity(intent);
+                            finish();
+                        }
+                    });
+                }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
+                    Login.googleAuth.googlePlusLogout();
+                    startActivity(intent);
+                    finish();
+                }else {
+                    startActivity(intent);
+                    finish();
+                }
                 break;
             case 7:
                 //settings

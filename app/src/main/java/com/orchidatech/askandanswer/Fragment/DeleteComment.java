@@ -57,8 +57,8 @@ public class DeleteComment extends DialogFragment {
             public void onClick(View v) {
                 //delete comment here then
 //                performDeleting();
-                dialog.dismiss();
                 listener.onDelete();
+                dialog.dismiss();
             }
         });
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);

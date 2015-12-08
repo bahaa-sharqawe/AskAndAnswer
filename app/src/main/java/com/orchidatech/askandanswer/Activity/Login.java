@@ -26,8 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
@@ -98,6 +98,41 @@ public class Login extends AppCompatActivity {
                         loadingDialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, Enum.LOGIN_TYPE.DEFAULT.getNumericType());
+                        prefEditor.commit();
+                        if (user_categories != null && user_categories.size() > 0) {
+                            startActivity(new Intent(Login.this, MainScreen.class));
+                        } else {
+                            startActivity(new Intent(Login.this, TermsActivity.class));
+                        }
+                        finish();
+                    }
+
+                    @Override
+                    public void onFail(String cause) {
+                        loadingDialog.dismiss();
+                        Crouton.cancelAllCroutons();
+                        AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
+                    }
+                });
+
+    }
+ private void socialLogin(final SocialUser socialUser) {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
+        loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
+        loadingDialog.show(getFragmentManager(), "logging in");
+//        startActivity(new Intent(this, TermsActivity.class));
+        WebServiceFunctions.socialLogin(this, socialUser,
+                new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
+                    @Override
+                    public void onSuccess(long uid, ArrayList<Long> user_categories) {
+                        loadingDialog.dismiss();
+                        prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
+//                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);//store it in webserviceFunctions
+                        prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork());
                         prefEditor.commit();
                         if (user_categories != null && user_categories.size() > 0) {
                             startActivity(new Intent(Login.this, MainScreen.class));
@@ -213,11 +248,12 @@ public class Login extends AppCompatActivity {
             public void onClick(final View v) {
                 v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
                 if (!googleAuth.mGoogleApiClient.isConnected())
-                    googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
+                  googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
                         @Override
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
+                            socialLogin(user);
                             Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
                         }
                     });
@@ -303,6 +339,14 @@ public class Login extends AppCompatActivity {
 //                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
                 // startActivity(new Intent(Login.this, TermsActivity.class));
                 btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+                SocialUser socialUser = new SocialUser();
+                socialUser.setAvatarURL(response.getPicture());
+                socialUser.setEmail(response.getEmail());
+                socialUser.setFname(response.getFirstName());
+                socialUser.setLname(response.getLastName());
+                socialUser.setName(response.getName());
+                socialUser.setNetwork(SocialUser.NetworkType.FACEBOOK);
+                socialLogin(socialUser);
                 Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
 
             }

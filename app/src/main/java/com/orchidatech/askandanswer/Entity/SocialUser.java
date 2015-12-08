@@ -55,8 +55,8 @@ public class SocialUser {
     public String avatarURL;
 
     public static class NetworkType {
-        public static final int GOOGLEPLUS = 1;
-        public static final int FACEBOOK = 2;
+        public static final int FACEBOOK = 1;
+        public static final int GOOGLEPLUS = 2;
     }
 
     public String getFname() {

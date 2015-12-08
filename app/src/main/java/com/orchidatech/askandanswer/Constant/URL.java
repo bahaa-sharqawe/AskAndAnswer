@@ -12,6 +12,7 @@ public class URL {
     public static final String DEFAULT_IMAGE = SERVER_URL + WEB_SERVICES_PATH + "users/default_image.jpg";
 
     public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/login";
+    public static final String SOCIAL_LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/social-sign-up";
     public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user";
     public static final String GET_USER_INFO = SERVER_URL + WEB_SERVICES_PATH + "user/user_info";
     public static final String GET_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "cat/all-categories";

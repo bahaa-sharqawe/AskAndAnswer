@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Activity.AddEditPost;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
@@ -55,7 +57,7 @@ public class Timeline extends Fragment {
     List<Posts> allPosts;
     FloatingActionButton fab_add_post;
     RelativeLayout rl_num_notifications;
-    RelativeLayout rl_parent;
+    CoordinatorLayout coordinator_layout;
     DrawerLayout mDrawerLayout;
     RecyclerView rv_notifications;
     private long last_id_server = 0;
@@ -87,14 +89,14 @@ public class Timeline extends Fragment {
                 startActivity(new Intent(getActivity(), AddEditPost.class));
             }
         });
-        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+        coordinator_layout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
 //        rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         allPosts = new ArrayList<>();
-        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, rl_parent, new OnLastListReachListener() {
+        adapter = new TimelineRecViewAdapter(getActivity(), allPosts, coordinator_layout, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
@@ -116,6 +118,7 @@ public class Timeline extends Fragment {
         });
 //        userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
+        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.notif_drawer);
         resizeLogo();
         allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
         loadNewPosts();

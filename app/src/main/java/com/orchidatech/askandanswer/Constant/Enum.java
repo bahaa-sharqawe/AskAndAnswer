@@ -69,6 +69,18 @@ public final class Enum {
             return type;
         }
     }
+    public enum LOGIN_TYPE {
+        DEFAULT(0),
+        FACEBOOK(1),
+        GOOGLE(2);
+        private int type;
+        LOGIN_TYPE(int i) {
+            this.type = i;
+        }
+        public int getNumericType() {
+            return type;
+        }
+    }
 
 
 }

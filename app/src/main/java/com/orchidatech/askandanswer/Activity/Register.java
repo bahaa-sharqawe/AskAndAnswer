@@ -22,9 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.orchidatech.askandanswer.Constant.AppSnackBar;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
-import com.orchidatech.askandanswer.Constant.URL;
+import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
@@ -122,6 +120,7 @@ public class Register extends Activity {
                         loadingDialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
                         prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+                        prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.DEFAULT.getNumericType());
                         prefEditor.commit();
                         startActivity(new Intent(Register.this, TermsActivity.class));
                         finish();

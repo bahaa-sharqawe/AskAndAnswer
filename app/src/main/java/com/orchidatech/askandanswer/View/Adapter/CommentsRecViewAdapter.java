@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -189,13 +190,24 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
    /*                 || (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType() &&
                          comments.get(position).getUserID() == current_user_id)*/)
                holder.rl_comment_item.setOnCreateContextMenuListener(this);
+            holder.iv_comment_options.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewOptionsMenu(position, v);
+                }
+            });
+            if(commentOwner.getServerID() == current_user_id){
+                holder.iv_comment_options.setVisibility(View.VISIBLE);
+            }else
+                holder.iv_comment_options.setVisibility(View.GONE);
         }
     }
 
     private void viewOptionsMenu(final int position, View v) {
 
-        PopupMenu pop = new PopupMenu(activity.getApplicationContext(), v);
+        PopupMenu pop = new PopupMenu(activity, v);
         pop.inflate(R.menu.comment_menu);
+//        pop.getMenu().add(Menu.NONE, R.id.delete_comment, Menu.NONE, "Delete");
         pop.show();
         pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

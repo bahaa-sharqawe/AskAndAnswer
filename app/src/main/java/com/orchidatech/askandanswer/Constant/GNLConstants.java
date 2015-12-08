@@ -35,6 +35,7 @@ public class GNLConstants {
         public static final String IS_LOGGED_KEY = "IS_LOGGED";
         public static final String IS_USER_SELECTED_CATEGORIES_KEY = "IS_CATEGORY_SELECTED";
         public static final String USER_KEY = "USER";
+        public static final String LOGIN_TYPE = "LOGIN_TYPE";
     }
 
     public final static class DateConversion {

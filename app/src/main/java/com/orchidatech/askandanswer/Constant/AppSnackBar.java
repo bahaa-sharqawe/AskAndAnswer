@@ -18,7 +18,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class AppSnackBar {
 
     public static void show(View view, String message, int background, int textColor) {
-        if(view.getParent() == null)
+        if(view == null || view.getParent() == null)
             return;
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(textColor);
@@ -50,6 +50,8 @@ public class AppSnackBar {
         snackbar.show();
     }
     public static void showTopSnackbar(Activity activity, String message, int background, int textColor){
+            if (activity == null)
+                return;
         Configuration croutonConfiguration = new Configuration.Builder()
                 .setDuration(2500).build();
 // Define custom styles for crouton

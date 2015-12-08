@@ -76,6 +76,8 @@ public class SplashScreen extends Activity {
             }
             else {
                 prefEditor.remove(GNLConstants.SharedPreference.ID_KEY).commit();
+                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE).commit();
                 mIntent = new Intent(this, Login.class);
             }
         } else {
