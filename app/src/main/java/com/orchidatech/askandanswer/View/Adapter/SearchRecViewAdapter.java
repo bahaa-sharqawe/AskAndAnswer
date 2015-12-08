@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -136,7 +137,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 //            holder.pb_photo_load.setVisibility(View.GONE);
             holder.iv_postImage.setVisibility(View.GONE);
         }
-        holder.tv_comments.setText(activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()));
+        holder.tv_comments.setText(posts.get(position).getComments_no() > 0?activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()):activity.getString(R.string.no_comments));
         holder.tv_unlikes.setText(posts.get(position).getNum_dislikes()+"");
         holder.tv_likes.setText(posts.get(position).getNum_likes()+"");
         holder.iv_profile.setOnClickListener(new View.OnClickListener() {

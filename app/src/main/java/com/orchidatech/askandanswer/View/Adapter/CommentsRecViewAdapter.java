@@ -120,6 +120,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
+            holder.user_rating.setRating(commentOwner.getRating());
             holder.tv_comment_category.setText(commentCategory.getName());
 
             Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
@@ -284,6 +285,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         ImageView iv_unlike;
         RelativeLayout rl_comment_item;
         CardView card_comment;
+        RatingBar user_rating;
 //        ProgressBar pb_photo_load;
         int viewType;
 
@@ -311,7 +313,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-                rating_comment = (RatingBar) itemView.findViewById(R.id.rating_comment);
+                rating_comment = (RatingBar) itemView.findViewById(R.id.rating_user);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
                 tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
@@ -323,6 +325,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 ll_unlike = (LinearLayout) itemView.findViewById(R.id.ll_unlike);
                 iv_comment_options = (ImageView) itemView.findViewById(R.id.iv_comment_options);
                 card_comment = (CardView) itemView.findViewById(R.id.card_comment);
+                user_rating = (RatingBar) itemView.findViewById(R.id.rating_user);
                 Log.i("Ffhghg", getAdapterPosition()+"");
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);

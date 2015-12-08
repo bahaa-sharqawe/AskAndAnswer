@@ -52,6 +52,7 @@ public class Login extends AppCompatActivity {
 
     ImageView iv_logo;
     TextView tv_signup_now;
+    TextView tv_forget_password;
     EditText ed_name;
     EditText ed_password;
     Button btn_login;
@@ -141,6 +142,14 @@ public class Login extends AppCompatActivity {
 
         btn_login = (Button) this.findViewById(R.id.btn_login);
         tv_signup_now = (TextView) this.findViewById(R.id.tv_signup_now);
+        tv_forget_password = (TextView) this.findViewById(R.id.tv_forget_password);
+        tv_forget_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Login.this, ForgetPassword.class));
+                overridePendingTransition(R.anim.enter, R.anim.exit);
+            }
+        });
         btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
         btn_gplus = (RelativeLayout) this.findViewById(R.id.btn_gplus);
 
@@ -159,7 +168,6 @@ public class Login extends AppCompatActivity {
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
                 startActivity(new Intent(Login.this, Register.class));
                 overridePendingTransition(R.anim.slide_in_up_dialog, R.anim.slide_out_down_dialog);
 //                finish();
@@ -298,6 +306,22 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
 
             }
+
+            @Override
+            public void onException(Throwable throwable) {
+                super.onException(throwable);
+                Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+
+                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+            }
+
+            @Override
+            public void onFail(String reason) {
+                super.onFail(reason);
+                Toast.makeText(Login.this, reason, Toast.LENGTH_LONG).show();
+                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+            }
+
         });
     }
 

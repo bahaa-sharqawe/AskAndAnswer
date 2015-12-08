@@ -30,24 +30,39 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Activity.MainScreen"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.SplashScreen"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".Activity.MainScreen"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.SplashScreen"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.Login" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.Register" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.SelectCategory" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.ViewPost" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.UpdateProfile" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.AddEditPost" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.TermsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.SearchQuestions" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.Login"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Register"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.SelectCategory"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ViewPost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.UpdateProfile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.AddEditPost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.TermsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -58,8 +73,14 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".Activity.CategoryPosts" android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.UpdateCategory" android:screenOrientation="portrait">
+        <activity
+            android:name=".Activity.CategoryPosts"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.UpdateCategory"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".Activity.ForgetPassword" >
         </activity>
     </application>
 

@@ -191,11 +191,11 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 //            defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
 //           if(oldPosition != position)
-                ft.addToBackStack("");
+            ft.addToBackStack("");
             switch (position){
                 case 0:
                 case 1:
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     break;
                 case 2:
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
@@ -247,7 +247,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     @Override
     public void onBackPressed() {
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
 
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();

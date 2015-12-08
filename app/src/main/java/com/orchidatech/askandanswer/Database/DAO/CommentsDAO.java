@@ -85,6 +85,7 @@ public class CommentsDAO {
         Collections.reverse(allComments);
         for(int i = 0; i < count-GNLConstants.MAX_COMMENTS_ROWS; i++) {
             deleteComment(allComments.get(i).getServerID());
+            User_ActionsDAO.delteActionByComment(allComments.get(i).getServerID());
         }
     }
 

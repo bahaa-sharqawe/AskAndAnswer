@@ -53,6 +53,7 @@ public class PostsDAO {
             for(int i = 0; i < count-GNLConstants.MAX_POSTS_ROWS; i++) {
                 deletePost(allPosts.get(i).getServerID());
                 CommentsDAO.deleteCommentByPost(allPosts.get(i).getServerID());
+                Post_FavoriteDAO.deletePostFavoriteByPost(allPosts.get(i).getServerID());
             }
     }
 
@@ -124,8 +125,8 @@ public class PostsDAO {
             s += i!=user_categories.size()-1?",":"";
         }
         s+=")";
-
-        return  new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " in "+s).orderBy(Posts.FIELDS.COLUMN_DATE + " DESC").execute();
+Log.i("sdgffgd", s);
+        return  new Select().from(Posts.class).where(Posts.FIELDS.COLUMN_CATEGORY_ID + " IN "+s).orderBy(Posts.FIELDS.COLUMN_DATE + " DESC").execute();
     }
 
     private static List<Posts> getAllPostsByCategory(long categoryId) {

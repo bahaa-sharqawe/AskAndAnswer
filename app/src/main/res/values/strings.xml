@@ -8,6 +8,8 @@
     <string name="ed_email_hint">Email</string>
     <string name="ed_password_hint">Password</string>
     <string name="ed_repassword_hint">Re-Password</string>
+    <string name="ed_new_password_hint">New Password</string>
+    <string name="ed_re_new_password_hint">Re-New Password</string>
     <string name="introduction">INTRODUCTION</string>
     <string name="contact">CONTACT US</string>
     <string name="intro_content">Question combines the power and potential of Asking Therapy and Answering Therapy into one money-saving app.
@@ -60,6 +62,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="loading">Loading...</string>
     <string name="logging">Logging in...</string>
     <string name="registering">Registering...</string>
+    <string name="submitting">Submitting...</string>
     <string name="sending">Sending data...</string>
     <string name="retry">Press to Retry</string>
     <string name="no_posts_found">No Posts Found...</string>
@@ -148,4 +151,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="delete">DELETE</string>
     <string name="update_categories">Update Categories</string>
     <string name="message_sent">Messsage sent successfully..</string>
+    <string name="update_password">Update Password</string>
+    <string name="forget_password">Forget password</string>
+    <string name="no_comments">No comments</string>
 </resources>

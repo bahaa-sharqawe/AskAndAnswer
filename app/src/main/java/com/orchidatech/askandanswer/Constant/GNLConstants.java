@@ -15,11 +15,11 @@ import java.util.Map;
 public class GNLConstants {
 
     public static final int POST_LIMIT = 5;
-    public static final int MAX_POSTS_ROWS = 6;
+    public static final int MAX_POSTS_ROWS = 100;
     public static final int MAX_COMMENTS_ROWS = 100;
     public static final int COMMENTS_LIMIT = 10;
     public static final int MAX_NUMBER_REQUESTS_A_TIME = 10;
-    public static final int MAX_IMAGE_LOADER_CACH_SIZE = 2 * 1024 * 1024;
+    public static final int MAX_IMAGE_LOADER_CACH_SIZE = 10 * 1024 * 1024;
 
 
 
@@ -56,7 +56,7 @@ public class GNLConstants {
         String message = "";
         switch (code){
             case 100:
-                message = "Connection error";
+                message = "Please check your internet connection";
                 break;
             case 200:
                 message = "The operation has successfully";

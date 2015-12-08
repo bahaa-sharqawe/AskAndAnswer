@@ -31,6 +31,7 @@ public class Users extends Model {
         public static final String COLUMN_CODE = "CODE";
         public static final String COLUMN_ASKS = "ASKS";
         public static final String COLUMN_ANSWERS = "ANSWERS";
+        public static final String COLUMN_RATING = "RATING";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -78,13 +79,15 @@ public class Users extends Model {
     @Column(name = FIELDS.COLUMN_ASKS)
     public int asks;
 
+    @Column(name = FIELDS.COLUMN_RATING)
+    public float rating;
 
     public Users() {
         super();
     }
 
-    public Users(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code) {
-        super();
+    public Users(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code, int answers, int asks, float rating) {
+       super();
         this.serverID = serverID;
         this.fname = fname;
         this.lname = lname;
@@ -98,25 +101,9 @@ public class Users extends Model {
         this.mobile = mobile;
         this.isPublicProfile = isPublicProfile;
         this.code = code;
-    }
-
-    public Users(long serverID, String fname, String lname, String username, String email, String password, String image, long creationDate, int active, long lastLogin, String mobile, int isPublicProfile, String code, int asks, int answers) {
-        super();
-        this.serverID = serverID;
-        this.fname = fname;
-        this.lname = lname;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.image = image;
-        this.creationDate = creationDate;
-        this.active = active;
-        this.lastLogin = lastLogin;
-        this.mobile = mobile;
-        this.isPublicProfile = isPublicProfile;
-        this.code = code;
-        this.asks = asks;
         this.answers = answers;
+        this.asks = asks;
+        this.rating = rating;
     }
 
     public long getServerID() {
@@ -237,5 +224,13 @@ public class Users extends Model {
 
     public void setAnswers(int answers) {
         this.answers = answers;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }

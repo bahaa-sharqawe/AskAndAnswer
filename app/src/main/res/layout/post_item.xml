@@ -86,8 +86,7 @@
                    android:layout_height="wrap_content"
                    android:id="@+id/iv_postImage"
                    android:scaleType="centerCrop"
-                   android:src="@drawable/android_wallpaper"
-                   android:visibility="gone"
+                   android:visibility="visible"
                    />
 
                <!--<ProgressBar-->

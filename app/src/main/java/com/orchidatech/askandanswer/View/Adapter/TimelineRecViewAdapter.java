@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +78,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final int fragment_numeric;
     private final long current_user_id;
     private final SharedPreferences pref;
+    private ImageLoader imageLoader;
     private ProgressBar pv_load;
     private Button btn_reload;
     private List<Posts> posts;
@@ -94,6 +97,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         this.fragment_numeric = fragment_numeric;
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+        imageLoader = ImageLoader.getInstance();
+        ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(activity)
+                .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
+        ImageLoader.getInstance().init(config);
+
+
     }
 
     @Override
@@ -144,11 +153,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
 
-            ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(activity)
-                    .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
-            ImageLoader.getInstance().init(config);
-
-            ImageLoader imageLoader = ImageLoader.getInstance();
             if(pref.getLong(currentPost.getServerID()+"", -1)==currentPost.getServerID()) {
                 if(!TextUtils.isEmpty(pref.getString("prevImage", null))) {
                     File imageFile = imageLoader.getDiscCache().get(pref.getString("prevImage", null));
@@ -162,28 +166,34 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 pref.edit().remove("prevImage").commit();
             }
 
-            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
+            holder.iv_postImage.setVisibility(View.INVISIBLE);
+
+            if(!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/){
                                 imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
-                       holder.iv_postImage.setVisibility(View.GONE);
+                        view.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                       holder.iv_postImage.setVisibility(View.GONE);
+                        view.setVisibility(View.VISIBLE);
 
                     }
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                       holder.iv_postImage.setVisibility(View.VISIBLE);
+                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
+                        view.setAnimation(anim);
+                        anim.start();
+                        view.setVisibility(View.VISIBLE);
+
 
                     }
 
                     @Override
                     public void onLoadingCancelled(String imageUri, View view) {
-                       holder.iv_postImage.setVisibility(View.GONE);
+//                       holder.iv_postImage.setVisibility(View.INVISIBLE);
 
                     }
                 });
@@ -208,7 +218,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //
 //                   }
 //               });
-            }else {
+            }else{
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
@@ -247,9 +257,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(fragment_numeric == Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType()
-                       || ((fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType()
-                       || fragment_numeric == Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
+                    if((fragment_numeric == Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType()
+                       || (fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType()
+                       || fragment_numeric == Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType()
+                       || fragment_numeric == Enum.POSTS_FRAGMENTS.MY_ANSWERS_POSTS.getNumericType())
                        && current_user_id != posts.get(position).getUserID()))
                         commentPost(posts.get(position).getServerID());
                     else

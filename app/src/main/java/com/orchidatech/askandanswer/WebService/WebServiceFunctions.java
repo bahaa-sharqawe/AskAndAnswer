@@ -29,6 +29,7 @@ import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
+import com.orchidatech.askandanswer.View.Interface.OnForgetPasswordListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
@@ -90,9 +91,11 @@ public class WebServiceFunctions {
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
                         int no_aks = user.getInt("no_ask");
-
                         int no_answers = user.getInt("no_answer");
-                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_aks, no_answers);
+                        float user_rating = Float.parseFloat(user.get("no_of_stars") + "");
+
+
+                        Users _user = new Users(user_id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_answers, no_aks, user_rating);
                         UsersDAO.addUser(_user);
                         ArrayList<Long> user_categories_id = new ArrayList<Long>();
                         JSONArray user_category_arr = user.getJSONArray("user_category");
@@ -107,7 +110,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -157,13 +160,13 @@ public class WebServiceFunctions {
                         String mobile = user.getString("mobile");
                         int is_public = user.getInt("is_public");
                         Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login,
-                                mobile, is_public, code, 0, 0);
+                                mobile, is_public, code, 0, 0, 0f);
                         UsersDAO.addUser(_user);
                         listener.onSuccess(id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
 
             }
@@ -201,7 +204,7 @@ public class WebServiceFunctions {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -245,7 +248,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onSendingFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onSendingFail(context.getString(R.string.BR_GNL_001));
+                    listener.onSendingFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -286,7 +289,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onSendingFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onSendingFail(context.getString(R.string.BR_GNL_001));
+                    listener.onSendingFail(GNLConstants.getStatus(100));
                 }
 
 
@@ -328,7 +331,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -368,15 +371,18 @@ public class WebServiceFunctions {
                         int is_public = user.getInt("is_public");
                         int no_answer = user.getInt("no_answer");
                         int no_ask = user.getInt("no_ask");
+                        float user_rating = Float.parseFloat(user.get("no_of_stars") + "");
+
+
                         Users _user = new Users(id, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login,
-                                mobile, is_public, code, no_ask, no_answer);
+                                mobile, is_public, code, no_answer, no_ask, user_rating);
                         UsersDAO.addUser(_user);
                         listener.onDataFetched(_user, no_answer, no_ask);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
 
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -433,7 +439,7 @@ public class WebServiceFunctions {
 
                 } catch (JSONException e) {
                     Log.i("Cxcxc", "exception");
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
@@ -452,11 +458,11 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.USER_ID + "=" + userId;
         Log.i("dfddv", url);
         Map<String, String> params = new HashMap<>();
-        params.put(URL.URLParameters.CATEGORIES_ID, categoryId+"");
-        params.put(URL.URLParameters.USER_ID, userId+"");
-        params.put(URL.URLParameters.LIMIT, limit+"");
-        params.put(URL.URLParameters.OFFSET, offset+"");
-        params.put(URL.URLParameters.LAST_ID, last_id+"");
+        params.put(URL.URLParameters.CATEGORIES_ID, categoryId + "");
+        params.put(URL.URLParameters.USER_ID, userId + "");
+        params.put(URL.URLParameters.LIMIT, limit + "");
+        params.put(URL.URLParameters.OFFSET, offset + "");
+        params.put(URL.URLParameters.LAST_ID, last_id + "");
 
         Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
 
@@ -495,8 +501,9 @@ public class WebServiceFunctions {
                             JSONObject askandanswer = user.getJSONObject("askandanswer");
                             int no_answer = askandanswer.getInt("no_answer");
                             int no_ask = askandanswer.getInt("no_ask");
+                            float user_rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
                             Users _user = new Users(id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login,
-                                    mobile, is_public, code, no_ask, no_answer);
+                                    mobile, is_public, code, no_answer, no_ask, user_rating);
                             UsersDAO.addUser(_user);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
@@ -507,7 +514,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
 
             }
@@ -555,7 +562,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
@@ -617,7 +624,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
@@ -673,9 +680,12 @@ public class WebServiceFunctions {
                             String code = user_info.getString("code");
                             String mobile = user_info.getString("mobile");
                             int is_public = Integer.parseInt(user_info.getString("is_public"));
-//                            int no_answer = user.getInt("no_answer");
-//                            int no_ask = user.getInt("no_ask");
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, created_at, active, last_login, mobile, is_public, code, -1, -1);
+                            JSONObject askandanswer = user_info.getJSONObject("askandanswer");
+                            int no_answer = askandanswer.getInt("no_answer");
+                            int no_ask = askandanswer.getInt("no_ask");
+                            float user_rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
+
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, created_at, active, last_login, mobile, is_public, code, no_answer, no_ask, user_rating);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
                             JSONArray user_action_arr = comment.optJSONArray("user_action");
@@ -690,7 +700,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
@@ -719,12 +729,13 @@ public class WebServiceFunctions {
                             JSONObject comment_action = post_obj.getJSONObject("comment_action");
                             int num_likes = comment_action.getInt("like");
                             int num_dislikes = comment_action.getInt("dislike");
+                            int isFavorite = post_obj.getBoolean("is_postfavorite")?1:0;
                             Posts post = new Posts(Long.parseLong(post_obj.getString("id")), post_obj.getString("text"), post_obj.getString("image").equals("null") ? null : post_obj.getString("image"),
-                                    post_obj.getLong("updated_at"), Long.parseLong(post_obj.getString("user_id")), Long.parseLong(post_obj.getString("category_id")), Integer.parseInt(post_obj.getString("is_hidden")), post_obj.getInt("comment_no"), -1, num_likes, num_dislikes);
-                            JSONObject userObj = post_obj.getJSONArray("user").getJSONObject(0);
+                                    post_obj.getLong("updated_at"), Long.parseLong(post_obj.getString("user_id")), Long.parseLong(post_obj.getString("category_id")), Integer.parseInt(post_obj.getString("is_hidden")), post_obj.getInt("comment_no"), isFavorite, num_likes, num_dislikes);
+                            JSONObject userObj = post_obj.getJSONObject("user");
                             Users user = new Users(Long.parseLong(userObj.getString("id")), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
                                     null, userObj.getString("image").equals("null") ? null : userObj.getString("image"), userObj.getLong("updated_at"), Integer.parseInt(userObj.getString("active")), userObj.getLong("last_login"),
-                                    userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"));
+                                    userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"), Float.parseFloat(userObj.getJSONObject("askandanswer").getInt("no_of_stars")+""));
                             Log.i("cxcdvcv", userObj.getString("mobile").length() + "");
                             PostsDAO.addPost(post);
                             UsersDAO.addUser(user);
@@ -734,7 +745,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -767,32 +778,34 @@ public class WebServiceFunctions {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject post = data.getJSONObject(i);
                             /////data for post
-                            long id = post.getLong("id");
+                            long id = Long.parseLong(post.getString("id"));
                             String text = post.getString("text");
                             String image = post.getString("image");
-                            long user_id = post.getLong("user_id");
-                            int is_hidden = post.getInt("is_hidden");
-                            long category_id = post.getLong("category_id");
+                            long user_id = Long.parseLong(post.getString("user_id"));
+                            int is_hidden = Integer.parseInt(post.getString("is_hidden"));
+                            long category_id = Long.parseLong(post.getString("category_id"));
                             int comments_no = post.getInt("comment_no");
                             long post_created_at = post.getLong("updated_at");
                             /////////////////////////////////////////////////////////////
                             ///data for post's user to store him/her if does not stored in local db
-                            JSONObject user = post.getJSONArray("user").getJSONObject(0);
+                            JSONObject user = post.getJSONObject("user");
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
                             String email = user.getString("email");
                             String user_image = user.getString("image");
-                            int active = user.getInt("active");
+                            int active = Integer.parseInt(user.getString("active"));
                             long user_created_at = user.getLong("created_at");
                             long last_login = user.getLong("last_login");
                             String code = user.getString("code");
                             String mobile = user.getString("mobile");
-                            int is_public = user.getInt("is_public");
+                            int is_public = Integer.parseInt(user.getString("is_public"));
+
                             JSONObject askandanswer = user.getJSONObject("askandanswer");
                             int no_asks = askandanswer.getInt("no_ask");
                             int no_answers = askandanswer.getInt("no_answer");
+                            float user_rating = Float.parseFloat(askandanswer.getInt("no_of_stars") + "");
                             /////////////////////////////////////////////////////////////
-                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_asks, no_answers);
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_asks, user_rating);
                             UsersDAO.addUser(_user);
                             Posts postItem = new Posts(id, text, image.equals("null") ? null : image, post_created_at, user_id, category_id, is_hidden, comments_no, post.getBoolean("is_postfavorite") ? 1 : 0, -1, -1);
                             PostsDAO.addPost(postItem);
@@ -804,7 +817,8 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001), 100);
+                    Log.i("DCDF", e.getMessage());
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
@@ -839,7 +853,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -851,6 +865,41 @@ public class WebServiceFunctions {
 
     }
 
+    public static void forget_password(final Context context, String email, String newPassword, String reNewPassword, final OnForgetPasswordListener listener) {
+        String url = URL.UPDATE_PASSWORD + "?" + URL.URLParameters.EMAIL + "=" + email + "&"
+                + URL.URLParameters.NEW_PASWORD + "=" + newPassword + "&"
+                + URL.URLParameters.CONFIRM_NEW_PASWORD + "=" + reNewPassword;
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.EMAIL, email + "");
+        params.put(URL.URLParameters.NEW_PASWORD, newPassword);
+        params.put(URL.URLParameters.CONFIRM_NEW_PASWORD, reNewPassword);
+        Log.i("vcvbbvcb", url);
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                Log.i("vcvbbvcb", response);
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        listener.success(GNLConstants.getStatus(status_code));
+                    } else {
+                        listener.fail(GNLConstants.getStatus(status_code));
+                    }
+                } catch (JSONException e) {
+                    listener.fail(GNLConstants.getStatus(100));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.fail(error);
+            }
+        });
+
+    }
 
     public static void removePostFavorite(final Context context, final long postId, final long uid, final OnPostFavoriteListener listener) {
         String url = URL.REMOVE_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
@@ -875,7 +924,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -909,7 +958,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -936,12 +985,12 @@ public class WebServiceFunctions {
                     int status = dataObj.getInt("status");
                     if (status == 0) {
                         listener.onSuccess();
-                    }else{
+                    } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
 
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
 
             }
@@ -982,7 +1031,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_001));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -1094,7 +1143,7 @@ public class WebServiceFunctions {
         if (imageState == 2)
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         else
-            uploadImage.addStringProperty(URL.URLParameters.IMAGE, picturePath==null?"null":picturePath);
+            uploadImage.addStringProperty(URL.URLParameters.IMAGE, picturePath == null ? "null" : picturePath);
         uploadImage.sendRequest();
     }
 
@@ -1171,7 +1220,7 @@ public class WebServiceFunctions {
                         int is_public = Integer.parseInt(user.getString("is_public"));
                         int no_tasks = user.getInt("no_ask");
                         int no_answers = user.getInt("no_answer");
-                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_tasks, no_answers));
+                        UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, -1f));
                         context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                                 .edit().putString(GNLConstants.SharedPreference.PASSWORD_KEY, password).commit();
 

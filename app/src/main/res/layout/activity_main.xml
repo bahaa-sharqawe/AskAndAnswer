@@ -37,39 +37,39 @@
                     android:visibility="visible"
                     android:textColor="#fff"/>
                 <RelativeLayout
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
 
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_notification"
-                    android:layout_marginTop="5dp"
-                    android:id="@+id/iv_notification"
-                    android:layout_marginRight="5dp"
-                    />
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_notification"
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/iv_notification"
+                        android:layout_marginRight="5dp"
+                        />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2"
-                    android:textColor="#fff"
-                    android:textSize="10sp"
-                    android:background= "@drawable/num_notification_backgn"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp"
-                    android:paddingRight="4dp"
-                    android:paddingLeft="4dp"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_alignParentTop="true"
-                    android:id="@+id/tv_notifications_count"
-                    android:layout_alignParentRight="true" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:textColor="#fff"
+                        android:textSize="10sp"
+                        android:background= "@drawable/num_notification_backgn"
+                        android:paddingTop="1dp"
+                        android:paddingBottom="1dp"
+                        android:paddingRight="4dp"
+                        android:paddingLeft="4dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/tv_notifications_count"
+                        android:layout_alignParentRight="true" />
 
-            </RelativeLayout>
+                </RelativeLayout>
             </RelativeLayout>
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:layout_width="match_parent"
@@ -92,14 +92,14 @@
             >
         </FrameLayout>
     </RelativeLayout>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_navigation"
-            android:layout_width="280dp"
-            android:layout_gravity="start"
-            android:layout_height="match_parent"
-            android:background="#f8f8f8"
-            android:scrollbars="vertical">
-        </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_navigation"
+        android:layout_width="280dp"
+        android:layout_gravity="start"
+        android:layout_height="match_parent"
+        android:background="#f8f8f8"
+        android:scrollbars="vertical">
+    </android.support.v7.widget.RecyclerView>
 
 
 </android.support.v4.widget.DrawerLayout>

@@ -96,6 +96,8 @@ public class Profile extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), UpdateProfile.class));
+                getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
+
             }
         });
         if (pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) != user_id)
@@ -106,6 +108,7 @@ public class Profile extends Fragment {
         tv_person = (TextView) view.findViewById(R.id.tv_person);
         tv_answers = (TextView) view.findViewById(R.id.tv_answers);
         tv_asks = (TextView) view.findViewById(R.id.tv_asks);
+        rating_person.setRating(user.getRating());
         tv_person.setText(user.getFname() + " " + user.getLname());
         Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
             @Override

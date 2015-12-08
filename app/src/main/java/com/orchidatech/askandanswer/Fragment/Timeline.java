@@ -65,9 +65,9 @@ public class Timeline extends Fragment {
     ImageView uncolored_logo;
     TextView tv_error;
     ProgressBar pb_loading_main;
-    private List<Posts> allStoredPosts;
+    private List<Posts> allwStoredPosts;
     private SharedPreferences pref;
-    private int numOfTries;
+    private List<Posts> allStoredPosts;
 
 
     @Nullable
@@ -118,7 +118,6 @@ public class Timeline extends Fragment {
         rl_error.setVisibility(View.GONE);
         resizeLogo();
         allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
-        numOfTries = GNLConstants.MAX_NUMBER_REQUESTS_A_TIME;
         loadNewPosts();
         return view;
     }
@@ -161,13 +160,8 @@ public class Timeline extends Fragment {
             public void onFail(final String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                        if (numOfTries-- == 0) {
                             pb_loading_main.setVisibility(View.GONE);
                             getFromLocal(error);
-                        } else {
-                            Log.i("TRY", numOfTries + "");
-                            loadNewPosts();
-                        }
 
                     } else {
                         pb_loading_main.setVisibility(View.GONE);

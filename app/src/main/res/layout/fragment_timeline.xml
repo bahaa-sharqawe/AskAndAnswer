@@ -29,7 +29,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_plus"
-        fab:backgroundTint="#f0ae24"
+        fab:backgroundTint="@color/colorPrimary"
         fab:backgroundTintMode="src_atop"
         />
     <!--<android.support.v4.widget.DrawerLayout-->

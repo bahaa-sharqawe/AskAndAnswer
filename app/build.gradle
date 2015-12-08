@@ -62,4 +62,5 @@ dependencies {
         // exclusion is not necessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
+//    compile 'com.miguelcatalan:materialsearchview:1.3.0'
 }
