@@ -132,7 +132,7 @@ public class WebServiceFunctions {
             public void onSuccess(String response) {
                 try {
 
-                    Log.i("gfgfdgfdgfdgfdgfdgfdg", response);
+                    Log.i("gdff", response);
                     //fill user info from o then store it and pass it to onSuccess
                     //fill user info efrom o then store it and pass it to onSuccess
                     ///Check o content then decide success or fail..
@@ -145,17 +145,17 @@ public class WebServiceFunctions {
                     int status = data.getInt("status");
                     if (status == 0) {
                         JSONObject user = data.getJSONObject("data");
-                        long user_id = user.getLong("id");
+                        long user_id = Long.parseLong(user.getString("id"));
                         String f_name = user.getString("f_name");
                         String l_name = user.getString("l_name");
                         String email = user.getString("email");
                         String image = user.getString("image");
-                        int active = user.getInt("active");
+                        int active = Integer.parseInt(user.getString("active"));
                         long created_at = user.getLong("created_at");
-                        long last_login = user.getLong("last_login");
+                        long last_login = System.currentTimeMillis();/*user.getLong("last_login")*/;
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
-                        int is_public = user.getInt("is_public");
+                        int is_public = Integer.parseInt(user.getString("is_public"));
                         int no_aks = user.getInt("no_ask");
                         int no_answers = user.getInt("no_answer");
                         float user_rating = Float.parseFloat(user.get("no_of_stars") + "");
@@ -478,9 +478,9 @@ public class WebServiceFunctions {
                         ArrayList<Post_Favorite> fetchedPosts = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject favPost = data.getJSONObject(i);
-                            long id = favPost.getLong("id");
-                            long post_id = favPost.getLong("post_id");
-                            long user_id = favPost.getLong("user_id");
+                            long id = Long.parseLong(favPost.getString("id"));
+                            long post_id = Long.parseLong(favPost.getString("post_id"));
+                            long user_id = Long.parseLong(favPost.getString("user_id"));
                             long date = favPost.getLong("updated_at");
                             Post_Favorite favPostItem = new Post_Favorite(id, post_id, user_id, date);
                             Post_FavoriteDAO.addPostFavorite(favPostItem);
@@ -488,31 +488,35 @@ public class WebServiceFunctions {
                             JSONObject post_obj = favPost.getJSONObject("data_post");
                             String text = post_obj.getString("text");
                             String image = post_obj.getString("image");
-                            int is_hidden = post_obj.getInt("is_hidden");
-                            long category_id = post_obj.getLong("category_id");
-                            long post_user_id = post_obj.getLong("user_id");
+                            int is_hidden = Integer.parseInt(post_obj.getString("is_hidden"));
+                            long category_id = Long.parseLong(post_obj.getString("category_id"));
+                            long post_user_id = Long.parseLong(post_obj.getString("user_id"));
 //                            int comments_no = post_obj.getInt("comment_no");
                             long created_at = post_obj.getLong("updated_at");
                             Posts postItem = new Posts(post_id, text, image, created_at, post_user_id, category_id, is_hidden, 0, 1, -1, -1);
                             PostsDAO.addPost(postItem);
                             JSONObject postOwner = post_obj.getJSONObject("user_owner_of_post");
-                            long post_owner_id = postOwner.getLong("id");
+                            long post_owner_id = Long.parseLong(postOwner.getString("id"));
                             String post_owner_f_name = postOwner.getString("f_name");
                             String post_owner_l_name = postOwner.getString("l_name");
                             String post_owner_email = postOwner.getString("email");
                             String post_owner_image = postOwner.getString("image");
-                            int post_owner_active = postOwner.getInt("active");
+                            int post_owner_active = Integer.parseInt(postOwner.getString("active"));
                             long post_owner_created_at = postOwner.getLong("created_at");
                             long post_owner_last_login = postOwner.getLong("last_login");
                             String post_owner_code = postOwner.getString("code");
                             String post_owner_mobile = postOwner.getString("mobile");
-                            int post_owner_is_public = postOwner.getInt("is_public");
+                            int post_owner_is_public = Integer.parseInt(postOwner.getString("is_public"));
+                            JSONObject askandanswer = postOwner.getJSONObject("askandanswer");
+                            int no_asks = askandanswer.getInt("no_ask");
+                            int no_answers = askandanswer.getInt("no_answer");
+                            float rating = Float.parseFloat(askandanswer.get("no_of_stars")+"");
                             Users _user = new Users(post_owner_id, post_owner_f_name, post_owner_l_name, null, post_owner_email, null, post_owner_image.equals("null") ? null : post_owner_image, post_owner_created_at, post_owner_active, post_owner_last_login,
-                                    post_owner_mobile, post_owner_is_public, post_owner_code, -1, -1, -1);
+                                    post_owner_mobile, post_owner_is_public, post_owner_code, no_answers, no_asks, rating);
                             UsersDAO.addUser(_user);
                             fetchedPosts.add(favPostItem);
                         }
-                        long last_id = dataObj.getLong("last_id");
+                        long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -673,11 +677,11 @@ public class WebServiceFunctions {
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject comment = data.getJSONObject(i);
-                            long comment_id = comment.getLong("id");
+                            long comment_id = Long.parseLong(comment.getString("id"));
                             String comment_text = comment.getString("comment");
                             String comment_image = comment.getString("image");
-                            long user_id = comment.getLong("user_id");
-                            long post_id = comment.getLong("post_id");
+                            long user_id = Long.parseLong(comment.getString("user_id"));
+                            long post_id = Long.parseLong(comment.getString("post_id"));
                             long comment_date = comment.getLong("updated_at");
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
@@ -685,18 +689,36 @@ public class WebServiceFunctions {
                             JSONArray user_action_arr = comment.optJSONArray("user_action");
                             if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_actionObj = user_action_arr.getJSONObject(0);
-                                long user_action_id = user_actionObj.getLong("id");
-                                long user_action_comment = user_actionObj.getLong("comment_id");
-                                long user_action_user = user_actionObj.getLong("user_id");
-                                int user_action_action = user_actionObj.getInt("action_type");
+                                long user_action_id = Long.parseLong(user_actionObj.getString("id"));
+                                long user_action_comment = Long.parseLong(user_actionObj.getString("comment_id"));
+                                long user_action_user = Long.parseLong(user_actionObj.getString("user_id"));
+                                int user_action_action = user_actionObj.optInt("action_type");
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
                             JSONObject pos_obj = comment.getJSONObject("post");
-                            PostsDAO.addPost(new Posts(pos_obj.getLong("id"), pos_obj.getString("text"), pos_obj.getString("image"),
-                                    pos_obj.getLong("updated_at"), pos_obj.getLong("user_id"), pos_obj.getLong("category_id"),
+                            PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
+                                    pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
                                     pos_obj.getInt("is_hidden"), -1, -1, -1, -1));
                             Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
-
+                            JSONObject postOwner = pos_obj.getJSONObject("user_owner_of_post");
+                            long post_owner_id = Long.parseLong(postOwner.getString("id"));
+                            String post_owner_f_name = postOwner.getString("f_name");
+                            String post_owner_l_name = postOwner.getString("l_name");
+                            String post_owner_email = postOwner.getString("email");
+                            String post_owner_image = postOwner.getString("image");
+                            int post_owner_active = Integer.parseInt(postOwner.getString("active"));
+                            long post_owner_created_at = postOwner.getLong("created_at");
+                            long post_owner_last_login = postOwner.getLong("last_login");
+                            String post_owner_code = postOwner.getString("code");
+                            String post_owner_mobile = postOwner.getString("mobile");
+                            int post_owner_is_public = Integer.parseInt(postOwner.getString("is_public"));
+                            JSONObject askandanswer = postOwner.getJSONObject("askandanswer");
+                            int no_asks = askandanswer.getInt("no_ask");
+                            int no_answers = askandanswer.getInt("no_answer");
+                            float rating = Float.parseFloat(askandanswer.get("no_of_stars")+"");
+                            Users _user = new Users(post_owner_id, post_owner_f_name, post_owner_l_name, null, post_owner_email, null, post_owner_image.equals("null") ? null : post_owner_image, post_owner_created_at, post_owner_active, post_owner_last_login,
+                                    post_owner_mobile, post_owner_is_public, post_owner_code, no_answers, no_asks, rating);
+                            UsersDAO.addUser(_user);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                         }
@@ -1321,7 +1343,10 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.ID, id + "");
         uploadImage.addStringProperty(URL.URLParameters.FNAME, fname);
         uploadImage.addStringProperty(URL.URLParameters.LNAME, lname);
-        uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
+        if(!TextUtils.isEmpty(password)) {
+            Log.i("oasdd", password);
+            uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
+        }
         uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, is_public + "");
 //        uploadImage.addStringProperty(URL.URLParameters.CATEGORIES_ID, sb.toString());
 //        uploadImage.addStringProperty(URL.URLParameters.IS_PUBLIC, 0+"");
@@ -1340,10 +1365,14 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.COMMENT_ID, commentId + "");
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
+        Log.i("cvcv", URL.DELETE_COMMENT);
+
         Operations.getInstance(context).sendPostRequest(URL.DELETE_COMMENT, params, new OnLoadFinished() {
+
 
             @Override
             public void onSuccess(String response) {
+
                 try {
 
                     Log.i("cvcv", response);
@@ -1356,13 +1385,10 @@ public class WebServiceFunctions {
                         Users user = UsersDAO.getUser(user_id);
                         user.answers = user.answers - 1;
                         user.save();
+                        listener.onDeleted();
 
-                        listener.onDeleted();
-                        listener.onDeleted();
-                        listener.onDeleted();
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));
-
                     }
                 } catch (JSONException e) {
                     listener.onFail(context.getString(R.string.BR_GNL_006));

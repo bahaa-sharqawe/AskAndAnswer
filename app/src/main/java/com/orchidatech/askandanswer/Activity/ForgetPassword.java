@@ -106,7 +106,7 @@ public class ForgetPassword extends AppCompatActivity {
             public void fail(String cause) {
                 loadingDialog.dismiss();
                 Crouton.cancelAllCroutons();
-                AppSnackBar.showTopSnackbar(ForgetPassword.this, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);            }
+                AppSnackBar.showTopSnackbar(ForgetPassword.this, cause, Color.RED, Color.WHITE);            }
         });
     }
 

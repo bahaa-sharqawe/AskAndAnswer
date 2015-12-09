@@ -37,8 +37,9 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_plus"
-        fab:backgroundTint="@color/colorPrimary"
+        fab:backgroundTint="#f0ae24"
         fab:backgroundTintMode="src_atop"
+        android:elevation="0dp"
         />
 
 </android.support.design.widget.CoordinatorLayout>

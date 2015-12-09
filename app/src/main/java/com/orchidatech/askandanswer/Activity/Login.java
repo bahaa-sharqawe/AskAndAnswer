@@ -40,6 +40,7 @@ import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.entities.Profile;
 import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.sromku.simple.fb.listeners.OnProfileListener;
 
 import java.util.ArrayList;
@@ -124,6 +125,8 @@ public class Login extends AppCompatActivity {
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "logging in");
+     prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork()).commit();
+
 //        startActivity(new Intent(this, TermsActivity.class));
         WebServiceFunctions.socialLogin(this, socialUser,
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
@@ -132,7 +135,6 @@ public class Login extends AppCompatActivity {
                         loadingDialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
 //                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);//store it in webserviceFunctions
-                        prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork());
                         prefEditor.commit();
                         if (user_categories != null && user_categories.size() > 0) {
                             startActivity(new Intent(Login.this, MainScreen.class));
@@ -146,7 +148,19 @@ public class Login extends AppCompatActivity {
                     public void onFail(String cause) {
                         loadingDialog.dismiss();
                         Crouton.cancelAllCroutons();
+                        int loginType  = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
+                        if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+                            SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
+                                @Override
+                                public void onLogout() {
+                                }
+                            });
+                        }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
+                            googleAuth.googlePlusLogout();
+//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+
+                        }
                     }
                 });
 

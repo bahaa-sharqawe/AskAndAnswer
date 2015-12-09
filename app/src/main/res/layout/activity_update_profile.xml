@@ -173,7 +173,9 @@
                     android:textColor="#959595"
                     android:paddingBottom="23dp"
                     android:paddingLeft="0dp"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:visibility="gone"
+                    />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -95,7 +95,7 @@ public class UpdateProfile extends AppCompatActivity {
     ImageView iv_checked;
     int isPublic;
     private SharedPreferences pref;
-Toolbar toolbar;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +133,7 @@ Toolbar toolbar;
             @Override
             public void onClick(View v) {
                 ed_password.setEnabled(true);
-                ed_password.setHint(getString(R.string.current_password));
+                ed_password.setHint(getString(R.string.ed_new_password_hint));
                 v.setVisibility(View.GONE);
                 ll_newPassword.setVisibility(View.VISIBLE);
                 ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
@@ -303,14 +303,12 @@ Toolbar toolbar;
             String fname = ed_fname.getText().toString().trim();
             String lname = ed_lname.getText().toString().trim();
             String email = ed_email.getText().toString().trim();
-            String password = ed_password.getText().toString();
-            final String newPassword = ed_new_password.getText().toString();
+            String new_password = ed_password.getText().toString();
+//            final String newPassword = ed_new_password.getText().toString();
             String confirm_new_password = ed_confirm_new_password.getText().toString();
             long uid = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
-            if (verifyInputs(fname, lname, email, password, newPassword, confirm_new_password, selectedCategories)) {
+            if (verifyInputs(fname, lname, email, new_password, confirm_new_password, selectedCategories)) {
                 //save
-                if(TextUtils.isEmpty(password))
-                    password = pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null);
                 final LoadingDialog loadingDialog = new LoadingDialog();
                 Bundle args = new Bundle();
                 args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
@@ -318,7 +316,7 @@ Toolbar toolbar;
                 loadingDialog.setCancelable(false);
                 loadingDialog.show(getFragmentManager(), "updating profile");
 
-                WebServiceFunctions.updateProfile(this, uid, fname, lname, !TextUtils.isEmpty(newPassword)?newPassword:password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
+                WebServiceFunctions.updateProfile(this, uid, fname, lname, new_password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
                         loadingDialog.dismiss();
@@ -346,7 +344,7 @@ Toolbar toolbar;
         return false;
     }
 
-    private boolean verifyInputs(String fname, String lname, String email, String password, String newPassword, String confirm_new_password, ArrayList<Category> selectedCategories) {
+    private boolean verifyInputs(String fname, String lname, String email, String new_password, String confirm_new_password, ArrayList<Category> selectedCategories) {
         if (TextUtils.isEmpty(fname)) {
             Crouton.cancelAllCroutons();
             AppSnackBar.showTopSnackbar(UpdateProfile.this, getString(R.string.BR_SIGN_001), Color.RED, Color.WHITE);
@@ -361,20 +359,20 @@ Toolbar toolbar;
         } else if (!mValidator.isValidUserName(lname)) {
             AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_004), Color.RED, Color.WHITE);
             return false;
-        } else if (!TextUtils.isEmpty(password) || !TextUtils.isEmpty(newPassword) || !TextUtils.isEmpty(confirm_new_password)) {
-            if (TextUtils.isEmpty(password)) {
-                AppSnackBar.show(ll_parent, getString(R.string.BR_EP_002), Color.RED, Color.WHITE);
-                return false;
-            } else if (!pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null).equals(password)) {
-                AppSnackBar.show(ll_parent, getString(R.string.BR_EP_003), Color.RED, Color.WHITE);
-                return false;
-            } else if (TextUtils.isEmpty(password)) {
+        } else if (!TextUtils.isEmpty(new_password) || !TextUtils.isEmpty(confirm_new_password)) {
+            if (TextUtils.isEmpty(new_password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_EP_004), Color.RED, Color.WHITE);
                 return false;
-            } else if (!mValidator.isValidPassword(password)) {
+            } /*else if (!pref.getString(GNLConstants.SharedPreference.PASSWORD_KEY, null).equals(password)) {
+                AppSnackBar.show(ll_parent, getString(R.string.BR_EP_003), Color.RED, Color.WHITE);
+                return false;
+            } */else if (TextUtils.isEmpty(confirm_new_password)) {
+                AppSnackBar.show(ll_parent, getString(R.string.BR_EP_005), Color.RED, Color.WHITE);
+                return false;
+            } /*else if (!mValidator.isValidPassword(password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_GNL_003), Color.RED, Color.WHITE);
                 return false;
-            } else if (!mValidator.isPasswordsMatched(newPassword, confirm_new_password)) {
+            }*/ else if (!mValidator.isPasswordsMatched(new_password, confirm_new_password)) {
                 AppSnackBar.show(ll_parent, getString(R.string.BR_SIGN_006), Color.RED, Color.WHITE);
                 return false;
             } else if (!validCategoriesCount(selectedCategories)) {

@@ -244,11 +244,15 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(activity.getFragmentManager(), "deleting");
+        Log.i("vcvc1", comments.size() + "");
+
+
         WebServiceFunctions.deletComment(activity, current_user_id, comments.get(position).getServerID(), new OnDeleteCommentListener() {
 
             @Override
             public void onDeleted() {
                 loadingDialog.dismiss();
+                Log.i("vcvc2", comments.size()+"");
                 comments.remove(position);
                 notifyDataSetChanged();
                 AppSnackBar.show(parent, activity.getResources().getString(R.string.deleted), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
@@ -267,10 +271,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         return comments.size() + 1;
     }
 
-    public void remove(int position) {
-        comments.remove(position);
-        notifyDataSetChanged();
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

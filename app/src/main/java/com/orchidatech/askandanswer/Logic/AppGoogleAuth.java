@@ -23,7 +23,6 @@ public class AppGoogleAuth implements GoogleApiClient.ConnectionCallbacks, Googl
     public Activity context;
     OnSocialLoggedListener listener;
     public ConnectionResult mConnectionResult;
-
     public AppGoogleAuth(Activity context) {
         this.context = context;
 

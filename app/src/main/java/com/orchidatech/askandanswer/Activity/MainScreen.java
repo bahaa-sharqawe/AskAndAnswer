@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.plus.Plus;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
@@ -188,6 +189,8 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                     });
                 }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
                     Login.googleAuth.googlePlusLogout();
+//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+
                     startActivity(intent);
                     finish();
                 }else {

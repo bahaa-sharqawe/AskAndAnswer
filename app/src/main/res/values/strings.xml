@@ -129,6 +129,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="BR_EP_002">Please enter your current password</string>
     <string name="BR_EP_003">Current password incorrect</string>
     <string name="BR_EP_004">Please enter your new password</string>
+    <string name="BR_EP_005">Please enter your confirm new password</string>
 
     <string name="BR_AEP_001">Please, your must select photo</string>
     <string name="BR_AEP_002">Please enter your question</string>
