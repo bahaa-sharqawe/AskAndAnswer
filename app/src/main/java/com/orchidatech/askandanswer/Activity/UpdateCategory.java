@@ -35,11 +35,15 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CategoriesAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
+import com.orchidatech.askandanswer.View.Interface.OnDisabledCategorieslistener;
 import com.orchidatech.askandanswer.View.Interface.OnSendCategoriesListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
+import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class UpdateCategory extends AppCompatActivity {
     private String TAG = SelectCategory.class.getSimpleName();
@@ -90,19 +94,46 @@ public class UpdateCategory extends AppCompatActivity {
         WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
             public void onSuccess(ArrayList<Category> newCategories) {
-                pv_load.setVisibility(View.GONE);
-                lv_categories.setVisibility(View.VISIBLE);
+
                 categories.addAll(newCategories);
                 original_categories.addAll(newCategories);
-                setSelectedCategories(categories);
-                adapter.notifyDataSetChanged();
+                loadDisabledCategories();
             }
 
             @Override
             public void onFail(String cause) {
-                fetchFromLocal(cause);
+//                fetchFromLocal(cause);
+                AppSnackBar.showTopSnackbar(UpdateCategory.this, cause, Color.RED, Color.WHITE);
+                rl_error.setVisibility(View.VISIBLE);
+                pv_load.setVisibility(View.GONE);
+                lv_categories.setVisibility(View.GONE);
+
             }
         });
+    }
+
+
+        private void loadDisabledCategories() {
+                     WebServiceFunctions.loadDisabledCategories(UpdateCategory.this, uid, new OnDisabledCategorieslistener() {
+
+                         @Override
+                         public void onSuccess(ArrayList<Category> disabledCategories) {
+                             pv_load.setVisibility(View.GONE);
+                             lv_categories.setVisibility(View.VISIBLE);
+                             rl_error.setVisibility(View.GONE);
+                             setSelectedCategories(disabledCategories);
+                         }
+
+                         @Override
+                         public void onFail(String cause) {
+                             AppSnackBar.showTopSnackbar(UpdateCategory.this, cause, Color.RED, Color.WHITE);
+                             rl_error.setVisibility(View.VISIBLE);
+                             pv_load.setVisibility(View.GONE);
+                             lv_categories.setVisibility(View.GONE);
+                         }
+                     });
+
+
     }
 
     private void fetchFromLocal(String error) {
@@ -123,10 +154,12 @@ public class UpdateCategory extends AppCompatActivity {
         }
     }
 
-    private void setSelectedCategories(ArrayList<Category> categories) {
+    private void setSelectedCategories(ArrayList<Category> disabledCategories) {
         ArrayList<User_Categories> allUserCategories = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(uid));
-        for(Category category : categories)
+        for(Category category : categories) {
             category.setIsChecked(false);
+            category.setEnabled(true);
+        }
 
         for(Category category : categories){
             for(User_Categories user_category : allUserCategories){
@@ -136,6 +169,15 @@ public class UpdateCategory extends AppCompatActivity {
                 }
             }
         }
+        for(Category category : categories){
+            for(Category disabledCategory : disabledCategories){
+                if(disabledCategory.getServerID() == category.getServerID()) {
+                    category.setEnabled(false);
+                    break;
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void initializeFields() {
@@ -181,8 +223,13 @@ public class UpdateCategory extends AppCompatActivity {
         lv_categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                categories.get(position).setIsChecked(!categories.get(position).isChecked());
-                adapter.notifyDataSetChanged();
+                if(categories.get(position).isEnabled()) {
+                    categories.get(position).setIsChecked(!categories.get(position).isChecked());
+                    adapter.notifyDataSetChanged();
+                }else{
+                    Crouton.cancelAllCroutons();
+                    AppSnackBar.showTopSnackbar(UpdateCategory.this, getString(R.string.unallow_delete_category, categories.get(position).getName()), Color.RED, Color.WHITE);
+                }
             }
         });
         titles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.categories)));
@@ -321,5 +368,11 @@ public class UpdateCategory extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Crouton.cancelAllCroutons();
     }
 }

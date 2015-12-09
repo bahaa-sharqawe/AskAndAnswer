@@ -192,7 +192,7 @@
            <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:id="@+id/rl_publicl_profile_row"
+               android:id="@+id/rl_public_profile_row"
                android:paddingTop="20dp"
                android:paddingBottom="15dp"
                android:layout_below="@+id/ll_newPassword"
@@ -272,9 +272,9 @@
            <Button
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_below="@+id/rl_publicl_profile_row"
+               android:layout_below="@+id/rl_public_profile_row"
                android:text="@string/update_categories"
-               android:enabled="false"
+               android:enabled="true"
                android:id="@+id/btn_update_categories"
                />
            <AutoCompleteTextView

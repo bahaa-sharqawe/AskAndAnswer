@@ -20,7 +20,8 @@ public class GNLConstants {
     public static final int COMMENTS_LIMIT = 10;
     public static final int MAX_NUMBER_REQUESTS_A_TIME = 10;
     public static final int MAX_IMAGE_LOADER_CACH_SIZE = 10 * 1024 * 1024;
-
+    public static final String SENDER_ID = "602645926253"
+            ;
 
 
     public final static class Settings_Keys {

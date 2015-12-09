@@ -145,6 +145,7 @@ public class UpdateProfile extends AppCompatActivity {
 
     }
 
+
     private void addToSelectedCategories(String categoryName) {
         final View item = LayoutInflater.from(UpdateProfile.this).inflate(R.layout.categories_grid_view_item, null, false);
         TextView tv_category = (TextView) item.findViewById(R.id.tv_category);

@@ -57,6 +57,11 @@ public class CategoriesAdapter extends BaseAdapter {
         if(categories.get(position).isChecked()){
             iv_checkbox.setVisibility(View.INVISIBLE);
             iv_checked.setVisibility(View.VISIBLE);
+            if(categories.get(position).isEnabled())
+                iv_checked.setEnabled(true);
+            else
+                iv_checked.setEnabled(false);
+
         }else{
             iv_checkbox.setVisibility(View.VISIBLE);
             iv_checked.setVisibility(View.INVISIBLE);

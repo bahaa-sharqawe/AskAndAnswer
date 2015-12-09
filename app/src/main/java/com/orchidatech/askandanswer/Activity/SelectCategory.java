@@ -91,6 +91,8 @@ public class SelectCategory extends AppCompatActivity {
                 categories.addAll(newCategories);
                 original_categories.addAll(newCategories);
                 categories.get(0).setIsChecked(true);
+                for (Category category : newCategories)
+                    category.setEnabled(true);
                 adapter.notifyDataSetChanged();
             }
 
@@ -109,6 +111,8 @@ public class SelectCategory extends AppCompatActivity {
         if(categories.size() > 0) {
             original_categories.get(0).setIsChecked(true);
             categories.get(0).setIsChecked(true);
+            for(Category category : categories)
+                category.setEnabled(true);
             adapter.notifyDataSetChanged();
         } else {
             rl_error.setVisibility(View.VISIBLE);
@@ -155,8 +159,9 @@ public class SelectCategory extends AppCompatActivity {
         lv_categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                categories.get(position).setIsChecked(!categories.get(position).isChecked());
-                adapter.notifyDataSetChanged();
+                    categories.get(position).setIsChecked(!categories.get(position).isChecked());
+                    adapter.notifyDataSetChanged();
+
             }
         });
         titles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.categories)));

@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.UpdateCategory;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -29,10 +31,13 @@ import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
+import com.orchidatech.askandanswer.View.Interface.OnDisabledCategorieslistener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnForgetPasswordListener;
+import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
+import com.orchidatech.askandanswer.View.Interface.OnLogoutlistener;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
@@ -58,11 +63,12 @@ import java.util.Map;
  */
 public class WebServiceFunctions {
 
-    public static void login(final Context context, String email, String password, long last_login, final OnLoginListener listener) {
+    public static void login(final Context context, String email, String password, String reg_id, long last_login, final OnLoginListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.EMAIL, email);
         params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Operations.getInstance(context).sendPostRequest(URL.LOGIN, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -121,12 +127,13 @@ public class WebServiceFunctions {
             }
         });
     }
-    public static void socialLogin(final Context context, SocialUser socialUser, final OnLoginListener listener) {
+    public static void socialLogin(final Context context, SocialUser socialUser, String reg_id, final OnLoginListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.EMAIL, socialUser.getEmail());
         params.put(URL.URLParameters.FNAME, socialUser.getFname());
         params.put(URL.URLParameters.LNAME, socialUser.getLname());
         params.put(URL.URLParameters.IMAGE, socialUser.getAvatarURL() + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Operations.getInstance(context).sendPostRequest(URL.SOCIAL_LOGIN, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -187,8 +194,37 @@ public class WebServiceFunctions {
         });
     }
 
+
+    public static void logout(Context context, long user_id, final OnLogoutlistener listener) {
+        String url = URL.LOGOUT + "?" + URL.URLParameters.USER_ID + "=" + user_id;
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject data = new JSONObject(response);
+                    int status_code = data.getInt("statusCode");
+                    int status = data.getInt("status");
+                    if (status == 0)
+                        listener.onSuccess();
+                    else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(GNLConstants.getStatus(100));
+                }
+
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+
+            }
+        });
+    }
+
     public static void register(final Context context, final String fname, final String lname, final String email,
-                                String password, final String image, final long last_login, final int is_public,
+                                String password, final String image, String reg_id, final long last_login, final int is_public,
                                 final OnRegisterListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.FNAME, fname);
@@ -197,6 +233,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.PASSWORD, password);
         params.put(URL.URLParameters.IMAGE, image);
         params.put(URL.URLParameters.LAST_LOGIN, last_login + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id + "");
 //        params.put(URL.URLParameters.MOBILE, mobile);
         params.put(URL.URLParameters.IS_PUBLIC, is_public + "");
         Operations.getInstance(context).sendPostRequest(URL.REGISTER, params, new OnLoadFinished() {
@@ -343,6 +380,8 @@ public class WebServiceFunctions {
                     int status = dataObj.getInt("status");
                     if (status == 0) {
                         User_CategoriesDAO.deleteAllUserCategories(uid);
+                        clearLocalDB();
+
                         JSONArray data = dataObj.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject category = data.getJSONObject(i);
@@ -1145,6 +1184,46 @@ public class WebServiceFunctions {
         });
     }
 
+    public static void loadDisabledCategories(final Context context, long uid, final OnDisabledCategorieslistener listener) {
+        String url = URL.DISABLED_CATEOGIRES + "?" + URL.URLParameters.USER_ID + "=" + uid;
+        Log.i("XCXVC", url);
+
+        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    Log.i("XCXVC", response);
+                    JSONObject data_obj = new JSONObject(response);
+                    int status_code = data_obj.getInt("statusCode");
+                    int status = data_obj.getInt("status");
+                    ArrayList<Category> disabled = new ArrayList<Category>();
+                    if (status == 0) {
+                        JSONArray disabled_arr = data_obj.getJSONArray("data");
+                        for (int i = 0; i < disabled_arr.length(); i++) {
+                            JSONObject category_obj = disabled_arr.getJSONObject(i);
+                            long id = category_obj.getLong("id");
+                            String name = category_obj.getString("name");
+                            String desc = category_obj.getString("description");
+                            Category category = new Category(id, name, desc);
+                            disabled.add(category);
+                        }
+                        listener.onSuccess(disabled);
+                    } else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+                } catch (JSONException e) {
+                    listener.onFail(GNLConstants.getStatus(100));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+
+            }
+        });
+
+    }
     public static void addPost(final Context context, final long user_id, long category_id, String text, String picturePath, long date, int is_hidden, final OnAddPostListener listener) {
 
         UploadImage uploadImage = new UploadImage(context, URL.ADD_POST, new OnLoadFinished() {
@@ -1177,7 +1256,7 @@ public class WebServiceFunctions {
                     }
 
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -1226,7 +1305,7 @@ public class WebServiceFunctions {
                     }
 
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -1278,7 +1357,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -1331,7 +1410,7 @@ public class WebServiceFunctions {
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                    listener.onFail(GNLConstants.getStatus(100));
                 }
             }
 
@@ -1404,5 +1483,12 @@ public class WebServiceFunctions {
         });
 
     }
+    private static void clearLocalDB() {
+        PostsDAO.deleteAllPosts();;
+        CommentsDAO.deleteAllComments();
+        User_ActionsDAO.deleteAllUserActions();
+        Post_FavoriteDAO.deleteAllUserPostFavorite();
+    }
+
 
 }

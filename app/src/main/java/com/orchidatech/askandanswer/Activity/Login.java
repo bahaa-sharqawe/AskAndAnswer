@@ -26,13 +26,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
+import com.orchidatech.askandanswer.Logic.GCMUtilities;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
+import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -71,6 +74,13 @@ public class Login extends AppCompatActivity {
     Animation logoTranslate;
     private Animation animFade;
     private Animation form_translate;
+    GoogleCloudMessaging gcm;
+    private LoadingDialog loadingDialog;
+    private String registration_id;
+    private SocialUser socialUser;
+    private String username;
+    private String password;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,21 +94,29 @@ public class Login extends AppCompatActivity {
     }
 
     ///////
-    private void login(String username, final String password) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
+    private void login(final String username, final String password) {
+        loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "logging in");
+        if(TextUtils.isEmpty(registration_id))
+            registerWithGCM(0);
+        else
+            sendLoginRequest();
 //        startActivity(new Intent(this, TermsActivity.class));
-        WebServiceFunctions.login(this, username, password, System.currentTimeMillis(),
+
+    }
+
+    private void sendLoginRequest() {
+        WebServiceFunctions.login(Login.this, username, password, registration_id, System.currentTimeMillis(),
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
                         loadingDialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
-                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+//                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, Enum.LOGIN_TYPE.DEFAULT.getNumericType());
                         prefEditor.commit();
                         if (user_categories != null && user_categories.size() > 0) {
@@ -118,17 +136,22 @@ public class Login extends AppCompatActivity {
                 });
 
     }
- private void socialLogin(final SocialUser socialUser) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
+
+    private void socialLogin() {
+         loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "logging in");
      prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork()).commit();
-
-//        startActivity(new Intent(this, TermsActivity.class));
-        WebServiceFunctions.socialLogin(this, socialUser,
+     if(TextUtils.isEmpty(registration_id))
+         registerWithGCM(1);
+     else
+         sendSocialSignupRequest();
+ }
+    private void sendSocialSignupRequest(){
+        WebServiceFunctions.socialLogin(Login.this, socialUser, registration_id,
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
@@ -148,15 +171,15 @@ public class Login extends AppCompatActivity {
                     public void onFail(String cause) {
                         loadingDialog.dismiss();
                         Crouton.cancelAllCroutons();
-                        int loginType  = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
+                        int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
-                        if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+                        if (loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
                             SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
                                 @Override
                                 public void onLogout() {
                                 }
                             });
-                        }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
+                        } else if (loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()) {
                             googleAuth.googlePlusLogout();
 //                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 
@@ -165,7 +188,31 @@ public class Login extends AppCompatActivity {
                 });
 
     }
+    private void registerWithGCM(final int eventType){
 
+        GCMUtilities gcmUtilities = new GCMUtilities(Login.this, GNLConstants.SENDER_ID, new OnGCMRegisterListener() {
+
+
+            @Override
+            public void OnRegistered(String reg_id) {
+                registration_id = reg_id;
+                Log.i("reg_id", reg_id);
+                if(eventType == 0)
+                    sendLoginRequest();
+                else
+                    sendSocialSignupRequest();
+            }
+
+            @Override
+            public void onFail() {
+                loadingDialog.dismiss();
+                AppSnackBar.showTopSnackbar(Login.this, "An Error Occurred, Retry", Color.RED, Color.WHITE);
+
+            }
+        });
+        gcmUtilities.register();
+
+    }
     private void initializeFields() {
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         prefEditor = pref.edit();
@@ -205,8 +252,8 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                String username = ed_name.getText().toString().toLowerCase().trim();
-                String password = ed_password.getText().toString();
+                 username = ed_name.getText().toString().toLowerCase().trim();
+                 password = ed_password.getText().toString();
                 if (verifyInputs(username, password)) {
                     v.startAnimation(animFade);
                     login(username, password);
@@ -267,14 +314,13 @@ public class Login extends AppCompatActivity {
                         public void onSuccess(SocialUser user) {
 //                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
-                            socialLogin(user);
+                            socialUser = user;
+                            socialLogin();
                             Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
                         }
                     });
                 else
                     btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-
-
 
             }
         });
@@ -353,14 +399,14 @@ public class Login extends AppCompatActivity {
 //                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
                 // startActivity(new Intent(Login.this, TermsActivity.class));
                 btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                SocialUser socialUser = new SocialUser();
+                socialUser = new SocialUser();
                 socialUser.setAvatarURL(response.getPicture());
                 socialUser.setEmail(response.getEmail());
                 socialUser.setFname(response.getFirstName());
                 socialUser.setLname(response.getLastName());
                 socialUser.setName(response.getName());
                 socialUser.setNetwork(SocialUser.NetworkType.FACEBOOK);
-                socialLogin(socialUser);
+                socialLogin();
                 Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
 
             }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.Fragment.AboutUs;
+import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Fragment.MyAnswers;
 import com.orchidatech.askandanswer.Fragment.MyAsks;
 import com.orchidatech.askandanswer.Fragment.MyFavorites;
@@ -36,15 +38,20 @@ import com.orchidatech.askandanswer.Fragment.SearchAndFavorite;
 import com.orchidatech.askandanswer.Fragment.Settings;
 import com.orchidatech.askandanswer.Fragment.TermsFragment;
 import com.orchidatech.askandanswer.Fragment.Timeline;
+import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.DrawerRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.OnLogoutlistener;
 import com.orchidatech.askandanswer.View.Interface.OnMainDrawerItemClickListener;
+import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class MainScreen extends AppCompatActivity implements TermsFragment.OnDrawerIconClickListener {
     DrawerLayout mDrawerLayout;
@@ -61,7 +68,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     public static int oldPosition = -1;
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
-
+    public  AppGoogleAuth googleAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         setContentView(R.layout.activity_main);
         setCustomActionBar();
         fillData();
+        if(Login.googleAuth == null){
+            googleAuth = new AppGoogleAuth(this);
+            googleAuth.mGoogleApiClient.connect();
+        }
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         prefEditor = pref.edit();
         mFragmentManager = getFragmentManager();
@@ -172,31 +183,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 6:
                 //logout
-                final Intent intent = new Intent(this, Login.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                clearLocalDB();
-                int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
-                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
-                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY);
-                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE).commit();
-                if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
-                    SimpleFacebook.getInstance(this).logout(new OnLogoutListener() {
-                        @Override
-                        public void onLogout() {
-                         startActivity(intent);
-                            finish();
-                        }
-                    });
-                }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
-                    Login.googleAuth.googlePlusLogout();
-//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-
-                    startActivity(intent);
-                    finish();
-                }else {
-                    startActivity(intent);
-                    finish();
-                }
+                logout();
                 break;
             case 7:
                 //settings
@@ -247,6 +234,57 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 
     }
 
+    private void logout() {
+        final LoadingDialog loadingDialog = new LoadingDialog();
+        Bundle args = new Bundle();
+        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging_out));
+        loadingDialog.setArguments(args);
+        loadingDialog.setCancelable(false);
+        loadingDialog.show(getFragmentManager(), "logging out");
+        WebServiceFunctions.logout(MainScreen.this, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnLogoutlistener(){
+
+            @Override
+            public void onSuccess() {
+                loadingDialog.dismiss();
+                final Intent intent = new Intent(MainScreen.this, Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                clearLocalDB();
+                int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
+                prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY);
+                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE).commit();
+                if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+                    SimpleFacebook.getInstance(MainScreen.this).logout(new OnLogoutListener() {
+                        @Override
+                        public void onLogout() {
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
+                    if(Login.googleAuth != null)
+                        Login.googleAuth.googlePlusLogout();
+                    else
+                        googleAuth.googlePlusLogout();
+//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+
+                    startActivity(intent);
+                    finish();
+                }else {
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFail(String cause) {
+                    loadingDialog.dismiss();
+                Crouton.cancelAllCroutons();
+                AppSnackBar.showTopSnackbar(MainScreen.this, cause, Color.RED, Color.WHITE);
+            }
+        });
+    }
+
     private void clearLocalDB() {
         PostsDAO.deleteAllPosts();;
         CommentsDAO.deleteAllComments();
@@ -279,5 +317,26 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == googleAuth.RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                googleAuth.signedInUser = false;
+            }
+            googleAuth.mIntentInProgress = false;
+            if (resultCode != RESULT_CANCELED)
+                if (!googleAuth.mGoogleApiClient.isConnecting()) {
+                    googleAuth.mGoogleApiClient.connect();
+                }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Crouton.cancelAllCroutons();
     }
 }

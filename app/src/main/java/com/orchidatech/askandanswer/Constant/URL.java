@@ -12,6 +12,7 @@ public class URL {
     public static final String DEFAULT_IMAGE = SERVER_URL + WEB_SERVICES_PATH + "users/default_image.jpg";
 
     public static final String LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/login";
+    public static final String LOGOUT = SERVER_URL + WEB_SERVICES_PATH + "user/logout";
     public static final String SOCIAL_LOGIN = SERVER_URL + WEB_SERVICES_PATH + "user/social-sign-up";
     public static final String REGISTER = SERVER_URL + WEB_SERVICES_PATH + "user/reg-user";
     public static final String GET_USER_INFO = SERVER_URL + WEB_SERVICES_PATH + "user/user_info";
@@ -21,6 +22,8 @@ public class URL {
     public static final String SEND_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/add-user-category";
     public static final String GET_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/user-categories";
     public static final String UPDATE_USER_CATEGORIES = SERVER_URL + WEB_SERVICES_PATH + "usercat/edit-user-category";
+    public static final String DISABLED_CATEOGIRES = SERVER_URL + WEB_SERVICES_PATH + "usercat/disable-user-category";
+
 
     public static final String GET_USER_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/userpost";
     public static final String EDIT_POST = SERVER_URL + WEB_SERVICES_PATH + "post/edit-post";
@@ -69,5 +72,6 @@ public class URL {
         public static final String MESSAGE = "massage";
         public static final String NEW_PASWORD = "new_password";
         public static final String CONFIRM_NEW_PASWORD = "confirm_password";
+        public static final String REGISTERATION_ID = "registration_id";
     }
 }

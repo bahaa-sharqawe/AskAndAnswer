@@ -24,8 +24,10 @@ import android.widget.LinearLayout;
 
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
+import com.orchidatech.askandanswer.Logic.GCMUtilities;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
+import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -48,6 +50,14 @@ public class Register extends Activity {
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
     private Animation animFade;
+    private LoadingDialog loadingDialog;
+    public String registration_id;
+    private String fname;
+    private String lname;
+    private String email;
+    private String password;
+    private String repassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +86,11 @@ public class Register extends Activity {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fname = ed_fname.getText().toString().trim();
-                String lname = ed_lname.getText().toString().trim();
-                String email = ed_email.getText().toString().trim();
-                String password = ed_password.getText().toString();
-                String repassword = ed_repassword.getText().toString();
+                 fname = ed_fname.getText().toString().trim();
+                 lname = ed_lname.getText().toString().trim();
+                 email = ed_email.getText().toString().trim();
+                 password = ed_password.getText().toString();
+                 repassword = ed_repassword.getText().toString();
                 if (verifyInputs(fname, lname, email, password, repassword)) {
                     v.startAnimation(animFade);
                     register(fname, lname, email, password);
@@ -106,20 +116,49 @@ public class Register extends Activity {
 
     }
 
-    private void register(String fname, String lname, String email, final String password) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
+    private void register(final String fname, final String lname, final String email, final String password) {
+         loadingDialog = new LoadingDialog();
         Bundle args = new Bundle();
         args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
         loadingDialog.setArguments(args);
         loadingDialog.setCancelable(false);
         loadingDialog.show(getFragmentManager(), "registering");
-        WebServiceFunctions.register(this, fname, lname, email, password, URL.DEFAULT_IMAGE, System.currentTimeMillis(), 0,
+        if(TextUtils.isEmpty(registration_id))
+            registerWithGCM();
+        else
+            sendRegisterRequest(fname, lname, email, password, registration_id);
+
+
+    }
+    private void registerWithGCM(){
+
+        GCMUtilities gcmUtilities = new GCMUtilities(Register.this, GNLConstants.SENDER_ID, new OnGCMRegisterListener() {
+
+
+            @Override
+            public void OnRegistered(String reg_id) {
+                registration_id = reg_id;
+                sendRegisterRequest(fname, lname, email, password, reg_id);
+            }
+
+            @Override
+            public void onFail() {
+                loadingDialog.dismiss();
+                AppSnackBar.showTopSnackbar(Register.this, "An Error Occurred, Retry", Color.RED, Color.WHITE);
+
+            }
+        });
+        gcmUtilities.register();
+
+    }
+    public void sendRegisterRequest(String fname, String lname, String email, final String password, String reg_id){
+        WebServiceFunctions.register(Register.this, fname, lname, email, password, URL.DEFAULT_IMAGE, reg_id, System.currentTimeMillis(), 0,
                 new OnRegisterListener() {
                     @Override
                     public void onSuccess(long uid) {
                         loadingDialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
-                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
+//                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.DEFAULT.getNumericType());
                         prefEditor.commit();
                         startActivity(new Intent(Register.this, TermsActivity.class));
@@ -128,11 +167,12 @@ public class Register extends Activity {
 
                     @Override
                     public void onFail(String cause) {
-                            loadingDialog.dismiss();
+                        loadingDialog.dismiss();
                         Crouton.cancelAllCroutons();
                         AppSnackBar.showTopSnackbar(Register.this, cause, Color.RED, Color.WHITE);
                     }
                 });
+
     }
 
     private boolean verifyInputs(String fname, String lname, String email, String password, String repassword) {

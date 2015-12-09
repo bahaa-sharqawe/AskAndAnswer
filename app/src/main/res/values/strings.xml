@@ -46,6 +46,8 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="tv_comments_count">%1$d Comment</string>
     <string name="tv_ask_count">%1$d Ask</string>
     <string name="tv_answer_count">%1$d Answer</string>
+    <string name="unallow_delete_category">You must delete all posts in %1$s before deleting</string>
+
     <string name="tv_comment">Comment</string>
     <string name="tv_share">Share</string>
     <string name="tv_favorite">Favorite</string>
@@ -155,4 +157,5 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="update_password">Update Password</string>
     <string name="forget_password">Forget password</string>
     <string name="no_comments">No comments</string>
+    <string name="logging_out">Logging out...</string>
 </resources>

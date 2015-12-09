@@ -12,6 +12,9 @@ import com.activeandroid.annotation.Table;
 @Table(name = Category.FIELDS.TABLE_NAME, id = BaseColumns._ID)
 public class Category extends Model{
 
+
+    private boolean enabled;
+
     public static class FIELDS {
         public static final String TABLE_NAME = "Categories";
 
@@ -81,4 +84,13 @@ public class Category extends Model{
     public void setIsChecked(boolean isChecked) {
         this.isChecked = isChecked;
     }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
 }
