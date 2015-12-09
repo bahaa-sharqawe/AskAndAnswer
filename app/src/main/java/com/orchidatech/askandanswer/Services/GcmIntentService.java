@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Fragment.Timeline;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.Recievers.GcmBroadcastReceiver;
@@ -22,14 +24,14 @@ import com.orchidatech.askandanswer.Recievers.GcmBroadcastReceiver;
 public class GcmIntentService extends IntentService{
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    private final CharSequence tickerText = "Ask And Answer";
-    private final CharSequence contentTitle = "Notification";
+    private final CharSequence tickerText = "Notification";
+    private final CharSequence contentTitle = "Ask And Answer";
     private PendingIntent mContentIntent;
     private Intent mNotificationIntent;
 
     private Uri soundURI = Uri
-            .parse("android.resource://course.examples.Notification.StatusBar/"
-                    + R.raw.alarm_rooster);
+            .parse(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString()/*"android.resource://com.orchidatech.askandanswer/"
+                    + R.raw.alarm_rooster*/);
     private long[] mVibratePattern = { 0, 200, 200, 300 };
 
     public GcmIntentService() {
@@ -75,12 +77,11 @@ public class GcmIntentService extends IntentService{
         mNotificationManager = (NotificationManager) this
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-//                new Intent(this, ChatActivity.class), 0);
-//        mNotificationIntent = new Intent(getApplicationContext(),
-//                Timeline.class);
-//        mContentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-//                mNotificationIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        mNotificationIntent = new Intent(getApplicationContext(),
+                MainScreen.class);
+        mContentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                mNotificationIntent, PendingIntent.FLAG_ONE_SHOT);
 
         Notification.Builder notificationBuilder = new Notification.Builder(
                 getApplicationContext())
@@ -89,9 +90,10 @@ public class GcmIntentService extends IntentService{
                 .setAutoCancel(true)
                 .setContentTitle(contentTitle)
                 .setContentText(msg)
-//                .setContentIntent(mContentIntent)
+                .setContentIntent(mContentIntent)
                 .setSound(soundURI)
                 .setVibrate(mVibratePattern);
+        Log.i("cvcllvcv", msg);
 
 //        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 //                this).setSmallIcon(R.mipmap.ic_launcher)
