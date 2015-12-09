@@ -478,9 +478,9 @@ public class WebServiceFunctions {
                         ArrayList<Post_Favorite> fetchedPosts = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject favPost = data.getJSONObject(i);
-                            long id = Long.parseLong(favPost.getString("id"));
-                            long post_id = Long.parseLong(favPost.getString("post_id"));
-                            long user_id = Long.parseLong(favPost.getString("user_id"));
+                            long id = favPost.getLong("id");
+                            long post_id = favPost.getLong("post_id");
+                            long user_id = favPost.getLong("user_id");
                             long date = favPost.getLong("updated_at");
                             Post_Favorite favPostItem = new Post_Favorite(id, post_id, user_id, date);
                             Post_FavoriteDAO.addPostFavorite(favPostItem);
@@ -488,17 +488,31 @@ public class WebServiceFunctions {
                             JSONObject post_obj = favPost.getJSONObject("data_post");
                             String text = post_obj.getString("text");
                             String image = post_obj.getString("image");
-                            int is_hidden = Integer.parseInt(post_obj.getString("is_hidden"));
-                            long category_id = Long.parseLong(post_obj.getString("category_id"));
-                            long post_user_id = Long.parseLong(post_obj.getString("user_id"));
+                            int is_hidden = post_obj.getInt("is_hidden");
+                            long category_id = post_obj.getLong("category_id");
+                            long post_user_id = post_obj.getLong("user_id");
 //                            int comments_no = post_obj.getInt("comment_no");
                             long created_at = post_obj.getLong("updated_at");
                             Posts postItem = new Posts(post_id, text, image, created_at, post_user_id, category_id, is_hidden, 0, 1, -1, -1);
                             PostsDAO.addPost(postItem);
-
+                            JSONObject postOwner = post_obj.getJSONObject("user_owner_of_post");
+                            long post_owner_id = postOwner.getLong("id");
+                            String post_owner_f_name = postOwner.getString("f_name");
+                            String post_owner_l_name = postOwner.getString("l_name");
+                            String post_owner_email = postOwner.getString("email");
+                            String post_owner_image = postOwner.getString("image");
+                            int post_owner_active = postOwner.getInt("active");
+                            long post_owner_created_at = postOwner.getLong("created_at");
+                            long post_owner_last_login = postOwner.getLong("last_login");
+                            String post_owner_code = postOwner.getString("code");
+                            String post_owner_mobile = postOwner.getString("mobile");
+                            int post_owner_is_public = postOwner.getInt("is_public");
+                            Users _user = new Users(post_owner_id, post_owner_f_name, post_owner_l_name, null, post_owner_email, null, post_owner_image.equals("null") ? null : post_owner_image, post_owner_created_at, post_owner_active, post_owner_last_login,
+                                    post_owner_mobile, post_owner_is_public, post_owner_code, -1, -1, -1);
+                            UsersDAO.addUser(_user);
                             fetchedPosts.add(favPostItem);
                         }
-                        long last_id = Long.parseLong(dataObj.getString("last_id"));
+                        long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -659,11 +673,11 @@ public class WebServiceFunctions {
                         ArrayList<Comments> fetchedComments = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject comment = data.getJSONObject(i);
-                            long comment_id = Long.parseLong(comment.getString("id"));
+                            long comment_id = comment.getLong("id");
                             String comment_text = comment.getString("comment");
                             String comment_image = comment.getString("image");
-                            long user_id = Long.parseLong(comment.getString("user_id"));
-                            long post_id = Long.parseLong(comment.getString("post_id"));
+                            long user_id = comment.getLong("user_id");
+                            long post_id = comment.getLong("post_id");
                             long comment_date = comment.getLong("updated_at");
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
@@ -678,10 +692,11 @@ public class WebServiceFunctions {
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
                             JSONObject pos_obj = comment.getJSONObject("post");
-                            PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
-                                    pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
-                                    Integer.parseInt(pos_obj.getString("is_hidden")), -1, -1, -1, -1));
+                            PostsDAO.addPost(new Posts(pos_obj.getLong("id"), pos_obj.getString("text"), pos_obj.getString("image"),
+                                    pos_obj.getLong("updated_at"), pos_obj.getLong("user_id"), pos_obj.getLong("category_id"),
+                                    pos_obj.getInt("is_hidden"), -1, -1, -1, -1));
                             Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
+
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                         }
@@ -1322,8 +1337,10 @@ public class WebServiceFunctions {
     }
 
     public static void deletComment(final Context context, final long user_id, final long commentId, final OnDeleteCommentListener listener) {
+        Map<String, String> params = new HashMap<>();
+        params.put(URL.URLParameters.COMMENT_ID, commentId + "");
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(context).sendPostRequest(URL.DELETE_COMMENT, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -1340,6 +1357,8 @@ public class WebServiceFunctions {
                         user.answers = user.answers - 1;
                         user.save();
 
+                        listener.onDeleted();
+                        listener.onDeleted();
                         listener.onDeleted();
                     } else {
                         listener.onFail(GNLConstants.getStatus(status_code));

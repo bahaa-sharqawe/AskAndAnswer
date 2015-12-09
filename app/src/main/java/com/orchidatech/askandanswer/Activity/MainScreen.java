@@ -164,7 +164,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 break;
             case 5:
                 //search
-                fragment = new SearchAndFavorite();
+                startActivity(new Intent(MainScreen.this, Search.class));
+                overridePendingTransition(R.anim.enter, R.anim.exit);
+
+//                fragment = new SearchAndFavorite();
                 break;
             case 6:
                 //logout

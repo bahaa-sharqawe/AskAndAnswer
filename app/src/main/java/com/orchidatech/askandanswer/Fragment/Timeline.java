@@ -35,8 +35,10 @@ import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Adapter.NotificationsAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
@@ -54,7 +56,9 @@ import java.util.List;
 public class Timeline extends Fragment {
     RecyclerView rv_posts;
     TimelineRecViewAdapter adapter;
+    NotificationsAdapter notificationsAdapter;
     List<Posts> allPosts;
+    List<Notifications> allNotifications;
     FloatingActionButton fab_add_post;
     RelativeLayout rl_num_notifications;
     CoordinatorLayout coordinator_layout;
@@ -67,7 +71,6 @@ public class Timeline extends Fragment {
     ImageView uncolored_logo;
     TextView tv_error;
     ProgressBar pb_loading_main;
-    private List<Posts> allwStoredPosts;
     private SharedPreferences pref;
     private List<Posts> allStoredPosts;
 
@@ -91,18 +94,29 @@ public class Timeline extends Fragment {
         });
         coordinator_layout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
+        rv_notifications = (RecyclerView) view.findViewById(R.id.rv_notifications);
 //        rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
+
+        LinearLayoutManager llm2 = new LinearLayoutManager(getActivity());
+        llm2.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_notifications.setLayoutManager(llm2);
+
         allPosts = new ArrayList<>();
+        allNotifications = new ArrayList<>();
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, coordinator_layout, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
         }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
+
+        notificationsAdapter = new NotificationsAdapter(getActivity(), allNotifications);
         rv_posts.setAdapter(adapter);
+        rv_notifications.setAdapter(notificationsAdapter);
+
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
@@ -133,7 +147,11 @@ public class Timeline extends Fragment {
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mDrawerLayout.openDrawer(GravityCompat.END);
+                if(!mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                    mDrawerLayout.openDrawer(GravityCompat.END);
+                else
+                    mDrawerLayout.closeDrawer(GravityCompat.END);
+
 //                mDrawerLayout.openDrawer(rv_notifications);
             }
         });
@@ -163,8 +181,15 @@ public class Timeline extends Fragment {
             public void onFail(final String error, int errorCode) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                            pb_loading_main.setVisibility(View.GONE);
-                            getFromLocal(error);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pb_loading_main.setVisibility(View.GONE);
+                                getFromLocal(error);
+                            }
+                        }, 3000);
+//                            pb_loading_main.setVisibility(View.GONE);
+//                            getFromLocal(error);
 
                     } else {
                         pb_loading_main.setVisibility(View.GONE);
