@@ -32,7 +32,7 @@ public class UsersDAO {
         user.lastLogin = newUser.getLastLogin();
         user.mobile = newUser.getMobile();
         user.password = newUser.getPassword();
-        if(user.rating != -1f){
+        if(user.rating != -1){
             user.rating = newUser.getRating();
         }
 
@@ -65,7 +65,7 @@ public class UsersDAO {
         existUser.lastLogin = user.getLastLogin();
         existUser.mobile = user.getMobile();
         existUser.password = user.getPassword();
-        if(existUser.rating != -1f){
+        if(existUser.rating != -1){
             existUser.rating = user.getRating();
         }
         if(user.answers != -1){

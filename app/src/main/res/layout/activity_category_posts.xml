@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/rl_parent"
     android:background="#f8f8f8"
-
+android:layoutDirection="ltr"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"

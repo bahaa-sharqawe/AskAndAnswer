@@ -134,6 +134,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.LNAME, socialUser.getLname());
         params.put(URL.URLParameters.IMAGE, socialUser.getAvatarURL() + "");
         params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
+        Log.i("vcbv", URL.SOCIAL_LOGIN);
         Operations.getInstance(context).sendPostRequest(URL.SOCIAL_LOGIN, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -282,12 +283,14 @@ public class WebServiceFunctions {
     }
 
     public static void getCategories(final Context context, final OnCategoriesFetchedListener listener) {
+        Log.i("vcbbvb", URL.GET_CATEGORIES);
         Operations.getInstance(context).sendGetRequest(URL.GET_CATEGORIES, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
                 ///parsing o to fetch all categories then
                 //store in localDB
+                Log.i("vcbbvb", response);
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
@@ -297,7 +300,7 @@ public class WebServiceFunctions {
                         ArrayList<Category> allCategories = new ArrayList<Category>();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject category = data.getJSONObject(i);
-                            Category newCategory = new Category(category.getLong("id"), category.getString("name"),
+                            Category newCategory = new Category(Long.parseLong(category.getString("id")), category.getString("name"),
                                     category.getString("description"));
                             CategoriesDAO.addCategory(newCategory);
                             allCategories.add(newCategory);
@@ -371,6 +374,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.USER_ID, uid + "");
         String url = URL.UPDATE_USER_CATEGORIES + "?" + URL.URLParameters.CATEGORIES_ID + "=" + sb.toString() +
                 "&" + URL.URLParameters.USER_ID + "=" + uid;
+        Log.i("xcxcv", url);
         Operations.getInstance(context).sendPostRequest(URL.UPDATE_USER_CATEGORIES, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -784,6 +788,7 @@ public class WebServiceFunctions {
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+        Log.i("cvv", url);
         Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -811,7 +816,7 @@ public class WebServiceFunctions {
                             fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
                             ///comment's user data
-                            JSONObject user_info = comment.getJSONArray("user_info").getJSONObject(0);
+                            JSONObject user_info = comment.getJSONObject("user_info");
                             String f_name = user_info.getString("f_name");
                             String l_name = user_info.getString("l_name");
                             String email = user_info.getString("email");
@@ -1201,7 +1206,7 @@ public class WebServiceFunctions {
                         JSONArray disabled_arr = data_obj.getJSONArray("data");
                         for (int i = 0; i < disabled_arr.length(); i++) {
                             JSONObject category_obj = disabled_arr.getJSONObject(i);
-                            long id = category_obj.getLong("id");
+                            long id = Long.parseLong(category_obj.getString("id"));
                             String name = category_obj.getString("name");
                             String desc = category_obj.getString("description");
                             Category category = new Category(id, name, desc);

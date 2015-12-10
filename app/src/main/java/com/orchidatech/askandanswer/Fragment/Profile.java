@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,9 +80,7 @@ public class Profile extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user_id = getArguments().getLong(USER_ID_KEY, -1);
-        user = UsersDAO.getUser(user_id);
-        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
     }
 
     @Nullable
@@ -89,7 +88,9 @@ public class Profile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_profile, null, false);
         setActionBar();
-
+        user_id = getArguments().getLong(USER_ID_KEY, -1);
+        user = UsersDAO.getUser(user_id);
+        pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
         fab_edit_profile = (FloatingActionButton) view.findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +110,7 @@ public class Profile extends Fragment {
         tv_answers = (TextView) view.findViewById(R.id.tv_answers);
         tv_asks = (TextView) view.findViewById(R.id.tv_asks);
         rating_person.setRating(user.getRating());
+        Log.i("rating", user.getRating()+"");
         tv_person.setText(user.getFname() + " " + user.getLname());
         Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
             @Override

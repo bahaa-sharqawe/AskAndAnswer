@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/rl_parent"
     android:background="@drawable/main_background"
+    android:layoutDirection="ltr"
     tools:context="com.orchidatech.askandanswer.Activity.SplashScreen">
 
     <ImageView

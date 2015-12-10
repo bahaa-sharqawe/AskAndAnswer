@@ -94,7 +94,7 @@ public class UpdateCategory extends AppCompatActivity {
         WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
             public void onSuccess(ArrayList<Category> newCategories) {
-
+Log.i("vvcvhjhjgjkhvgbv", newCategories.size()+"");
                 categories.addAll(newCategories);
                 original_categories.addAll(newCategories);
                 loadDisabledCategories();
@@ -103,7 +103,9 @@ public class UpdateCategory extends AppCompatActivity {
             @Override
             public void onFail(String cause) {
 //                fetchFromLocal(cause);
+                Crouton.cancelAllCroutons();
                 AppSnackBar.showTopSnackbar(UpdateCategory.this, cause, Color.RED, Color.WHITE);
+                tv_error.setText(cause);
                 rl_error.setVisibility(View.VISIBLE);
                 pv_load.setVisibility(View.GONE);
                 lv_categories.setVisibility(View.GONE);
@@ -126,7 +128,9 @@ public class UpdateCategory extends AppCompatActivity {
 
                          @Override
                          public void onFail(String cause) {
+                             Crouton.cancelAllCroutons();
                              AppSnackBar.showTopSnackbar(UpdateCategory.this, cause, Color.RED, Color.WHITE);
+                             tv_error.setText(cause);
                              rl_error.setVisibility(View.VISIBLE);
                              pv_load.setVisibility(View.GONE);
                              lv_categories.setVisibility(View.GONE);

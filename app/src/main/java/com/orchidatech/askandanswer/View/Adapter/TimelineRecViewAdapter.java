@@ -411,34 +411,72 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     }
 
     private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
-        if(Post_FavoriteDAO.getPost_FavoriteByPostId(post_id, user_id) == null && posts.get(position).getIsFavorite()!=1){
+        Animation favAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
+
+        if(posts.get(position).getIsFavorite()!=1){
             //add to favorite
+            favAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    iv_favorite.setImageResource(R.drawable.ic_fav_on);
+                    posts.get(position).setIsFavorite(1);
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            iv_favorite.startAnimation(favAnimation);
             WebServiceFunctions.addPostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
                 @Override
                 public void onSuccess() {
-                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_added), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    iv_favorite.setImageResource(R.drawable.ic_fav_on);
+//                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_added), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 }
 
                 @Override
                 public void onFail(String error) {
-                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+//                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
                 }
             });
         }else{
             //remove from favorite
+            favAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    iv_favorite.setImageResource(R.drawable.ic_favorite);
+                    posts.get(position).setIsFavorite(0);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            iv_favorite.startAnimation(favAnimation);
             WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
                 @Override
                 public void onSuccess() {
-                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    iv_favorite.setImageResource(R.drawable.ic_favorite);
+//                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                    iv_favorite.setImageResource(R.drawable.ic_favorite);
                 }
 
                 @Override
                 public void onFail(String error) {
-                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+//                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
 
                 }
             });

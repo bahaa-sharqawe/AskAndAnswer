@@ -121,7 +121,7 @@ public class SplashScreen extends Activity {
 
             @Override
             public void onFail(String cause) {
-//                AppSnackBar.show(rl_parent, "Categories updating failed...", Color.RED, Color.WHITE);
+                AppSnackBar.show(rl_parent, "Categories updating failed...", Color.RED, Color.WHITE);
             }
         });
     }

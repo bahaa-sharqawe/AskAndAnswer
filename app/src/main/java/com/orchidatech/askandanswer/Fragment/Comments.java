@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
+import com.orchidatech.askandanswer.Application.MyApplication;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
@@ -197,6 +198,7 @@ public class Comments extends DialogFragment {
                             picturePath = "";
                             image_str = "";
                             rl_comment_photo_preview.setVisibility(View.GONE);
+                            pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.GONE);
                             ed_add_comment.setText("");
                             adapter.addComment(comment);
@@ -270,6 +272,7 @@ public class Comments extends DialogFragment {
                         }
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
+                        if(isAdded())
                         tv_error.setText(getString(R.string.no_comments_found));
                         rl_error.setEnabled(true);
                     }

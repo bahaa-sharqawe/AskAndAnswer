@@ -24,6 +24,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:id="@+id/rv_posts"
+        android:foregroundGravity="left"
         android:divider="@null"
 
         android:listSelector="@android:color/transparent"
@@ -33,7 +34,7 @@
         android:id="@+id/fab_add_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_gravity="right|bottom"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_plus"

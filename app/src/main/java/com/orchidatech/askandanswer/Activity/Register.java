@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.telecom.Call;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -137,6 +138,7 @@ public class Register extends Activity {
 
             @Override
             public void OnRegistered(String reg_id) {
+                Log.i("regi_id", reg_id);
                 registration_id = reg_id;
                 sendRegisterRequest(fname, lname, email, password, reg_id);
             }

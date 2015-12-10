@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card_post"
+    android:layout_gravity="left"
     xmlns:app="http://schemas.android.com/apk/res-auto"
    >
     <RelativeLayout
@@ -11,22 +12,26 @@
         android:layout_height="wrap_content"
         android:background="#fff"
         android:paddingTop="10dp"
+        android:layout_gravity="left"
 
         >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/iv_profile"
+            android:layout_alignParentRight="true"
             android:id="@+id/rl_post_desc">
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:orientation="horizontal"
+               android:layout_alignParentLeft="true"
                android:id="@+id/ll_post_header">
                <RelativeLayout
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
-                   android:layout_weight="1">
+                   android:layout_weight="1"
+                   android:layout_gravity="left">
                    <TextView
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
@@ -57,6 +62,7 @@
                    android:paddingTop="3dp"
                    android:paddingBottom="3dp"
                    android:layout_marginLeft="4dp"
+                   android:layout_gravity="right"
                    android:visibility="visible"/>
 
            </LinearLayout>
@@ -67,6 +73,7 @@
                 android:id="@+id/tv_postContent"
                 android:layout_below="@+id/ll_post_header"
                 android:layout_alignLeft="@+id/ll_post_header"
+                android:layout_alignParentLeft="true"
                 android:text="@string/post_example"
                 android:textSize="16sp"
                 android:layout_marginRight="10dp"
@@ -180,18 +187,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ll_comment"
+                    android:layout_alignParentLeft="true"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/iv_comment"
-                        android:layout_gravity="center_vertical"
+
+                        android:layout_gravity="left"
                         android:src="@drawable/ic_comment"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_comment"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="right|center_vertical"
                         android:text="@string/tv_comment"
                         android:textSize="16sp"
                         android:textColor="#959595"/>
@@ -208,13 +217,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/iv_share"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="left"
                         android:src="@drawable/ic_share"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_share"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_vertical|right"
                         android:text="@string/tv_share"
                         android:textSize="16sp"
                         android:textColor="#959595"/>
@@ -231,13 +240,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/iv_favorite"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="left"
                         android:src="@drawable/ic_favorite"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_favorite"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_vertical|right"
                         android:text="@string/tv_favorite"
                         android:textSize="16sp"
                         android:textColor="#959595"/>

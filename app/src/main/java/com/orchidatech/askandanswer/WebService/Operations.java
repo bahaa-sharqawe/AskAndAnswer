@@ -201,7 +201,6 @@ public class Operations {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-//                        Log.i("cxccx", volleyError.getMessage());
                         listener.onFail(context.getString(R.string.BR_GNL_001));
                     }
                 });

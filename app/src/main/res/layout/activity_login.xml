@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/coordinatorLayout"
+    android:layoutDirection="ltr"
     tools:context="com.orchidatech.askandanswer.Activity.Login">
 <LinearLayout
     android:layout_width="match_parent"
@@ -41,7 +42,6 @@
             android:singleLine="true"
             android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_name"
-            android:drawableStart="@drawable/ic_name"
             android:drawablePadding="10dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
@@ -59,7 +59,6 @@
             android:textColor="#959595"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
-            android:drawableStart="@drawable/ic_password"
             android:layout_below="@+id/ed_email"
             android:drawablePadding="10dp"
             android:paddingLeft="0dp"
@@ -86,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_signup_now"
+                android:layout_alignParentLeft="true"
                 android:textSize="17sp"
                 android:text="@string/tv_signup_now"/>
             <TextView
@@ -121,6 +121,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_fb"
                     android:layout_centerVertical="true"
                     />
@@ -150,6 +151,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_google"
                     />
                 <TextView

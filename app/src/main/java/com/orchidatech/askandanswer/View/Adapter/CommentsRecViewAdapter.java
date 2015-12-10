@@ -296,7 +296,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         ImageView iv_like;
         ImageView iv_unlike;
         RelativeLayout rl_comment_item;
-        CardView card_comment;
+        RelativeLayout card_comment;
         RatingBar user_rating;
 //        ProgressBar pb_photo_load;
         int viewType;
@@ -336,7 +336,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 ll_like = (LinearLayout) itemView.findViewById(R.id.ll_like);
                 ll_unlike = (LinearLayout) itemView.findViewById(R.id.ll_unlike);
                 iv_comment_options = (ImageView) itemView.findViewById(R.id.iv_comment_options);
-                card_comment = (CardView) itemView.findViewById(R.id.card_comment);
+                card_comment = (RelativeLayout ) itemView.findViewById(R.id.card_comment);
                 user_rating = (RatingBar) itemView.findViewById(R.id.rating_user);
                 Log.i("Ffhghg", getAdapterPosition()+"");
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);

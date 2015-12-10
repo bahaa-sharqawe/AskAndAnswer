@@ -6,6 +6,7 @@
     android:id="@+id/rl_parent"
     android:padding="0dp"
     android:background="#f8f8f8"
+    android:layoutDirection="ltr"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.orchidatech.askandanswer.Activity.SelectCategory">
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"

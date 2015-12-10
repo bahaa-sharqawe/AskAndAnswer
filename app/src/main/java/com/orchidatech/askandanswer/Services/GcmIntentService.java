@@ -30,8 +30,8 @@ public class GcmIntentService extends IntentService{
     private Intent mNotificationIntent;
 
     private Uri soundURI = Uri
-            .parse(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString()/*"android.resource://com.orchidatech.askandanswer/"
-                    + R.raw.alarm_rooster*/);
+            .parse(/*android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString()*/"android.resource://com.orchidatech.askandanswer/"
+                    + R.raw.alarm_rooster);
     private long[] mVibratePattern = { 0, 200, 200, 300 };
 
     public GcmIntentService() {
@@ -63,8 +63,7 @@ public class GcmIntentService extends IntentService{
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
                     .equals(messageType)) {
-                sendNotification("Received Message : "
-                        + extras.getString("message"));
+                sendNotification(extras.getString("message"));
 //                Log.i(TAG, "Received: " + extras.toString());
             }
         }
