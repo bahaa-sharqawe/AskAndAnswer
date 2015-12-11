@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nineoldandroids.animation.Animator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -49,6 +50,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -260,6 +262,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 public void onClick(View v) {
                     if (isCommentDialogShown)
                         return;
+//                    ViewAnimation.blink(activity, holder.iv_share);
+                    ViewAnimation.bounce(activity, holder.iv_share);
                     sharePost(posts.get(position), holder.iv_postImage.getDrawable());
 //                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
                 }
@@ -322,6 +326,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         //        ProgressBar  pb_photo_load;
         int viewType;
         public ImageView iv_comment;
+        public ImageView iv_share;
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -346,6 +351,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
+                iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
