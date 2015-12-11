@@ -1,16 +1,21 @@
 package com.orchidatech.askandanswer.WebService;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.UpdateCategory;
-import com.orchidatech.askandanswer.Constant.GNLConstants;
-import com.orchidatech.askandanswer.Constant.URL;
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
@@ -49,6 +54,8 @@ import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,6 +140,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.FNAME, socialUser.getFname());
         params.put(URL.URLParameters.LNAME, socialUser.getLname());
         params.put(URL.URLParameters.IMAGE, socialUser.getAvatarURL() + "");
+        params.put(URL.URLParameters.LAST_LOGIN, System.currentTimeMillis() + "");
         params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Log.i("vcbv", URL.SOCIAL_LOGIN);
         Operations.getInstance(context).sendPostRequest(URL.SOCIAL_LOGIN, params, new OnLoadFinished() {
@@ -196,9 +204,12 @@ public class WebServiceFunctions {
     }
 
 
-    public static void logout(Context context, long user_id, final OnLogoutlistener listener) {
-        String url = URL.LOGOUT + "?" + URL.URLParameters.USER_ID + "=" + user_id;
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+    public static void logout(final Activity activity, long user_id, final OnLogoutlistener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.LOGOUT + "?" + URL.URLParameters.USER_ID + "=" + user_id + "&"
+                + URL.URLParameters.REGISTERATION_ID +"=" + reg_id;
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -207,8 +218,9 @@ public class WebServiceFunctions {
                     int status = data.getInt("status");
                     if (status == 0)
                         listener.onSuccess();
-                    else
-                        listener.onFail(GNLConstants.getStatus(status_code));
+                    else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
                 }
@@ -227,6 +239,7 @@ public class WebServiceFunctions {
     public static void register(final Context context, final String fname, final String lname, final String email,
                                 String password, final String image, String reg_id, final long last_login, final int is_public,
                                 final OnRegisterListener listener) {
+
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.FNAME, fname);
         params.put(URL.URLParameters.LNAME, lname);
@@ -282,9 +295,12 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getCategories(final Context context, final OnCategoriesFetchedListener listener) {
+    public static void getCategories(final Activity activity, final OnCategoriesFetchedListener listener) {
         Log.i("vcbbvb", URL.GET_CATEGORIES);
-        Operations.getInstance(context).sendGetRequest(URL.GET_CATEGORIES, new OnLoadFinished() {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_CATEGORIES + "?" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -306,7 +322,9 @@ public class WebServiceFunctions {
                             allCategories.add(newCategory);
                         }
                         listener.onSuccess(allCategories);
-                    } else {
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
                 } catch (JSONException e) {
@@ -322,16 +340,19 @@ public class WebServiceFunctions {
 
     }
 
-    public static void sendUserCategories(final Context context, final long uid, final ArrayList<Category> selectedCats, final OnSendCategoriesListener listener) {
+    public static void sendUserCategories(final Activity activity, final long uid, final ArrayList<Category> selectedCats, final OnSendCategoriesListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < selectedCats.size(); i++)
             sb.append(selectedCats.get(i).getServerID()).append(i != selectedCats.size() - 1 ? "," : "");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.CATEGORIES_ID, sb.toString());
         params.put(URL.URLParameters.USER_ID, uid + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Log.i("gfgfdgfdgfdgfdgfdgfdg", uid + ", " + sb.toString());
 
-        Operations.getInstance(context).sendPostRequest(URL.SEND_USER_CATEGORIES, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(URL.SEND_USER_CATEGORIES, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -351,7 +372,9 @@ public class WebServiceFunctions {
                             User_CategoriesDAO.addUserCategory(new User_Categories(id, user_id, category_id));
                         }
                         listener.onSendingSuccess();
-                    } else
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onSendingFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onSendingFail(GNLConstants.getStatus(100));
@@ -365,17 +388,20 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void updateUserCategories(final Context context, final long uid, ArrayList<Category> selectedCats, final OnSendCategoriesListener listener) {
+    public static void updateUserCategories(final Activity activity, final long uid, ArrayList<Category> selectedCats, final OnSendCategoriesListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < selectedCats.size(); i++)
             sb.append(selectedCats.get(i).getServerID()).append(i != selectedCats.size() - 1 ? "," : "");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.CATEGORIES_ID, sb.toString());
         params.put(URL.URLParameters.USER_ID, uid + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         String url = URL.UPDATE_USER_CATEGORIES + "?" + URL.URLParameters.CATEGORIES_ID + "=" + sb.toString() +
-                "&" + URL.URLParameters.USER_ID + "=" + uid;
+                "&" + URL.URLParameters.USER_ID + "=" + uid + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("xcxcv", url);
-        Operations.getInstance(context).sendPostRequest(URL.UPDATE_USER_CATEGORIES, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(URL.UPDATE_USER_CATEGORIES, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -395,7 +421,9 @@ public class WebServiceFunctions {
                             User_CategoriesDAO.addUserCategory(new User_Categories(id, user_id, category_id));
                         }
                         listener.onSendingSuccess();
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onSendingFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onSendingFail(GNLConstants.getStatus(100));
@@ -411,10 +439,13 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getUserCategories(final Context context, final long mId, final OnUserCategoriesFetched listener) {
-        String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId;
+    public static void getUserCategories(final Activity activity, final long mId, final OnUserCategoriesFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_USER_CATEGORIES + "?" + URL.URLParameters.USER_ID + "=" + mId
+                + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("sdsdsds", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -437,7 +468,9 @@ public class WebServiceFunctions {
                             allUserCategories.add(user_categories);
                         }
                         listener.onSuccess(allUserCategories);
-                    } else
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -453,10 +486,13 @@ public class WebServiceFunctions {
 
     }
 
-    public static void getUserInfo(final Context context, long user_id, final OnUserInfoFetched listener) {
-        String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id;
+    public static void getUserInfo(final Activity activity, long user_id, final OnUserInfoFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_USER_INFO + "?" + URL.URLParameters.USER_ID + "=" + user_id +
+                URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("sdsdsd", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -487,7 +523,9 @@ public class WebServiceFunctions {
                                 mobile, is_public, code, no_answer, no_ask, user_rating);
                         UsersDAO.addUser(_user);
                         listener.onDataFetched(_user, no_answer, no_ask);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
 
                 } catch (JSONException e) {
@@ -502,12 +540,14 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getUserFavPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserFavPostFetched listener) {
+    public static void getUserFavPosts(final Activity activity, final long uid, int limit, int offset, long last_id, final OnUserFavPostFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_USER_FAV_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit + "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("sdsdsdsdsd", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("dfddggg", response);
@@ -561,7 +601,9 @@ public class WebServiceFunctions {
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedPosts, last_id);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
 
                 } catch (JSONException e) {
@@ -577,12 +619,15 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getCategoryPosts(final Context context, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+    public static void getCategoryPosts(final Activity activity, final long userId, long categoryId, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_Category_POSTS + "?" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.CATEGORY_ID + "=" + categoryId +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id +
-                "&" + URL.URLParameters.USER_ID + "=" + userId;
+                "&" + URL.URLParameters.USER_ID + "=" + userId +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("dfddv", url);
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.CATEGORIES_ID, categoryId + "");
@@ -591,7 +636,7 @@ public class WebServiceFunctions {
         params.put(URL.URLParameters.OFFSET, offset + "");
         params.put(URL.URLParameters.LAST_ID, last_id + "");
 
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -638,7 +683,9 @@ public class WebServiceFunctions {
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
 
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100), 100);
@@ -654,13 +701,16 @@ public class WebServiceFunctions {
 
     }
 
-    public static void getUserPosts(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+    public static void getUserPosts(final Activity activity, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("fdfdfd0", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -686,7 +736,9 @@ public class WebServiceFunctions {
                         }
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100), 100);
@@ -700,13 +752,16 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getUserComments(final Context context, final long uid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+    public static void getUserComments(final Activity activity, final long uid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_USER_Comments + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("sdsddsdsd", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -767,7 +822,9 @@ public class WebServiceFunctions {
                         }
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100), 100);
@@ -781,15 +838,18 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void getPostComments(final Context context, long user_id, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+    public static void getPostComments(final Activity activity, long user_id, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_POST_Comments + "?" +
                 URL.URLParameters.POST_ID + "=" + pid +
                 "&" + URL.URLParameters.USER_ID + "=" + user_id +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("cvv", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("sds", response);
@@ -844,7 +904,9 @@ public class WebServiceFunctions {
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedComments, last_id);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100), 100);
@@ -858,10 +920,13 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void search(final Context context, String textFilter, final long user_id, final OnSearchCompleted listener) {
-        String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) + "&" + URL.URLParameters.USER_ID + "=" + user_id;
+    public static void search(final Activity activity, String textFilter, final long user_id, final OnSearchCompleted listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) +
+                "&" + URL.URLParameters.USER_ID + "=" + user_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("dsds", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -889,7 +954,9 @@ public class WebServiceFunctions {
                             matchedPosts.add(post);
                         }
                         listener.onSuccess(matchedPosts);
-                    } else
+                    }else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -904,13 +971,16 @@ public class WebServiceFunctions {
 
     }
 
-    public static void geTimeLine(final Context context, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+    public static void geTimeLine(final Activity activity, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.GET_TIME_LINE + "?" + URL.URLParameters.USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
-                "&" + URL.URLParameters.LAST_ID + "=" + last_id;
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("sdsadsadsds", url);
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -961,7 +1031,9 @@ public class WebServiceFunctions {
                         long last_id = dataObj.getLong("last_id");
 
                         listener.onSuccess(fetchedPosts, last_id);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
                     Log.i("DCDF", e.getMessage());
@@ -976,14 +1048,17 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void addPostFavorite(final Context context, final long pid, final long uid, final OnPostFavoriteListener listener) {
+    public static void addPostFavorite(final Activity activity, final long pid, final long uid, final OnPostFavoriteListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.ADD_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
-                + URL.URLParameters.POST_ID + "=" + pid;
+                + URL.URLParameters.POST_ID + "=" + pid + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, uid + "");
         params.put(URL.URLParameters.POST_ID, pid + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Log.i("dsds", url);
-        Operations.getInstance(context).sendPostRequest(URL.ADD_POST_FAVORITE, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(URL.ADD_POST_FAVORITE, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -997,7 +1072,9 @@ public class WebServiceFunctions {
                         Post_Favorite post_favorite = new Post_Favorite(post_fav.getLong("id"), post_fav.getLong("post_id"), post_fav.getLong("user_id"), System.currentTimeMillis());
                         Post_FavoriteDAO.addPostFavorite(post_favorite);
                         listener.onSuccess();
-                    } else
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1048,14 +1125,16 @@ public class WebServiceFunctions {
 
     }
 
-    public static void removePostFavorite(final Context context, final long postId, final long uid, final OnPostFavoriteListener listener) {
-        String url = URL.REMOVE_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
-                + URL.URLParameters.POST_ID + "=" + postId;
+    public static void removePostFavorite(final Activity activity, final long postId, final long uid, final OnPostFavoriteListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+//        String url = URL.REMOVE_POST_FAVORITE + "?" + URL.URLParameters.USER_ID + "=" + uid + "&"
+//                + URL.URLParameters.POST_ID + "=" + postId;
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, uid + "");
         params.put(URL.URLParameters.POST_ID, postId + "");
-        Log.i("dfdffdd", url);
-        Operations.getInstance(context).sendPostRequest(URL.REMOVE_POST_FAVORITE, params, new OnLoadFinished() {
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
+        Operations.getInstance(activity).sendPostRequest(URL.REMOVE_POST_FAVORITE, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -1068,7 +1147,9 @@ public class WebServiceFunctions {
                     if (status == 0) {
                         Post_FavoriteDAO.deletePostFavorite(postId, uid);
                         listener.onSuccess();
-                    } else
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1082,10 +1163,14 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void deletePost(final Context context, final long user_id, final long postId, final OnPostDeletedListener listener) {
+    public static void deletePost(final Activity activity, final long user_id, final long postId, final OnPostDeletedListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.POST_ID, postId + "");
-        Operations.getInstance(context).sendPostRequest(URL.DELETE_POST, params, new OnLoadFinished() {
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id + "");
+        params.put(URL.URLParameters.USER_ID, user_id + "");
+        Operations.getInstance(activity).sendPostRequest(URL.DELETE_POST, params, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -1102,7 +1187,9 @@ public class WebServiceFunctions {
                         user.save();
 
                         listener.onDeleted();
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1117,11 +1204,14 @@ public class WebServiceFunctions {
 
     }
 
-    public static void sendMessage(final Context context, long user_id, String message, final OnSendMessageListener listener) {
+    public static void sendMessage(final Activity activity, long user_id, String message, final OnSendMessageListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, user_id + "");
         params.put(URL.URLParameters.MESSAGE, message);
-        Operations.getInstance(context).sendPostRequest(URL.CONTACT_US, params, new OnLoadFinished() {
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
+        Operations.getInstance(activity).sendPostRequest(URL.CONTACT_US, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -1132,7 +1222,9 @@ public class WebServiceFunctions {
                     int status = dataObj.getInt("status");
                     if (status == 0) {
                         listener.onSuccess();
-                    } else {
+                    } else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
 
@@ -1151,14 +1243,17 @@ public class WebServiceFunctions {
 
     }
 
-    public static void addCommentAction(final Context context, final long commentId, long userId, final int action, final OnCommentActionListener listener) {
+    public static void addCommentAction(final Activity activity, final long commentId, long userId, final int action, final OnCommentActionListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, userId + "");
         params.put(URL.URLParameters.COMMENT_ID, commentId + "");
         params.put(URL.URLParameters.ACTION_TYPE, action + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         Log.i("cxcxcx", commentId + ", " + URL.ADD_ACTION);
 
-        Operations.getInstance(context).sendPostRequest(URL.ADD_ACTION, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(URL.ADD_ACTION, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {
@@ -1175,7 +1270,9 @@ public class WebServiceFunctions {
                         int action_type = Integer.parseInt(data.getString("action_type"));
 //                        User_ActionsDAO.addUserAction();
                         listener.onActionSent(new User_Actions(id, comment_id, user_id, System.currentTimeMillis(), action_type));
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1183,17 +1280,21 @@ public class WebServiceFunctions {
             }
 
             @Override
+
             public void onFail(String error) {
                 listener.onFail(error);
             }
         });
     }
 
-    public static void loadDisabledCategories(final Context context, long uid, final OnDisabledCategorieslistener listener) {
-        String url = URL.DISABLED_CATEOGIRES + "?" + URL.URLParameters.USER_ID + "=" + uid;
+    public static void loadDisabledCategories(final Activity activity, long uid, final OnDisabledCategorieslistener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.DISABLED_CATEOGIRES + "?" + URL.URLParameters.USER_ID + "=" + uid +
+                URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("XCXVC", url);
 
-        Operations.getInstance(context).sendGetRequest(url, new OnLoadFinished() {
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -1213,7 +1314,9 @@ public class WebServiceFunctions {
                             disabled.add(category);
                         }
                         listener.onSuccess(disabled);
-                    } else
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1229,9 +1332,10 @@ public class WebServiceFunctions {
         });
 
     }
-    public static void addPost(final Context context, final long user_id, long category_id, String text, String picturePath, long date, int is_hidden, final OnAddPostListener listener) {
-
-        UploadImage uploadImage = new UploadImage(context, URL.ADD_POST, new OnLoadFinished() {
+    public static void addPost(final Activity activity, final long user_id, long category_id, String text, String picturePath, long date, int is_hidden, final OnAddPostListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        UploadImage uploadImage = new UploadImage(activity, URL.ADD_POST, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -1254,9 +1358,10 @@ public class WebServiceFunctions {
                         Users user = UsersDAO.getUser(user_id);
                         user.asks = user.asks + 1;
                         user.save();
-
-                        listener.onSuccess(context.getResources().getString(R.string.saved));
-                    } else {
+                        listener.onSuccess(activity.getResources().getString(R.string.saved));
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
 
@@ -1274,6 +1379,7 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
         uploadImage.addStringProperty(URL.URLParameters.CATEGORY_ID, category_id + "");
         uploadImage.addStringProperty(URL.URLParameters.TEXT, text);
+        uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
 //        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
         uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, is_hidden + "");
         if (!TextUtils.isEmpty(picturePath))
@@ -1282,9 +1388,10 @@ public class WebServiceFunctions {
     }
 
 
-    public static void editPost(final Context context, long post_id, long user_id, long category_id, String postDesc, int imageState, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
-
-        UploadImage uploadImage = new UploadImage(context, URL.EDIT_POST, new OnLoadFinished() {
+    public static void editPost(final Activity activity, long post_id, long user_id, long category_id, String postDesc, int imageState, String picturePath, long date, int isHidden, final OnEditPostListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        UploadImage uploadImage = new UploadImage(activity, URL.EDIT_POST, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -1304,8 +1411,10 @@ public class WebServiceFunctions {
                         long created_at = post.getLong("updated_at");
                         Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_id, category_id, is_hidden, -1, -1, -1, -1);
                         PostsDAO.addPost(postItem);
-                        listener.onSuccess(context.getResources().getString(R.string.saved));
-                    } else {
+                        listener.onSuccess(activity.getResources().getString(R.string.saved));
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
 
@@ -1324,6 +1433,7 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
         uploadImage.addStringProperty(URL.URLParameters.CATEGORY_ID, category_id + "");
         uploadImage.addStringProperty(URL.URLParameters.TEXT, postDesc);
+        uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
 //        uploadImage.addStringProperty(URL.URLParameters.DATE, date + "");
         uploadImage.addStringProperty(URL.URLParameters.IS_HIDDEN, isHidden + "");
 //        Log.i("cxcxcvc", picturePath);
@@ -1334,8 +1444,10 @@ public class WebServiceFunctions {
         uploadImage.sendRequest();
     }
 
-    public static void addComment(final Context context, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
-        UploadImage uploadImage = new UploadImage(context, URL.ADD_COMMENT, new OnLoadFinished() {
+    public static void addComment(final Activity activity, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        UploadImage uploadImage = new UploadImage(activity, URL.ADD_COMMENT, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("sdsdsd", response);
@@ -1359,7 +1471,9 @@ public class WebServiceFunctions {
                         user.answers = user.answers + 1;
                         user.save();
                         listener.onAdded(newComment);
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1374,17 +1488,20 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
         uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId + "");
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
+        uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
         if (!TextUtils.isEmpty(picturePath))
             uploadImage.addFileProperty(URL.URLParameters.IMAGE, picturePath);
         uploadImage.sendRequest();
     }
 
-    public static void updateProfile(final Context context, long id, String fname, String lname, final String password, int is_public, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
+    public static void updateProfile(final Activity activity, long id, String fname, String lname, final String password, int is_public, String picturePath, ArrayList<Category> selectedCategories, final OnUpdateProfileListener listener) {
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < selectedCategories.size(); i++)
 //            sb.append(selectedCategories.get(i).getServerID()).append(i != selectedCategories.size() - 1 ? "," : "");
 //        Log.i("sdsddsfdf", URL.UPDATE_PROFILE);
-        UploadImage uploadImage = new UploadImage(context, URL.UPDATE_PROFILE, new OnLoadFinished() {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        UploadImage uploadImage = new UploadImage(activity, URL.UPDATE_PROFILE, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
                 Log.i("sdssds", response);
@@ -1408,11 +1525,13 @@ public class WebServiceFunctions {
                         int no_tasks = user.getInt("no_ask");
                         int no_answers = user.getInt("no_answer");
                         UsersDAO.addUser(new Users(uid, f_name, l_name, null, email, null, image.equals("null") ? null : image, created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, -1f));
-                        context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                        activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                                 .edit().putString(GNLConstants.SharedPreference.PASSWORD_KEY, password).commit();
 
                         listener.onSuccess();
-                    } else
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
                     listener.onFail(GNLConstants.getStatus(100));
@@ -1427,6 +1546,7 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.ID, id + "");
         uploadImage.addStringProperty(URL.URLParameters.FNAME, fname);
         uploadImage.addStringProperty(URL.URLParameters.LNAME, lname);
+        uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
         if(!TextUtils.isEmpty(password)) {
             Log.i("oasdd", password);
             uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
@@ -1445,13 +1565,16 @@ public class WebServiceFunctions {
         return Uri.encode(s, "utf-8");
     }
 
-    public static void deletComment(final Context context, final long user_id, final long commentId, final OnDeleteCommentListener listener) {
+    public static void deletComment(final Activity activity, final long user_id, final long commentId, final OnDeleteCommentListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.COMMENT_ID, commentId + "");
+        params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
         Log.i("cvcv", URL.DELETE_COMMENT);
 
-        Operations.getInstance(context).sendPostRequest(URL.DELETE_COMMENT, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(URL.DELETE_COMMENT, params, new OnLoadFinished() {
 
 
             @Override
@@ -1471,11 +1594,13 @@ public class WebServiceFunctions {
                         user.save();
                         listener.onDeleted();
 
-                    } else {
+                    }else if(status_code == 5000)
+                        logoutImmediately(activity);
+                    else {
                         listener.onFail(GNLConstants.getStatus(status_code));
                     }
                 } catch (JSONException e) {
-                    listener.onFail(context.getString(R.string.BR_GNL_006));
+                    listener.onFail(activity.getString(R.string.BR_GNL_006));
                 }
 
             }
@@ -1488,11 +1613,43 @@ public class WebServiceFunctions {
         });
 
     }
+
+
+    private static void logoutImmediately(final Activity activity) {
+        SharedPreferences pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = pref.edit();
+        int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
+        final Intent intent = new Intent(activity, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
+        prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE);
+        prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
+        clearLocalDB();
+        if(loginType == com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+            SimpleFacebook.getInstance(activity).logout(new OnLogoutListener() {
+                @Override
+                public void onLogout() {
+                    activity.startActivity(intent);
+                }
+            });
+        }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
+            if(Login.googleAuth != null)
+                Login.googleAuth.googlePlusLogout();
+            else
+                MainScreen.googleAuth.googlePlusLogout();
+            activity.startActivity(intent);
+        }else {
+            activity.startActivity(intent);
+        }
+    }
+
     private static void clearLocalDB() {
         PostsDAO.deleteAllPosts();;
         CommentsDAO.deleteAllComments();
         User_ActionsDAO.deleteAllUserActions();
         Post_FavoriteDAO.deleteAllUserPostFavorite();
+        NotificationsDAO.deleteAllNotifications();
     }
 
 

@@ -140,6 +140,7 @@ public class Register extends Activity {
             public void OnRegistered(String reg_id) {
                 Log.i("regi_id", reg_id);
                 registration_id = reg_id;
+                prefEditor.putString(GNLConstants.SharedPreference.REG_ID, reg_id).commit();
                 sendRegisterRequest(fname, lname, email, password, reg_id);
             }
 

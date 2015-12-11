@@ -79,8 +79,10 @@ public class PostsDAO {
             existPost.num_likes = post.num_dislikes;
             existPost.num_likes = post.num_likes;
         }
-        if(post.isFavorite != -1)
+        if(post.isFavorite != -1) {
+            Log.i("fav",post.isFavorite+"");
             existPost.isFavorite = post.getIsFavorite();
+        }
 
         existPost.save();
     }

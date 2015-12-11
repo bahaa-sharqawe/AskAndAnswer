@@ -59,8 +59,7 @@ public final class Enum {
         }
     }
     public enum COMMENTS_FRAGMENTS {
-        COMMENTS(0),
-        MY_ANSSWERS(1);
+        COMMENTS(0);
         private int type;
         COMMENTS_FRAGMENTS(int i) {
             this.type = i;

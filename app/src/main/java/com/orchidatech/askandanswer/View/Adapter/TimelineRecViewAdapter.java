@@ -139,8 +139,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 }
             });
 
-            if (Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(), current_user_id) != null ||
-                    posts.get(position).getIsFavorite() == 1)
+            if (posts.get(position).getIsFavorite() == 1)
                 holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
             else
                 holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
@@ -193,27 +192,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                     }
                 });
-//                RequestCreator requestCreator;
-//                if(pref.getLong("new_image", -1)==currentPost.getServerID()) {
-//                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage())).fit().skipMemoryCache();
-//                    pref.edit().remove("new_image").commit();
-//                }else
-//                    requestCreator = Picasso.with(activity).load(Uri.parse(currentPost.getImage()));
-//                holder.iv_postImage.setVisibility(View.GONE);
-//                requestCreator.into(holder.iv_postImage, new Callback() {
-//                   @Override
-//                   public void onSuccess() {
-////                       holder.pb_photo_load.setVisibility(View.GONE);
-//                       holder.iv_postImage.setVisibility(View.VISIBLE);
-//                   }
-//
-//                   @Override
-//                   public void onError() {
-////                       holder.pb_photo_load.setVisibility(View.GONE);
-//                       holder.iv_postImage.setVisibility(View.INVISIBLE);
-//
-//                   }
-//               });
             } else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
@@ -444,7 +422,11 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     iv_favorite.setImageResource(R.drawable.ic_fav_on);
-                    posts.get(position).setIsFavorite(1);
+                    posts.get(position).isFavorite = 1;
+                    posts.get(position).save();
+
+                    Log.i("FAVDFD", PostsDAO.getPost(posts.get(position).getServerID()).getIsFavorite() + "");
+//                    PostsDAO.updatePost(posts.get(position));
 
                 }
 
@@ -477,7 +459,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     iv_favorite.setImageResource(R.drawable.ic_favorite);
-                    posts.get(position).setIsFavorite(0);
+                    posts.get(position).isFavorite=0;
+                    posts.get(position).save();
                 }
 
                 @Override

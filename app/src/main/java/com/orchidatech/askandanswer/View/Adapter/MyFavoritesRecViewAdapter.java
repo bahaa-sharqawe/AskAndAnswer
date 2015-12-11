@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,6 +47,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
@@ -64,6 +67,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final OnLastListReachListener lastListReachListener;
+    private final Animation mAnimation;
     private SharedPreferences pref;
     private View parent;
     private ProgressBar pv_load;
@@ -72,6 +76,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
+    private boolean isCommentDialogShown = Boolean.FALSE;
 
     public MyFavoritesRecViewAdapter(Activity activity, ArrayList<Post_Favorite> posts, View parent,
                                       OnLastListReachListener lastListReachListener) {
@@ -80,6 +85,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         this.parent = parent;
         this.lastListReachListener = lastListReachListener;
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
+
     }
 
     @Override
@@ -134,6 +141,43 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     sharePost(currentPost, holder.iv_postImage.getDrawable());
                 }
             });
+            holder.ll_comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isCommentDialogShown)
+                        return;
+                    mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            commentPost(posts.get(position).getServerID());
+//                        holder.ll_comment.setEnabled(true);
+//                        holder.card_post.setEnabled(true);
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    holder.iv_comment.startAnimation(mAnimation);
+                }
+            });
+            holder.ll_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isCommentDialogShown)
+                        return;
+//                    ViewAnimation.blink(activity, holder.iv_share);
+                    ViewAnimation.bounce(activity, holder.iv_share);
+                    sharePost(currentPost, holder.iv_postImage.getDrawable());
+//                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
+                }
+            });
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -170,13 +214,16 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     @Override
                     public void onSuccess() {
 //                        holder.pb_photo_load.setVisibility(View.GONE);
+                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
+                        holder.iv_postImage.setAnimation(anim);
+                        anim.start();
                         holder.iv_postImage.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onError() {
 //                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_postImage.setVisibility(View.GONE);
+                        holder.iv_postImage.setVisibility(View.VISIBLE);
 
                     }
                 });
@@ -236,7 +283,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         ImageView iv_favorite;
 //        ProgressBar  pb_photo_load;
         int viewType;
-
+        public ImageView iv_comment;
+        public ImageView iv_share;
         public FavoriteViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
@@ -249,6 +297,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
+                iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
@@ -325,29 +375,29 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
     private void favoritePost(final int position, final long post_id, long user_id) {
             //remove from favorite
-            WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
+        WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
                 @Override
                 public void onSuccess() {
-                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                    removePost(position);
+//                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 }
 
                 @Override
                 public void onFail(String error) {
-                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+//                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
 
                 }
             });
-
+        removePost(position);
     }
     private void commentPost(long postId) {
+        isCommentDialogShown = true;
         Bundle args = new Bundle();
         args.putLong(ViewPost.POST_ID, postId);
         Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
             @Override
             public void onDismiss() {
-
+                isCommentDialogShown = false;
             }
         });
         comments.setArguments(args);

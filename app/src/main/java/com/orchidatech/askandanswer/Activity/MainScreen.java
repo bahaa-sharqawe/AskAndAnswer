@@ -68,7 +68,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     public static int oldPosition = -1;
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
-    public  AppGoogleAuth googleAuth;
+    public  static AppGoogleAuth googleAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,8 +251,8 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 clearLocalDB();
                 int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
                 prefEditor.remove(GNLConstants.SharedPreference.ID_KEY);
-                prefEditor.remove(GNLConstants.SharedPreference.PASSWORD_KEY);
-                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE).commit();
+                prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE);
+                prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
                 if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
                     SimpleFacebook.getInstance(MainScreen.this).logout(new OnLogoutListener() {
                         @Override
@@ -285,7 +285,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         });
     }
 
-    private void clearLocalDB() {
+    public static void clearLocalDB() {
         PostsDAO.deleteAllPosts();;
         CommentsDAO.deleteAllComments();
         User_ActionsDAO.deleteAllUserActions();

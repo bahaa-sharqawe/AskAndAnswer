@@ -197,6 +197,7 @@ public class Login extends AppCompatActivity {
             public void OnRegistered(String reg_id) {
                 registration_id = reg_id;
                 Log.i("reg_id", reg_id);
+                prefEditor.putString(GNLConstants.SharedPreference.REG_ID, reg_id).commit();
                 if(eventType == 0)
                     sendLoginRequest();
                 else
