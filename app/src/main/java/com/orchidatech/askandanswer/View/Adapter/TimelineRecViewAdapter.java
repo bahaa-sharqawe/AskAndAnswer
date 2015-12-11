@@ -37,8 +37,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -80,6 +80,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private boolean loading = false;
     private boolean isFoundData = true;
     OnLastListReachListener lastListReachListener;
+    private boolean isCommentDialogShown = false;
 
 
     public TimelineRecViewAdapter(Activity activity, List<Posts> posts, View parent,
@@ -92,12 +93,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         imageLoader = ImageLoader.getInstance();
-        ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(activity)
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity)
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
-
-
     }
 
     @Override
@@ -121,7 +120,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
-            }else
+            } else
                 pv_load.setVisibility(View.GONE);
 
         } else {
@@ -138,18 +137,18 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 }
             });
 
-        if(Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(), current_user_id) != null ||
-                posts.get(position).getIsFavorite()==1)
-            holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
-        else
-            holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
+            if (Post_FavoriteDAO.getPost_FavoriteByPostId(currentPost.getServerID(), current_user_id) != null ||
+                    posts.get(position).getIsFavorite() == 1)
+                holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
+            else
+                holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
 
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
 
-            if(pref.getLong(currentPost.getServerID()+"", -1)==currentPost.getServerID()) {
-                if(!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+            if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+                if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
                     File imageFile = imageLoader.getDiscCache().get(pref.getString("prevImage", null));
                     if (imageFile.exists()) {
                         imageFile.delete();
@@ -157,14 +156,14 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     }
                 }
                 Log.i("xcxc", "xxz: " + postImage);
-                pref.edit().remove(currentPost.getServerID()+"").commit();
+                pref.edit().remove(currentPost.getServerID() + "").commit();
                 pref.edit().remove("prevImage").commit();
             }
 
             holder.iv_postImage.setVisibility(View.INVISIBLE);
 
-            if(!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/){
-                                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
+            if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
+                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         view.setVisibility(View.VISIBLE);
@@ -213,12 +212,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //
 //                   }
 //               });
-            }else{
+            } else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
 
-            if(postOwner!=null && postOwner.getImage().length()>0)
+            if (postOwner != null && postOwner.getImage().length() > 0)
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -233,35 +232,34 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.ll_comment.setEnabled(false);
-                    holder.card_post.setEnabled(false);
+                    if (isCommentDialogShown)
+                        return;
                     mAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        holder.ll_comment.setEnabled(false);
-                        holder.card_post.setEnabled(false);
-                    }
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        commentPost(posts.get(position).getServerID(), holder.ll_comment
-                                , holder.card_post);
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            commentPost(posts.get(position).getServerID());
 //                        holder.ll_comment.setEnabled(true);
 //                        holder.card_post.setEnabled(true);
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
+                        }
+                    });
                     holder.iv_comment.startAnimation(mAnimation);
                 }
             });
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isCommentDialogShown)
+                        return;
                     sharePost(posts.get(position), holder.iv_postImage.getDrawable());
 //                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
                 }
@@ -269,37 +267,38 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isCommentDialogShown)
+                        return;
                     favoritePost(position, posts.get(position).getServerID(), current_user_id, holder.iv_favorite);
                 }
             });
             holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(fragment_numeric != Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType())
-                        commentPost(posts.get(position).getServerID(), holder.ll_comment, holder.card_post);
-                    else
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType() && !isCommentDialogShown)
+                        commentPost(posts.get(position).getServerID());
+                    else if (fragment_numeric == Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType() && !isCommentDialogShown)
                         viewPost(posts.get(position).getServerID());
                 }
             });
             holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
-                    categoryClick(postCategory.getServerID(), postOwner.getServerID());
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType() && !isCommentDialogShown)
+                        categoryClick(postCategory.getServerID(), postOwner.getServerID());
                 }
             });
 
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
-                                fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
-                            goToProfile(postOwner.getServerID());
+                @Override
+                public void onClick(View v) {
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
+                            fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
+                        goToProfile(postOwner.getServerID());
                 }
             });
         }
     }
-
 
 
     @Override
@@ -320,7 +319,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         CardView card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
-//        ProgressBar  pb_photo_load;
+        //        ProgressBar  pb_photo_load;
         int viewType;
         public ImageView iv_comment;
 
@@ -371,20 +370,20 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            if(pv_load != null)
-            pv_load.setVisibility(View.VISIBLE);
+            if (pv_load != null)
+                pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             notifyDataSetChanged();
 
         } else {
-            if(isErrorConnection){
-                if(pv_load != null && btn_reload != null) {
+            if (isErrorConnection) {
+                if (pv_load != null && btn_reload != null) {
                     btn_reload.setVisibility(View.VISIBLE);
                     btn_reload.setEnabled(true);
                     pv_load.setVisibility(View.GONE);
                 }
-            }else {
-                if(pv_load != null && btn_reload != null) {
+            } else {
+                if (pv_load != null && btn_reload != null) {
                     pv_load.setVisibility(View.GONE);
                     btn_reload.setVisibility(View.GONE);
                 }
@@ -398,17 +397,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
     private void optimizeLocalDB() {
         String s = "(";
-        for(int i = 0; i < posts.size(); i++){
+        for (int i = 0; i < posts.size(); i++) {
             s += posts.get(i).getServerID();
-            s += i!=posts.size()-1?",":"";
+            s += i != posts.size() - 1 ? "," : "";
         }
         s += ")";
         PostsDAO.deleteUnNeeded(s);
     }
 
-    public void addFromLocal(List<Posts> newPosts){
+    public void addFromLocal(List<Posts> newPosts) {
         posts.addAll(newPosts);
-        if(pv_load != null)
+        if (pv_load != null)
             pv_load.setVisibility(View.GONE);
         isFoundData = false;
         notifyDataSetChanged();
@@ -419,16 +418,16 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if(postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+        if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
             String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
-            activity.startActivity(Intent.createChooser(intent, "Share using"));
+        activity.startActivity(Intent.createChooser(intent, "Share using"));
     }
 
     private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
 
-        if(posts.get(position).getIsFavorite()!=1){
+        if (posts.get(position).getIsFavorite() != 1) {
             //add to favorite
             mAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -461,7 +460,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
                 }
             });
-        }else{
+        } else {
             //remove from favorite
             mAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -499,15 +498,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         }
     }
 
-    private void commentPost(long postId, final LinearLayout ll_comment, final CardView card_post) {
+    private void commentPost(long postId) {
+        isCommentDialogShown = true;
         Bundle args = new Bundle();
         args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments(new OnDialogDismiss(){
+        Comments comments = new Comments(new OnDialogDismiss() {
 
             @Override
             public void onDismiss() {
-                ll_comment.setEnabled(true);
-                card_post.setEnabled(true);
+                isCommentDialogShown = false;
             }
         });
         comments.setArguments(args);
@@ -523,6 +522,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         intent.putExtra(CategoryPosts.USER_ID, user_id);
         activity.startActivity(intent);
     }
+
     private void viewPost(long post_id) {
         Intent intent = new Intent(activity, ViewPost.class);
         intent.putExtra(ViewPost.POST_ID, post_id);
@@ -549,7 +549,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ft.commit();
         mFragmentManager.executePendingTransactions();
     }
-    public interface OnDialogDismiss{
+
+    public interface OnDialogDismiss {
         void onDismiss();
     }
 }
