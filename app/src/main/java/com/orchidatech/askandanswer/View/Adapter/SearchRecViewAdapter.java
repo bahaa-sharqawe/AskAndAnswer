@@ -215,7 +215,12 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private void commentPost(long postId) {
         Bundle args = new Bundle();
         args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments();
+        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
+            @Override
+            public void onDismiss() {
+
+            }
+        });
         comments.setArguments(args);
         comments.show(activity.getFragmentManager(), "Comments");
     }

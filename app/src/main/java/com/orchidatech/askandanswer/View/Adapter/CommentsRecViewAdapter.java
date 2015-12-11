@@ -375,7 +375,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                     btn_reload.setVisibility(View.GONE);
                 }
                 isFoundData = false;
-                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+//                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
         }
         loading = false;

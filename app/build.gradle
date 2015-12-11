@@ -16,7 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
@@ -46,22 +46,22 @@ dependencies {
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.alexbbb:uploadservice:1.4'
-//        compile 'org.apache.httpcomponents:httpclient:4.3.6'
-//        compile 'org.apache.httpcomponents:httpmime:4.3.6'
+    //        compile 'org.apache.httpcomponents:httpclient:4.3.6'
+    //        compile 'org.apache.httpcomponents:httpmime:4.3.6'
     //    compile 'org.apache.httpcomponents:httpcore:4.3.3'
     //    compile 'com.github.asne:asne-googleplus:0.3.3'
     //    compile('com.github.androidsocialnetworks:library:0.3.7@aar') {
     //        transitive = true
     //    }
-        compile files('libs/httpclient-4.3.6.jar')
-            compile files('libs/httpcore-4.3.3.jar')
-            compile files('libs/httpmime-4.3.6.jar')
+    compile files('libs/httpclient-4.3.6.jar')
+    compile files('libs/httpcore-4.3.3.jar')
+    compile files('libs/httpmime-4.3.6.jar')
     compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'com.androidadvance:topsnackbar:0.0.9'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         // exclusion is not necessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
-
     compile 'com.miguelcatalan:materialsearchview:1.3.0'
+    compile files('libs/facebook-android-sdk.jar')
 }

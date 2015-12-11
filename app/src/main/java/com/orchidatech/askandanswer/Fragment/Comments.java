@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -44,6 +45,7 @@ import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
+import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnCommentAddListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentFetchListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
@@ -60,6 +62,7 @@ import java.util.List;
  */
 public class Comments extends DialogFragment {
     private static final int RESULT_LOAD_IMAGE = 1;
+    private final TimelineRecViewAdapter.OnDialogDismiss listener;
     AlertDialog dialog;
     RecyclerView mRecyclerView;
     CommentsRecViewAdapter adapter;
@@ -86,6 +89,10 @@ public class Comments extends DialogFragment {
     private long user_id;
     private int numOfFetchedFromServer = 0;
     private SharedPreferences pref;
+
+    public Comments(TimelineRecViewAdapter.OnDialogDismiss listener) {
+        this.listener = listener;
+    }
 
 
     @Override
@@ -380,4 +387,10 @@ public class Comments extends DialogFragment {
         return super.onContextItemSelected(item);
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if(listener != null)
+            listener.onDismiss();
+    }
 }

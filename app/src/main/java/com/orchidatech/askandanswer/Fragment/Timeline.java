@@ -221,4 +221,23 @@ public class Timeline extends Fragment {
         uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i("mmmmmmmmmmm", "pause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i("mmmmmmmmmmm", "stop");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i("mmmmmmmmmmm", "detach");
+
+    }
 }

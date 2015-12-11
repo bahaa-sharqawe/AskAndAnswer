@@ -8,10 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,7 +36,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -54,16 +50,13 @@ import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -78,6 +71,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final int fragment_numeric;
     private final long current_user_id;
     private final SharedPreferences pref;
+    private final Animation mAnimation;
     private ImageLoader imageLoader;
     private ProgressBar pv_load;
     private Button btn_reload;
@@ -101,6 +95,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(activity)
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
         ImageLoader.getInstance().init(config);
+        mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
 
 
     }
@@ -238,7 +233,30 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    commentPost(posts.get(position).getServerID());
+                    holder.ll_comment.setEnabled(false);
+                    holder.card_post.setEnabled(false);
+                    mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        holder.ll_comment.setEnabled(false);
+                        holder.card_post.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        commentPost(posts.get(position).getServerID(), holder.ll_comment
+                                , holder.card_post);
+//                        holder.ll_comment.setEnabled(true);
+//                        holder.card_post.setEnabled(true);
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                    holder.iv_comment.startAnimation(mAnimation);
                 }
             });
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
@@ -257,12 +275,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.card_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if((fragment_numeric == Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType()
-                       || (fragment_numeric == Enum.POSTS_FRAGMENTS.PROFILE.getNumericType()
-                       || fragment_numeric == Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType()
-                       || fragment_numeric == Enum.POSTS_FRAGMENTS.MY_ANSWERS_POSTS.getNumericType())
-                       && current_user_id != posts.get(position).getUserID()))
-                        commentPost(posts.get(position).getServerID());
+                    if(fragment_numeric != Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType())
+                        commentPost(posts.get(position).getServerID(), holder.ll_comment, holder.card_post);
                     else
                         viewPost(posts.get(position).getServerID());
                 }
@@ -308,6 +322,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageView iv_favorite;
 //        ProgressBar  pb_photo_load;
         int viewType;
+        public ImageView iv_comment;
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -331,6 +346,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
@@ -373,7 +389,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     btn_reload.setVisibility(View.GONE);
                 }
                 isFoundData = false;
-                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+//                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
 //                optimizeLocalDB();
             }
         }
@@ -411,11 +427,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     }
 
     private void favoritePost(final int position, final long post_id, long user_id, final ImageView iv_favorite) {
-        Animation favAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
 
         if(posts.get(position).getIsFavorite()!=1){
             //add to favorite
-            favAnimation.setAnimationListener(new Animation.AnimationListener() {
+            mAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -433,7 +448,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                 }
             });
-            iv_favorite.startAnimation(favAnimation);
+            iv_favorite.startAnimation(mAnimation);
             WebServiceFunctions.addPostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
                 @Override
@@ -448,7 +463,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             });
         }else{
             //remove from favorite
-            favAnimation.setAnimationListener(new Animation.AnimationListener() {
+            mAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -465,7 +480,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                 }
             });
-            iv_favorite.startAnimation(favAnimation);
+            iv_favorite.startAnimation(mAnimation);
             WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
                 @Override
@@ -484,14 +499,22 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         }
     }
 
-    private void commentPost(long postId) {
+    private void commentPost(long postId, final LinearLayout ll_comment, final CardView card_post) {
         Bundle args = new Bundle();
         args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments();
+        Comments comments = new Comments(new OnDialogDismiss(){
+
+            @Override
+            public void onDismiss() {
+                ll_comment.setEnabled(true);
+                card_post.setEnabled(true);
+            }
+        });
         comments.setArguments(args);
         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down,R.animator.slide_up, R.animator.slide_down);
+//        ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down,R.animator.slide_up, R.animator.slide_down);
         comments.show(ft, "Comments");
+
     }
 
     private void categoryClick(long category_id, long user_id) {
@@ -525,5 +548,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ft.addToBackStack(null);
         ft.commit();
         mFragmentManager.executePendingTransactions();
+    }
+    public interface OnDialogDismiss{
+        void onDismiss();
     }
 }
