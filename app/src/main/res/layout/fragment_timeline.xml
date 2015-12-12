@@ -21,12 +21,10 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
         android:id="@+id/rv_posts"
         android:foregroundGravity="left"
         android:divider="@null"
-
+        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
 

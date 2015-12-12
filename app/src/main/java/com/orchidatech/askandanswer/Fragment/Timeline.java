@@ -116,9 +116,9 @@ public class Timeline extends Fragment {
             }
         }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
         if(allNotifications.size() > 0)
-            tv_no_notification.setVisibility(View.VISIBLE);
-        else
             tv_no_notification.setVisibility(View.INVISIBLE);
+        else
+            tv_no_notification.setVisibility(View.VISIBLE);
         notificationsAdapter = new NotificationsAdapter(getActivity(), allNotifications);
         rv_posts.setAdapter(adapter);
         rv_notifications.setAdapter(notificationsAdapter);

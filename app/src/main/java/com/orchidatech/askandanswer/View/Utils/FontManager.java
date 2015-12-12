@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 public class FontManager {
     public static final String ROBOTO_LIGHT = "roboto_light";
     public static final String ROBOTO_MEDIUM = "roboto_medium";
+    public static final String ROBOTO_REGULAR = "roboto_regular";
 
     public static FontManager instance;
     private static AssetManager mAssetManager;
@@ -28,6 +29,9 @@ public class FontManager {
                 break;
             case "roboto_medium":
                 typeface = Typeface.createFromAsset(mAssetManager, "Fonts/roboto_medium.ttf");
+                break;
+            case "roboto_regular":
+                typeface = Typeface.createFromAsset(mAssetManager, "Fonts/roboto_regular.ttf");
                 break;
         }
         return typeface;

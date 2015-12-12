@@ -53,6 +53,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -74,6 +75,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final long current_user_id;
     private final SharedPreferences pref;
     private final Animation mAnimation;
+    private final FontManager fontManager;
     private ImageLoader imageLoader;
     private ProgressBar pv_load;
     private Button btn_reload;
@@ -99,6 +101,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
+        fontManager = FontManager.getInstance(activity.getAssets());
     }
 
     @Override
@@ -130,7 +133,11 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
             final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
+            holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+            holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,7 +152,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
 
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
+            holder.tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
             holder.tv_postContent.setText(currentPost.getText());
+            holder.tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+            holder.tv_share.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+            holder.tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+            holder.tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
             String postImage = currentPost.getImage();
 
             if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
@@ -293,12 +306,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         TextView tv_postDate;
         TextView tv_postContent;
         TextView tv_post_category;
+        TextView tv_favorite;
+        TextView tv_share;
+        TextView tv_comment;
         ImageView iv_postImage;
-        RelativeLayout rl_postEvents;
+        LinearLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
-        CardView card_post;
+        RelativeLayout card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
         //        ProgressBar  pb_photo_load;
@@ -327,17 +343,20 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
+                tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
+                tv_share = (TextView) itemView.findViewById(R.id.tv_share);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
+                rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                card_post = (CardView) itemView.findViewById(R.id.card_post);
+                card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }

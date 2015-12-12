@@ -18,6 +18,7 @@
             android:elevation="0dp"
             android:id="@+id/toolbar"
             android:background="#2dbda6"
+            android:paddingLeft="12dp"
             android:minHeight="?attr/actionBarSize"
             android:layout_alignParentLeft="true"
             android:gravity="left"
@@ -27,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rl_num_notifications"
-    android:gravity="left"
+                    android:gravity="left"
                 android:visibility="visible">
                 <TextView
                     android:layout_width="wrap_content"

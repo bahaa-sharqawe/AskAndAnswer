@@ -19,6 +19,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnMainDrawerItemClickListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -31,6 +32,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_MENU = 1;
+    private final FontManager fontManager;
     private SharedPreferences pref;
 
     ArrayList<DrawerItem> items;
@@ -42,6 +44,8 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         this.items = items;
         this.listener = listener;
         pref = context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        fontManager = FontManager.getInstance(context.getAssets());
+
     }
 
     @Override
@@ -64,7 +68,11 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
             Users user = UsersDAO.getUser(pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
             if (user != null) {
                 holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
+                holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
                 holder.tv_person_email.setText(user.getEmail());
+                holder.tv_person_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
                 holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
                     @Override
@@ -83,6 +91,8 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
             DrawerItem item = items.get(position - 1);//0 is header
             holder.tv_drawer_item.setText(item.getTitle());
             holder.iv_drawer_item.setImageResource(item.getImage());
+            holder.tv_drawer_item.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
         }
     }
 

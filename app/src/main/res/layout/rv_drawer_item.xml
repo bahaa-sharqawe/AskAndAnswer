@@ -19,5 +19,6 @@
             android:id="@+id/tv_drawer_item"
             android:layout_toRightOf="@+id/iv_drawer_item"
             android:layout_centerVertical="true"
+            android:textColor="#4d4d4d"
             android:text="Profile" />
 </RelativeLayout>
