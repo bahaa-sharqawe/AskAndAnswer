@@ -1,15 +1,54 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item android:left="2dp" android:top="2dp" >
+                <shape android:shape="rectangle">
+
+                    <corners android:radius="3dp" />
+                    <solid android:color="#dea42b" />
+                </shape>
+            </item>
+            <item android:bottom="2dp" android:right="2dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#ffffff" />
+                    <gradient android:angle="90" android:endColor="#e8a823" android:startColor="#e8a823" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_pressed="true">
+        <layer-list>
+            <item android:left="2dp" android:top="2dp">
+                <shape android:shape="rectangle">
+                    <corners android:radius="3dp" />
+                    <solid android:color="#dea42b" />
+                </shape>
+            </item>
+            <item android:bottom="2dp" android:right="2dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#ffffff" />
+                    <gradient android:angle="90" android:endColor="#e8a823" android:startColor="#e8a823" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
     <item>
         <layer-list>
         <item android:left="2dp" android:top="2dp">
-            <shape>
+            <shape android:shape="rectangle">
             <corners android:radius="3dp" />
+
             <solid android:color="#dea42b" />
         </shape>
         </item>
         <item android:bottom="2dp" android:right="2dp">
-            <shape>
-            <gradient android:angle="270" android:endColor="#f0ae24" android:startColor="#f0ae24" />
+            <shape android:shape="rectangle">
+                <solid android:color="#ffffff" />
+
+                <gradient android:angle="90" android:endColor="#f0ae24" android:startColor="#f0ae24" />
             <corners android:radius="4dp" />
         </shape>
         </item>

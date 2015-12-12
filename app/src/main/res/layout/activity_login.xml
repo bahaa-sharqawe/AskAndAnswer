@@ -77,8 +77,8 @@
             android:textColor="#fff"
             android:textSize="20dip"
             android:padding="10dp"
-            android:elevation="0dp"
             android:layout_marginTop="20dp"
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/btn_login" />
         <RelativeLayout
             android:layout_width="match_parent"

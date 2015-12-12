@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#959595"
+            android:textColor="@color/ed_text_color"
             android:singleLine="true"
             android:inputType="text"
             android:drawableLeft="@drawable/ic_name"
@@ -65,12 +65,13 @@
             android:paddingLeft="0dp"
             android:hint="@string/ed_fname_hint"
             android:imeOptions="actionNext"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:id="@+id/ed_fname" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#959595"
+            android:textColor="@color/ed_text_color"
             android:singleLine="true"
             android:inputType="text"
             android:drawableLeft="@drawable/ic_name"
@@ -79,6 +80,7 @@
             android:paddingBottom="20dp"
             android:paddingLeft="0dp"
             android:layout_below="@+id/ed_fname"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:hint="@string/ed_lname_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_lname" />
@@ -88,7 +90,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:textSize="16sp"
-            android:textColor="#959595"
+            android:textColor="@color/ed_text_color"
             android:singleLine="true"
             android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_email"
@@ -96,6 +98,7 @@
             android:drawablePadding="10dip"
             android:paddingLeft="0dp"
             android:hint="@string/ed_email_hint"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:imeOptions="actionNext"
             android:id="@+id/ed_email" />
         <EditText
@@ -104,7 +107,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:textSize="16sp"
-            android:textColor="#959595"
+            android:textColor="@color/ed_text_color"
             android:singleLine="true"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
@@ -113,6 +116,7 @@
             android:paddingLeft="0dp"
             android:hint="@string/ed_password_hint"
             android:imeOptions="actionNext"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:id="@+id/ed_password" />
         <EditText
             android:layout_width="match_parent"
@@ -120,7 +124,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:textSize="16sp"
-            android:textColor="#959595"
+            android:textColor="@color/ed_text_color"
             android:singleLine="true"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
@@ -128,6 +132,7 @@
             android:drawablePadding="10dp"
             android:paddingLeft="0dp"
             android:hint="@string/ed_repassword_hint"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:imeOptions="actionDone"
             android:id="@+id/ed_repassword" />
 
