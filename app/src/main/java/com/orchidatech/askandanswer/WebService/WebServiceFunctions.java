@@ -299,7 +299,11 @@ public class WebServiceFunctions {
         Log.i("vcbbvb", URL.GET_CATEGORIES);
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
-        String url = URL.GET_CATEGORIES + "?" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        long user_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getLong(GNLConstants.SharedPreference.ID_KEY, -1);
+
+        String url = URL.GET_CATEGORIES + "?" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id + "&" +
+                URL.URLParameters.USER_ID + "=" + user_id;
         Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
 
             @Override
@@ -929,6 +933,7 @@ public class WebServiceFunctions {
         Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
+                Log.i("ds44ds", response);
                 try {
                     JSONObject dataObj = new JSONObject(response);
                     int status_code = dataObj.getInt("statusCode");
@@ -1290,7 +1295,7 @@ public class WebServiceFunctions {
     public static void loadDisabledCategories(final Activity activity, long uid, final OnDisabledCategorieslistener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
-        String url = URL.DISABLED_CATEOGIRES + "?" + URL.URLParameters.USER_ID + "=" + uid +
+        String url = URL.DISABLED_CATEOGIRES + "?" + URL.URLParameters.USER_ID + "=" + uid + "&" +
                 URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Log.i("XCXVC", url);
 
@@ -1571,6 +1576,7 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.COMMENT_ID, commentId + "");
         params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
+        params.put(URL.URLParameters.USER_ID, user_id+"");
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
         Log.i("cvcv", URL.DELETE_COMMENT);
 

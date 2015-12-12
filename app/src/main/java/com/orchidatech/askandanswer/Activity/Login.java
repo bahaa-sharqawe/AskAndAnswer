@@ -266,7 +266,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this, Register.class));
-                overridePendingTransition(R.anim.slide_in_up_dialog, R.anim.slide_out_down_dialog);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 //                finish();
             }
         });

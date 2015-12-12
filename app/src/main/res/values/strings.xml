@@ -158,4 +158,5 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="forget_password">Forget password</string>
     <string name="no_comments">No comments</string>
     <string name="logging_out">Logging out...</string>
+    <string name="deleteSmall">Delete</string>
 </resources>

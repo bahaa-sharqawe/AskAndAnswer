@@ -57,11 +57,12 @@ public class CategoryPosts extends AppCompatActivity {
         setContentView(R.layout.activity_category_posts);
         setCustomActionBar();
         categoryId = getIntent().getLongExtra(CATEGORY_KEY, -1);
-        userId = getIntent().getLongExtra(USER_ID, -1);
+//        userId = getIntent().getLongExtra(USER_ID, -1);
         initializeFields();
     }
 
     private void initializeFields() {
+        userId = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, MODE_PRIVATE).getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         posts = new ArrayList<>();
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
         rv_posts = (RecyclerView) this.findViewById(R.id.rv_posts);

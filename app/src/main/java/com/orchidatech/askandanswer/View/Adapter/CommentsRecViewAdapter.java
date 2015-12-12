@@ -41,6 +41,7 @@ import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Database.Model.Users;
+import com.orchidatech.askandanswer.Fragment.CommentOptionsDialog;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.DeleteComment;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
@@ -244,22 +245,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //   /*                 || (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType() &&
 //                         comments.get(position).getUserID() == current_user_id)*/)
 //               holder.rl_comment_item.setOnCreateContextMenuListener(this);
-            holder.iv_comment_options.setOnLongClickListener(new View.OnLongClickListener() {
+
+            holder.iv_comment_options.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    setPosition(position);
-                    return false;
+                public void onClick(View v) {
+                    viewOptionsMenu(position, v);
                 }
             });
-            holder.iv_comment_options.setOnCreateContextMenuListener(CommentsRecViewAdapter.this);
-//            holder.iv_comment_options.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-////                    viewOptionsMenu(position, v);
-//                    setPosition(position);
-//                    holder.rl_comment_item.setOnCreateContextMenuListener(CommentsRecViewAdapter.this);
-//                }
-//            });
             if(commentOwner.getServerID() == current_user_id){
                 holder.iv_comment_options.setVisibility(View.VISIBLE);
             }else
@@ -274,26 +266,32 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         inflater.inflate(R.menu.comment_menu, menu);
     }
     private void viewOptionsMenu(final int position, View v) {
-
-        PopupMenu pop = new PopupMenu(activity, v);
-        pop.inflate(R.menu.comment_menu);
-//        pop.getMenu().add(Menu.NONE, R.id.delete_comment, Menu.NONE, "Delete");
-        pop.show();
-        pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        CommentOptionsDialog dialog = new CommentOptionsDialog(new CommentOptionsDialog.OnCommentOptionsListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                /*if(id == R.id.edit_comment){
-                    commentOptionListener.onEditComment(commentId);
-                    return true;
-                }else */
-                if (id == R.id.delete_comment) {
-                    deleteComment(position);
-                    return true;
-                }
-                return false;
+            public void onDelete() {
+                deleteComment(position);
             }
         });
+        dialog.show(activity.getFragmentManager(), "Options");
+//        PopupMenu pop = new PopupMenu(activity, v);
+//        pop.inflate(R.menu.comment_menu);
+////        pop.getMenu().add(Menu.NONE, R.id.delete_comment, Menu.NONE, "Delete");
+//        pop.show();
+//        pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                int id = item.getItemId();
+//                /*if(id == R.id.edit_comment){
+//                    commentOptionListener.onEditComment(commentId);
+//                    return true;
+//                }else */
+//                if (id == R.id.delete_comment) {
+//                    deleteComment(position);
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private void deleteComment(final int position) {
