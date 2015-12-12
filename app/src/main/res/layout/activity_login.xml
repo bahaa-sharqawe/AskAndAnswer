@@ -46,7 +46,6 @@
             android:drawablePadding="10dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-
             android:paddingLeft="0dp"
             android:hint="@string/ed_name_hint"
             android:imeOptions="actionNext"

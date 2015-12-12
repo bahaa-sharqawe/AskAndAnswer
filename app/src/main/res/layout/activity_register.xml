@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/ll_parent"
     android:layoutDirection="ltr"
+    android:background="#fff"
     tools:context="com.orchidatech.askandanswer.Activity.Register">
 <LinearLayout
     android:layout_width="match_parent"
@@ -17,7 +18,6 @@
 <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="180dp"
-
         android:background="@drawable/main_background"
         >
         <ImageView
@@ -27,6 +27,7 @@
             android:src="@drawable/logo"
             android:contentDescription="@string/contenDesc_logo"
             android:id="@+id/iv_logo" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +41,10 @@
 
 
     </RelativeLayout>
-
+    <View android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#e8e7e7"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -56,6 +60,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:singleLine="true"
             android:inputType="text"
             android:drawableLeft="@drawable/ic_name"
@@ -65,13 +70,13 @@
             android:paddingLeft="0dp"
             android:hint="@string/ed_fname_hint"
             android:imeOptions="actionNext"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:id="@+id/ed_fname" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:singleLine="true"
             android:inputType="text"
             android:drawableLeft="@drawable/ic_name"
@@ -80,7 +85,6 @@
             android:paddingBottom="20dp"
             android:paddingLeft="0dp"
             android:layout_below="@+id/ed_fname"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:hint="@string/ed_lname_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_lname" />
@@ -91,6 +95,7 @@
             android:paddingBottom="20dp"
             android:textSize="16sp"
             android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:singleLine="true"
             android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_email"
@@ -98,7 +103,6 @@
             android:drawablePadding="10dip"
             android:paddingLeft="0dp"
             android:hint="@string/ed_email_hint"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:imeOptions="actionNext"
             android:id="@+id/ed_email" />
         <EditText
@@ -108,6 +112,7 @@
             android:paddingBottom="20dp"
             android:textSize="16sp"
             android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:singleLine="true"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
@@ -116,7 +121,6 @@
             android:paddingLeft="0dp"
             android:hint="@string/ed_password_hint"
             android:imeOptions="actionNext"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:id="@+id/ed_password" />
         <EditText
             android:layout_width="match_parent"
@@ -125,6 +129,7 @@
             android:paddingBottom="20dp"
             android:textSize="16sp"
             android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:singleLine="true"
             android:inputType="textPassword"
             android:drawableLeft="@drawable/ic_password"
@@ -132,7 +137,6 @@
             android:drawablePadding="10dp"
             android:paddingLeft="0dp"
             android:hint="@string/ed_repassword_hint"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:imeOptions="actionDone"
             android:id="@+id/ed_repassword" />
 
@@ -140,7 +144,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tv_signup"
-            android:background="@drawable/btn_enter_backgnd"
+            android:background="@drawable/btn_selector"
+            style="?android:attr/borderlessButtonStyle"
             android:textColor="#fff"
             android:textSize="20dp"
             android:textAllCaps="false"

@@ -25,6 +25,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnForgetPasswordListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -40,6 +41,7 @@ public class ForgetPassword extends AppCompatActivity {
     ImageView iv_back;
     private Animation animFade;
     private CoordinatorLayout ll_parent;
+    private FontManager fontManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +49,19 @@ public class ForgetPassword extends AppCompatActivity {
         setContentView(R.layout.activity_forget_password);
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         resizeLogo();
+        fontManager = FontManager.getInstance(getAssets());
         ed_email = (EditText) this.findViewById(R.id.ed_email);
-        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_new_password = (EditText) this.findViewById(R.id.ed_new_password);
-        ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_repassword = (EditText) this.findViewById(R.id.ed_repassword);
-        ed_repassword.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_repassword.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+
+        ed_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_new_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_repassword.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        btn_update_password = (Button) this.findViewById(R.id.btn_update_password);
         btn_update_password = (Button) this.findViewById(R.id.btn_update_password);
         btn_update_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +75,7 @@ public class ForgetPassword extends AppCompatActivity {
                 }
             }
         });
+        btn_update_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
         iv_back = (ImageView) this.findViewById(R.id.iv_back);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override

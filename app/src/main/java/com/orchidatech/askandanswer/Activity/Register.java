@@ -30,6 +30,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -58,6 +59,7 @@ public class Register extends Activity {
     private String email;
     private String password;
     private String repassword;
+    private FontManager fontManager;
 
 
     @Override
@@ -70,19 +72,27 @@ public class Register extends Activity {
     }
 
     private void initializeFields() {
+        fontManager = FontManager.getInstance(getAssets());
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         prefEditor = pref.edit();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
-        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
-        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_email = (EditText) this.findViewById(R.id.ed_email);
-        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_password = (EditText) this.findViewById(R.id.ed_password);
-        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_repassword = (EditText) this.findViewById(R.id.ed_repassword);
-        ed_repassword.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_repassword.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+
+        ed_fname.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_lname.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        ed_repassword.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         btn_signup = (Button) this.findViewById(R.id.btn_signup);
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +108,7 @@ public class Register extends Activity {
                 }
             }
         });
+        btn_signup.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
         iv_back = (ImageView) this.findViewById(R.id.iv_back);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
