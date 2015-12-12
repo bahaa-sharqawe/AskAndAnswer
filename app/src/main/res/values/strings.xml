@@ -155,7 +155,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="update_categories">Update Categories</string>
     <string name="message_sent">Messsage sent successfully..</string>
     <string name="update_password">Update Password</string>
-    <string name="forget_password">Forget password</string>
+    <string name="forget_password">Forgot password?</string>
     <string name="no_comments">No comments</string>
     <string name="logging_out">Logging out...</string>
     <string name="deleteSmall">Delete</string>

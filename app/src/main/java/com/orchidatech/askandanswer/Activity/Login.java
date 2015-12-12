@@ -37,6 +37,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.sromku.simple.fb.Permission;
@@ -57,6 +58,9 @@ public class Login extends AppCompatActivity {
     ImageView iv_logo;
     TextView tv_signup_now;
     TextView tv_forget_password;
+    private TextView tv_login_using;
+    private TextView tv_fb;
+    private TextView tv_google;
     EditText ed_name;
     EditText ed_password;
     Button btn_login;
@@ -80,7 +84,7 @@ public class Login extends AppCompatActivity {
     private SocialUser socialUser;
     private String username;
     private String password;
-
+    private FontManager fontManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,6 +219,8 @@ public class Login extends AppCompatActivity {
 
     }
     private void initializeFields() {
+        fontManager = FontManager.getInstance(getAssets());
+
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         prefEditor = pref.edit();
         googleAuth = new AppGoogleAuth(this);
@@ -230,9 +236,13 @@ public class Login extends AppCompatActivity {
         mValidator = Validator.getInstance();
         ll_form = (LinearLayout) this.findViewById(R.id.ll_form);
         ed_name = (EditText) this.findViewById(R.id.ed_name);
-        ed_name.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_name.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         ed_password = (EditText) this.findViewById(R.id.ed_password);
-        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         logoTranslate = AnimationUtils.loadAnimation(Login.this, R.anim.translate_top_bottom);
         animFade = AnimationUtils.loadAnimation(Login.this, R.anim.fade);
         form_translate = AnimationUtils.loadAnimation(Login.this, R.anim.translate_bottom_top);
@@ -261,6 +271,9 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+        tv_login_using = (TextView) findViewById(R.id.tv_login_using);
+        tv_signup_now.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        tv_login_using.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
         tv_signup_now.setText(Html.fromHtml(getResources().getString(R.string.tv_signup_now)));
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,7 +339,12 @@ public class Login extends AppCompatActivity {
             }
         });
 
-
+        tv_fb = (TextView) findViewById(R.id.tv_fb);
+        tv_google = (TextView) findViewById(R.id.tv_google);
+        tv_fb.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        tv_google.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        btn_login.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        tv_forget_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
     }
 
     private void hideSoftKeyboard() {

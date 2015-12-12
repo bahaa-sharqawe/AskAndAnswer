@@ -1,15 +1,31 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
+import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
+import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Bahaa on 8/12/2015.
@@ -30,18 +46,65 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     @Override
-    public void onBindViewHolder(NotificationsAdapter.NotificationViewHolder holder, int position) {
+    public void onBindViewHolder(final NotificationsAdapter.NotificationViewHolder holder, int position) {
+                final Notifications notification = notifications.get(position);
+                        String notification_text;
+        Users user;
+                if(notification.notificationType == Enum.NOTIFICATIONS.NEW_COMMENT.getNumericType()) {
+                    Comments comment = CommentsDAO.getComment(notification.objectID);
+                    user = UsersDAO.getUser(comment.userID);
+                    notification_text = comment.text;
+                }
+                else {
+                    Posts post = PostsDAO.getPost(notification.objectID);
+                    user = UsersDAO.getUser(post.getUserID());
+                    notification_text = post.text;
+                }
+                String date = GNLConstants.DateConversion.getDate(notification.date);
+        holder.notif_date.setText(date);
+        holder.tv_notification_text.setText(notification_text);
+        Picasso.with(activity).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
+            @Override
+            public void onSuccess() {
 
+            }
+
+            @Override
+            public void onError() {
+                holder.iv_profile.setImageResource(R.drawable.ic_user);
+            }
+        });
+        if(notification.isDone == 0)//not read
+            holder.card_notification.setBackgroundColor(Color.parseColor("#eef4ff"));
+        else
+            holder.card_notification.setBackgroundColor(Color.parseColor("#ffffff"));
+
+        holder.card_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             notification.isDone = 1;
+                ///got to post or comment
+                notification.save();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return notifications.size();
     }
 
     public class NotificationViewHolder extends RecyclerView.ViewHolder {
+        CircleImageView iv_profile;
+        TextView tv_notification_text;
+        TextView notif_date;
+        CardView card_notification;
         public NotificationViewHolder(View itemView) {
             super(itemView);
+            iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
+            tv_notification_text = (TextView) itemView.findViewById(R.id.tv_notification_text);
+            notif_date = (TextView) itemView.findViewById(R.id.notif_date);
+            card_notification = (CardView) itemView.findViewById(R.id.card_notification);
         }
     }
 }

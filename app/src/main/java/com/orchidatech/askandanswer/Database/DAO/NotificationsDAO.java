@@ -2,8 +2,10 @@ package com.orchidatech.askandanswer.Database.DAO;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ public class NotificationsDAO {
     }
 
     public static List<Notifications> getAllNotifications(){
-        return new Select().from(Notifications.class).orderBy(Notifications.FIELDS.COLUMN_SERVER_ID).execute();
+        return new Select().from(Notifications.class).orderBy(Notifications.FIELDS.COLUMN_DATE + " desc").execute();
     }
 
     public static void deleteAllNotifications(){
@@ -56,4 +58,8 @@ public class NotificationsDAO {
         return getNotification(serverID) != null ;
     }
 
+    public static List<Notifications> getAllNotDoneNotifications() {
+
+        return new Select().from(Notifications.class).where(Notifications.FIELDS.COLUMN_IS_DONE + " = ?", 0).orderBy(Notifications.FIELDS.COLUMN_DATE + " desc").execute();
+    }
 }

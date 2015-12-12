@@ -8,6 +8,7 @@ import android.graphics.Typeface;
  */
 public class FontManager {
     public static final String ROBOTO_LIGHT = "roboto_light";
+    public static final String ROBOTO_MEDIUM = "roboto_medium";
 
     public static FontManager instance;
     private static AssetManager mAssetManager;
@@ -22,8 +23,11 @@ public class FontManager {
     }
     public Typeface getFont(String fontName){
         switch (fontName){
-            case "ROBOTO_LIGHT":
+            case "roboto_light":
                 typeface = Typeface.createFromAsset(mAssetManager, "Fonts/roboto_light.ttf");
+                break;
+            case "roboto_medium":
+                typeface = Typeface.createFromAsset(mAssetManager, "Fonts/roboto_medium.ttf");
                 break;
         }
         return typeface;

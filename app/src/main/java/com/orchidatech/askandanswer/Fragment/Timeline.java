@@ -34,6 +34,7 @@ import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.Database.Model.Posts;
@@ -64,6 +65,7 @@ public class Timeline extends Fragment {
     CoordinatorLayout coordinator_layout;
     DrawerLayout mDrawerLayout;
     RecyclerView rv_notifications;
+    TextView tv_no_notification;
     private long last_id_server = 0;
     private long user_id;
 
@@ -74,7 +76,7 @@ public class Timeline extends Fragment {
     private SharedPreferences pref;
     private List<Posts> allStoredPosts;
 
-
+    TextView tv_notifications_count;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class Timeline extends Fragment {
         coordinator_layout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
         rv_notifications = (RecyclerView) view.findViewById(R.id.rv_notifications);
+        tv_no_notification = (TextView) view.findViewById(R.id.tv_no_notification);
 //        rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -105,14 +108,17 @@ public class Timeline extends Fragment {
         rv_notifications.setLayoutManager(llm2);
 
         allPosts = new ArrayList<>();
-        allNotifications = new ArrayList<>();
+        allNotifications = new ArrayList<>(NotificationsDAO.getAllNotifications());
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, coordinator_layout, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
         }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
-
+        if(allNotifications.size() > 0)
+            tv_no_notification.setVisibility(View.VISIBLE);
+        else
+            tv_no_notification.setVisibility(View.INVISIBLE);
         notificationsAdapter = new NotificationsAdapter(getActivity(), allNotifications);
         rv_posts.setAdapter(adapter);
         rv_notifications.setAdapter(notificationsAdapter);
@@ -142,6 +148,12 @@ public class Timeline extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        tv_notifications_count = (TextView) getActivity().findViewById(R.id.tv_notifications_count);
+        ArrayList<Notifications> allNotDoneNoti = new ArrayList<>(NotificationsDAO.getAllNotDoneNotifications());
+        if(allNotDoneNoti.size() == 0)
+            tv_notifications_count.setVisibility(View.INVISIBLE);
+        else
+        tv_notifications_count.setText(allNotDoneNoti.size()+"");
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
         rl_num_notifications.setVisibility(View.VISIBLE);
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {

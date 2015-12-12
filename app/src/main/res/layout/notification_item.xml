@@ -44,6 +44,7 @@
             android:layout_below="@+id/notif_date"
             android:text="@string/post_example"
             android:padding="6dp"
+            android:visibility="gone"
             android:background="@drawable/notification_backgnd"/>
     </RelativeLayout>
 

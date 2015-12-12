@@ -70,6 +70,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     private SharedPreferences.Editor prefEditor;
     public  static AppGoogleAuth googleAuth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

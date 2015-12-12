@@ -9,4 +9,6 @@
     <color name="btn_fb_on">#3B5998</color>
     <color name="btn_gplus_on">#dd4b39</color>
     <color name="btn_social_off">#959595</color>
+    <color name="ed_text_color">#959595</color>
+    <color name="ed_underline">#f4f4f4</color>
 </resources>

@@ -10,9 +10,9 @@ import android.util.Log;
 
 import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
-import com.orchidatech.askandanswer.Activity.UpdateCategory;
-import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
 import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
@@ -23,6 +23,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
+import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
@@ -39,7 +40,6 @@ import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnDisabledCategorieslistener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnForgetPasswordListener;
-import com.orchidatech.askandanswer.View.Interface.OnGCMRegisterListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
 import com.orchidatech.askandanswer.View.Interface.OnLogoutlistener;
@@ -120,7 +120,34 @@ public class WebServiceFunctions {
                             JSONObject category_info = category_obj.getJSONObject("Category_info");
                             CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
                         }
-                        listener.onSuccess(user_id, user_categories_id);
+//                        JSONArray user_notifications_arr = user.getJSONArray("user_notifications");
+//                        for(int i = 0; i < user_notifications_arr.length(); i++){
+//                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
+//                            long notif_id = Long.parseLong(user_notification.getString("id"));
+//                            int notif_type = Integer.parseInt(user_notification.getString("type"));
+//                            long notif_object_id = Long.parseLong(user_notification.getString("object_id"));
+//                            String notif_text = user_notification.getString("text");
+//                            int notif_is_done = Integer.parseInt(user_notification.getString("is_done"));
+//                            long notif_date = user_notification.getLong("created_at");
+//                            Notifications notifications = new Notifications(notif_id, notif_type, notif_object_id, notif_text, notif_date, notif_is_done);
+//                           if(notif_type == Enum.NOTIFICATIONS.NEW_POST_ADDED.getNumericType()){
+//                               JSONObject post_date = user_notification.getJSONObject("post_data");
+//                               String post_text = post_date.getString("text");
+//                               String post_image = post_date.getString("image");
+//                               int post_is_hidden = Integer.parseInt(post_date.getString("is_hidden"));
+//                               long post_category_id = Long.parseLong(post_date.getString("category_id"));
+//                               long post_user_id = Long.parseLong(post_date.getString("user_id"));
+////                            int comments_no = post_obj.getInt("comment_no");
+//                               long post_created_at = post_date.getLong("updated_at");
+//                               Posts postItem = new Posts(notif_object_id, post_text, post_image, post_created_at, post_user_id, post_category_id, post_is_hidden, -1, -1, -1, -1);
+//                               PostsDAO.addPost(postItem);
+//                           }else{
+//
+//                           }
+//                            NotificationsDAO.addNotification(notifications);
+//
+//                        }
+                                listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
@@ -134,6 +161,7 @@ public class WebServiceFunctions {
             }
         });
     }
+
     public static void socialLogin(final Context context, SocialUser socialUser, String reg_id, final OnLoginListener listener) {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.EMAIL, socialUser.getEmail());
@@ -168,7 +196,8 @@ public class WebServiceFunctions {
                         String image = user.getString("image");
                         int active = Integer.parseInt(user.getString("active"));
                         long created_at = user.getLong("created_at");
-                        long last_login = System.currentTimeMillis();/*user.getLong("last_login")*/;
+                        long last_login = System.currentTimeMillis();/*user.getLong("last_login")*/
+                        ;
                         String code = user.getString("code");
                         String mobile = user.getString("mobile");
                         int is_public = Integer.parseInt(user.getString("is_public"));
@@ -188,6 +217,19 @@ public class WebServiceFunctions {
                             JSONObject category_info = category_obj.getJSONObject("Category_info");
                             CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
                         }
+                        JSONArray user_notifications_arr = user.getJSONArray("user_notifications");
+//                        for(int i = 0; i < user_notifications_arr.length(); i++){
+//                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
+//                            long notif_id = Long.parseLong(user_notification.getString("id"));
+//                            int notif_type = Integer.parseInt(user_notification.getString("type"));
+//                            long notif_object_id = Long.parseLong(user_notification.getString("object_id"));
+//                            String notif_text = user_notification.getString("text");
+//                            int notif_is_done = Integer.parseInt(user_notification.getString("is_done"));
+//                            long notif_date = user_notification.getLong("created_at");
+//                            Notifications notifications = new Notifications(notif_id, notif_type, notif_object_id, notif_text, notif_date, notif_is_done);
+//                            NotificationsDAO.addNotification(notifications);
+//
+//                        }
                         listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -208,7 +250,7 @@ public class WebServiceFunctions {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.LOGOUT + "?" + URL.URLParameters.USER_ID + "=" + user_id + "&"
-                + URL.URLParameters.REGISTERATION_ID +"=" + reg_id;
+                + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
         Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -425,7 +467,7 @@ public class WebServiceFunctions {
                             User_CategoriesDAO.addUserCategory(new User_Categories(id, user_id, category_id));
                         }
                         listener.onSendingSuccess();
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onSendingFail(GNLConstants.getStatus(status_code));
@@ -527,7 +569,7 @@ public class WebServiceFunctions {
                                 mobile, is_public, code, no_answer, no_ask, user_rating);
                         UsersDAO.addUser(_user);
                         listener.onDataFetched(_user, no_answer, no_ask);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -597,7 +639,7 @@ public class WebServiceFunctions {
                             JSONObject askandanswer = postOwner.getJSONObject("askandanswer");
                             int no_asks = askandanswer.getInt("no_ask");
                             int no_answers = askandanswer.getInt("no_answer");
-                            float rating = Float.parseFloat(askandanswer.get("no_of_stars")+"");
+                            float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
                             Users _user = new Users(post_owner_id, post_owner_f_name, post_owner_l_name, null, post_owner_email, null, post_owner_image.equals("null") ? null : post_owner_image, post_owner_created_at, post_owner_active, post_owner_last_login,
                                     post_owner_mobile, post_owner_is_public, post_owner_code, no_answers, no_asks, rating);
                             UsersDAO.addUser(_user);
@@ -605,7 +647,7 @@ public class WebServiceFunctions {
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedPosts, last_id);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -687,7 +729,7 @@ public class WebServiceFunctions {
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
 
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -740,7 +782,7 @@ public class WebServiceFunctions {
                         }
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedPosts, last_id);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -817,16 +859,17 @@ public class WebServiceFunctions {
                             JSONObject askandanswer = postOwner.getJSONObject("askandanswer");
                             int no_asks = askandanswer.getInt("no_ask");
                             int no_answers = askandanswer.getInt("no_answer");
-                            float rating = Float.parseFloat(askandanswer.get("no_of_stars")+"");
+                            float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
                             Users _user = new Users(post_owner_id, post_owner_f_name, post_owner_l_name, null, post_owner_email, null, post_owner_image.equals("null") ? null : post_owner_image, post_owner_created_at, post_owner_active, post_owner_last_login,
                                     post_owner_mobile, post_owner_is_public, post_owner_code, no_answers, no_asks, rating);
                             UsersDAO.addUser(_user);
+
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
                         }
                         long last_id = dataObj.getLong("last_id");
                         listener.onSuccess(fetchedComments, last_id);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -908,7 +951,7 @@ public class WebServiceFunctions {
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedComments, last_id);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -946,20 +989,20 @@ public class WebServiceFunctions {
                             JSONObject comment_action = post_obj.getJSONObject("comment_action");
                             int num_likes = comment_action.getInt("like");
                             int num_dislikes = comment_action.getInt("dislike");
-                            int isFavorite = post_obj.getBoolean("is_postfavorite")?1:0;
+                            int isFavorite = post_obj.getBoolean("is_postfavorite") ? 1 : 0;
                             Posts post = new Posts(Long.parseLong(post_obj.getString("id")), post_obj.getString("text"), post_obj.getString("image").equals("null") ? null : post_obj.getString("image"),
                                     post_obj.getLong("updated_at"), Long.parseLong(post_obj.getString("user_id")), Long.parseLong(post_obj.getString("category_id")), Integer.parseInt(post_obj.getString("is_hidden")), post_obj.getInt("comment_no"), isFavorite, num_likes, num_dislikes);
                             JSONObject userObj = post_obj.getJSONObject("user");
                             Users user = new Users(Long.parseLong(userObj.getString("id")), userObj.getString("f_name"), userObj.getString("l_name"), null, userObj.getString("email"),
                                     null, userObj.getString("image").equals("null") ? null : userObj.getString("image"), userObj.getLong("updated_at"), Integer.parseInt(userObj.getString("active")), userObj.getLong("last_login"),
-                                    userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"), Float.parseFloat(userObj.getJSONObject("askandanswer").getInt("no_of_stars")+""));
+                                    userObj.getString("mobile"), Integer.parseInt(userObj.getString("is_public")), userObj.getString("code"), userObj.getJSONObject("askandanswer").getInt("no_answer"), userObj.getJSONObject("askandanswer").getInt("no_ask"), Float.parseFloat(userObj.getJSONObject("askandanswer").getInt("no_of_stars") + ""));
                             Log.i("cxcdvcv", userObj.getString("mobile").length() + "");
                             PostsDAO.addPost(post);
                             UsersDAO.addUser(user);
                             matchedPosts.add(post);
                         }
                         listener.onSuccess(matchedPosts);
-                    }else if (status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1036,7 +1079,7 @@ public class WebServiceFunctions {
                         long last_id = dataObj.getLong("last_id");
 
                         listener.onSuccess(fetchedPosts, last_id);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
@@ -1192,7 +1235,7 @@ public class WebServiceFunctions {
                         user.save();
 
                         listener.onDeleted();
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1227,7 +1270,7 @@ public class WebServiceFunctions {
                     int status = dataObj.getInt("status");
                     if (status == 0) {
                         listener.onSuccess();
-                    } else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1275,7 +1318,7 @@ public class WebServiceFunctions {
                         int action_type = Integer.parseInt(data.getString("action_type"));
 //                        User_ActionsDAO.addUserAction();
                         listener.onActionSent(new User_Actions(id, comment_id, user_id, System.currentTimeMillis(), action_type));
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1337,6 +1380,7 @@ public class WebServiceFunctions {
         });
 
     }
+
     public static void addPost(final Activity activity, final long user_id, long category_id, String text, String picturePath, long date, int is_hidden, final OnAddPostListener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
@@ -1364,7 +1408,7 @@ public class WebServiceFunctions {
                         user.asks = user.asks + 1;
                         user.save();
                         listener.onSuccess(activity.getResources().getString(R.string.saved));
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1417,7 +1461,7 @@ public class WebServiceFunctions {
                         Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_id, category_id, is_hidden, -1, -1, -1, -1);
                         PostsDAO.addPost(postItem);
                         listener.onSuccess(activity.getResources().getString(R.string.saved));
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1476,7 +1520,7 @@ public class WebServiceFunctions {
                         user.answers = user.answers + 1;
                         user.save();
                         listener.onAdded(newComment);
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1534,7 +1578,7 @@ public class WebServiceFunctions {
                                 .edit().putString(GNLConstants.SharedPreference.PASSWORD_KEY, password).commit();
 
                         listener.onSuccess();
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1552,7 +1596,7 @@ public class WebServiceFunctions {
         uploadImage.addStringProperty(URL.URLParameters.FNAME, fname);
         uploadImage.addStringProperty(URL.URLParameters.LNAME, lname);
         uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
-        if(!TextUtils.isEmpty(password)) {
+        if (!TextUtils.isEmpty(password)) {
             Log.i("oasdd", password);
             uploadImage.addStringProperty(URL.URLParameters.PASSWORD, password);
         }
@@ -1576,7 +1620,7 @@ public class WebServiceFunctions {
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.COMMENT_ID, commentId + "");
         params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
-        params.put(URL.URLParameters.USER_ID, user_id+"");
+        params.put(URL.URLParameters.USER_ID, user_id + "");
         String url = URL.DELETE_COMMENT + "?" + URL.URLParameters.COMMENT_ID + "=" + commentId;
         Log.i("cvcv", URL.DELETE_COMMENT);
 
@@ -1600,7 +1644,7 @@ public class WebServiceFunctions {
                         user.save();
                         listener.onDeleted();
 
-                    }else if(status_code == 5000)
+                    } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else {
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -1632,26 +1676,27 @@ public class WebServiceFunctions {
         prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE);
         prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
         clearLocalDB();
-        if(loginType == com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+        if (loginType == com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
             SimpleFacebook.getInstance(activity).logout(new OnLogoutListener() {
                 @Override
                 public void onLogout() {
                     activity.startActivity(intent);
                 }
             });
-        }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
-            if(Login.googleAuth != null)
+        } else if (loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()) {
+            if (Login.googleAuth != null)
                 Login.googleAuth.googlePlusLogout();
             else
                 MainScreen.googleAuth.googlePlusLogout();
             activity.startActivity(intent);
-        }else {
+        } else {
             activity.startActivity(intent);
         }
     }
 
     private static void clearLocalDB() {
-        PostsDAO.deleteAllPosts();;
+        PostsDAO.deleteAllPosts();
+        ;
         CommentsDAO.deleteAllComments();
         User_ActionsDAO.deleteAllUserActions();
         Post_FavoriteDAO.deleteAllUserPostFavorite();
