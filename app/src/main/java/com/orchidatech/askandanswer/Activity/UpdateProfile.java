@@ -44,6 +44,7 @@ import com.orchidatech.askandanswer.Logic.HorizontalFlowLayout;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.AutoCompleteAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnUpdateProfileListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
@@ -96,6 +97,8 @@ public class UpdateProfile extends AppCompatActivity {
     int isPublic;
     private SharedPreferences pref;
     Toolbar toolbar;
+    private FontManager fontManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,6 +182,8 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private void initializeFields() {
+        fontManager = FontManager.getInstance(getAssets());
+
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
@@ -189,17 +194,28 @@ public class UpdateProfile extends AppCompatActivity {
         ll_content = (LinearLayout) this.findViewById(R.id.ll_content);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.setText(user.getFname());
-        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_fname.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
         ed_lname.setText(user.getLname());
-        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_lname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_lname.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         ed_email = (EditText) this.findViewById(R.id.ed_email);
         ed_email.setText(user.getEmail());
+        ed_email.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         ed_password = (EditText) this.findViewById(R.id.ed_password);
-        ed_new_password = (EditText) this.findViewById(R.id.ed_new_password);
+//        ed_new_password = (EditText) this.findViewById(R.id.ed_new_password);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         ed_confirm_new_password = (EditText) this.findViewById(R.id.ed_confirm_new_password);
+        ed_confirm_new_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+        ed_confirm_new_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         ll_newPassword = (LinearLayout) findViewById(R.id.ll_newPassword);
         iv_camera = (ImageView) this.findViewById(R.id.iv_camera);
         profile_image = (CircleImageView) this.findViewById(R.id.profile_image);

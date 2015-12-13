@@ -13,13 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 
 public class TermsFragment extends Fragment {
     ImageView iv_logo;
     ImageView iv_drawer;
     OnDrawerIconClickListener listener;
+    TextView tv_terms_title;
+    TextView tv_terms_body;
+    private FontManager fontManager;
 
 
     @Override
@@ -39,6 +44,13 @@ public class TermsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+        tv_terms_body = (TextView) getActivity().findViewById(R.id.tv_terms_body);
+        tv_terms_body.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_terms_title = (TextView) getActivity().findViewById(R.id.tv_terms_title);
+        tv_terms_title.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         iv_logo = (ImageView) getActivity().findViewById(R.id.iv_logo);
         resizeLogo();
         iv_drawer = (ImageView) getActivity().findViewById(R.id.iv_drawer);

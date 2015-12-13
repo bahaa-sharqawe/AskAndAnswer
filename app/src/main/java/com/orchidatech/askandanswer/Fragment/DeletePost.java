@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 
 /**
  * Created by Bahaa on 5/11/2015.
@@ -20,8 +21,11 @@ public class DeletePost extends DialogFragment {
     AlertDialog dialog;
     TextView tv_confirm;
     TextView tv_cancel;
+    TextView tv_delPostTitle;
+    TextView tv_delPostAttention;
     long postId;
     private OnDeleteListener listener;
+    private FontManager fontManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +51,19 @@ public class DeletePost extends DialogFragment {
     }
 
     private View getCustomView() {
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_delete_post, null, false);
+        tv_delPostAttention = (TextView) view.findViewById(R.id.tv_delCommtAttention);
+        tv_delPostAttention.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_delPostTitle = (TextView) view.findViewById(R.id.tv_delPostTitle);
+        tv_delPostTitle.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_confirm = (TextView) view.findViewById(R.id.tv_confirm);
+        tv_confirm.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +74,8 @@ public class DeletePost extends DialogFragment {
             }
         });
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+        tv_cancel.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

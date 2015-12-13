@@ -47,8 +47,7 @@
                     android:layout_marginRight="10dp"
                     android:id="@+id/tv_person"
                     android:text="Jun Smith"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:textSize="16sp"
                     android:layout_centerHorizontal="true"
                     android:layout_alignLeft="@+id/iv_profile"
                     android:layout_below="@+id/iv_profile"
@@ -101,9 +100,9 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginBottom="12dp"
+
+    android:layout_marginTop="20dp"
+    android:background="#f4f4f4"
     android:layout_below="@+id/rl_header"
     >
     <android.support.v7.widget.RecyclerView
@@ -111,6 +110,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rv_posts"
         android:divider="@null"
+        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
 
@@ -119,7 +119,7 @@
         android:layout_height="40dp"
         android:layout_centerInParent="true"
         android:id="@+id/pb_loading_main" />
-
+`
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:src="@drawable/uncolored_logo"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="30dp"/>
 
         <TextView
             android:layout_width="wrap_content"

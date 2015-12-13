@@ -37,6 +37,7 @@ import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -51,6 +52,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
     private final View parent;
+    private final FontManager fontManager;
 
     private ArrayList<Posts> posts;
     Activity activity;
@@ -61,6 +63,8 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
+        fontManager = FontManager.getInstance(activity.getAssets());
+
     }
 
     @Override
@@ -81,9 +85,17 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
         final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
         holder.tv_post_category.setText(postCategory.getName());
+        holder.tv_post_category.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+        holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
         holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
+        holder.tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         holder.tv_postContent.setText(currentPost.getText());
+        holder.tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         holder.card_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,8 +150,14 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
             holder.iv_postImage.setVisibility(View.GONE);
         }
         holder.tv_comments.setText(posts.get(position).getComments_no() > 0?activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()):activity.getString(R.string.no_comments));
-        holder.tv_unlikes.setText(posts.get(position).getNum_dislikes()+"");
-        holder.tv_likes.setText(posts.get(position).getNum_likes()+"");
+        holder.tv_comments.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        holder.tv_unlikes.setText(posts.get(position).getNum_dislikes() + "");
+        holder.tv_unlikes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        holder.tv_likes.setText(posts.get(position).getNum_likes() + "");
+        holder.tv_likes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         holder.iv_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +194,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         TextView tv_unlikes;
         TextView tv_comments;
 //        ProgressBar pb_photo_load;
-        CardView card_post;
+RelativeLayout card_post;
         int viewType;
 
         public PostViewHolder(View itemView, int viewType) {
@@ -197,7 +215,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
-                card_post = (CardView) itemView.findViewById(R.id.card_post);
+                card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
 
 //                ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
 //                ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);

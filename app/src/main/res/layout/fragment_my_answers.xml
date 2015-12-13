@@ -8,8 +8,7 @@
         android:id="@+id/rv_answers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
         android:background="#f4f4f4"
         android:divider="@null"
         android:listSelector="@android:color/transparent" />
@@ -32,7 +31,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/uncolored_logo"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginBottom="30dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

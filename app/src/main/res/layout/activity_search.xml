@@ -24,9 +24,7 @@
         android:id="@+id/rv_posts"
         android:divider="@null"
         android:layout_below="@+id/toolbar"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
 

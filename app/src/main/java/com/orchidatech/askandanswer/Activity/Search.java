@@ -23,6 +23,7 @@ import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -37,12 +38,15 @@ MaterialSearchView searchView;
     ArrayList<Posts> posts;
     RelativeLayout rl_parent;
     private SharedPreferences pref;
+    private FontManager fontManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setCustomActionBar();
+        fontManager = FontManager.getInstance(getAssets());
+
         posts = new ArrayList<>();
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         rl_parent = (RelativeLayout) findViewById(R.id.rl_parent);

@@ -38,6 +38,7 @@ import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -76,6 +77,7 @@ public class Profile extends Fragment {
     ProgressBar pb_loading_main;
     private ArrayList<Posts> userPosts;
     private SharedPreferences pref;
+    private FontManager fontManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class Profile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_profile, null, false);
         setActionBar();
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+
         user_id = getArguments().getLong(USER_ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -107,8 +111,14 @@ public class Profile extends Fragment {
         rating_person = (RatingBar) view.findViewById(R.id.rating_person);
         iv_profile = (CircleImageView) view.findViewById(R.id.iv_profile);
         tv_person = (TextView) view.findViewById(R.id.tv_person);
+        tv_person.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
         tv_answers = (TextView) view.findViewById(R.id.tv_answers);
+        tv_answers.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_asks = (TextView) view.findViewById(R.id.tv_asks);
+        tv_asks.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         rating_person.setRating(user.getRating());
         Log.i("rating", user.getRating()+"");
         tv_person.setText(user.getFname() + " " + user.getLname());

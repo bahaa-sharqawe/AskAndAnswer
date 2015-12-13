@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 
 /**
  * Created by Bahaa on 5/11/2015.
@@ -21,6 +22,7 @@ public class AboutUs extends Fragment {
     TextView tv_contact;
     RelativeLayout rl_contact;
     RelativeLayout rl_intro;
+    private FontManager fontManager;
 
     @Nullable
     @Override
@@ -32,7 +34,15 @@ public class AboutUs extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+        tv_intro = (TextView) getActivity().findViewById(R.id.tv_intro);
+        tv_intro.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_contact = (TextView) getActivity().findViewById(R.id.tv_contact);
+        tv_contact.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         rl_contact = (RelativeLayout) getActivity().findViewById(R.id.rl_contact);
+
         rl_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -269,8 +269,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         TextView tv_postContent;
         TextView tv_post_category;  //change visibility
         ImageView iv_postImage;
-        CardView card_post;
-        RelativeLayout rl_postEvents; //change visibility
+        RelativeLayout card_post;
+        LinearLayout rl_postEvents; //change visibility
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
@@ -298,12 +298,12 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
 
-                rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
+                rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
-                card_post = (CardView) itemView.findViewById(R.id.card_post);
+                card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
 
@@ -342,7 +342,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     btn_reload.setVisibility(View.GONE);
                 }
                 isFoundData = false;
-                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+//                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
         }
         loading = false;

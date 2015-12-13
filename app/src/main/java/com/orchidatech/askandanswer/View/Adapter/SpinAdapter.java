@@ -13,6 +13,7 @@ import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,15 @@ import java.util.ArrayList;
  * Created by Bahaa on 18/11/2015.
  */
 public class SpinAdapter extends BaseAdapter{
+    private final FontManager fontManager;
     Context context;
     ArrayList<User_Categories> user_categories;
 
     public SpinAdapter(Context context, ArrayList<User_Categories> user_categories) {
         this.context = context;
         this.user_categories = user_categories;
+        fontManager = FontManager.getInstance(context.getAssets());
+
     }
 
     @Override
@@ -52,6 +56,8 @@ public class SpinAdapter extends BaseAdapter{
         }
         tv_spinn_item = (TextView) convertView.findViewById(R.id.tv_spinn_item);
         tv_spinn_item.setText(CategoriesDAO.getCategory(user_categories.get(position).getCategoryID()).getName());
+        tv_spinn_item.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         return convertView;
 
     }

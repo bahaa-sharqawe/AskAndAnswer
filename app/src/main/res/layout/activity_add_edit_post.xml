@@ -91,6 +91,8 @@
             android:layout_height="150dp"
             android:id="@+id/ed_postDesc"
             android:layout_below="@+id/iv_camera"
+            android:textColor="@color/ed_text_color"
+            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:layout_marginTop="20dp"
             android:textSize="13sp"
             android:hint="@string/ed_add_post_hint"

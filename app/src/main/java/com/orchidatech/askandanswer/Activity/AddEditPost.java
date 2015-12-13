@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -44,6 +45,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SpinAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -72,6 +74,8 @@ public class AddEditPost extends AppCompatActivity {
     private String picturePath = null;
     private boolean isPostHasImagePrev;
     private SharedPreferences pref;
+    private FontManager fontManager;
+    TextView tv_addPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +181,8 @@ public class AddEditPost extends AppCompatActivity {
     }
 
     private void initializeFields() {
+        fontManager = FontManager.getInstance(getAssets());
+
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, MODE_PRIVATE);
         user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
@@ -189,9 +195,14 @@ public class AddEditPost extends AppCompatActivity {
         spinnerItems = new ArrayList<>(User_CategoriesDAO.getAllUserCategories(user_id));
         spinner = (Spinner) this.findViewById(R.id.spinner);
         adapter = new SpinAdapter(this, spinnerItems);
+        tv_addPost = (TextView) findViewById(R.id.tv_addPost);
+        tv_addPost.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         iv_camera = (ImageView) this.findViewById(R.id.iv_camera);
         rl_post_photo = (RelativeLayout) this.findViewById(R.id.rl_post_photo);
         ed_postDesc = (EditText) this.findViewById(R.id.ed_postDesc);
+        ed_postDesc.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         iv_post = (ImageView) this.findViewById(R.id.iv_post);
         iv_delete = (ImageView) this.findViewById(R.id.iv_delete);
     }

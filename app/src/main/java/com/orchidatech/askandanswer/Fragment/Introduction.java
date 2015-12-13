@@ -20,6 +20,7 @@ public class Introduction extends Fragment {
         TextView tv_intro_content;
 
     FontManager mFontManager;
+    private FontManager fontManager;
 
     @Nullable
     @Override
@@ -31,11 +32,14 @@ public class Introduction extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+
         tv_intro = (TextView) getActivity().findViewById(R.id.tv_intro);
+        tv_intro.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_intro_content = (TextView) getActivity().findViewById(R.id.tv_intro_content);
-        mFontManager = FontManager.getInstance(getActivity().getAssets());
-        tv_intro.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
-        tv_intro_content.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+        tv_intro_content.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
     }
     private void setActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("About");

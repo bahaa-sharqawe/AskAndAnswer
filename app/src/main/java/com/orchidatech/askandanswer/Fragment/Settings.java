@@ -10,14 +10,21 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Bahaa on 6/11/2015.
  */
 public class Settings extends Fragment {
     Switch sw_notification;
+    TextView tv_notify_setting_title;
+   TextView tv_notify_setting_desc;
+    private FontManager fontManager;
 
 
     @Nullable
@@ -30,6 +37,13 @@ public class Settings extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setActionBar();
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+        tv_notify_setting_desc = (TextView) getActivity().findViewById(R.id.tv_notify_setting_desc);
+        tv_notify_setting_desc.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_notify_setting_title = (TextView) getActivity().findViewById(R.id.tv_notify_setting_title);
+        tv_notify_setting_title.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         sw_notification = (Switch) getActivity().findViewById(R.id.sw_notification);
         sw_notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

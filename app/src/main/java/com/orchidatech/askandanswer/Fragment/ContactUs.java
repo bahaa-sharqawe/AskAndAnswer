@@ -18,6 +18,7 @@ import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnSendMessageListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
@@ -28,9 +29,11 @@ public class ContactUs extends DialogFragment {
     AlertDialog dialog;
     TextView tv_cancel;
     TextView tv_send;
+    TextView tv_contact;
     EditText ed_message;
     LinearLayout ll_parent;
     private long user_id;
+    private FontManager mFontManager;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public class ContactUs extends DialogFragment {
     }
 
     private View getCustomView() {
+        mFontManager = FontManager.getInstance(getActivity().getAssets());
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_contactus, null, false);
         ll_parent = (LinearLayout) view.findViewById(R.id.ll_parent);
@@ -54,7 +59,11 @@ public class ContactUs extends DialogFragment {
         user_id = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         ed_message = (EditText) view.findViewById(R.id.ed_message);
+        ed_message.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_send = (TextView) view.findViewById(R.id.tv_send);
+        tv_send.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +103,8 @@ public class ContactUs extends DialogFragment {
             }
         });
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+        tv_cancel.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +112,9 @@ public class ContactUs extends DialogFragment {
                 dialog.dismiss();
             }
         });
+        tv_contact = (TextView) view.findViewById(R.id.tv_contact);
+        tv_contact.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         return view;
     }
     private void hideSoftKeyboard() {
