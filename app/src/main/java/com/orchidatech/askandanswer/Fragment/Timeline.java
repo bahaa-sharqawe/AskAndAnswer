@@ -109,6 +109,7 @@ public class Timeline extends Fragment {
 
         allPosts = new ArrayList<>();
         allNotifications = new ArrayList<>(NotificationsDAO.getAllNotifications());
+        Log.i("xvxv", allNotifications.size()+"");
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, coordinator_layout, new OnLastListReachListener() {
             @Override
             public void onReached() {

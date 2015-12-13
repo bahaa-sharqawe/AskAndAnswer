@@ -32,7 +32,6 @@ public class CommentsDAO {
         comment.userID = newComment.getUserID();
         comment.likes = newComment.getLikes();
         comment.disLikes = newComment.getDisLikes();
-
         comment.save();
     }
 

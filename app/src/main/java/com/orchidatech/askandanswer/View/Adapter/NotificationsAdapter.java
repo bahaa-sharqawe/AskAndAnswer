@@ -49,21 +49,21 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public void onBindViewHolder(final NotificationsAdapter.NotificationViewHolder holder, int position) {
                 final Notifications notification = notifications.get(position);
                         String notification_text;
-        Users user;
-                if(notification.notificationType == Enum.NOTIFICATIONS.NEW_COMMENT.getNumericType()) {
-                    Comments comment = CommentsDAO.getComment(notification.objectID);
-                    user = UsersDAO.getUser(comment.userID);
-                    notification_text = comment.text;
-                }
-                else {
-                    Posts post = PostsDAO.getPost(notification.objectID);
-                    user = UsersDAO.getUser(post.getUserID());
-                    notification_text = post.text;
-                }
+//        Users user;
+//                if(notification.notificationType == Enum.NOTIFICATIONS.NEW_COMMENT.getNumericType()) {
+//                    Comments comment = CommentsDAO.getComment(notification.objectID);
+//                    user = UsersDAO.getUser(comment.userID);
+//                    notification_text = comment.text;
+//                }
+//                else {
+//                    Posts post = PostsDAO.getPost(notification.objectID);
+//                    user = UsersDAO.getUser(post.getUserID());
+//                    notification_text = post.text;
+//                }
                 String date = GNLConstants.DateConversion.getDate(notification.date);
         holder.notif_date.setText(date);
-        holder.tv_notification_text.setText(notification_text);
-        Picasso.with(activity).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
+        holder.tv_notification_text.setText(notification.notificationText);
+        Picasso.with(activity).load(Uri.parse(notification.getUser_photo())).into(holder.iv_profile, new Callback() {
             @Override
             public void onSuccess() {
 

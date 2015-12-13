@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#2dbda6</color>
     <color name="colorPrimaryDark">#249885</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#2dbda6</color>
     <color name="colorMenuItem">#FFF</color>
     <color name="white">#FFF</color>
     <color name="commentDialogBackground">#f8f8f8</color>

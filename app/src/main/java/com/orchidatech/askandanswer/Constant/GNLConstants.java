@@ -238,21 +238,21 @@ public class GNLConstants {
                 return null;
             }
         }
-        public static Notifications getNotification(JSONObject notification_json){
-            try {
-                int notification_is_done = Integer.parseInt(notification_json.getString("is_done"));//is_done = 0 ==> false
-                long notification_date = notification_json.getLong("created_at");
-                long notification_id = Long.parseLong(notification_json.getString("id"));
-                String notification_text = notification_json.getString("text");
-                int notification_type = Integer.parseInt(notification_json.getString("type"));
-                long notification_object_id = Long.parseLong(notification_json.getString("object_id"));
-                Notifications notification = new Notifications(notification_id, notification_type, notification_object_id,
-                        notification_text, notification_date, notification_is_done);
-                return notification;
-            } catch (JSONException e) {
-                return null;
-            }
-        }
+//        public static Notifications getNotification(JSONObject notification_json){
+//            try {
+//                int notification_is_done = Integer.parseInt(notification_json.getString("is_done"));//is_done = 0 ==> false
+//                long notification_date = notification_json.getLong("created_at");
+//                long notification_id = Long.parseLong(notification_json.getString("id"));
+//                String notification_text = notification_json.getString("text");
+//                int notification_type = Integer.parseInt(notification_json.getString("type"));
+//                long notification_object_id = Long.parseLong(notification_json.getString("object_id"));
+//                Notifications notification = new Notifications(notification_id, notification_type, notification_object_id,
+//                        notification_text, notification_date, notification_is_done);
+//                return notification;
+//            } catch (JSONException e) {
+//                return null;
+//            }
+//        }
         public static Post_Favorite getPost_Favorite(JSONObject post_favorite_json){
             try {
                 long id = Long.parseLong(post_favorite_json.getString("id"));

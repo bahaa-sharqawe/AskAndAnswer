@@ -23,7 +23,6 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
-import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
@@ -147,7 +146,7 @@ public class WebServiceFunctions {
 //                            NotificationsDAO.addNotification(notifications);
 //
 //                        }
-                                listener.onSuccess(user_id, user_categories_id);
+                        listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
                 } catch (JSONException e) {
@@ -255,6 +254,7 @@ public class WebServiceFunctions {
             @Override
             public void onSuccess(String response) {
                 try {
+                    Log.i("vbvbvb", response);
                     JSONObject data = new JSONObject(response);
                     int status_code = data.getInt("statusCode");
                     int status = data.getInt("status");
@@ -1696,7 +1696,7 @@ public class WebServiceFunctions {
 
     private static void clearLocalDB() {
         PostsDAO.deleteAllPosts();
-        ;
+
         CommentsDAO.deleteAllComments();
         User_ActionsDAO.deleteAllUserActions();
         Post_FavoriteDAO.deleteAllUserPostFavorite();

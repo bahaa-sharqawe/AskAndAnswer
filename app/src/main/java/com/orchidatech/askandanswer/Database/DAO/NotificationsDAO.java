@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Database.DAO;
 
+import android.util.Log;
+
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.orchidatech.askandanswer.Database.Model.Comments;
@@ -25,7 +27,10 @@ public class NotificationsDAO {
         notification.notificationType = newNotification.getNotificationType();
         notification.objectID = newNotification.getObjectID();
         notification.serverID = newNotification.getServerID();
+        notification.user_photo = newNotification.getUser_photo();
+        Log.i("cvccv", newNotification.getServerID()+ ", " + newNotification.getUser_photo());
         notification.save();
+
     }
 
     public static void deleteNotification(long notificationServerId){
@@ -43,11 +48,12 @@ public class NotificationsDAO {
         existNotification.notificationText = notification.getNotificationText();
         existNotification.date = notification.getDate();
         existNotification.isDone = notification.getIsDone();
+        existNotification.user_photo = notification.getUser_photo();
         existNotification.save();
     }
 
     public static List<Notifications> getAllNotifications(){
-        return new Select().from(Notifications.class).orderBy(Notifications.FIELDS.COLUMN_DATE + " desc").execute();
+        return new Select().from(Notifications.class).execute();
     }
 
     public static void deleteAllNotifications(){

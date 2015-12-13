@@ -120,14 +120,14 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         }else {
             final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
             Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
-            Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
+//            Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
             User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
-            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
+//            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.user_rating.setRating(commentOwner.getRating());
-            holder.tv_comment_category.setText(commentCategory.getName());
+//            holder.tv_comment_category.setText(commentCategory.getName());
 
             Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
                 @Override
@@ -348,7 +348,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         TextView tv_person_name;
         RatingBar rating_comment;
         TextView tv_commentDate;
-        TextView tv_comment_category;
+//        TextView tv_comment_category;
         TextView tv_commentDesc;
         TextView tv_likes;
         TextView tv_unlikes;
@@ -389,7 +389,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 rating_comment = (RatingBar) itemView.findViewById(R.id.rating_user);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
-                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
+//                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);

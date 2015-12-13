@@ -23,6 +23,7 @@ import com.google.android.gms.plus.Plus;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
@@ -74,6 +75,13 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        if(pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) == -1){
+            final Intent intent = new Intent(MainScreen.this, Login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_main);
         setCustomActionBar();
         fillData();
@@ -81,7 +89,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             googleAuth = new AppGoogleAuth(this);
             googleAuth.mGoogleApiClient.connect();
         }
-        pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
         prefEditor = pref.edit();
         mFragmentManager = getFragmentManager();
         ed_search = (MaterialEditText) findViewById(R.id.ed_search);
@@ -291,6 +299,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         CommentsDAO.deleteAllComments();
         User_ActionsDAO.deleteAllUserActions();
         Post_FavoriteDAO.deleteAllUserPostFavorite();
+        NotificationsDAO.deleteAllNotifications();
     }
 
     private void fillData() {

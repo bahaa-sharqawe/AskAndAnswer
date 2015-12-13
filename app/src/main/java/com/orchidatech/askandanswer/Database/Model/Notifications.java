@@ -13,13 +13,13 @@ import com.activeandroid.annotation.Table;
 public class Notifications extends Model {
     public static class FIELDS {
         public static final String TABLE_NAME = "Notifications";
-
         public static final String COLUMN_SERVER_ID = "SERVER_ID";
         public static final String COLUMN_NOTIFICATION_TYPE = "NOTIFICATION_TYPE";
         public static final String COLUMN_OBJECT_ID = "OBJECT_ID";
         public static final String COLUMN_NOTIFICATION_TEXT = "NOTIFICATION_TEXT";
         public static final String COLUMN_DATE = "DATE";
         public static final String COLUMN_IS_DONE = "IS_DONE";
+        public static final String USER_PHOTO = "USER_PHOTO";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -40,11 +40,14 @@ public class Notifications extends Model {
     @Column(name = FIELDS.COLUMN_IS_DONE)
     public int isDone;
 
+    @Column(name = FIELDS.USER_PHOTO)
+    public String user_photo;
+
     public Notifications() {
         super();
     }
 
-    public Notifications(long serverID, int notificationType, long objectID, String notificationText, long date, int isDone) {
+    public Notifications(long serverID, int notificationType, long objectID, String notificationText, long date, int isDone, String user_photo) {
         super();
         this.serverID = serverID;
         this.notificationType = notificationType;
@@ -52,6 +55,7 @@ public class Notifications extends Model {
         this.notificationText = notificationText;
         this.date = date;
         this.isDone = isDone;
+        this.user_photo = user_photo;
     }
 
     public long getServerID() {
@@ -100,5 +104,13 @@ public class Notifications extends Model {
 
     public void setIsDone(int isDone) {
         this.isDone = isDone;
+    }
+
+    public String getUser_photo() {
+        return user_photo;
+    }
+
+    public void setUser_photo(String user_photo) {
+        this.user_photo = user_photo;
     }
 }
