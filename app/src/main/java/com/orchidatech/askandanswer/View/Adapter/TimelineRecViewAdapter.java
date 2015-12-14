@@ -29,6 +29,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.nineoldandroids.animation.Animator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -102,6 +105,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
+        AjaxCallback.setNetworkLimit(8);
+
+//set the max number of icons (image width <= 50) to be cached in memory, default is 20
+        BitmapAjaxCallback.setIconCacheLimit(50);
+
+//set the max number of images (image width > 50) to be cached in memory, default is 20
+        BitmapAjaxCallback.setCacheLimit(50);
     }
 
     @Override
@@ -177,34 +187,40 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.iv_postImage.setVisibility(View.INVISIBLE);
 
             if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
-                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        view.setVisibility(View.VISIBLE);
-                    }
 
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        view.setVisibility(View.VISIBLE);
+               AQuery aq = new AQuery(activity);
 
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
-                        view.setAnimation(anim);
-                        anim.start();
-                        view.setVisibility(View.VISIBLE);
-
-
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-//                       holder.iv_postImage.setVisibility(View.INVISIBLE);
-
-                    }
-                });
+/* Getting Images from Server and stored in cache */
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
+//
+//                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
+//                    @Override
+//                    public void onLoadingStarted(String imageUri, View view) {
+//                        view.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                        view.setVisibility(View.VISIBLE);
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
+//                        view.setAnimation(anim);
+//                        anim.start();
+//                        view.setVisibility(View.VISIBLE);
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingCancelled(String imageUri, View view) {
+////                       holder.iv_postImage.setVisibility(View.INVISIBLE);
+//
+//                    }
+//                });
             } else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
