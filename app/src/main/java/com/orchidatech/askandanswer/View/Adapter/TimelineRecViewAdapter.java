@@ -165,24 +165,30 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_postContent.setText(currentPost.getText());
             String postImage = currentPost.getImage();
 
-            if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
-                if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
-                    File imageFile = imageLoader.getDiscCache().get(pref.getString("prevImage", null));
-                    if (imageFile.exists()) {
-                        imageFile.delete();
-                        Log.i("xcxc", "xxz2");
-                    }
-                }
-                Log.i("xcxc", "xxz: " + postImage);
-                pref.edit().remove(currentPost.getServerID() + "").commit();
-                pref.edit().remove("prevImage").commit();
-            }
+//            if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+//                if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+//                    File imageFile = imageLoader.getDiscCache().get(pref.getString("prevImage", null));
+//                    if (imageFile.exists()) {
+//                        imageFile.delete();
+//                        Log.i("xcxc", "xxz2");
+//                    }
+//                }
+//                Log.i("xcxc", "xxz: " + postImage);
+//                pref.edit().remove(currentPost.getServerID() + "").commit();
+//                pref.edit().remove("prevImage").commit();
+//            }
 
             holder.iv_postImage.setVisibility(View.INVISIBLE);
+            AQuery aq = new AQuery(activity);
 
             if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
-
-               AQuery aq = new AQuery(activity);
+                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+                        aq.invalidate(pref.getString("prevImage", null));
+                    }
+                    pref.edit().remove(currentPost.getServerID() + "").commit();
+                pref.edit().remove("prevImage").commit();
+                }
 
 /* Getting Images from Server and stored in cache */
                 aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);

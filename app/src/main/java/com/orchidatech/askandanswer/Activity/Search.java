@@ -144,6 +144,8 @@ MaterialSearchView searchView;
             @Override
             public void onSuccess(ArrayList<Posts> searchResult, long last_id) {
 //                loadingDialog.dismiss();
+                if(last_id_server == 0)
+                    pb_loading_main.setVisibility(View.GONE);
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
                 adapter.addFromServer(searchResult, false);
             }
@@ -155,7 +157,7 @@ MaterialSearchView searchView;
                     AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
             } else {
                 pb_loading_main.setVisibility(View.GONE);
-                adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                adapter.addFromServer(null, errorCode != 307 ? true : false);//CONNECTION ERROR
             }
             }
         });
