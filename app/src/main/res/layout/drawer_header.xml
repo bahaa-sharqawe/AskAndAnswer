@@ -13,19 +13,29 @@
         android:layout_height="wrap_content"
         android:id="@+id/rl_user_photo"
         android:layout_marginBottom="20dp">
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:id="@+id/iv_profile"
-            android:src="@drawable/ic_user"
             android:layout_centerInParent="true"
            />
-        <ProgressBar
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/load_image_progress" />
+        <!--<ProgressBar-->
+            <!--style="?android:attr/progressBarStyleSmall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:id="@+id/load_image_progress" />-->
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/offline_photo_backgnd"
+            android:id="@+id/tv_person_photo"
+            android:text="A"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="24sp"
+            />
     </RelativeLayout>
 
 

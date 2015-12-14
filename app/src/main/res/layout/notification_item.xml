@@ -21,6 +21,19 @@
             app:civ_border_color="#ece8e7"
             />
         <TextView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/offline_photo_backgnd"
+            android:id="@+id/tv_person_photo"
+            android:text="A"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="5dp"
+            />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_notification_text"

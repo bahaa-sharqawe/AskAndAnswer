@@ -40,9 +40,11 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.Register;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
@@ -143,10 +145,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
             final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
-            holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
             holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
-            holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,13 +162,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 holder.iv_favorite.setImageResource(R.drawable.ic_favorite);
 
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
-            holder.tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
             holder.tv_postContent.setText(currentPost.getText());
-            holder.tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-            holder.tv_share.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-            holder.tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-            holder.tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
             String postImage = currentPost.getImage();
 
             if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
@@ -226,17 +220,27 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
 
-            if (postOwner != null && postOwner.getImage().length() > 0)
+            if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)
+                    && !postOwner.getFname().equals("بهاء"))
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
+                        holder.tv_person_photo.setVisibility(View.INVISIBLE);
+                        holder.iv_profile.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onError() {
-                        holder.iv_profile.setImageResource(R.drawable.ic_user);
+                        holder.iv_profile.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setVisibility(View.VISIBLE);
+                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
                     }
                 });
+            else{
+                holder.iv_profile.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setVisibility(View.VISIBLE);
+                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
+            }
 
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -325,6 +329,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         TextView tv_favorite;
         TextView tv_share;
         TextView tv_comment;
+        TextView tv_person_photo;
         ImageView iv_postImage;
         LinearLayout rl_postEvents;
         LinearLayout ll_share;
@@ -356,12 +361,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 });
             } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
-
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
@@ -373,6 +378,16 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
+                tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_share.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
+
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }

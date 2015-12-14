@@ -78,6 +78,7 @@ public class Profile extends Fragment {
     private ArrayList<Posts> userPosts;
     private SharedPreferences pref;
     private FontManager fontManager;
+    private TextView tv_person_photo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +111,7 @@ public class Profile extends Fragment {
 
         rating_person = (RatingBar) view.findViewById(R.id.rating_person);
         iv_profile = (CircleImageView) view.findViewById(R.id.iv_profile);
+        tv_person_photo = (TextView) view.findViewById(R.id.tv_person_photo);
         tv_person = (TextView) view.findViewById(R.id.tv_person);
         tv_person.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
@@ -122,17 +124,28 @@ public class Profile extends Fragment {
         rating_person.setRating(user.getRating());
         Log.i("rating", user.getRating()+"");
         tv_person.setText(user.getFname() + " " + user.getLname());
-        Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
-            @Override
-            public void onSuccess() {
+        if(user != null && !user.getImage().equals(URL.DEFAULT_IMAGE))
+            Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
+                @Override
+                public void onSuccess() {
+                    tv_person_photo.setVisibility(View.INVISIBLE);
+                    iv_profile.setVisibility(View.VISIBLE);
+                }
 
-            }
+                @Override
+                public void onError() {
+                    iv_profile.setVisibility(View.INVISIBLE);
+                    tv_person_photo.setVisibility(View.VISIBLE);
+                    tv_person_photo.setText(user.getFname().charAt(0)+"");
+                }
+            });
+        else{
+            iv_profile.setVisibility(View.INVISIBLE);
+            tv_person_photo.setVisibility(View.VISIBLE);
+            tv_person_photo.setText(user.getFname().charAt(0)+"");
+        }
+        tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
-            @Override
-            public void onError() {
-                iv_profile.setImageResource(R.drawable.ic_user);
-            }
-        });
         tv_asks.setText(getString(R.string.tv_ask_count, user.getAsks()));
         tv_answers.setText(getString(R.string.tv_answer_count, user.getAnswers()));
 //        getUserInfo(user_id);

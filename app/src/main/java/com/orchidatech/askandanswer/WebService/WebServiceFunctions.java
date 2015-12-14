@@ -819,19 +819,21 @@ public class WebServiceFunctions {
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
                             JSONArray user_action_arr = comment.optJSONArray("user_action");
+                            int current_user_action = 2;
                             if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_actionObj = user_action_arr.getJSONObject(0);
                                 long user_action_id = Long.parseLong(user_actionObj.getString("id"));
                                 long user_action_comment = Long.parseLong(user_actionObj.getString("comment_id"));
                                 long user_action_user = Long.parseLong(user_actionObj.getString("user_id"));
                                 int user_action_action = user_actionObj.optInt("action_type");
+                                current_user_action = user_action_action;
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
                             JSONObject pos_obj = comment.getJSONObject("post");
                             PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
                                     pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
                                     pos_obj.getInt("is_hidden"), -1, -1, -1, -1));
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
                             JSONObject postOwner = pos_obj.getJSONObject("user_owner_of_post");
                             long post_owner_id = Long.parseLong(postOwner.getString("id"));
                             String post_owner_f_name = postOwner.getString("f_name");
@@ -906,9 +908,6 @@ public class WebServiceFunctions {
                             JSONObject actions = comment.getJSONObject("action");
                             int likes = actions.getInt("like");
                             int dislikes = actions.getInt("dislike");
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
-                            CommentsDAO.addComment(comment_item);
-                            fetchedComments.add(comment_item);
                             ///////////////////////////////////////////////
                             ///comment's user data
                             JSONObject user_info = comment.getJSONObject("user_info");
@@ -930,12 +929,17 @@ public class WebServiceFunctions {
                             Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, created_at, active, last_login, mobile, is_public, code, no_answer, no_ask, user_rating);
                             UsersDAO.addUser(_user);
                             /////////////////////////s/////////////////////
+                            int current_user_action = 2;
                             JSONArray user_action_arr = comment.optJSONArray("user_action");
                             if (user_action_arr != null && user_action_arr.length() > 0) {
                                 JSONObject user_action = user_action_arr.getJSONObject(0);
                                 User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
-                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), Integer.parseInt(user_action.getString("action_type"))));
+                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), current_user_action = Integer.parseInt(user_action.getString("action_type"))));
                             }
+                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
+                            CommentsDAO.addComment(comment_item);
+                            fetchedComments.add(comment_item);
+
                         }
                         long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedComments, last_id);
@@ -1506,7 +1510,7 @@ public class WebServiceFunctions {
                         long user_id = comment.getLong("user_id");
                         long post_id = comment.getLong("post_id");
                         long comment_date = comment.getLong("updated_at");
-                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0);
+                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0, 2);
                         CommentsDAO.addComment(newComment);
                         Users user = UsersDAO.getUser(user_id);
                         user.answers = user.answers + 1;

@@ -23,6 +23,7 @@ public class Comments extends Model{
         public static final String COLUMN_POST_ID = "POST_ID";
         public static final String COLUMN_LIKES = "LIKES";
         public static final String COLUMN_DISLIKES= "DISLIKES";
+        public static final String COLUMN_CURRENT_USER_ACTION= "USER_ACTION";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -45,14 +46,18 @@ public class Comments extends Model{
 
     @Column(name = FIELDS.COLUMN_LIKES)
     public int likes;
+
     @Column(name = FIELDS.COLUMN_DISLIKES)
     public int disLikes;
+
+    @Column(name = FIELDS.COLUMN_CURRENT_USER_ACTION)
+    public int user_action;
 
     public Comments() {
         super();
     }
 
-    public Comments(long serverID, String text, String image, long date, long userID, long postID, int likes, int disLikes) {
+    public Comments(long serverID, String text, String image, long date, long userID, long postID, int likes, int disLikes, int user_action) {
         super();
         this.serverID = serverID;
         this.text = text;
@@ -62,6 +67,7 @@ public class Comments extends Model{
         this.postID = postID;
         this.likes = likes;
         this.disLikes = disLikes;
+        this.user_action = user_action;
     }
 
     public long getServerID() {
@@ -126,5 +132,13 @@ public class Comments extends Model{
 
     public void setDisLikes(int disLikes) {
         this.disLikes = disLikes;
+    }
+
+    public int getUser_action() {
+        return user_action;
+    }
+
+    public void setUser_action(int user_action) {
+        this.user_action = user_action;
     }
 }

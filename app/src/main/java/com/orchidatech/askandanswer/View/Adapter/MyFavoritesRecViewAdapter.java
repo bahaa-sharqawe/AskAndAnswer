@@ -29,6 +29,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
@@ -52,6 +55,7 @@ import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -68,6 +72,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private static final int TYPE_FOOTER = 1;
     private final OnLastListReachListener lastListReachListener;
     private final Animation mAnimation;
+    private final FontManager fontManager;
     private SharedPreferences pref;
     private View parent;
     private ProgressBar pv_load;
@@ -86,6 +91,14 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         this.lastListReachListener = lastListReachListener;
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
+        fontManager = FontManager.getInstance(activity.getAssets());
+        AjaxCallback.setNetworkLimit(8);
+
+//set the max number of icons (image width <= 50) to be cached in memory, default is 20
+        BitmapAjaxCallback.setIconCacheLimit(50);
+
+//set the max number of images (image width > 50) to be cached in memory, default is 20
+        BitmapAjaxCallback.setCacheLimit(50);
 
     }
 
@@ -204,24 +217,27 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             ImageLoader imageLoader = ImageLoader.getInstance();
 
             if(!TextUtils.isEmpty(postImage) && postImage != "null"){
-                holder.iv_postImage.setVisibility(View.GONE);
-                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-//                        holder.pb_photo_load.setVisibility(View.GONE);
-                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
-                        holder.iv_postImage.setAnimation(anim);
-                        anim.start();
-                        holder.iv_postImage.setVisibility(View.VISIBLE);
-                    }
+                AQuery aq = new AQuery(activity);
 
-                    @Override
-                    public void onError() {
-//                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_postImage.setVisibility(View.VISIBLE);
-
-                    }
-                });
+/* Getting Images from Server and stored in cache */
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
+//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+////                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
+//                        holder.iv_postImage.setAnimation(anim);
+//                        anim.start();
+//                        holder.iv_postImage.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+////                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        holder.iv_postImage.setVisibility(View.VISIBLE);
+//
+//                    }
+//                });
                 Log.i("fhfhjgh", postImage);
             }else {
                 holder.iv_postImage.setVisibility(View.GONE);
@@ -230,17 +246,27 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             }
 
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
-            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
-                @Override
-                public void onSuccess() {
-                }
 
-                @Override
-                public void onError() {
-                    holder.iv_profile.setImageResource(R.drawable.ic_user);
-                }
-            });
+            if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
+                Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.tv_person_photo.setVisibility(View.INVISIBLE);
+                        holder.iv_profile.setVisibility(View.VISIBLE);
+                    }
 
+                    @Override
+                    public void onError() {
+                        holder.iv_profile.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setVisibility(View.VISIBLE);
+                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + "");
+                    }
+                });
+            }else{
+                holder.iv_profile.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setVisibility(View.VISIBLE);
+                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+"");
+            }
 
         }
     }
@@ -267,13 +293,17 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         TextView tv_person_name;
         TextView tv_postDate;
         TextView tv_postContent;
-        TextView tv_post_category;  //change visibility
+        TextView tv_post_category;
+        TextView tv_favorite;
+        TextView tv_share;
+        TextView tv_comment;
+        TextView tv_person_photo;
         ImageView iv_postImage;
-        RelativeLayout card_post;
-        LinearLayout rl_postEvents; //change visibility
+        LinearLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
+        RelativeLayout card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
 //        ProgressBar  pb_photo_load;
@@ -291,19 +321,29 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
+                tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
+                tv_share = (TextView) itemView.findViewById(R.id.tv_share);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
-
+                iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-
                 rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
+                tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_share.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
 

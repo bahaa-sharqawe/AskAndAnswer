@@ -210,24 +210,24 @@ public class GNLConstants {
             }
 
         }
-        public static Comments getComment(JSONObject comment_json){
-            try {
-                long comment_id = Long.parseLong(comment_json.getString("id"));
-                String comment_text = comment_json.getString("comment");
-                String comment_image = comment_json.getString("image");
-                long user_id = Long.parseLong(comment_json.getString("user_id"));
-                long post_id = Long.parseLong(comment_json.getString("post_id"));
-                long comment_date = comment_json.getLong("updated_at");
-                JSONObject actions = comment_json.getJSONObject("action");
-                int likes = actions.getInt("like");
-                int dislikes = actions.getInt("dislike");
-                Comments comment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
-                return comment;
-            } catch (JSONException e) {
-                return null;
-            }
-
-        }
+//        public static Comments getComment(JSONObject comment_json){
+//            try {
+//                long comment_id = Long.parseLong(comment_json.getString("id"));
+//                String comment_text = comment_json.getString("comment");
+//                String comment_image = comment_json.getString("image");
+//                long user_id = Long.parseLong(comment_json.getString("user_id"));
+//                long post_id = Long.parseLong(comment_json.getString("post_id"));
+//                long comment_date = comment_json.getLong("updated_at");
+//                JSONObject actions = comment_json.getJSONObject("action");
+//                int likes = actions.getInt("like");
+//                int dislikes = actions.getInt("dislike");
+//                Comments comment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes);
+//                return comment;
+//            } catch (JSONException e) {
+//                return null;
+//            }
+//
+//        }
         public static Category getCategory(JSONObject category_json){
             try {
                 Category category = new Category(Long.parseLong(category_json.getString("id")), category_json.getString("name"),

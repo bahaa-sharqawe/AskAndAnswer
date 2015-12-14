@@ -122,26 +122,35 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             }
         }else {
             final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
-            Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
+            final Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
 //            Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
-            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
+//            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
 //            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
             holder.tv_commentDesc.setText(currentComment.getText());
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.user_rating.setRating(commentOwner.getRating());
 //            holder.tv_comment_category.setText(commentCategory.getName());
+            if(commentOwner != null && !commentOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
+                Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.tv_person_photo.setVisibility(View.INVISIBLE);
+                        holder.iv_person.setVisibility(View.VISIBLE);
+                    }
 
-            Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
-                @Override
-                public void onSuccess() {
-                }
-
-                @Override
-                public void onError() {
-                    holder.iv_person.setImageResource(R.drawable.ic_user);
-                }
-            });
+                    @Override
+                    public void onError() {
+                        holder.iv_person.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setVisibility(View.VISIBLE);
+                        holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + "");
+                    }
+                });
+            }else{
+                holder.iv_person.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setVisibility(View.VISIBLE);
+                holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + "");
+            }
 //            holder.pb_photo_load.setVisibility(View.VISIBLE);
             holder.iv_comment.setVisibility(View.GONE);
             if(!TextUtils.isEmpty(currentComment.getImage()) && currentComment.getImage() != "null") {
@@ -165,10 +174,10 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             }
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
             holder.tv_likes.setText(currentComment.getLikes() + "");
-            if(data.get(comments.get(position)) == Enum.USER_ACTIONS.LIKE.getNumericType()){
+            if(comments.get(position).getUser_action() == Enum.USER_ACTIONS.LIKE.getNumericType()){
                     holder.iv_unlike.setImageResource(R.drawable.unlike);
                     holder.iv_like.setImageResource(R.drawable.ic_like_on);
-            }else if(data.get(comments.get(position)) == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
+            }else if(comments.get(position).getUser_action() == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
                     holder.iv_unlike.setImageResource(R.drawable.ic_dislike_on);
                     holder.iv_like.setImageResource(R.drawable.like);
             }else{
@@ -332,6 +341,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_comment_options;
         CircleImageView iv_person;
+        TextView tv_person_photo;
         TextView tv_person_name;
         RatingBar rating_comment;
         TextView tv_commentDate;
@@ -376,6 +386,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 rating_comment = (RatingBar) itemView.findViewById(R.id.rating_user);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
 //                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
@@ -444,8 +455,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     private void dislikeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
-        final int prevAction = Integer.valueOf(data.get(comments.get(position)));
+//        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
+        final int prevAction = Integer.valueOf(comments.get(position).user_action);
         final int action = (prevAction != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
     //////////////////////////////////////////////////////////////
         int currentLikes = Integer.parseInt(tv_likes.getText().toString());
@@ -454,36 +465,36 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             currentDisLikes++;
             iv_like.setImageResource(R.drawable.like);
             iv_unlike.setImageResource(R.drawable.ic_dislike_on);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.DISLIKE.getNumericType();
-                user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.DISLIKE.getNumericType();
+//                user_actions.save();
+//            }
 
         } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
             currentLikes--;
             currentDisLikes++;
             iv_like.setImageResource(R.drawable.like);
             iv_unlike.setImageResource(R.drawable.ic_dislike_on);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
-                user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
+//                user_actions.save();
+//            }
         } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
             currentDisLikes--;
             iv_like.setImageResource(R.drawable.like);
             iv_unlike.setImageResource(R.drawable.unlike);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.NO_ACTIONS.getNumericType();
-                 user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.NO_ACTIONS.getNumericType();
+//                 user_actions.save();
+//            }
 
         }
         tv_likes.setText(currentLikes + "");
         tv_unlikes.setText(currentDisLikes + "");
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
+        comments.get(position).user_action =  action;
         comments.get(position).save();
-        data.put(comments.get(position), action);
         //////////////////////////////////////////////////////////////
 
         WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
@@ -499,8 +510,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     private void likeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
-        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
-        final int prevAction = Integer.valueOf(data.get(comments.get(position)));
+//        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
+        final int prevAction = comments.get(position).user_action;
         final int action = prevAction != Enum.USER_ACTIONS.LIKE.getNumericType() ? 0 : 2;
        ////////////////////////////////////////////////
         int currentLikes = Integer.parseInt(tv_likes.getText().toString());
@@ -509,34 +520,35 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             currentLikes++;
             iv_like.setImageResource(R.drawable.ic_like_on);
             iv_unlike.setImageResource(R.drawable.unlike);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
-                user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
+//                user_actions.save();
+//            }
         } else if (prevAction == Enum.USER_ACTIONS.DISLIKE.getNumericType()) {
             currentDisLikes--;
             currentLikes++;
             iv_like.setImageResource(R.drawable.ic_like_on);
             iv_unlike.setImageResource(R.drawable.unlike);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
-                user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.LIKE.getNumericType();
+//                user_actions.save();
+//            }
         } else if (prevAction == Enum.USER_ACTIONS.LIKE.getNumericType()) {
             currentLikes--;
             iv_like.setImageResource(R.drawable.like);
             iv_unlike.setImageResource(R.drawable.unlike);
-            if(user_actions != null) {
-                user_actions.actionType = Enum.USER_ACTIONS.NO_ACTIONS.getNumericType();
-                user_actions.save();
-            }
+//            if(user_actions != null) {
+//                user_actions.actionType = Enum.USER_ACTIONS.NO_ACTIONS.getNumericType();
+//                user_actions.save();
+//            }
         }
         tv_likes.setText(currentLikes + "");
         tv_unlikes.setText(currentDisLikes + "");
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
+        comments.get(position).user_action = action;
         comments.get(position).save();
-        data.put(comments.get(position), action);
+
         ////////////////////////////////////////////
 
         WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {

@@ -32,6 +32,7 @@ public class CommentsDAO {
         comment.userID = newComment.getUserID();
         comment.likes = newComment.getLikes();
         comment.disLikes = newComment.getDisLikes();
+        comment.user_action = newComment.getUser_action();
         comment.save();
     }
 
@@ -57,6 +58,7 @@ public class CommentsDAO {
         existComment.postID = comment.getPostID();
         existComment.likes = comment.getLikes();
         existComment.disLikes = comment.getDisLikes();
+        existComment.user_action = comment.getUser_action();
         existComment.save();
     }
 

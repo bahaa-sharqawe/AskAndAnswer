@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
@@ -65,7 +66,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {//Display the data at the specified position
         if (holder.viewType == TYPE_HEADER) {//complete the code here
-            Users user = UsersDAO.getUser(pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
+            final Users user = UsersDAO.getUser(pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1));
             if (user != null) {
                 holder.tv_person_name.setText(user.getFname() + " " + user.getLname());
                 holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
@@ -73,19 +74,30 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 holder.tv_person_email.setText(user.getEmail());
                 holder.tv_person_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
-                holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-                Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.load_image_progress.setVisibility(View.GONE);
-                    }
+//                holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                if (user != null && !user.getImage().equals(URL.DEFAULT_IMAGE)) {
+                    Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.tv_person_photo.setVisibility(View.INVISIBLE);
+                            holder.iv_profile.setVisibility(View.VISIBLE);
+//                            holder.load_image_progress.setVisibility(View.GONE);
+                        }
 
-                    @Override
-                    public void onError() {
-                        holder.load_image_progress.setVisibility(View.GONE);
-                        holder.iv_profile.setImageResource(R.drawable.ic_user);
-                    }
-                });
+                        @Override
+                        public void onError() {
+                            holder.iv_profile.setVisibility(View.INVISIBLE);
+                            holder.tv_person_photo.setVisibility(View.VISIBLE);
+                            holder.tv_person_photo.setText(user.getFname().charAt(0)+"");
+//                            holder.load_image_progress.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else{
+                    holder.iv_profile.setVisibility(View.INVISIBLE);
+                    holder.tv_person_photo.setVisibility(View.VISIBLE);
+                    holder.tv_person_photo.setText(user.getFname().charAt(0) + "");
+                }
             }
         } else {
             DrawerItem item = items.get(position - 1);//0 is header
@@ -101,7 +113,8 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         return items.size() + 1;
     }
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView tv_person_photo;
         int viewType;
         //header components
         TextView tv_person_name;
@@ -120,7 +133,10 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_person_email = (TextView) itemView.findViewById(R.id.tv_person_email);
                 iv_profile = (ImageView) itemView.findViewById(R.id.iv_profile);
-                load_image_progress = (ProgressBar) itemView.findViewById(R.id.load_image_progress);
+//                load_image_progress = (ProgressBar) itemView.findViewById(R.id.load_image_progress);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
             } else {
                 iv_drawer_item = (ImageView) itemView.findViewById(R.id.iv_drawer_item);
                 tv_drawer_item = (TextView) itemView.findViewById(R.id.tv_drawer_item);
