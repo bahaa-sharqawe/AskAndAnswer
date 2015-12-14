@@ -8,6 +8,7 @@
     android:paddingRight="8dp"
     android:paddingBottom="8dp"
     android:layoutDirection="ltr"
+    android:background="#fff"
     android:orientation="vertical">
 <RelativeLayout
     android:layout_width="match_parent"
@@ -89,21 +90,36 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="20sp"
-                        android:hint="add comment"
+                        android:hint="Add a comment"
                         android:inputType="textMultiLine"
                         android:singleLine="false"
+                        android:layout_gravity="center_vertical"
                         android:id="@+id/ed_add_comment"
                         android:background="@drawable/ed_add_comment_backgnd"/>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/rl_send_comment"
+                android:clickable="false"
+                >
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_send"
+                    android:id="@+id/iv_add_comment"
+                    android:padding="10dp"
+                    android:background="#fff"
+                    android:layout_gravity="center_vertical"/>
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_send"
-                        android:id="@+id/iv_add_comment"
-                        android:layout_marginLeft="10dp"
-                        android:layout_gravity="center_vertical"/>
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/pb_add_comment" />
 
+            </RelativeLayout>
 
                 </LinearLayout>
                 <RelativeLayout

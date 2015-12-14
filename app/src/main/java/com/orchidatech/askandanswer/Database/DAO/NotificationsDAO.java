@@ -53,7 +53,7 @@ public class NotificationsDAO {
     }
 
     public static List<Notifications> getAllNotifications(){
-        return new Select().from(Notifications.class).execute();
+        return new Select().from(Notifications.class).orderBy(Notifications.FIELDS.COLUMN_DATE + " desc").execute();
     }
 
     public static void deleteAllNotifications(){

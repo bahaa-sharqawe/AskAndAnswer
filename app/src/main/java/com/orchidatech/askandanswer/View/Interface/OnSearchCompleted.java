@@ -8,6 +8,6 @@ import java.util.ArrayList;
  * Created by Bahaa on 25/11/2015.
  */
 public interface OnSearchCompleted {
-    void onSuccess(ArrayList<Posts> searchResult);
-    void onFail(String error);
+    void onSuccess(ArrayList<Posts> searchResult, long last_id);
+    void onFail(String error, int error_code);
 }

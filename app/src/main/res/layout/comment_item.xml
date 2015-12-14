@@ -172,7 +172,7 @@
                     android:id="@+id/tv_unlikes"
                     android:layout_gravity="center_vertical"
                     android:text="30"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#959595"/>
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -183,6 +183,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/iv_unlike"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="4dp"
                         android:src="@drawable/unlike"
                         />
                       <!--<ImageView-->
@@ -209,7 +210,7 @@
                     android:id="@+id/tv_likes"
                     android:layout_gravity="center_vertical"
                     android:text="10"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#959595"/>
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -220,6 +221,7 @@
                         android:id="@+id/iv_like"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/like"
+                        android:layout_marginLeft="4dp"
                         />
                     <!--<ImageView-->
                         <!--android:layout_width="wrap_content"-->

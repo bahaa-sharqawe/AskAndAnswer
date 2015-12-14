@@ -2,7 +2,6 @@ package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,16 +18,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
-import com.orchidatech.askandanswer.Activity.CategoryPosts;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SearchRecViewAdapter;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnSearchCompleted;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -45,6 +40,7 @@ public class SearchAndFavorite extends Fragment {
     MaterialEditText ed_search;
     LinearLayout ll_parent;
     private SharedPreferences pref;
+    private long last_id_server = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +80,12 @@ public class SearchAndFavorite extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
-        adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent);
+        adapter = new SearchRecViewAdapter(getActivity(), posts, ll_parent, new OnLastListReachListener() {
+            @Override
+            public void onReached() {
+                performSearching(ed_search.getText().toString().trim());
+            }
+        });
         rv_posts.setAdapter(adapter);
 
     }
@@ -123,20 +124,14 @@ public class SearchAndFavorite extends Fragment {
         loadingDialog.setArguments(args);
         loadingDialog.show(getFragmentManager(), "search");
         loadingDialog.setCancelable(false);
-        WebServiceFunctions.search(getActivity(), s, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnSearchCompleted() {
-
+        WebServiceFunctions.search(getActivity(), s, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnSearchCompleted() {
             @Override
-            public void onSuccess(ArrayList<Posts> searchResult) {
-                loadingDialog.dismiss();
-                posts.addAll(searchResult);
-                adapter.notifyDataSetChanged();
+            public void onSuccess(ArrayList<Posts> searchResult, long last_id) {
+
             }
 
             @Override
-            public void onFail(String error) {
-                loadingDialog.dismiss();
-                adapter.notifyDataSetChanged();
-                AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
+            public void onFail(String error, int error_code) {
 
             }
         });

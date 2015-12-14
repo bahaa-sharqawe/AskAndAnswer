@@ -43,6 +43,8 @@ import com.orchidatech.askandanswer.Application.MyApplication;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CommentsDAO;
+import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
+import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
@@ -55,7 +57,9 @@ import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Bahaa on 15/11/2015.
@@ -89,6 +93,9 @@ public class Comments extends DialogFragment {
     private long user_id;
     private int numOfFetchedFromServer = 0;
     private SharedPreferences pref;
+    private Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
+    private RelativeLayout rl_send_comment;
+    private ProgressBar pb_add_comment;
 
     public Comments(TimelineRecViewAdapter.OnDialogDismiss listener) {
         this.listener = listener;
@@ -134,7 +141,8 @@ public class Comments extends DialogFragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         comments = new ArrayList<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent, new OnLastListReachListener() {
+        data = new HashMap<>();
+        adapter = new CommentsRecViewAdapter(getActivity(), comments, data, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
@@ -191,17 +199,26 @@ public class Comments extends DialogFragment {
         });
         ed_add_comment = (EditText) view.findViewById(R.id.ed_add_comment);
         iv_add_comment = (ImageView) view.findViewById(R.id.iv_add_comment);
+        pb_add_comment = (ProgressBar) view.findViewById(R.id.pb_add_comment);
+        rl_send_comment = (RelativeLayout) view.findViewById(R.id.rl_send_comment);
+        iv_add_comment.setVisibility(View.VISIBLE);
+        pb_add_comment.setVisibility(View.INVISIBLE);
         iv_add_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String comment = ed_add_comment.getText().toString().trim();
                 if (!TextUtils.isEmpty(comment)) {
+                    iv_add_comment.setVisibility(View.INVISIBLE);
+                    pb_add_comment.setVisibility(View.VISIBLE);
                     iv_add_comment.setEnabled(false);
                     iv_camera.setEnabled(false);
                     WebServiceFunctions.addComment(getActivity(), comment, picturePath, postId, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener() {
 
                         @Override
                         public void onAdded(com.orchidatech.askandanswer.Database.Model.Comments comment) {
+                            iv_add_comment.setVisibility(View.VISIBLE);
+                            pb_add_comment.setVisibility(View.INVISIBLE);
                             picturePath = "";
                             image_str = "";
                             rl_comment_photo_preview.setVisibility(View.GONE);
@@ -215,6 +232,8 @@ public class Comments extends DialogFragment {
 
                         @Override
                         public void onFail(String error) {
+                            iv_add_comment.setVisibility(View.VISIBLE);
+                            pb_add_comment.setVisibility(View.INVISIBLE);
                             AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
@@ -261,7 +280,17 @@ public class Comments extends DialogFragment {
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
 
                 numOfFetchedFromServer += comments.size();
-                Log.i("fdfcdfdf", last_id_server+"");
+                Log.i("fdfcdfdf", last_id_server + "");
+                for(com.orchidatech.askandanswer.Database.Model.Comments comment : comments){
+                    User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
+                    if(user_actions == null || user_actions.actionType == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()){
+                        data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
+                    }else if(user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()){
+                        data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
+                    }else{
+                        data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
+                    }
+                }
                 adapter.addFromServer(comments, false);
             }
 
@@ -291,6 +320,16 @@ public class Comments extends DialogFragment {
     }
 
     private void getFromLocal() {
+        for(com.orchidatech.askandanswer.Database.Model.Comments comment : postComments){
+            User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
+            if(user_actions == null || user_actions.actionType == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()){
+                data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
+            }else if(user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()){
+                data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
+            }else{
+                data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
+            }
+        }
         adapter.addFromLocal(postComments);
     }
 

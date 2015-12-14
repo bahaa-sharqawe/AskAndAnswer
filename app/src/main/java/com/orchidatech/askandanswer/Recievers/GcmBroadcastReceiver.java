@@ -51,11 +51,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-//        ComponentName comp = new ComponentName(context.getPackageName(),
-//                GcmIntentService.class.getName());
-//        // Start the service, keeping the device awake while it is launching.
-//        startWakefulService(context, (intent.setComponent(comp)));
-//        setResultCode(Activity.RESULT_OK);
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         // The getMessageType() intent parameter must be the intent you received
@@ -80,8 +75,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
                     .equals(messageType)) {
                 String message = extras.getString("message");
-                Log.i("fdfddffdf", message);
-
                 parsingMSG(message);
             }
 
@@ -139,7 +132,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 .setContentIntent(mContentIntent)
                 .setSound(soundURI)
                 .setVibrate(mVibratePattern);
-        Log.i("cvcllvcv", msg);
         mNotificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
     }
 }

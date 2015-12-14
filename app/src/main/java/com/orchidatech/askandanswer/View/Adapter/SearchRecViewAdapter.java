@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,6 +37,7 @@ import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.squareup.picasso.Callback;
@@ -53,27 +55,31 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private static final int TYPE_FOOTER = 1;
     private final View parent;
     private final FontManager fontManager;
+    private final OnLastListReachListener lastListReachListener;
+    private  ProgressBar pv_load;
 
     private ArrayList<Posts> posts;
     Activity activity;
     private boolean loading = false;
     private boolean isFoundData = true;
+    private Button btn_reload;
 
-    public SearchRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent) {
+    public SearchRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent, OnLastListReachListener lastListReachListener) {
         this.activity = activity;
         this.posts = posts;
         this.parent = parent;
         fontManager = FontManager.getInstance(activity.getAssets());
+        this.lastListReachListener = lastListReachListener;
 
     }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-       /* if (viewType == TYPE_FOOTER) {
+        if (viewType == TYPE_FOOTER) {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
             return new PostViewHolder(itemView, TYPE_FOOTER);
-        } else*/ {
+        } else {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_item, parent, false);
             return new PostViewHolder(itemView, TYPE_HEADER);
         }
@@ -81,33 +87,43 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 
     @Override
     public void onBindViewHolder(final PostViewHolder holder, final int position) {
-        Posts currentPost = posts.get(position);
-        final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
-        final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
-        holder.tv_post_category.setText(postCategory.getName());
-        holder.tv_post_category.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        if (holder.viewType == TYPE_FOOTER) {
+            btn_reload.setVisibility(View.GONE);
+            if (!loading && isFoundData && posts.size() > 0) {
+                pv_load.setVisibility(View.VISIBLE);
+                loading = true;
+                lastListReachListener.onReached();
+            } else
+                pv_load.setVisibility(View.GONE);
 
-        holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
-        holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        }else {
+            Posts currentPost = posts.get(position);
+            final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
+            final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
+            holder.tv_post_category.setText(postCategory.getName());
+            holder.tv_post_category.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
-        holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
-        holder.tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+            holder.tv_person_name.setText(postOwner.getFname() + " " + postOwner.getLname());
+            holder.tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
-        holder.tv_postContent.setText(currentPost.getText());
-        holder.tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+            holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
+            holder.tv_postDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
-        holder.card_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                commentPost(posts.get(position).getServerID());
-            }
-        });
-        holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                categoryClick(postCategory.getServerID(), postOwner.getServerID());
-            }
-        });
+            holder.tv_postContent.setText(currentPost.getText());
+            holder.tv_postContent.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+            holder.card_post.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    commentPost(posts.get(position).getServerID());
+                }
+            });
+            holder.tv_post_category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoryClick(postCategory.getServerID(), postOwner.getServerID());
+                }
+            });
 
 //        holder.ll_comment.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -127,59 +143,60 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 //                pe_listener.onFavoritePost(position, posts.get(position).getServerID(), posts.get(position).getUserID());
 //            }
 //        });
-        String postImage = currentPost.getImage();
+            String postImage = currentPost.getImage();
 //        holder.pb_photo_load.setVisibility(View.VISIBLE);
-        holder.iv_postImage.setVisibility(View.GONE);
+            holder.iv_postImage.setVisibility(View.GONE);
 
-        if(postImage!=null && postImage.length()>0) {
-            Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
+            if (postImage != null && postImage.length() > 0) {
+                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+//                    holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_postImage.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+//                    holder.pb_photo_load.setVisibility(View.GONE);
+                        holder.iv_postImage.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else {
+//            holder.pb_photo_load.setVisibility(View.GONE);
+                holder.iv_postImage.setVisibility(View.GONE);
+            }
+            holder.tv_comments.setText(posts.get(position).getComments_no() > 0 ? activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()) : activity.getString(R.string.no_comments));
+            holder.tv_comments.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+            holder.tv_unlikes.setText(posts.get(position).getNum_dislikes() + "");
+            holder.tv_unlikes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+            holder.tv_likes.setText(posts.get(position).getNum_likes() + "");
+            holder.tv_likes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+            holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToProfile(postOwner.getServerID());
+                }
+            });
+            Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                 @Override
                 public void onSuccess() {
-//                    holder.pb_photo_load.setVisibility(View.GONE);
-                    holder.iv_postImage.setVisibility(View.VISIBLE);
+
                 }
 
                 @Override
                 public void onError() {
-//                    holder.pb_photo_load.setVisibility(View.GONE);
-                    holder.iv_postImage.setVisibility(View.VISIBLE);
+                    holder.iv_profile.setImageResource(R.drawable.ic_user);
                 }
             });
-        } else {
-//            holder.pb_photo_load.setVisibility(View.GONE);
-            holder.iv_postImage.setVisibility(View.GONE);
         }
-        holder.tv_comments.setText(posts.get(position).getComments_no() > 0?activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()):activity.getString(R.string.no_comments));
-        holder.tv_comments.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
-        holder.tv_unlikes.setText(posts.get(position).getNum_dislikes() + "");
-        holder.tv_unlikes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
-        holder.tv_likes.setText(posts.get(position).getNum_likes() + "");
-        holder.tv_likes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
-        holder.iv_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToProfile(postOwner.getServerID());
-            }
-        });
-        Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError() {
-                holder.iv_profile.setImageResource(R.drawable.ic_user);
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return posts.size();
+        return posts.size()+1;
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
@@ -200,10 +217,20 @@ RelativeLayout card_post;
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
-           /* if (viewType == TYPE_FOOTER) {
+            if (viewType == TYPE_FOOTER) {
                 pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
                 pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
-            } else*/ {
+                btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
+                btn_reload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setVisibility(View.GONE);
+                        pv_load.setVisibility(View.VISIBLE);
+                        loading = true;
+                        lastListReachListener.onReached();
+                    }
+                });
+            } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
@@ -226,7 +253,9 @@ RelativeLayout card_post;
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        if (position == posts.size())
+            return TYPE_FOOTER;
+        return TYPE_HEADER;
     }
 
 
@@ -260,6 +289,33 @@ RelativeLayout card_post;
         ft.addToBackStack(null);
         ft.commit();
         mFragmentManager.executePendingTransactions();
+    }
+    public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
+        if (newPosts != null && newPosts.size() > 0) {
+            posts.addAll(newPosts);
+            if (pv_load != null)
+                pv_load.setVisibility(View.VISIBLE);
+            isFoundData = true;
+            notifyDataSetChanged();
+
+        } else {
+            if (isErrorConnection) {
+                if (pv_load != null && btn_reload != null) {
+                    btn_reload.setVisibility(View.VISIBLE);
+                    btn_reload.setEnabled(true);
+                    pv_load.setVisibility(View.GONE);
+                }
+            } else {
+                if (pv_load != null && btn_reload != null) {
+                    pv_load.setVisibility(View.GONE);
+                    btn_reload.setVisibility(View.GONE);
+                }
+                isFoundData = false;
+//                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
+//                optimizeLocalDB();
+            }
+        }
+        loading = false;
     }
 
 }

@@ -23,6 +23,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
+import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
@@ -119,33 +120,20 @@ public class WebServiceFunctions {
                             JSONObject category_info = category_obj.getJSONObject("Category_info");
                             CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
                         }
-//                        JSONArray user_notifications_arr = user.getJSONArray("user_notifications");
-//                        for(int i = 0; i < user_notifications_arr.length(); i++){
-//                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
-//                            long notif_id = Long.parseLong(user_notification.getString("id"));
-//                            int notif_type = Integer.parseInt(user_notification.getString("type"));
-//                            long notif_object_id = Long.parseLong(user_notification.getString("object_id"));
-//                            String notif_text = user_notification.getString("text");
-//                            int notif_is_done = Integer.parseInt(user_notification.getString("is_done"));
-//                            long notif_date = user_notification.getLong("created_at");
-//                            Notifications notifications = new Notifications(notif_id, notif_type, notif_object_id, notif_text, notif_date, notif_is_done);
-//                           if(notif_type == Enum.NOTIFICATIONS.NEW_POST_ADDED.getNumericType()){
-//                               JSONObject post_date = user_notification.getJSONObject("post_data");
-//                               String post_text = post_date.getString("text");
-//                               String post_image = post_date.getString("image");
-//                               int post_is_hidden = Integer.parseInt(post_date.getString("is_hidden"));
-//                               long post_category_id = Long.parseLong(post_date.getString("category_id"));
-//                               long post_user_id = Long.parseLong(post_date.getString("user_id"));
-////                            int comments_no = post_obj.getInt("comment_no");
-//                               long post_created_at = post_date.getLong("updated_at");
-//                               Posts postItem = new Posts(notif_object_id, post_text, post_image, post_created_at, post_user_id, post_category_id, post_is_hidden, -1, -1, -1, -1);
-//                               PostsDAO.addPost(postItem);
-//                           }else{
-//
-//                           }
-//                            NotificationsDAO.addNotification(notifications);
-//
-//                        }
+                        JSONArray user_notifications_arr = user.getJSONArray("user_notifications");
+                        for(int i = 0; i < user_notifications_arr.length(); i++){
+                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
+                            String userImg = user_notification.getString("userimg");
+                            int notification_is_done = Integer.parseInt(user_notification.getString("is_done"));//is_done = 0 ==> false
+                            long notification_date = user_notification.getLong("created_at");
+                            long notification_id = Long.parseLong(user_notification.getString("id"));
+                            String notification_text = user_notification.getString("text");
+                            int notification_type = Integer.parseInt(user_notification.getString("type"));
+                            long notification_object_id = Long.parseLong(user_notification.getString("object_id"));
+                            Notifications notifications = new Notifications(notification_id, notification_type, notification_object_id,
+                                    notification_text, notification_date, notification_is_done, userImg);
+                            NotificationsDAO.addNotification(notifications);
+                        }
                         listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -967,11 +955,13 @@ public class WebServiceFunctions {
         });
     }
 
-    public static void search(final Activity activity, String textFilter, final long user_id, final OnSearchCompleted listener) {
+    public static void search(final Activity activity, String textFilter, final long user_id, int limit, int offset, long last_id_server, final OnSearchCompleted listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
         String url = URL.SEARCH + "?" + URL.URLParameters.FILTER + "=" + encode(textFilter) +
-                "&" + URL.URLParameters.USER_ID + "=" + user_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+                "&" + URL.URLParameters.USER_ID + "=" + user_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id
+                + "&" + URL.URLParameters.LIMIT + "=" + limit + "&" + URL.URLParameters.OFFSET + "=" + offset +
+                "&" + URL.URLParameters.LAST_ID + "=" + last_id_server;
         Log.i("dsds", url);
         Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
@@ -1001,19 +991,21 @@ public class WebServiceFunctions {
                             UsersDAO.addUser(user);
                             matchedPosts.add(post);
                         }
-                        listener.onSuccess(matchedPosts);
+                        long last_id = dataObj.getLong("last_id");
+
+                        listener.onSuccess(matchedPosts, last_id);
                     } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
-                        listener.onFail(GNLConstants.getStatus(status_code));
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
-                    listener.onFail(GNLConstants.getStatus(100));
+                    listener.onFail(GNLConstants.getStatus(100), 100);
                 }
             }
 
             @Override
             public void onFail(String error) {
-                listener.onFail(error);
+                listener.onFail(error, 100);
             }
         });
 
