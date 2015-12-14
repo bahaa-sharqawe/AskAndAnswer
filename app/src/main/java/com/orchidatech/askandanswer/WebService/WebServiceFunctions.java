@@ -130,9 +130,13 @@ public class WebServiceFunctions {
                             String notification_text = user_notification.getString("text");
                             int notification_type = Integer.parseInt(user_notification.getString("type"));
                             long notification_object_id = Long.parseLong(user_notification.getString("object_id"));
+                            String notiOwnerFname = user_notification.getString("fname");
+                            String notiOwnerLname = user_notification.getString("lname");
                             Notifications notifications = new Notifications(notification_id, notification_type, notification_object_id,
-                                    notification_text, notification_date, notification_is_done, userImg);
+                                    notification_text, notification_date, notification_is_done, userImg, notiOwnerFname, notiOwnerLname);
                             NotificationsDAO.addNotification(notifications);
+//                            notifications.save();
+                            Log.i("Cxcvc","saved");
                         }
                         listener.onSuccess(user_id, user_categories_id);
                     } else
@@ -205,18 +209,23 @@ public class WebServiceFunctions {
                             CategoriesDAO.addCategory(new Category(category_info.getLong("id"), category_info.getString("name"), category_info.getString("description")));
                         }
                         JSONArray user_notifications_arr = user.getJSONArray("user_notifications");
-//                        for(int i = 0; i < user_notifications_arr.length(); i++){
-//                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
-//                            long notif_id = Long.parseLong(user_notification.getString("id"));
-//                            int notif_type = Integer.parseInt(user_notification.getString("type"));
-//                            long notif_object_id = Long.parseLong(user_notification.getString("object_id"));
-//                            String notif_text = user_notification.getString("text");
-//                            int notif_is_done = Integer.parseInt(user_notification.getString("is_done"));
-//                            long notif_date = user_notification.getLong("created_at");
-//                            Notifications notifications = new Notifications(notif_id, notif_type, notif_object_id, notif_text, notif_date, notif_is_done);
+                        for(int i = 0; i < user_notifications_arr.length(); i++){
+                            JSONObject user_notification = user_notifications_arr.getJSONObject(i);
+                            String userImg = user_notification.getString("userimg");
+                            int notification_is_done = Integer.parseInt(user_notification.getString("is_done"));//is_done = 0 ==> false
+                            long notification_date = user_notification.getLong("created_at");
+                            long notification_id = Long.parseLong(user_notification.getString("id"));
+                            String notification_text = user_notification.getString("text");
+                            int notification_type = Integer.parseInt(user_notification.getString("type"));
+                            long notification_object_id = Long.parseLong(user_notification.getString("object_id"));
+                            String notiOwnerFname = user_notification.getString("fname");
+                            String notiOwnerLname = user_notification.getString("lname");
+                            Notifications notifications = new Notifications(notification_id, notification_type, notification_object_id,
+                                    notification_text, notification_date, notification_is_done, userImg, notiOwnerFname, notiOwnerLname);
 //                            NotificationsDAO.addNotification(notifications);
-//
-//                        }
+                            notifications.save();
+
+                        }
                         listener.onSuccess(user_id, user_categories_id);
                     } else
                         listener.onFail(GNLConstants.getStatus(status_code));
@@ -693,7 +702,7 @@ public class WebServiceFunctions {
                             long created_at = post.getLong("updated_at");
                             int isFavorite = post.getBoolean("is_postfavorite") ? 1 : 0;
                             Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, userId, category_id, is_hidden, comments_no, isFavorite, -1, -1);
-                            JSONObject user = post.getJSONArray("user").getJSONObject(0);
+                            JSONObject user = post.getJSONObject("user");
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
                             String email = user.getString("email");
@@ -714,7 +723,7 @@ public class WebServiceFunctions {
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
                         }
-                        long last_id = dataObj.getLong("last_id");
+                        long last_id = Long.parseLong(dataObj.getString("last_id"));
                         listener.onSuccess(fetchedPosts, last_id);
 
                     } else if (status_code == 5000)
@@ -722,6 +731,7 @@ public class WebServiceFunctions {
                     else
                         listener.onFail(GNLConstants.getStatus(status_code), status_code);
                 } catch (JSONException e) {
+                    Log.i("json", e.getMessage());
                     listener.onFail(GNLConstants.getStatus(100), 100);
                 }
 

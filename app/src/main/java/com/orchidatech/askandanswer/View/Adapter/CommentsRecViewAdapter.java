@@ -494,7 +494,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
         comments.get(position).user_action =  action;
-        comments.get(position).save();
+        CommentsDAO.updateComment(comments.get(position));
+
         //////////////////////////////////////////////////////////////
 
         WebServiceFunctions.addCommentAction(activity, commentId, current_user_id, action, new OnCommentActionListener() {
@@ -547,7 +548,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
         comments.get(position).user_action = action;
-        comments.get(position).save();
+        CommentsDAO.updateComment(comments.get(position));
 
         ////////////////////////////////////////////
 

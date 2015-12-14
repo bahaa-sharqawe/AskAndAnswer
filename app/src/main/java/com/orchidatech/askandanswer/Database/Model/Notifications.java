@@ -19,7 +19,9 @@ public class Notifications extends Model {
         public static final String COLUMN_NOTIFICATION_TEXT = "NOTIFICATION_TEXT";
         public static final String COLUMN_DATE = "DATE";
         public static final String COLUMN_IS_DONE = "IS_DONE";
-        public static final String USER_PHOTO = "USER_PHOTO";
+        public static final String COLUMN_USER_PHOTO = "USER_PHOTO";
+        public static final String COLUMN_F_NAME = "F_NAME";
+        public static final String COLUMN_L_NAME = "L_NAME";
     }
 
     @Column(name = FIELDS.COLUMN_SERVER_ID, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -40,14 +42,20 @@ public class Notifications extends Model {
     @Column(name = FIELDS.COLUMN_IS_DONE)
     public int isDone;
 
-    @Column(name = FIELDS.USER_PHOTO)
+    @Column(name = FIELDS.COLUMN_USER_PHOTO)
     public String user_photo;
+
+    @Column(name = FIELDS.COLUMN_F_NAME)
+    public String f_name;
+
+    @Column(name = FIELDS.COLUMN_L_NAME)
+    public String l_name;
 
     public Notifications() {
         super();
     }
 
-    public Notifications(long serverID, int notificationType, long objectID, String notificationText, long date, int isDone, String user_photo) {
+    public Notifications(long serverID, int notificationType, long objectID, String notificationText, long date, int isDone, String user_photo, String f_name, String l_name) {
         super();
         this.serverID = serverID;
         this.notificationType = notificationType;
@@ -56,6 +64,8 @@ public class Notifications extends Model {
         this.date = date;
         this.isDone = isDone;
         this.user_photo = user_photo;
+        this.f_name = f_name;
+        this.l_name = l_name;
     }
 
     public long getServerID() {
@@ -112,5 +122,21 @@ public class Notifications extends Model {
 
     public void setUser_photo(String user_photo) {
         this.user_photo = user_photo;
+    }
+
+    public String getF_name() {
+        return f_name;
+    }
+
+    public void setF_name(String f_name) {
+        this.f_name = f_name;
+    }
+
+    public String getL_name() {
+        return l_name;
+    }
+
+    public void setL_name(String l_name) {
+        this.l_name = l_name;
     }
 }

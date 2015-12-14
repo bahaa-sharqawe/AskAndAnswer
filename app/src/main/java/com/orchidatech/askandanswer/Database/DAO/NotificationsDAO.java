@@ -28,7 +28,8 @@ public class NotificationsDAO {
         notification.objectID = newNotification.getObjectID();
         notification.serverID = newNotification.getServerID();
         notification.user_photo = newNotification.getUser_photo();
-        Log.i("cvccv", newNotification.getServerID()+ ", " + newNotification.getUser_photo());
+        notification.f_name = newNotification.getF_name();
+        notification.l_name = newNotification.getL_name();
         notification.save();
 
     }
@@ -49,6 +50,9 @@ public class NotificationsDAO {
         existNotification.date = notification.getDate();
         existNotification.isDone = notification.getIsDone();
         existNotification.user_photo = notification.getUser_photo();
+        existNotification.f_name = notification.getF_name();
+        existNotification.l_name = notification.getL_name();
+
         existNotification.save();
     }
 

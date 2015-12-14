@@ -75,6 +75,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
                     .equals(messageType)) {
                 String message = extras.getString("message");
+                Log.i("vcvcv", message);
                 parsingMSG(message);
             }
 
@@ -87,6 +88,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         try {
             JSONObject data = new JSONObject(message);
             String userImg = data.getString("userimg");
+            String f_name = data.getString("fname");
+            String l_name = data.getString("lname");
             JSONObject notifications_obj = data.getJSONObject("notifications");
             int notification_is_done = Integer.parseInt(notifications_obj.getString("is_done"));//is_done = 0 ==> false
             long notification_date = notifications_obj.getLong("created_at");
@@ -95,7 +98,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             int notification_type = Integer.parseInt(notifications_obj.getString("type"));
             long notification_object_id = Long.parseLong(notifications_obj.getString("object_id"));
             Notifications notifications = new Notifications(notification_id, notification_type, notification_object_id,
-                    notification_text, notification_date, notification_is_done, userImg);
+                    notification_text, notification_date, notification_is_done, userImg, f_name, l_name);
             ActiveAndroid.beginTransaction();
             try {
                 notifications.save();

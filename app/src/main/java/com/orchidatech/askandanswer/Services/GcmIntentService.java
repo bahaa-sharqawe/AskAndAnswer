@@ -105,10 +105,12 @@ public class GcmIntentService extends IntentService{
             long notification_date = notifications_obj.getLong("created_at");
             long notification_id = Long.parseLong(notifications_obj.getString("id"));
             String notification_text = notifications_obj.getString("text");
+            String f_name = data.getString("fname");
+            String l_name = data.getString("lname");
             int notification_type = Integer.parseInt(notifications_obj.getString("type"));
             long notification_object_id = Long.parseLong(notifications_obj.getString("object_id"));
             Notifications notifications = new Notifications(notification_id, notification_type, notification_object_id,
-                    notification_text, notification_date, notification_is_done, userImg);
+                    notification_text, notification_date, notification_is_done, userImg, f_name, l_name);
             ActiveAndroid.beginTransaction();
             try {
                 notifications.save();

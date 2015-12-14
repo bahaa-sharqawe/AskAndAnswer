@@ -27,7 +27,7 @@
             android:value="AskAndAnswer.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="2" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.orchidatech.askandanswer.Database.Model.Category, com.orchidatech.askandanswer.Database.Model.Comments, com.orchidatech.askandanswer.Database.Model.Notifications, com.orchidatech.askandanswer.Database.Model.Post_Favorite, com.orchidatech.askandanswer.Database.Model.Posts,  com.orchidatech.askandanswer.Database.Model.Search_History, com.orchidatech.askandanswer.Database.Model.Settings, com.orchidatech.askandanswer.Database.Model.User_Actions, com.orchidatech.askandanswer.Database.Model.User_Categories, com.orchidatech.askandanswer.Database.Model.Users" />
