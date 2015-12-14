@@ -212,7 +212,6 @@ public class Timeline extends Fragment {
                     }
                 } else {
                     pb_loading_main.setVisibility(View.GONE);
-
                     adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
                 }
             }

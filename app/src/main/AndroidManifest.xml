@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.orchidatech.askandanswer" >
+
     <permission
         android:name="com.orchidatech.askandanswer.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -90,18 +91,21 @@
         </activity>
         <activity android:name=".Activity.Search" >
         </activity>
-        <receiver
-        android:name=".Recievers.GcmBroadcastReceiver"
-        android:permission="com.google.android.c2dm.permission.SEND" >
-        <intent-filter>
-            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-            <category android:name="com.orchidatech.askandanswer" />
-        </intent-filter>
-    </receiver>
+        <receiver
+            android:name=".Recievers.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.orchidatech.askandanswer" />
+            </intent-filter>
+        </receiver>
 
         <service android:name=".Services.GcmIntentService" />
 
+        <activity android:name=".Activity.NotificationPostView" >
+        </activity>
     </application>
 
 </manifest>
