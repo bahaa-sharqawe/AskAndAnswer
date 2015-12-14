@@ -77,8 +77,8 @@
                    android:layout_alignParentRight="true"
                    android:layout_alignParentBottom="true"
                    android:layout_marginBottom="25dp"
-                   android:layout_marginRight="6dp"
-                   android:padding="2dp"
+                   android:layout_marginRight="0dp"
+                   android:padding="6dp"
                    android:background="@drawable/camera_image_backgnd"
                    />
            </RelativeLayout>
@@ -288,7 +288,9 @@
                android:layout_height="wrap_content"
                android:layout_below="@+id/rl_public_profile_row"
                android:text="@string/update_categories"
+               android:textColor="#fff"
                android:enabled="true"
+               android:background="#5ed0be"
                android:id="@+id/btn_update_categories"
                />
            <AutoCompleteTextView
