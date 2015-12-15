@@ -74,13 +74,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 public void onError() {
                     holder.iv_profile.setVisibility(View.INVISIBLE);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(notification.notificationText.charAt(0) + "");
+                    holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
                 }
             });
         else {
             holder.iv_profile.setVisibility(View.INVISIBLE);
             holder.tv_person_photo.setVisibility(View.VISIBLE);
-            holder.tv_person_photo.setText(notification.notificationText.charAt(0) + "");
+            holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
         }
         if (notification.isDone == 0)//not read
             holder.card_notification.setBackgroundColor(Color.parseColor("#eef4ff"));

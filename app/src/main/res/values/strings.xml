@@ -88,7 +88,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>Profile</item>
         <item>Search</item>
         <item>Logout</item>
-        <item>Settings</item>
+        <!--<item>Settings</item>-->
         <item>Terms Of Use</item>
         <item>About</item>
     </string-array>
@@ -100,7 +100,7 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>@drawable/ic_name_flat</item>
         <item>@drawable/ic_search_black</item>
         <item>@drawable/ic_logout</item>
-        <item>@drawable/ic_settings</item>
+        <!--<item>@drawable/ic_settings</item>-->
         <item>@drawable/ic_terms</item>
         <item>@drawable/ic_info</item>
     </array>

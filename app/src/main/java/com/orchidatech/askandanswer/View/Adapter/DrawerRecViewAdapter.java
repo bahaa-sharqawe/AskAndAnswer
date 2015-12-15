@@ -96,7 +96,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 else{
                     holder.iv_profile.setVisibility(View.INVISIBLE);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(user.getFname().charAt(0) + "");
+                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
                 }
             }
         } else {

@@ -145,13 +145,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                     public void onError() {
                         holder.iv_person.setVisibility(View.INVISIBLE);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + "");
+                        holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
                     }
                 });
             }else{
                 holder.iv_person.setVisibility(View.INVISIBLE);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + "");
+                holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
             }
 //            holder.pb_photo_load.setVisibility(View.VISIBLE);
             holder.iv_comment.setVisibility(View.GONE);

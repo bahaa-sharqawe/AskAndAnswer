@@ -197,15 +197,15 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 //logout
                 logout();
                 break;
+//            case 7:
+//                //settings
+//                fragment = new Settings();
+//                break;
             case 7:
-                //settings
-                fragment = new Settings();
-                break;
-            case 8:
                 //terms
                 fragment = new TermsFragment();
                 break;
-            case 9:
+            case 8:
                 //about
                 fragment = new AboutUs();
                 break;
@@ -231,7 +231,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                     break;
 
                 case 8:
-                case 9:
                 case 5:
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                     break;

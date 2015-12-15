@@ -151,7 +151,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.tv_person_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType())
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
+                            fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
                         goToProfile(postOwner.getServerID());
                 }
             });
@@ -311,6 +312,14 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             });
 
             holder.iv_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&
+                            fragment_numeric != Enum.POSTS_FRAGMENTS.CATEGORY_POST.getNumericType())
+                        goToProfile(postOwner.getServerID());
+                }
+            });
+            holder.tv_person_photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (fragment_numeric != Enum.POSTS_FRAGMENTS.PROFILE.getNumericType() &&

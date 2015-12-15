@@ -101,9 +101,8 @@
         android:layout_width="280dp"
         android:layout_gravity="start"
         android:layout_height="match_parent"
-        android:background="#f8f8f8"
+        android:background="#fff"
         android:scrollbars="vertical">
     </android.support.v7.widget.RecyclerView>
-
 
 </android.support.v4.widget.DrawerLayout>

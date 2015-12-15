@@ -213,6 +213,14 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                         goToProfile(postOwner.getServerID());
                 }
             });
+            holder.tv_person_photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                        if (postOwner.getServerID() == SplashScreen.pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)
+//                                || postOwner.getIsPublicProfile() == 0)
+                        goToProfile(postOwner.getServerID());
+                }
+            });
             String postImage = currentPost.getImage();
             ImageLoader imageLoader = ImageLoader.getInstance();
 

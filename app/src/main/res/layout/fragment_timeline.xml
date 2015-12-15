@@ -24,7 +24,6 @@
         android:id="@+id/rv_posts"
         android:foregroundGravity="left"
         android:divider="@null"
-        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
 
