@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import dmax.dialog.SpotsDialog;
 
 public class Login extends AppCompatActivity {
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
@@ -85,6 +87,7 @@ public class Login extends AppCompatActivity {
     private String username;
     private String password;
     private FontManager fontManager;
+    private android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +102,15 @@ public class Login extends AppCompatActivity {
 
     ///////
     private void login(final String username, final String password) {
-        loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "logging in");
+        dialog = new SpotsDialog(Login.this, getString(R.string.logging), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
+//        loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "logging in");
         if(TextUtils.isEmpty(registration_id))
             registerWithGCM(0);
         else
@@ -118,7 +124,7 @@ public class Login extends AppCompatActivity {
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
 //                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, Enum.LOGIN_TYPE.DEFAULT.getNumericType());
@@ -133,7 +139,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         Crouton.cancelAllCroutons();
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
                     }
@@ -142,12 +148,16 @@ public class Login extends AppCompatActivity {
     }
 
     private void socialLogin() {
-         loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "logging in");
+        dialog = new SpotsDialog(Login.this, getString(R.string.logging), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
+
+//         loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "logging in");
      prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork()).commit();
      if(TextUtils.isEmpty(registration_id))
          registerWithGCM(1);
@@ -159,7 +169,7 @@ public class Login extends AppCompatActivity {
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
                     public void onSuccess(long uid, ArrayList<Long> user_categories) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
 //                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);//store it in webserviceFunctions
                         prefEditor.commit();
@@ -173,7 +183,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         Crouton.cancelAllCroutons();
                         int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);

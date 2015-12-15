@@ -137,7 +137,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_comments"
-                        android:layout_marginBottom="4dp"
                         android:text="@string/tv_comments_count"
                         android:textSize="14sp"
                         android:textColor="#959595"
