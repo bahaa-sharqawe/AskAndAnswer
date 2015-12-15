@@ -13,6 +13,7 @@ import android.util.Log;
 import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.NotificationPostView;
 import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
 import com.orchidatech.askandanswer.R;
@@ -108,20 +109,23 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 ActiveAndroid.endTransaction();
             }
             Log.i("vcvcvc", NotificationsDAO.getAllNotifications().size() + "");
-            sendNotification(notification_text);
+            sendNotification(notification_text, notification_object_id, notification_type);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendNotification(String msg) {
+    private void sendNotification(String msg, long notification_object_id, int notification_type) {
 
         mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        mNotificationIntent = new Intent(context,
-                MainScreen.class);
+//        mNotificationIntent = new Intent(context,
+//                MainScreen.class);
+        mNotificationIntent = new Intent(context, NotificationPostView.class);
+        mNotificationIntent.putExtra(NotificationPostView.OBJECT_ID, notification_object_id);
+        mNotificationIntent.putExtra(NotificationPostView.TYPE, notification_type);
         mContentIntent = PendingIntent.getActivity(context, 0,
                 mNotificationIntent, PendingIntent.FLAG_ONE_SHOT);
 

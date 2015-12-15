@@ -31,16 +31,21 @@ public class URL {
     public static final String DELETE_POST = SERVER_URL + WEB_SERVICES_PATH + "post/delete-post";
     public static final String GET_TIME_LINE = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost";
     public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
+    public static final String GET_POST_DATA = SERVER_URL + WEB_SERVICES_PATH + "post/post-data";
     ;
     public static String GET_Category_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/postincategory";
     public static final String ADD_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/add-post-favorite";
     public static final String GET_USER_FAV_POSTS = SERVER_URL + WEB_SERVICES_PATH + "postFav/user-post-favorite";
     public static final String REMOVE_POST_FAVORITE = SERVER_URL + WEB_SERVICES_PATH + "postFav/delete-post-favorite";
-    public static final String ADD_COMMENT = "http://softplaystore.com/askandanswer_ws/public/comment/add-comment";
+
+    public static final String ADD_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/add-comment";
     public static String GET_USER_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/usercomment";
     public static String GET_POST_Comments = SERVER_URL + WEB_SERVICES_PATH + "comment/post-comment";
     public static final String DELETE_COMMENT = SERVER_URL + WEB_SERVICES_PATH + "comment/delete-comment";
+    public static final String GET_COMMENT_DATA = SERVER_URL + WEB_SERVICES_PATH + "comment/comment-data";
+
     public static String ADD_ACTION = SERVER_URL + WEB_SERVICES_PATH + "commentAction/add-comment-action";
+
     public static final String CONTACT_US = SERVER_URL + WEB_SERVICES_PATH + "contactus/add-massage";
 
     public class URLParameters {

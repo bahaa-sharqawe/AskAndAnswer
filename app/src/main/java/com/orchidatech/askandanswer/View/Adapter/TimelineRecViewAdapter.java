@@ -227,7 +227,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             }
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)
-                    && !postOwner.getFname().equals("بهاء"))
+                    /*&& !postOwner.getFname().equals("بهاء")*/)
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -369,15 +369,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
-                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
-                iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
+                iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);

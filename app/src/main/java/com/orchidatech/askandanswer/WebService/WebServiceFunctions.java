@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.NotificationPostView;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
@@ -43,6 +44,7 @@ import com.orchidatech.askandanswer.View.Interface.OnForgetPasswordListener;
 import com.orchidatech.askandanswer.View.Interface.OnLoadFinished;
 import com.orchidatech.askandanswer.View.Interface.OnLoginListener;
 import com.orchidatech.askandanswer.View.Interface.OnLogoutlistener;
+import com.orchidatech.askandanswer.View.Interface.OnPostDataListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnRegisterListener;
@@ -55,6 +57,7 @@ import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.entities.User;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
 
 import org.json.JSONArray;
@@ -1341,6 +1344,142 @@ public class WebServiceFunctions {
         });
     }
 
+
+    public static void getPostInfo(final Activity activity, long user_id, final long object_id, final OnPostDataListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_POST_DATA + "?" + URL.URLParameters.USER_ID + "=" + user_id + "&" +
+                URL.URLParameters.POST_ID + "=" + object_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    Log.i("xcxvxv", response);
+                    JSONObject data_obj = new JSONObject(response);
+                    int status_code = data_obj.getInt("statusCode");
+                    int status = data_obj.getInt("status");
+                    if (status == 0) {
+                        JSONObject data = data_obj.getJSONObject("data");
+                        String text = data.getString("text");
+                        String image = data.getString("image");
+                        int is_hidden = Integer.parseInt(data.getString("is_hidden"));
+                        long category_id = Long.parseLong(data.getString("category_id"));
+                        long post_user_id = Long.parseLong(data.getString("user_id"));
+                        long created_at = data.getLong("updated_at");
+                        int isFavorite = data.getBoolean("is_postfavorite") ? 1 : 0;
+                        Posts postItem = new Posts(object_id, text, image, created_at, post_user_id, category_id, is_hidden, 0, isFavorite, -1, -1);
+                        PostsDAO.addPost(postItem);
+                        JSONObject user = data.getJSONObject("user");
+                        long uid = user.getLong("id");
+                        String f_name = user.getString("f_name");
+                        String l_name = user.getString("l_name");
+                        String email = user.getString("email");
+                        String user_image = user.getString("image");
+                        int active = Integer.parseInt(user.getString("active"));
+                        long user_created_at = user.getLong("created_at");
+                        long last_login = user.getLong("last_login");
+                        String code = user.getString("code");
+                        String mobile = user.getString("mobile");
+                        int is_public = Integer.parseInt(user.getString("is_public"));
+                        JSONObject askandanswer = user.getJSONObject("askandanswer");
+                        int no_tasks = askandanswer.getInt("no_ask");
+                        int no_answers = askandanswer.getInt("no_answer");
+                        float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
+                        Users owner = new Users(uid, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, rating);
+                        UsersDAO.addUser(owner);
+                        listener.onSuccess(postItem, owner);
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+
+                } catch (JSONException e) {
+                    Log.i("xcxvxv", e.getMessage());
+                    listener.onFail(GNLConstants.getStatus(100));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+            }
+        });
+    }
+    public static void getCommentInfo(final Activity activity, long user_id, final long object_id, final OnPostDataListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_COMMENT_DATA + "?" + URL.URLParameters.USER_ID + "=" + user_id + "&" +
+                URL.URLParameters.COMMENT_ID + "=" + object_id + "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    Log.i("xcxvxv", response);
+
+                    JSONObject data_obj = new JSONObject(response);
+                    int status_code = data_obj.getInt("statusCode");
+                    int status = data_obj.getInt("status");
+                    if (status == 0) {
+                        JSONObject comment = data_obj.getJSONObject("data");
+                        long comment_id = comment.getLong("id");
+                        String comment_text = comment.getString("comment");
+                        String comment_image = comment.getString("image");
+                        long user_id = comment.getLong("user_id");
+                        long post_id = comment.getLong("post_id");
+                        long comment_date = comment.getLong("updated_at");
+                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0, 2);
+                        CommentsDAO.addComment(newComment);
+
+                        JSONObject post_obj = comment.getJSONObject("post");
+                        long id = Long.parseLong(post_obj.getString("id"));
+                        String text = post_obj.getString("text");
+                        String image = post_obj.getString("image");
+                        int is_hidden = Integer.parseInt(post_obj.getString("is_hidden"));
+                        long category_id = Long.parseLong(post_obj.getString("category_id"));
+                        long post_user_id = Long.parseLong(post_obj.getString("user_id"));
+                        long created_at = post_obj.getLong("updated_at");
+                        int isFavorite = post_obj.getBoolean("is_postfavorite") ? 1 : 0;
+                        Posts postItem = new Posts(id, text, image, created_at, post_user_id, category_id, is_hidden, 0, isFavorite, -1, -1);
+                        PostsDAO.addPost(postItem);
+
+                        JSONObject user = comment.getJSONObject("user");
+                        long uid = Long.parseLong(user.getString("id"));
+                        String f_name = user.getString("f_name");
+                        String l_name = user.getString("l_name");
+                        String email = user.getString("email");
+                        String user_image = user.getString("image");
+                        int active = Integer.parseInt(user.getString("active"));
+                        long user_created_at = user.getLong("created_at");
+                        long last_login = user.getLong("last_login");
+                        String code = user.getString("code");
+                        String mobile = user.getString("mobile");
+                        int is_public = Integer.parseInt(user.getString("is_public"));
+                        JSONObject askandanswer = user.getJSONObject("askandanswer");
+                        int no_tasks = askandanswer.getInt("no_ask");
+                        int no_answers = askandanswer.getInt("no_answer");
+                        float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
+                        Users owner = new Users(uid, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, rating);
+                        UsersDAO.addUser(owner);
+                        listener.onSuccess(postItem, owner);
+                    }else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
+                        listener.onFail(GNLConstants.getStatus(status_code));
+
+                    } catch (JSONException e) {
+                    Log.i("xcxvxv", e.getMessage());
+                    listener.onFail(GNLConstants.getStatus(100));
+                }
+
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error);
+            }
+        });
+    }
     public static void loadDisabledCategories(final Activity activity, long uid, final OnDisabledCategorieslistener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");

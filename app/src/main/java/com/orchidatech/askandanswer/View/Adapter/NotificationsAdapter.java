@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.orchidatech.askandanswer.Activity.NotificationPostView;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
@@ -91,6 +93,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 notification.isDone = 1;
                 ///got to post or comment
                 notification.save();
+                Intent intent = new Intent(activity, NotificationPostView.class);
+                intent.putExtra(NotificationPostView.OBJECT_ID, notification.getObjectID());
+                intent.putExtra(NotificationPostView.TYPE, notification.getNotificationType());
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
     }

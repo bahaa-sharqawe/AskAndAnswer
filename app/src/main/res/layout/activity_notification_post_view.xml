@@ -19,6 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/rl_post_info"
         android:padding="20dp"
         android:layout_below="@+id/toolbar">
         <RelativeLayout
@@ -92,11 +93,138 @@
             android:layout_height="wrap_content"
             android:id="@+id/iv_post"
             android:layout_below="@+id/tv_post"
-            android:src="@drawable/android_wallpaper"
             android:layout_alignLeft="@+id/rl_pst_owner"
             android:scaleType="centerCrop"
             android:visibility="visible"
             />
+        <View android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:id="@+id/divider"
+            android:layout_below="@+id/iv_post"
+            android:layout_marginTop="10dp"
+            android:background="#e6e6e6" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_postEvents"
+            android:layout_alignLeft="@+id/tv_post"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/divider"
+            android:orientation="horizontal"
+            android:visibility="visible">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/ll_comment"
+                android:gravity="center"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_comment"
+                    android:layout_marginRight="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_comment"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_comment"
+                    android:layout_gravity="right|center_vertical"
+                    android:text="@string/tv_comment"
+                    android:textSize="14sp"
+                    android:textColor="#959595"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_toRightOf="@+id/ll_comment"
+                android:id="@+id/ll_share"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_share"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="4dp"
+                    android:src="@drawable/ic_share"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_share"
+                    android:layout_gravity="center_vertical|right"
+                    android:text="@string/tv_share"
+                    android:textSize="14sp"
+                    android:textColor="#959595"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/ll_favorite"
+                android:layout_toRightOf="@+id/ll_share"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_favorite"
+                    android:layout_marginRight="4dp"
+
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_favorite"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_favorite"
+                    android:layout_gravity="center_vertical|right"
+                    android:text="@string/tv_favorite"
+                    android:textSize="14sp"
+                    android:textColor="#959595"/>
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/rl_error"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/uncolored_logo"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/uncolored_logo"
+            android:layout_marginBottom="30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/tv_your_questions"
+            android:id="@+id/tv_error"
+            android:layout_below="@+id/uncolored_logo"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/pb_loading" />
 
 </RelativeLayout>
