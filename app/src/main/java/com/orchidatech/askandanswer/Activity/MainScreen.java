@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import dmax.dialog.SpotsDialog;
 
 public class MainScreen extends AppCompatActivity implements TermsFragment.OnDrawerIconClickListener {
     DrawerLayout mDrawerLayout;
@@ -70,6 +72,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
     public  static AppGoogleAuth googleAuth;
+    private AlertDialog dialog;
 
 
     @Override
@@ -244,17 +247,20 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     }
 
     private void logout() {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging_out));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "logging out");
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.logging_out));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "logging out");
+        dialog = new SpotsDialog(MainScreen.this, getString(R.string.logging_out), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
         WebServiceFunctions.logout(MainScreen.this, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnLogoutlistener(){
 
             @Override
             public void onSuccess() {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 final Intent intent = new Intent(MainScreen.this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 clearLocalDB();
@@ -287,7 +293,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 
             @Override
             public void onFail(String cause) {
-                    loadingDialog.dismiss();
+                    dialog.dismiss();
                 Crouton.cancelAllCroutons();
                 AppSnackBar.showTopSnackbar(MainScreen.this, cause, Color.RED, Color.WHITE);
             }

@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +56,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import dmax.dialog.SpotsDialog;
 
 public class UpdateProfile extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -98,6 +100,7 @@ public class UpdateProfile extends AppCompatActivity {
     private SharedPreferences pref;
     Toolbar toolbar;
     private FontManager fontManager;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,17 +329,20 @@ public class UpdateProfile extends AppCompatActivity {
             long uid = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
             if (verifyInputs(fname, lname, email, new_password, confirm_new_password, selectedCategories)) {
                 //save
-                final LoadingDialog loadingDialog = new LoadingDialog();
-                Bundle args = new Bundle();
-                args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
-                loadingDialog.setArguments(args);
-                loadingDialog.setCancelable(false);
-                loadingDialog.show(getFragmentManager(), "updating profile");
+//                final LoadingDialog loadingDialog = new LoadingDialog();
+//                Bundle args = new Bundle();
+//                args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
+//                loadingDialog.setArguments(args);
+//                loadingDialog.setCancelable(false);
+//                loadingDialog.show(getFragmentManager(), "updating profile");
+                dialog = new SpotsDialog(UpdateProfile.this, getString(R.string.saving), R.style.SpotsDialogCustom);
+                dialog.setCancelable(false);
+                dialog.show();
 
                 WebServiceFunctions.updateProfile(this, uid, fname, lname, new_password, isPublic, image_str == null ? null : picturePath, selectedCategories, new OnUpdateProfileListener() {
                     @Override
                     public void onSuccess() {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -348,7 +354,7 @@ public class UpdateProfile extends AppCompatActivity {
 
                     @Override
                     public void onFail(String cause) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         AppSnackBar.show(ll_parent, cause, Color.RED, Color.WHITE);
                     }
                 });

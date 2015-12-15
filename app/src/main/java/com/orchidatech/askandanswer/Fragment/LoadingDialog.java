@@ -34,7 +34,9 @@ public class LoadingDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         dialogTxt = getArguments().getString(DIALOG_TEXT_KEY, getString(R.string.loading));
     }
+ private LoadingDialog(int i ){
 
+}
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

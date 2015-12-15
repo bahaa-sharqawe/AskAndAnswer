@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.View.Adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 /**
  * Created by Bahaa on 15/11/2015.
@@ -301,20 +303,24 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     public void performDeleting(final int position) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, activity.getString(R.string.delteing));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(activity.getFragmentManager(), "deleting");
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, activity.getString(R.string.delteing));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(activity.getFragmentManager(), "deleting");
         Log.i("vcvc1", comments.size() + "");
+        final AlertDialog dialog = new SpotsDialog(activity, activity.getString(R.string.delteing), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
+
 
 
         WebServiceFunctions.deletComment(activity, current_user_id, comments.get(position).getServerID(), new OnDeleteCommentListener() {
 
             @Override
             public void onDeleted() {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 Log.i("vcvc2", comments.size() + "");
                 data.remove(comments.get(position));
                 comments.remove(position);
@@ -324,7 +330,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
             @Override
             public void onFail(String error) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
             }
         });

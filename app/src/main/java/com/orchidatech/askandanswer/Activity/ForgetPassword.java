@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import dmax.dialog.SpotsDialog;
 
 public class ForgetPassword extends AppCompatActivity {
     EditText ed_email;
@@ -42,6 +44,7 @@ public class ForgetPassword extends AppCompatActivity {
     private Animation animFade;
     private CoordinatorLayout ll_parent;
     private FontManager fontManager;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,25 +99,28 @@ public class ForgetPassword extends AppCompatActivity {
     }
 
     private void update_password(String email, String password) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.submitting));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "submitting");
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.submitting));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "submitting");
+        dialog = new SpotsDialog(ForgetPassword.this, getString(R.string.submitting), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
 
         WebServiceFunctions.forget_password(this, email, password, password, new OnForgetPasswordListener(){
 
             @Override
             public void success(String message) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 Toast.makeText(ForgetPassword.this, message, Toast.LENGTH_LONG).show();
                onBackPressed();
             }
 
             @Override
             public void fail(String cause) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 Crouton.cancelAllCroutons();
                 AppSnackBar.showTopSnackbar(ForgetPassword.this, cause, Color.RED, Color.WHITE);            }
         });

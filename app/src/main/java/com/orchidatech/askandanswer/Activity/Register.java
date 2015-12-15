@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import dmax.dialog.SpotsDialog;
 
 public class Register extends Activity {
     private String TAG = Register.class.getSimpleName();
@@ -52,7 +54,6 @@ public class Register extends Activity {
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
     private Animation animFade;
-    private LoadingDialog loadingDialog;
     public String registration_id;
     private String fname;
     private String lname;
@@ -60,6 +61,7 @@ public class Register extends Activity {
     private String password;
     private String repassword;
     private FontManager fontManager;
+    private AlertDialog dialog;
 
 
     @Override
@@ -129,12 +131,16 @@ public class Register extends Activity {
     }
 
     private void register(final String fname, final String lname, final String email, final String password) {
-         loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "registering");
+//         loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.registering));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "registering");
+        dialog = new SpotsDialog(Register.this, getString(R.string.registering), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
+
         if(TextUtils.isEmpty(registration_id))
             registerWithGCM();
         else
@@ -157,7 +163,7 @@ public class Register extends Activity {
 
             @Override
             public void onFail() {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.showTopSnackbar(Register.this, "An Error Occurred, Retry", Color.RED, Color.WHITE);
 
             }
@@ -170,7 +176,7 @@ public class Register extends Activity {
                 new OnRegisterListener() {
                     @Override
                     public void onSuccess(long uid) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         prefEditor.putLong(GNLConstants.SharedPreference.ID_KEY, uid);
 //                        prefEditor.putString(GNLConstants.SharedPreference.PASSWORD_KEY, password);
                         prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.DEFAULT.getNumericType());
@@ -181,7 +187,7 @@ public class Register extends Activity {
 
                     @Override
                     public void onFail(String cause) {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
                         Crouton.cancelAllCroutons();
                         AppSnackBar.showTopSnackbar(Register.this, cause, Color.RED, Color.WHITE);
                     }

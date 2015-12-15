@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +54,8 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import dmax.dialog.SpotsDialog;
+
 public class AddEditPost extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int MAX_CHARACTERS = 8000;
@@ -76,6 +79,7 @@ public class AddEditPost extends AppCompatActivity {
     private SharedPreferences pref;
     private FontManager fontManager;
     TextView tv_addPost;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,19 +273,21 @@ public class AddEditPost extends AppCompatActivity {
             else
                 imageState = 2;//post photo changed.. send photo to server
         }
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "Saving...");
-        Log.i("imagestate", imageState + "");
-
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "Saving...");
+//        Log.i("imagestate", imageState + "");
+        dialog = new SpotsDialog(AddEditPost.this, getString(R.string.saving), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
 
         WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState, imageState==1?editPost.getImage():picturePath, date, isHidden, new OnEditPostListener() {
             @Override
             public void onSuccess(String message) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 if(imageState == 2 || imageState == 0){
                     pref.edit().putLong(postId+"",postId).commit();
                     pref.edit().putString("prevImage",editPost.getImage()).commit();
@@ -297,7 +303,7 @@ public class AddEditPost extends AppCompatActivity {
 
             @Override
             public void onFail(String error) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });
@@ -305,17 +311,20 @@ public class AddEditPost extends AppCompatActivity {
 
 
     private void addPost(final long user_id, long category_id, final String postDesc, String picturePath, final long date, int is_hidden) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
 
-        loadingDialog.show(getFragmentManager(), "Saving...");
+//        loadingDialog.show(getFragmentManager(), "Saving...");
+        dialog = new SpotsDialog(AddEditPost.this, getString(R.string.saving), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
         WebServiceFunctions.addPost(this, user_id, category_id, postDesc, picturePath, date, is_hidden, new OnAddPostListener() {
             @Override
             public void onSuccess(String message) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -327,7 +336,7 @@ public class AddEditPost extends AppCompatActivity {
 
             @Override
             public void onFail(String error) {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.show(ll_parent, error, getResources().getColor(R.color.colorPrimary), Color.WHITE);
             }
         });

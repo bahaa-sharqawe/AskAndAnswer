@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,6 +30,8 @@ import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
+
+import dmax.dialog.SpotsDialog;
 
 /**
  * Created by Bahaa on 7/11/2015.
@@ -118,12 +121,15 @@ public class SearchAndFavorite extends Fragment {
     }
 
     private void performSearching(String s) {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.search_questions));
-        loadingDialog.setArguments(args);
-        loadingDialog.show(getFragmentManager(), "search");
-        loadingDialog.setCancelable(false);
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.search_questions));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.show(getFragmentManager(), "search");
+//        loadingDialog.setCancelable(false);
+        final AlertDialog dialog = new SpotsDialog(getActivity(), getString(R.string.search_questions), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
         WebServiceFunctions.search(getActivity(), s, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnSearchCompleted() {
             @Override
             public void onSuccess(ArrayList<Posts> searchResult, long last_id) {

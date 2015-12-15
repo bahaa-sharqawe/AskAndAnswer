@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,8 @@ import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import dmax.dialog.SpotsDialog;
+
 public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteListener{
     public static final String POST_ID = "POST_ID";
     long postId;
@@ -44,6 +47,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     TextView tv_post;
     LinearLayout ll_parent;
     private SharedPreferences pref;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,17 +153,20 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         startActivity(intent);
     }
     private void performDeleting() {
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "deleting");
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.delteing));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "deleting");
+        dialog = new SpotsDialog(ViewPost.this, getString(R.string.delteing), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
         WebServiceFunctions.deletePost(this, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), postId, new OnPostDeletedListener() {
 
             @Override
             public void onDeleted() {
-                    loadingDialog.dismiss();
+                    dialog.dismiss();
                 AppSnackBar.show(ll_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -171,7 +178,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
 
             @Override
             public void onFail(String error) {
-                    loadingDialog.dismiss();
+                    dialog.dismiss();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });

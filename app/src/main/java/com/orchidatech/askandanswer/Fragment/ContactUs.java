@@ -22,6 +22,8 @@ import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
+import dmax.dialog.SpotsDialog;
+
 /**
  * Created by Bahaa on 5/11/2015.
  */
@@ -73,19 +75,22 @@ public class ContactUs extends DialogFragment {
                 if(!TextUtils.isEmpty(message)){
                     message = Validator.getInstance().getSafeText(message);
                     if(!TextUtils.isEmpty(message)){
-                        final LoadingDialog loadingDialog = new LoadingDialog();
-                        Bundle args = new Bundle();
-                        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
-                        loadingDialog.setArguments(args);
-                        loadingDialog.setCancelable(false);
-                        loadingDialog.show(getFragmentManager(), "sending");
+//                        final LoadingDialog loadingDialog = new LoadingDialog();
+//                        Bundle args = new Bundle();
+//                        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
+//                        loadingDialog.setArguments(args);
+//                        loadingDialog.setCancelable(false);
+//                        loadingDialog.show(getFragmentManager(), "sending");
+                        final AlertDialog loadingDialog = new SpotsDialog(getActivity(), getString(R.string.sending), R.style.SpotsDialogCustom);
+                        dialog.setCancelable(false);
+                        dialog.show();
                         WebServiceFunctions.sendMessage(getActivity(), user_id, message, new OnSendMessageListener(){
 
                             @Override
                             public void onSuccess() {
+                                loadingDialog.dismiss();
                                 ed_message.setText("");
                                 Toast.makeText(getActivity(), getString(R.string.message_sent), Toast.LENGTH_LONG).show();
-                                loadingDialog.dismiss();
                                 dialog.dismiss();
 
                             }

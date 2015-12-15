@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,8 @@ import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import dmax.dialog.SpotsDialog;
+
 public class SelectCategory extends AppCompatActivity {
     private String TAG = SelectCategory.class.getSimpleName();
     public static  final int MIN_CATEGORY = 1;
@@ -57,6 +60,7 @@ public class SelectCategory extends AppCompatActivity {
     ImageView uncolored_logo;
     TextView tv_error;
     private SharedPreferences pref;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,18 +226,22 @@ public class SelectCategory extends AppCompatActivity {
             if (category.isChecked())
                 selectedCats.add(category);
         }
-        final LoadingDialog loadingDialog = new LoadingDialog();
-        Bundle args = new Bundle();
-        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
-        loadingDialog.setArguments(args);
-        loadingDialog.setCancelable(false);
-        loadingDialog.show(getFragmentManager(), "sending");
+//        final LoadingDialog loadingDialog = new LoadingDialog();
+//        Bundle args = new Bundle();
+//        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
+//        loadingDialog.setArguments(args);
+//        loadingDialog.setCancelable(false);
+//        loadingDialog.show(getFragmentManager(), "sending");
+        dialog = new SpotsDialog(SelectCategory.this, getString(R.string.sending), R.style.SpotsDialogCustom);
+        dialog.setCancelable(false);
+        dialog.show();
+
         //send selected categories to server
                 WebServiceFunctions.sendUserCategories(this, uid, selectedCats, new OnSendCategoriesListener() {
 
                     @Override
                     public void onSendingSuccess() {
-                        loadingDialog.dismiss();
+                        dialog.dismiss();
 //                        AppSnackBar.show(rl_parent, "saved successfully", Color.GREEN, Color.WHITE);
                         startActivity(new Intent(SelectCategory.this, MainScreen.class));
                         finish();
@@ -241,7 +249,7 @@ public class SelectCategory extends AppCompatActivity {
 
                     @Override
                     public void onSendingFail(String error) {
-                            loadingDialog.dismiss();
+                            dialog.dismiss();
                         AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
 
                     }
