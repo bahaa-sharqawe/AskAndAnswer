@@ -622,7 +622,7 @@ public class WebServiceFunctions {
                             long post_user_id = Long.parseLong(post_obj.getString("user_id"));
 //                            int comments_no = post_obj.getInt("comment_no");
                             long created_at = post_obj.getLong("updated_at");
-                            Posts postItem = new Posts(post_id, text, image, created_at, post_user_id, category_id, is_hidden, 0, 1, -1, -1);
+                            Posts postItem = new Posts(post_id, text, image.equals("null")?null:image, created_at, post_user_id, category_id, is_hidden, 0, 1, -1, -1);
                             PostsDAO.addPost(postItem);
                             JSONObject postOwner = post_obj.getJSONObject("user_owner_of_post");
                             long post_owner_id = Long.parseLong(postOwner.getString("id"));
@@ -748,10 +748,11 @@ public class WebServiceFunctions {
 
     }
 
-    public static void getUserPosts(final Activity activity, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
+    public static void getUserPosts(final Activity activity, long current_user_id, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
-        String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + uid +
+        String url = URL.GET_USER_POSTS + "?" + URL.URLParameters.USER_ID + "=" + current_user_id +
+                "&" + URL.URLParameters.ANOTHER_USER_ID + "=" + uid +
                 "&" + URL.URLParameters.LIMIT + "=" + limit +
                 "&" + URL.URLParameters.OFFSET + "=" + offset +
                 "&" + URL.URLParameters.LAST_ID + "=" + last_id +

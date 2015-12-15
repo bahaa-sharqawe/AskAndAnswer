@@ -111,9 +111,8 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:layout_marginTop="20dp"
-    android:background="#f4f4f4"
+    android:background="#f8f8f8"
     android:layout_below="@+id/rl_header"
     >
     <android.support.v7.widget.RecyclerView
@@ -121,7 +120,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/rv_posts"
         android:divider="@null"
-        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
 

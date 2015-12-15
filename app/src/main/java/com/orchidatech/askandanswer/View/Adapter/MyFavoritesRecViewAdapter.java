@@ -267,13 +267,13 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     public void onError() {
                         holder.iv_profile.setVisibility(View.INVISIBLE);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + "");
+                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                     }
                 });
             }else{
                 holder.iv_profile.setVisibility(View.INVISIBLE);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+"");
+                holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
             }
 
         }

@@ -1,44 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/ll_parent"
     android:layoutDirection="ltr"
+    android:background="#fff"
     tools:context="com.orchidatech.askandanswer.Activity.ViewPost">
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/toolbar"
-        android:background="#2dbda6"
+        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
     </android.support.v7.widget.Toolbar>
-
+    <View android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:id="@+id/divider"
+        android:background="#1edabc"
+        android:layout_below="@+id/toolbar"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_post"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/view_post_example"
-        android:background="@drawable/tv_view_post_backgnd"
-        android:padding="15dp"
-        android:textSize="14sp"
-        android:textColor="#b5b5b5"
-        android:layout_marginBottom="14dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-         />
+        android:id="@+id/tv_android_cateogry"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_below="@+id/divider"
+        android:background="@color/colorPrimary"
+        android:text="Android Category"
+        android:textColor="#fff"
+        android:textSize="17sp"
+        android:gravity="center"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+
+        />
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/tv_android_cateogry"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="10dp"
+        android:background="#f8f8f8"
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_post"
         android:src="@drawable/android_wallpaper"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
         android:scaleType="centerCrop"
-         />
+        />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#cecaca"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_post"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/view_post_example"
+            android:background="@drawable/tv_view_post_backgnd"
+            android:textSize="14sp"
+            android:paddingRight="50dp"
+            android:textColor="#b5b5b5"
+            />
+
 </LinearLayout>
+
+</RelativeLayout>

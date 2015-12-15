@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#fff"
         android:layout_marginBottom="20dp"
+        android:background= "@drawable/drawer_list_selector"
         android:id="@+id/rl_intro"
         >
         <View
@@ -32,7 +32,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#fff"
+        android:background= "@drawable/drawer_list_selector"
         android:id="@+id/rl_contact"
         >
         <View

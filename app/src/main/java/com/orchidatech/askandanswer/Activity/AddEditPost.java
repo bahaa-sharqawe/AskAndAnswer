@@ -224,8 +224,9 @@ public class AddEditPost extends AppCompatActivity {
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
     }
@@ -240,15 +241,20 @@ public class AddEditPost extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.done) {
+            hideSoftKeyboard();
             String postDesc = ed_postDesc.getText().toString();
             if (verifyInputs(postDesc)) {
                 ///SEND TO SERVER
                 if (editPostId == -1) {//add case
-                    addPost(user_id, selectedCategory.getCategoryID(), postDesc, picturePath, System.currentTimeMillis(), 0);
+                    addPost(user_id, selectedCategory.getCategoryID(), postDesc, System.currentTimeMillis(), 0);
                 } else {//edit case
                     editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, picturePath/*to know if picture changed */, editPost.getIsHidden());
                 }
             }
+            return true;
+        }else if(id == android.R.id.home) {
+            hideSoftKeyboard();
+            onBackPressed();
             return true;
         }
         return false;
@@ -292,13 +298,15 @@ public class AddEditPost extends AppCompatActivity {
                     pref.edit().putLong(postId+"",postId).commit();
                     pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }
-                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
-                    }
-                }, 3000);
+                Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(AddEditPost.this, MainScreen.class));
+//                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
+//                    }
+//                }, 3000);
             }
 
             @Override
@@ -310,7 +318,7 @@ public class AddEditPost extends AppCompatActivity {
     }
 
 
-    private void addPost(final long user_id, long category_id, final String postDesc, String picturePath, final long date, int is_hidden) {
+    private void addPost(final long user_id, long category_id, final String postDesc,  final long date, int is_hidden) {
 //        final LoadingDialog loadingDialog = new LoadingDialog();
 //        Bundle args = new Bundle();
 //        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
@@ -325,13 +333,20 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 dialog.dismiss();
-                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
-                    }
-                }, 3000);
+                rl_post_photo.setVisibility(View.GONE);
+                image_str = null;
+                picturePath = null;
+                iv_camera.setEnabled(true);
+                ed_postDesc.setText("");
+                Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(AddEditPost.this, MainScreen.class));
+//                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
+//                    }
+//                }, 3000);
             }
 
             @Override

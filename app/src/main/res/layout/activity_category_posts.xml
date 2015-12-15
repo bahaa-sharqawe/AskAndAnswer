@@ -21,7 +21,6 @@ android:layoutDirection="ltr"
         android:layout_below="@+id/toolbar"
         android:id="@+id/rv_posts"
         android:divider="@null"
-        android:layout_marginTop="20dp"
         android:listSelector="@android:color/transparent"
         />
     <RelativeLayout

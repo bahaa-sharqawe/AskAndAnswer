@@ -69,6 +69,7 @@ public class Profile extends Fragment {
 
     private long last_id_server = 0;
     private long user_id;
+    private long current_user_id;
     Users user;
     RelativeLayout rl_parent;
     RelativeLayout rl_error;
@@ -92,7 +93,7 @@ public class Profile extends Fragment {
        View view = inflater.inflate(R.layout.fragment_profile, null, false);
         setActionBar();
         fontManager = FontManager.getInstance(getActivity().getAssets());
-
+        current_user_id = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE).getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         user_id = getArguments().getLong(USER_ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -136,13 +137,13 @@ public class Profile extends Fragment {
                 public void onError() {
                     iv_profile.setVisibility(View.INVISIBLE);
                     tv_person_photo.setVisibility(View.VISIBLE);
-                    tv_person_photo.setText(user.getFname().charAt(0)+"");
+                    tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
                 }
             });
         else{
             iv_profile.setVisibility(View.INVISIBLE);
             tv_person_photo.setVisibility(View.VISIBLE);
-            tv_person_photo.setText(user.getFname().charAt(0)+"");
+            tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
         }
         tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
@@ -237,7 +238,7 @@ public class Profile extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserPosts(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.getUserPosts(getActivity(), current_user_id, user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {

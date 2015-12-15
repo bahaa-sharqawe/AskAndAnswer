@@ -78,5 +78,6 @@ public class URL {
         public static final String NEW_PASWORD = "new_password";
         public static final String CONFIRM_NEW_PASWORD = "confirm_password";
         public static final String REGISTERATION_ID = "registration_id";
+        public static final String ANOTHER_USER_ID = "anotheruser_id";
     }
 }

@@ -55,7 +55,7 @@ public class DeletePost extends DialogFragment {
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_delete_post, null, false);
-        tv_delPostAttention = (TextView) view.findViewById(R.id.tv_delCommtAttention);
+        tv_delPostAttention = (TextView) view.findViewById(R.id.tv_delPostAttention);
         tv_delPostAttention.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         tv_delPostTitle = (TextView) view.findViewById(R.id.tv_delPostTitle);

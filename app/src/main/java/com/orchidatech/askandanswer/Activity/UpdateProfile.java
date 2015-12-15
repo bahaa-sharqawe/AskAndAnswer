@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
@@ -67,6 +68,7 @@ public class UpdateProfile extends AppCompatActivity {
 
     LinearLayout ll_parent;
     LinearLayout ll_content;
+    RelativeLayout rl_show_profile;
     AutoCompleteTextView auto_categories;
     EditText ed_fname;
     EditText ed_lname;
@@ -101,6 +103,7 @@ public class UpdateProfile extends AppCompatActivity {
     Toolbar toolbar;
     private FontManager fontManager;
     private AlertDialog dialog;
+    private TextView tv_person_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +146,7 @@ public class UpdateProfile extends AppCompatActivity {
                 v.setVisibility(View.GONE);
                 ll_newPassword.setVisibility(View.VISIBLE);
                 ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-                ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+//                ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
                 ed_confirm_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
             }
@@ -195,6 +198,7 @@ public class UpdateProfile extends AppCompatActivity {
         mValidator = Validator.getInstance();
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
         ll_content = (LinearLayout) this.findViewById(R.id.ll_content);
+        rl_show_profile = (RelativeLayout) this.findViewById(R.id.rl_show_profile);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.setText(user.getFname());
         ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
@@ -222,17 +226,27 @@ public class UpdateProfile extends AppCompatActivity {
         ll_newPassword = (LinearLayout) findViewById(R.id.ll_newPassword);
         iv_camera = (ImageView) this.findViewById(R.id.iv_camera);
         profile_image = (CircleImageView) this.findViewById(R.id.profile_image);
+        tv_person_photo = (TextView) this.findViewById(R.id.tv_person_photo);
+        tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        if (user != null && !user.getImage().equals(URL.DEFAULT_IMAGE))
         Picasso.with(this).load(Uri.parse(user.getImage())).into(profile_image, new Callback() {
             @Override
             public void onSuccess() {
-
+                tv_person_photo.setVisibility(View.INVISIBLE);
+                profile_image.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
-                profile_image.setImageResource(R.drawable.ic_user);
+                profile_image.setVisibility(View.INVISIBLE);
+                tv_person_photo.setVisibility(View.VISIBLE);
+                tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
             }
-        });
+        });else{
+            profile_image.setVisibility(View.INVISIBLE);
+            tv_person_photo.setVisibility(View.VISIBLE);
+            tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+        }
         auto_categories = (AutoCompleteTextView) this.findViewById(R.id.auto_categories);
         ll_categories = (HorizontalFlowLayout) findViewById(R.id.hf_categories);
         iv_update_password = (ImageView) findViewById(R.id.iv_update_password);
@@ -258,6 +272,7 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
         btn_update_categories = (Button) this.findViewById(R.id.btn_update_categories);
+        btn_update_categories.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
         btn_update_categories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,7 +289,22 @@ public class UpdateProfile extends AppCompatActivity {
             iv_checkbox.setVisibility(View.VISIBLE);
             iv_checked.setVisibility(View.GONE);
         }
-        iv_checkbox.setOnClickListener(new View.OnClickListener() {
+        rl_show_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(iv_checkbox.getVisibility() == View.VISIBLE){
+                    iv_checkbox.setVisibility(View.GONE);
+                    iv_checked.setVisibility(View.VISIBLE);
+                    isPublic = 0;
+                }else{
+                    iv_checked.setVisibility(View.GONE);
+                    iv_checkbox.setVisibility(View.VISIBLE);
+                    isPublic = 1;
+
+                }
+            }
+        });
+/*        iv_checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
@@ -289,7 +319,7 @@ public class UpdateProfile extends AppCompatActivity {
                 iv_checkbox.setVisibility(View.VISIBLE);
                 isPublic = 1;
             }
-        });
+        });*/
     }
 
     private void pickPhoto() {
@@ -302,11 +332,10 @@ public class UpdateProfile extends AppCompatActivity {
         toolbar.setTitle(getString(R.string.edit_profile));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_back);
-
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
 
@@ -320,6 +349,7 @@ public class UpdateProfile extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.done) {
+            hideSoftKeyboard();
             String fname = ed_fname.getText().toString().trim();
             String lname = ed_lname.getText().toString().trim();
             String email = ed_email.getText().toString().trim();
@@ -343,13 +373,15 @@ public class UpdateProfile extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                         dialog.dismiss();
-                        AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                startActivity(new Intent(UpdateProfile.this, MainScreen.class));
-                            }
-                        }, 3000);
+                        Toast.makeText(UpdateProfile.this, getString(R.string.saved), Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(UpdateProfile.this, MainScreen.class));
+//                        AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                startActivity(new Intent(UpdateProfile.this, MainScreen.class));
+//                            }
+//                        }, 3000);
                     }
 
                     @Override
@@ -361,7 +393,8 @@ public class UpdateProfile extends AppCompatActivity {
             }
             return true;
         } else if (id == android.R.id.home) {
-            finish();
+            hideSoftKeyboard();
+            onBackPressed();
             return true;
         }
         return false;

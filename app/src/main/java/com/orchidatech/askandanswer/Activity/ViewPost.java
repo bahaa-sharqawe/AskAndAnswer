@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -45,7 +46,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     Posts post;
     ImageView iv_post;
     TextView tv_post;
-    LinearLayout ll_parent;
+    RelativeLayout ll_parent;
     private SharedPreferences pref;
     private AlertDialog dialog;
 
@@ -109,7 +110,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             } else
                 iv_post.setVisibility(View.INVISIBLE);
         }
-        ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
+        ll_parent = (RelativeLayout) this.findViewById(R.id.ll_parent);
     }
 
     private void setCustomActionBar() {

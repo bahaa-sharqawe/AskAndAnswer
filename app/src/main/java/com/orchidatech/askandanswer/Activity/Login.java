@@ -81,7 +81,6 @@ public class Login extends AppCompatActivity {
     private Animation animFade;
     private Animation form_translate;
     GoogleCloudMessaging gcm;
-    private LoadingDialog loadingDialog;
     private String registration_id;
     private SocialUser socialUser;
     private String username;
@@ -220,7 +219,7 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onFail() {
-                loadingDialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.showTopSnackbar(Login.this, "An Error Occurred, Retry", Color.RED, Color.WHITE);
 
             }

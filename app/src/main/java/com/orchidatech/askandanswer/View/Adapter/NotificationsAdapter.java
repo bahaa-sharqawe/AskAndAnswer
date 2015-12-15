@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.NotificationPostView;
@@ -112,14 +113,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         CircleImageView iv_profile;
         TextView tv_notification_text;
         TextView notif_date;
-        CardView card_notification;
+        RelativeLayout card_notification;
 
         public NotificationViewHolder(View itemView) {
             super(itemView);
             iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
             tv_notification_text = (TextView) itemView.findViewById(R.id.tv_notification_text);
             notif_date = (TextView) itemView.findViewById(R.id.notif_date);
-            card_notification = (CardView) itemView.findViewById(R.id.card_notification);
+            card_notification = (RelativeLayout) itemView.findViewById(R.id.card_notification);
             tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
             tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
