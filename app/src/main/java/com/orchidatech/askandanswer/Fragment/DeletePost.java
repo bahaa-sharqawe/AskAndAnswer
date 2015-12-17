@@ -59,7 +59,7 @@ public class DeletePost extends DialogFragment {
         tv_delPostAttention.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         tv_delPostTitle = (TextView) view.findViewById(R.id.tv_delPostTitle);
-        tv_delPostTitle.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        tv_delPostTitle.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
         tv_confirm = (TextView) view.findViewById(R.id.tv_confirm);
         tv_confirm.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));

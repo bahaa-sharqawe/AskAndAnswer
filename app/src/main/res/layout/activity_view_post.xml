@@ -52,7 +52,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_post"
-        android:src="@drawable/android_wallpaper"
         android:scaleType="centerCrop"
         />
         <View

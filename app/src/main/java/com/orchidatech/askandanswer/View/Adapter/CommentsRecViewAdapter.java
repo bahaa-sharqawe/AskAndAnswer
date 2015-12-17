@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.internal.cu;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -51,6 +52,7 @@ import com.orchidatech.askandanswer.View.Interface.OnCommentActionListener;
 import com.orchidatech.askandanswer.View.Interface.OnCommentOptionListener;
 import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -72,6 +74,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private final long current_user_id;
     private final Animation mAnimation;
     private final Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
+    private  FontManager fontManager;
     private  SharedPreferences pref;
     private  OnCommentOptionListener commentOptionListener;
     private View parent;
@@ -96,6 +99,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
+        fontManager = FontManager.getInstance(activity.getAssets());
+
     }
 
 
@@ -325,7 +330,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 data.remove(comments.get(position));
                 comments.remove(position);
                 notifyDataSetChanged();
-                AppSnackBar.show(parent, activity.getResources().getString(R.string.deleted), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                Toast.makeText(activity, activity.getResources().getString(R.string.deleted), Toast.LENGTH_LONG).show();
+//                AppSnackBar.showTopSnackbar(activity, activity.getResources().getString(R.string.deleted), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
             }
 
             @Override
@@ -390,13 +396,22 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 iv_person = (CircleImageView) itemView.findViewById(R.id.iv_person);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
+                tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
                 rating_comment = (RatingBar) itemView.findViewById(R.id.rating_user);
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
+                tv_commentDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
                 tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
 //                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
+                tv_commentDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);
+                tv_likes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
+                tv_unlikes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
                 iv_like = (ImageView) itemView.findViewById(R.id.iv_like);
                 iv_unlike = (ImageView) itemView.findViewById(R.id.iv_unlike);
                 ll_like = (LinearLayout) itemView.findViewById(R.id.ll_like);
@@ -462,9 +477,10 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     private void dislikeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {
 //        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
-        final int prevAction = Integer.valueOf(comments.get(position).user_action);
+        final int prevAction =comments.get(position).user_action;
         final int action = (prevAction != Enum.USER_ACTIONS.DISLIKE.getNumericType()) ? 1 : 2;
-    //////////////////////////////////////////////////////////////
+
+     //////////////////////////////////////////////////////////////
         int currentLikes = Integer.parseInt(tv_likes.getText().toString());
         int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
         if (prevAction == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
@@ -500,7 +516,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
         comments.get(position).user_action =  action;
-        CommentsDAO.updateComment(comments.get(position));
+        comments.get(position).save();
 
         //////////////////////////////////////////////////////////////
 
@@ -511,7 +527,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
             @Override
             public void onFail(String error) {
-                AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+//                AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
             }
         });
     }
@@ -520,6 +536,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //        final User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, commentId);
         final int prevAction = comments.get(position).user_action;
         final int action = prevAction != Enum.USER_ACTIONS.LIKE.getNumericType() ? 0 : 2;
+        Log.i("cvcvcvc", prevAction+"");
        ////////////////////////////////////////////////
         int currentLikes = Integer.parseInt(tv_likes.getText().toString());
         int currentDisLikes = Integer.parseInt(tv_unlikes.getText().toString());
@@ -554,7 +571,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         comments.get(position).disLikes = currentDisLikes;
         comments.get(position).likes = currentLikes;
         comments.get(position).user_action = action;
-        CommentsDAO.updateComment(comments.get(position));
+        comments.get(position).save();
 
         ////////////////////////////////////////////
 

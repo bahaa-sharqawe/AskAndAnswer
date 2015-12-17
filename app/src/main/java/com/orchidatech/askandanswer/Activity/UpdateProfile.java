@@ -145,9 +145,6 @@ public class UpdateProfile extends AppCompatActivity {
                 ed_password.setHint(getString(R.string.ed_new_password_hint));
                 v.setVisibility(View.GONE);
                 ll_newPassword.setVisibility(View.VISIBLE);
-                ed_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-//                ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-                ed_confirm_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
             }
         });
@@ -198,7 +195,7 @@ public class UpdateProfile extends AppCompatActivity {
         mValidator = Validator.getInstance();
         ll_parent = (LinearLayout) this.findViewById(R.id.ll_parent);
         ll_content = (LinearLayout) this.findViewById(R.id.ll_content);
-        rl_show_profile = (RelativeLayout) this.findViewById(R.id.rl_show_profile);
+        rl_show_profile = (RelativeLayout) this.findViewById(R.id.rl_public_profile_row);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.setText(user.getFname());
         ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
@@ -224,6 +221,10 @@ public class UpdateProfile extends AppCompatActivity {
         ed_confirm_new_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         ll_newPassword = (LinearLayout) findViewById(R.id.ll_newPassword);
+        ed_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+//                ed_new_password.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        ed_confirm_new_password.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
+
         iv_camera = (ImageView) this.findViewById(R.id.iv_camera);
         profile_image = (CircleImageView) this.findViewById(R.id.profile_image);
         tv_person_photo = (TextView) this.findViewById(R.id.tv_person_photo);
@@ -272,7 +273,7 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
         btn_update_categories = (Button) this.findViewById(R.id.btn_update_categories);
-        btn_update_categories.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        btn_update_categories.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
         btn_update_categories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -467,6 +468,8 @@ public class UpdateProfile extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
                 return;
             }
+            tv_person_photo.setVisibility(View.INVISIBLE);
+            profile_image.setVisibility(View.VISIBLE);
             profile_image.setImageBitmap(bitmap);
 
         /*

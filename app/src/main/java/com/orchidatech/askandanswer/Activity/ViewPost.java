@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -117,9 +118,10 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.android));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-
     }
 
     @Override
@@ -136,6 +138,9 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             return true;
         } else if (id == R.id.edit_post) {
             edit_post();
+            return true;
+        } else if (id == android.R.id.home) {
+            onBackPressed();
             return true;
         }
         return false;
@@ -168,13 +173,16 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             @Override
             public void onDeleted() {
                     dialog.dismiss();
-                AppSnackBar.show(ll_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(ViewPost.this, MainScreen.class));
-                    }
-                }, 3000);
+                Toast.makeText(ViewPost.this, getResources().getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ViewPost.this, MainScreen.class));
+
+//                AppSnackBar.show(ll_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        startActivity(new Intent(ViewPost.this, MainScreen.class));
+//                    }
+//                }, 3000);
             }
 
             @Override

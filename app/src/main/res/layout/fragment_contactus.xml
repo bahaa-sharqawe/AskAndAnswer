@@ -47,6 +47,7 @@
         android:textCursorDrawable="@drawable/ed_cursor_backgnd"
         android:background="@drawable/ed_contact_backgnd"
         android:hint="@string/ed_contactus_hint"/>
+
     <View android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#b3b3b3"

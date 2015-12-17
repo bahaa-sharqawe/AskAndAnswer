@@ -32,34 +32,28 @@
         <!--/>-->
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <TextView
+        android:layout_height="match_parent"
+        android:layout_marginTop="17dp">
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delete"
             android:layout_toLeftOf="@+id/tv_cancel"
             android:textSize="17sp"
-            android:paddingTop="25dp"
-            android:paddingLeft="17dp"
-            android:paddingRight="17dp"
-            android:paddingBottom="17dp"
             android:id="@+id/tv_confirm"
             android:textColor="#51a697"
-            android:background="@drawable/btns_contactus_backgnd"/>
+            style="?android:attr/borderlessButtonStyle"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel"
             android:layout_alignParentRight="true"
             android:textSize="17sp"
-            android:paddingTop="25dp"
-            android:paddingLeft="17dp"
-            android:paddingRight="17dp"
-            android:paddingBottom="17dp"
+
             android:id="@+id/tv_cancel"
             android:textColor="#51a697"
-            android:background="@drawable/btns_contactus_backgnd"/>
+            style="?android:attr/borderlessButtonStyle"/>
     </RelativeLayout>
 
 </LinearLayout>

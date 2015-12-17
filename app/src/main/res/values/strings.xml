@@ -104,6 +104,18 @@ Question Therapy targets both the receptive and the expressive use of questions,
         <item>@drawable/ic_terms</item>
         <item>@drawable/ic_info</item>
     </array>
+    <array name="nav_drawer_icons_on">
+        <item>@drawable/ic_timeline_on</item>
+        <item>@drawable/ic_question_nav_on</item>
+        <item>@drawable/ic_answer_nav_on</item>
+        <item>@drawable/ic_favorite_nav_on</item>
+        <item>@drawable/ic_profile_on</item>
+        <item>@drawable/ic_search_on</item>
+        <item>@drawable/ic_logout_on</item>
+        <!--<item>@drawable/ic_settings</item>-->
+        <item>@drawable/ic_terms_on</item>
+        <item>@drawable/ic_info_on</item>
+    </array>
 
     <string name="BR_GNL_001">Please check your internet connection</string>
     <string name="BR_GNL_002">Please check email format</string>

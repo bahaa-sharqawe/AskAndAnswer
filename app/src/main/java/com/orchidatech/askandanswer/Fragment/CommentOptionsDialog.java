@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 
 /**
  * Created by Bahaa on 12/12/2015.
@@ -17,8 +18,17 @@ import com.orchidatech.askandanswer.R;
 public class CommentOptionsDialog extends DialogFragment {
 
     private AlertDialog dialog;
+    private TextView tv_header;
     private TextView tv_delete;
     private OnCommentOptionsListener listener;
+    private FontManager fontManager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fontManager = FontManager.getInstance(getActivity().getAssets());
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -34,6 +44,11 @@ public class CommentOptionsDialog extends DialogFragment {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.comment_options, null, false);
         tv_delete = (TextView) view.findViewById(R.id.tv_delete);
+        tv_delete.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_header = (TextView) view.findViewById(R.id.tv_header);
+        tv_header.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
         tv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

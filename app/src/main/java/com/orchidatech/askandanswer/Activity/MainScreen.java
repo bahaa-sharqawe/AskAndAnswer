@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -61,6 +62,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
     ArrayList<DrawerItem> items;
     ArrayList<String> itemsTitles;
     TypedArray navMenuIcons;
+    private TypedArray navMenuIcons_on;
     DrawerRecViewAdapter adapter;
     RecyclerView rv_navigation;
     ActionBarDrawerToggle mDrawerToggle;
@@ -133,8 +135,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.fragment_host, new Timeline());
+        ft.addToBackStack("0");
         ft.commit();
         mFragmentManager.executePendingTransactions();
+//        startEvent(0);
 
 //        mDrawerLayout.openDrawer(rv_navigation);
     }
@@ -215,23 +219,24 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 //            defaultState();
             FragmentTransaction ft = mFragmentManager.beginTransaction();
 //           if(oldPosition != position)
-            ft.addToBackStack("");
+            ft.addToBackStack(position + "");
             switch (position){
                 case 0:
                 case 1:
-//                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    break;
-                case 2:
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                     break;
                 case 3:
-                case 4:
-                case 7:
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    break;
 
+                case 7:
+                case 2:
+                    ft.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+                    break;
+                case 4:
+                    ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down);
+                    break;
                 case 8:
                 case 5:
+
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                     break;
 
@@ -239,7 +244,13 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             }
             ft.replace(R.id.fragment_host, fragment);
             ft.commit();
-//            mFragmentManager.executePendingTransactions();
+            mFragmentManager.executePendingTransactions();
+            updateDrawer(position);
+////            for(int i = 0; i < items.size(); i++){
+////                items.get(i).setIsSelected(i==position?true:false);
+////            }
+//            adapter.notifyDataSetChanged();
+
         }
 
 
@@ -311,9 +322,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         itemsTitles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.drawerItems)));
         // nav drawer icons from resources
         navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
+        navMenuIcons_on = getResources().obtainTypedArray(R.array.nav_drawer_icons_on);
         items = new ArrayList<>();
         for (int i = 0; i < itemsTitles.size(); i++)
-            items.add(new DrawerItem(itemsTitles.get(i), navMenuIcons.getResourceId(i, -1)));
+            items.add(new DrawerItem(itemsTitles.get(i), navMenuIcons.getResourceId(i, -1), navMenuIcons_on.getResourceId(i, -1), i==0?true:false));
         navMenuIcons.recycle();
     }
 
@@ -327,11 +339,26 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
             getFragmentManager().popBackStack();
+            Log.i("cxczc", getFragmentManager().getBackStackEntryCount()+"");
+            if(getFragmentManager().getBackStackEntryCount() > 1) {
+                FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2);
+                int position = Integer.parseInt(backEntry.getName());
+                updateDrawer(position);
+            }
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void updateDrawer(int position) {
+        for (int i = 0; i < items.size(); i++) {
+            items.get(i).setIsSelected(i == position ? true : false);
+            Log.i("xcxc", position + "");
+        }
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override

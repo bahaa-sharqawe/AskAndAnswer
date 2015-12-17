@@ -31,9 +31,7 @@
             android:layout_height="80dp"
             android:background="@drawable/offline_photo_backgnd"
             android:id="@+id/tv_person_photo"
-            android:text="A"
             android:gravity="center"
-            android:textColor="#fff"
             android:textSize="24sp"
             />
     </RelativeLayout>

@@ -27,5 +27,6 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="2dp"
+        android:background="@drawable/drawer_list_selector"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>

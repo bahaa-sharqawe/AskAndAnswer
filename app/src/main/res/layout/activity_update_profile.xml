@@ -76,8 +76,7 @@
                    android:id="@+id/tv_person_photo"
                    android:text="A"
                    android:gravity="center"
-                   android:textColor="#fff"
-                   android:textSize="18sp"
+                   android:textSize="24sp"
                    />
 
                <ImageView
@@ -218,8 +217,10 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/rl_public_profile_row"
-               android:paddingTop="20dp"
-               android:paddingBottom="15dp"
+               android:clickable="true"
+               android:background="@drawable/drawer_list_selector"
+               android:layout_marginTop="20dp"
+               android:layout_marginBottom="20dp"
                android:layout_below="@+id/ll_newPassword"
                >
                <ImageView
@@ -261,7 +262,7 @@
                    android:layout_alignParentRight="true"
                    android:id="@+id/rl_show_profile"
                    android:layout_marginLeft="20dp"
-                   android:background="@drawable/drawer_list_selector"
+
                    >
                    <ImageView
                        android:layout_width="wrap_content"

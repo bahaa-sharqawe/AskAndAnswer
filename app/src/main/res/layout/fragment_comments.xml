@@ -40,7 +40,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/uncolored_logo"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginBottom="30dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="16sp"/>
+                android:textSize="17sp"/>
 
         </RelativeLayout>
 
@@ -84,6 +84,7 @@
                         android:src="@drawable/ic_camera_flat"
                         android:id="@+id/iv_camera"
                         android:padding="10dp"
+                        android:background="@drawable/drawer_list_selector"
 
                         android:layout_marginRight="10dp"
                        />
@@ -112,7 +113,7 @@
                     android:src="@drawable/ic_send"
                     android:id="@+id/iv_add_comment"
                     android:padding="10dp"
-                    android:background="#fff"
+                    android:background="@drawable/drawer_list_selector"
                     android:layout_gravity="center_vertical"/>
 
                 <ProgressBar

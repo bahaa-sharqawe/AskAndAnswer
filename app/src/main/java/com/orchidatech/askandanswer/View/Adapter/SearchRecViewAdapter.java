@@ -305,7 +305,7 @@ RelativeLayout card_post;
         FragmentManager mFragmentManager = activity.getFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.fragment_host, fragment);
-        ft.addToBackStack(null);
+        ft.addToBackStack("4");
         ft.commit();
         mFragmentManager.executePendingTransactions();
     }

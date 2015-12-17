@@ -98,7 +98,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/iv_postImage"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/android_wallpaper"
                     android:visibility="visible"
                     />
 
@@ -233,7 +232,6 @@
             android:id="@+id/tv_person_photo"
             android:text="A"
             android:gravity="center"
-            android:textColor="#fff"
             android:textSize="18sp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="5dp"

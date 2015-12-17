@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -88,7 +91,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                         public void onError() {
                             holder.iv_profile.setVisibility(View.INVISIBLE);
                             holder.tv_person_photo.setVisibility(View.VISIBLE);
-                            holder.tv_person_photo.setText(user.getFname().charAt(0)+"");
+                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
 //                            holder.load_image_progress.setVisibility(View.GONE);
                         }
                     });
@@ -102,9 +105,17 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         } else {
             DrawerItem item = items.get(position - 1);//0 is header
             holder.tv_drawer_item.setText(item.getTitle());
-            holder.iv_drawer_item.setImageResource(item.getImage());
             holder.tv_drawer_item.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+            if(items.get(position-1).isSelected()){
+                holder.tv_drawer_item.setTextColor(Color.parseColor("#2dbda6"));
+                holder.ll_item.setBackgroundColor(Color.parseColor("#e9e9e9"));
+                holder.iv_drawer_item.setImageResource(item.getImage_on());
 
+            }else{
+                holder.tv_drawer_item.setTextColor(Color.parseColor("#4d4d4d"));
+                holder.ll_item.setBackgroundColor(Color.parseColor("#ffffff"));
+                holder.iv_drawer_item.setImageResource(item.getImage());
+            }
         }
     }
 
@@ -124,6 +135,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         //menu components
         ImageView iv_drawer_item;
         TextView tv_drawer_item;
+        LinearLayout ll_item;
 
         public ItemViewHolder(final View itemView, int viewType) {
             super(itemView);
@@ -146,6 +158,18 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                         listener.onClick(getAdapterPosition() - 1);// -1 beacause the header is in position 0
                     }
                 });
+                ll_item = (LinearLayout) itemView.findViewById(R.id.ll_item);
+//                ll_item.setOnTouchListener(new View.OnTouchListener() {
+//                    @Override
+//                    public boolean onTouch(View v, MotionEvent event) {
+//                        if(event.getAction() == MotionEvent.ACTION_DOWN  || event.getAction() == MotionEvent.ACTION_HOVER_ENTER ){
+//                            ll_item.setBackgroundColor(Color.parseColor("#e9e9e9"));
+//                        }else if(event.getAction() == MotionEvent.ACTION_HOVER_EXIT){
+//                            ll_item.setBackgroundColor(Color.parseColor("#ffffff"));
+//                        }
+//                        return false;
+//                    }
+//                });
             }
 
         }

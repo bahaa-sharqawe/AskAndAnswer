@@ -287,7 +287,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         FragmentManager mFragmentManager = activity.getFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.fragment_host, fragment);
-        ft.addToBackStack(null);
+        ft.addToBackStack("4");
         ft.commit();
         mFragmentManager.executePendingTransactions();
     }
@@ -420,17 +420,21 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             //remove from favorite
         WebServiceFunctions.removePostFavorite(activity, post_id, user_id, new OnPostFavoriteListener() {
 
-                @Override
-                public void onSuccess() {
+            @Override
+            public void onSuccess() {
 //                    AppSnackBar.show(parent, activity.getString(R.string.post_favorite_removed), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
-                }
+            }
 
-                @Override
-                public void onFail(String error) {
+            @Override
+            public void onFail(String error) {
 //                    AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
 
-                }
-            });
+            }
+        });
+        Post_FavoriteDAO.deletePostFavorite(post_id, user_id);
+        Posts posts = PostsDAO.getPost(post_id);
+        posts.isFavorite = 0;
+        posts.save();
         removePost(position);
     }
     private void commentPost(long postId) {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -62,6 +63,8 @@ public class ContactUs extends DialogFragment {
                 .getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         ed_message = (EditText) view.findViewById(R.id.ed_message);
         ed_message.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(ed_message.getWindowToken(), 0);
 
         tv_send = (TextView) view.findViewById(R.id.tv_send);
         tv_send.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
@@ -71,6 +74,7 @@ public class ContactUs extends DialogFragment {
             public void onClick(View v) {
                 //send message to server then
                 hideSoftKeyboard();
+//                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 String message = ed_message.getText().toString().trim();
                 if(!TextUtils.isEmpty(message)){
                     message = Validator.getInstance().getSafeText(message);
@@ -82,8 +86,8 @@ public class ContactUs extends DialogFragment {
 //                        loadingDialog.setCancelable(false);
 //                        loadingDialog.show(getFragmentManager(), "sending");
                         final AlertDialog loadingDialog = new SpotsDialog(getActivity(), getString(R.string.sending), R.style.SpotsDialogCustom);
-                        dialog.setCancelable(false);
-                        dialog.show();
+                        loadingDialog.setCancelable(false);
+                        loadingDialog.show();
                         WebServiceFunctions.sendMessage(getActivity(), user_id, message, new OnSendMessageListener(){
 
                             @Override

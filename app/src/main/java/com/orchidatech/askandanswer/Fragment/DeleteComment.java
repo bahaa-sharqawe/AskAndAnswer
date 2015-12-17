@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnDeleteCommentListener;
+import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 /**
@@ -24,9 +25,12 @@ public class DeleteComment extends DialogFragment {
     AlertDialog dialog;
     TextView tv_confirm;
     TextView tv_cancel;
+    TextView tv_delCommentTitle;
+    TextView tv_delCommtAttention;
     long commentId;
     int commentPos;
     private OnDeleteListener listener;
+    private FontManager mFontManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,9 +53,13 @@ public class DeleteComment extends DialogFragment {
     }
 
     private View getCustomView() {
+        mFontManager = FontManager.getInstance(getActivity().getAssets());
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_delete_comment, null, false);
         tv_confirm = (TextView) view.findViewById(R.id.tv_confirm);
+        tv_confirm.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +70,14 @@ public class DeleteComment extends DialogFragment {
             }
         });
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+        tv_cancel.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_delCommtAttention = (TextView) view.findViewById(R.id.tv_delCommtAttention);
+        tv_delCommtAttention.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
+
+        tv_delCommentTitle = (TextView) view.findViewById(R.id.tv_delCommentTitle);
+        tv_delCommentTitle.setTypeface(mFontManager.getFont(FontManager.ROBOTO_MEDIUM));
+
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

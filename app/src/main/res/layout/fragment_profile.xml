@@ -46,10 +46,8 @@
                     android:layout_height="80dp"
                     android:background="@drawable/offline_photo_backgnd"
                     android:id="@+id/tv_person_photo"
-                    android:text="A"
                     android:layout_marginBottom="5dp"
                     android:gravity="center"
-                    android:textColor="#fff"
                     android:textSize="18sp"
                     />
                 <TextView
@@ -63,24 +61,25 @@
                     android:layout_alignLeft="@+id/iv_profile"
                     android:layout_below="@+id/iv_profile"
                     />
-                </RelativeLayout>
                 <RatingBar
                     android:layout_width="wrap_content"
-                    android:layout_height="24dp"
+                    android:layout_height="wrap_content"
                     style="?android:attr/ratingBarStyleSmall"
                     android:isIndicator="true"
                     android:progressDrawable="@drawable/ratingbar_selector"
                     android:rating="4"
                     android:numStars="5"
                     android:id="@+id/rating_person"
-                    android:layout_toRightOf="@+id/rl_person_info"
+                    android:layout_toRightOf="@+id/tv_person"
                     android:paddingBottom="3dp"
-                    android:layout_alignBottom="@+id/rl_person_info"
+                    android:layout_alignBottom="@+id/tv_person"
                     />
-                <RelativeLayout
+
+            </RelativeLayout>
+                            <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating_person"
+                    android:layout_below="@+id/rl_person_info"
                     android:layout_marginTop="12dp"
                     android:layout_alignLeft="@+id/rl_person_info"
                     >
@@ -153,7 +152,7 @@
             android:id="@+id/tv_error"
             android:layout_below="@+id/uncolored_logo"
             android:layout_centerHorizontal="true"
-            android:textSize="20sp"/>
+            android:textSize="17sp"/>
 
     </RelativeLayout>
 

@@ -226,9 +226,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
+//            holder.tv_person_photo.setVisibility(View.INVISIBLE);
 
-            if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)
-                    /*&& !postOwner.getFname().equals("بهاء")*/)
+            if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
+                    /*&& !postOwner.getFname().equals("بهاء")*/
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -240,10 +241,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     public void onError() {
                         holder.iv_profile.setVisibility(View.INVISIBLE);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
+                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                     }
                 });
-            else{
+            }else{
                 holder.iv_profile.setVisibility(View.INVISIBLE);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
                 holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
@@ -599,9 +600,10 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         FragmentManager mFragmentManager = activity.getFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.fragment_host, fragment);
-        ft.addToBackStack(null);
+        ft.addToBackStack("4");
         ft.commit();
         mFragmentManager.executePendingTransactions();
+        ((MainScreen)activity).updateDrawer(4);
     }
 
     public interface OnDialogDismiss {

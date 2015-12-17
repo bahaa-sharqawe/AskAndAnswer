@@ -31,7 +31,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/uncolored_logo"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginBottom="30dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="20sp"/>
+                android:textSize="17sp"/>
 
         </RelativeLayout>
 

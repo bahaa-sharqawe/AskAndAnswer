@@ -844,7 +844,7 @@ public class WebServiceFunctions {
                                 User_ActionsDAO.addUserAction(new User_Actions(user_action_id, user_action_comment, user_action_user, System.currentTimeMillis(), user_action_action));
                             }
                             JSONObject pos_obj = comment.getJSONObject("post");
-                            PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image"),
+                            PostsDAO.addPost(new Posts(Long.parseLong(pos_obj.getString("id")), pos_obj.getString("text"), pos_obj.getString("image").equals("null")?null:pos_obj.getString("image"),
                                     pos_obj.getLong("updated_at"), Long.parseLong(pos_obj.getString("user_id")), Long.parseLong(pos_obj.getString("category_id")),
                                     pos_obj.getInt("is_hidden"), -1, -1, -1, -1));
                             Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
@@ -1595,13 +1595,13 @@ public class WebServiceFunctions {
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if (status == 0) {
-                        JSONObject post = dataObj.getJSONArray("data").optJSONObject(0);
-                        long id = post.getLong("id");
+                        JSONObject post = dataObj.getJSONObject("data");
+                        long id = Long.parseLong(post.getString("id"));
                         String text = post.getString("text");
                         String image = post.getString("image");
-                        int is_hidden = post.getInt("is_hidden");
-                        long category_id = post.getLong("category_id");
-                        long user_id = post.getLong("user_id");
+                        int is_hidden = Integer.parseInt(post.getString("is_hidden"));
+                        long category_id = Long.parseLong(post.getString("category_id"));
+                        long user_id = Long.parseLong(post.getString("user_id"));
 //                        int comments_no = post.getInt("comment_no");
                         long created_at = post.getLong("updated_at");
                         Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_id, category_id, is_hidden, -1, -1, -1, -1);

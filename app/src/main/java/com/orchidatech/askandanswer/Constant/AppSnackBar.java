@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Constant;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
 import android.view.View;
@@ -21,10 +22,11 @@ public class AppSnackBar {
         if(view == null || view.getParent() == null)
             return;
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(textColor);
+//        snackbar.setActionTextColor(Color.parseColor("#3e3e3e"));
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(background);
         TextView tv = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(background);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         snackbar.show();
     }

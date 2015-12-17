@@ -55,7 +55,7 @@ public class AboutUs extends Fragment {
             @Override
             public void onClick(View v) {
                 MainScreen.oldPosition = -1;
-                getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Introduction()).addToBackStack("").commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_host, new Introduction()).addToBackStack("8").commit();
                 getFragmentManager().executePendingTransactions();
             }
         });
