@@ -4,36 +4,41 @@
     android:layout_height="200dp"
     android:background="@drawable/drawer_header_backgnd"
     android:gravity="left"
+    android:paddingTop="20dp"
     android:paddingLeft="20dp"
-    android:paddingTop="15dp"
-    android:layout_marginBottom="10dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="20dp"
     >
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
         android:id="@+id/rl_user_photo"
         android:layout_marginBottom="20dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/iv_profile"
-            android:layout_centerInParent="true"
-           />
-        <!--<ProgressBar-->
-            <!--style="?android:attr/progressBarStyleSmall"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:id="@+id/load_image_progress" />-->
         <TextView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/offline_photo_backgnd"
             android:id="@+id/tv_person_photo"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="17sp"
+            android:text="B A"
             />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/iv_profile"
+            android:src="@drawable/women"
+            />
+        <!--<ProgressBar-->
+            <!--style="?android:attr/progressBarStyleSmall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:id="@+id/load_image_progress" />-->
+
     </RelativeLayout>
 
 

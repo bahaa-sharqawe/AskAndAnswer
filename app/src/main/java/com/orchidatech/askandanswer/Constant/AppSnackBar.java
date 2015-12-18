@@ -26,7 +26,7 @@ public class AppSnackBar {
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(background);
         TextView tv = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(background);
+        tv.setTextColor(textColor);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         snackbar.show();
     }

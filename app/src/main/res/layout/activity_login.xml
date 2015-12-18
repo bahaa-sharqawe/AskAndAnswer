@@ -20,8 +20,8 @@
         android:contentDescription="@string/contenDesc_logo"
         android:id="@+id/iv_logo"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="@dimen/login_logo_top"
+        android:layout_marginBottom="@dimen/login_logo_top"
         android:visibility="visible"/>
 
 

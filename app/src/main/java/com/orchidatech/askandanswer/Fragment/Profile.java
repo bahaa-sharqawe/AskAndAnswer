@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -35,6 +37,7 @@ import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
+import com.orchidatech.askandanswer.View.Interface.HidingScrollListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
@@ -80,6 +83,7 @@ public class Profile extends Fragment {
     private SharedPreferences pref;
     private FontManager fontManager;
     private TextView tv_person_photo;
+    private RelativeLayout rl_header;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,7 @@ public class Profile extends Fragment {
         user_id = getArguments().getLong(USER_ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        rl_header = (RelativeLayout) view.findViewById(R.id.rl_header);
         rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
         fab_edit_profile = (FloatingActionButton) view.findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +128,7 @@ public class Profile extends Fragment {
         tv_asks.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         rating_person.setRating(user.getRating());
-        Log.i("rating", user.getRating()+"");
+        Log.i("rating", user.getRating() + "");
         tv_person.setText(user.getFname() + " " + user.getLname());
         if(user != null && !user.getImage().equals(URL.DEFAULT_IMAGE))
             Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
@@ -163,6 +168,18 @@ public class Profile extends Fragment {
             }
         }, Enum.POSTS_FRAGMENTS.PROFILE.getNumericType());
         rv_posts.setAdapter(adapter);
+        rv_posts.setOnScrollListener(new HidingScrollListener(){
+
+            @Override
+            public void onHide() {
+                hideHeader();
+            }
+
+            @Override
+            public void onShow() {
+            showHeader();
+            }
+        });
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
@@ -190,6 +207,8 @@ public class Profile extends Fragment {
         return view;
     }
 
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -200,7 +219,13 @@ public class Profile extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
         ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
         (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
+    }
+    private void hideHeader() {
+        rl_header.animate().translationY(-rl_header.getHeight()).setInterpolator(new AccelerateInterpolator(2));
 
+    }
+    private void showHeader(){
+        rl_header.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 
     private void getUserInfo(final long user_id) {
