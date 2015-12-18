@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
+import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.DeletePost;
@@ -47,6 +48,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     Posts post;
     ImageView iv_post;
     TextView tv_post;
+    TextView tv_android_cateogry;
     RelativeLayout ll_parent;
     private SharedPreferences pref;
     private AlertDialog dialog;
@@ -67,6 +69,8 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         if(post != null) {
             iv_post = (ImageView) this.findViewById(R.id.iv_post);
             tv_post = (TextView) this.findViewById(R.id.tv_post);
+            tv_android_cateogry = (TextView) this.findViewById(R.id.tv_android_cateogry);
+            tv_android_cateogry.setText(CategoriesDAO.getCategory(post.getCategoryID()).getName());
             tv_post.setText(post.getText());
             if(!TextUtils.isEmpty(post.getImage())) {
                 ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
@@ -116,8 +120,8 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
 
     private void setCustomActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.android));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
