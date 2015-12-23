@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Activity.AddEditPost;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -51,6 +52,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+
 /**
  * Created by Bahaa on 7/11/2015.
  */
@@ -72,7 +75,7 @@ public class Timeline extends Fragment {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
     private SharedPreferences pref;
     private List<Posts> allStoredPosts;
 
@@ -127,8 +130,8 @@ public class Timeline extends Fragment {
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) view.findViewById(R.id.pb_loading_main);
+//        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#2dbda6"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

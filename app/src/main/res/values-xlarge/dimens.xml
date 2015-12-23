@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="login_logo_top">50dp</dimen>
+    <dimen name="user_letters_font_size">19sp</dimen>
+    <dimen name="drawer_user_letters_font_size">21sp</dimen>
 </resources>

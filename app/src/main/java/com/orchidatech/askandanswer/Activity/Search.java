@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
@@ -44,7 +45,7 @@ MaterialSearchView searchView;
     private FontManager fontManager;
     private String filter;
     private long last_id_server = 0;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
 
 
     @Override
@@ -68,8 +69,7 @@ MaterialSearchView searchView;
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
-        pb_loading_main = (ProgressBar) findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) findViewById(R.id.pb_loading_main);
         adapter = new SearchRecViewAdapter(this, posts, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {

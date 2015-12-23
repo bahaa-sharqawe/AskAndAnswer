@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
@@ -47,7 +48,7 @@ public class MyFavorites extends Fragment {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
     private ArrayList<Post_Favorite> userFavPosts;
     private SharedPreferences pref;
 
@@ -77,8 +78,8 @@ public class MyFavorites extends Fragment {
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) view.findViewById(R.id.pb_loading_main);
+//        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override

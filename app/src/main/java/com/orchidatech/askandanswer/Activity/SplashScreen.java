@@ -115,13 +115,13 @@ public class SplashScreen extends Activity {
         WebServiceFunctions.getCategories(this, new OnCategoriesFetchedListener() {
             @Override
             public void onSuccess(ArrayList<Category> categories) {
-                AppSnackBar.show(rl_parent, "Categories updated...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
+//                AppSnackBar.show(rl_parent, "Categories updated...", getResources().getColor(R.color.colorPrimary), Color.WHITE);
 
             }
 
             @Override
             public void onFail(String cause) {
-                AppSnackBar.show(rl_parent, "Categories updating failed...", Color.RED, Color.WHITE);
+//                AppSnackBar.show(rl_parent, "Categories updating failed...", Color.RED, Color.WHITE);
             }
         });
     }

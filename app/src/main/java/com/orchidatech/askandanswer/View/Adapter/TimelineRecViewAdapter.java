@@ -29,9 +29,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nineoldandroids.animation.Animator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -81,8 +84,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private final SharedPreferences pref;
     private final Animation mAnimation;
     private final FontManager fontManager;
+    private final ColorGenerator generator;
     private ImageLoader imageLoader;
-    private ProgressBar pv_load;
+    private CircularProgressView pv_load;
     private Button btn_reload;
     private List<Posts> posts;
     private Activity activity;
@@ -114,6 +118,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
 //set the max number of images (image width > 50) to be cached in memory, default is 20
         BitmapAjaxCallback.setCacheLimit(50);
+         generator = ColorGenerator.MATERIAL;
     }
 
     @Override
@@ -192,7 +197,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 }
 
 /* Getting Images from Server and stored in cache */
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
+
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, null, AQuery.FADE_IN);
 //
 //                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
 //                    @Override
@@ -227,9 +233,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
 //            holder.tv_person_photo.setVisibility(View.INVISIBLE);
+      /*&& !postOwner.getFname().equals("بهاء")*/
+            String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
+
+            final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                    .buildRound(letter, generator.getRandomColor());
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
-                    /*&& !postOwner.getFname().equals("بهاء")*/
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -240,14 +250,16 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     @Override
                     public void onError() {
                         holder.iv_profile.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setImageDrawable(drawable);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
+//                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                     }
                 });
             }else{
                 holder.iv_profile.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setImageDrawable(drawable);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
+//                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
             }
 
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
@@ -345,16 +357,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         TextView tv_favorite;
         TextView tv_share;
         TextView tv_comment;
-        TextView tv_person_photo;
+        ImageView tv_person_photo;
         ImageView iv_postImage;
-        LinearLayout rl_postEvents;
+        RelativeLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
         RelativeLayout card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
-        //        ProgressBar  pb_photo_load;
+                ProgressBar  pb_photo_load;
+
         int viewType;
         public ImageView iv_comment;
         public ImageView iv_share;
@@ -363,8 +376,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             super(itemView);
             this.viewType = viewType;
             if (viewType == TYPE_FOOTER) {
-                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
-                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                pv_load = (CircularProgressView) itemView.findViewById(R.id.pv_load);
+//                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
                 btn_reload.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -379,7 +392,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
@@ -389,7 +402,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
+                rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
@@ -401,7 +414,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+//                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
 
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);

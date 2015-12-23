@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:paddingTop="5dp"
+    android:background="@drawable/fr_contact_backgnd"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_delPostTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_delPostTitle"
+        android:paddingLeft="5dp"
+        android:textSize="17sp"
+        android:paddingRight="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_delPostAttention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_delPostAttention"
+        android:paddingLeft="5dp"
+        android:textSize="16sp"
+        android:paddingRight="5dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#b3b3b3"
+        />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_confirm"
+            android:layout_toLeftOf="@+id/tv_cancel"
+            android:textSize="16sp"
+            android:id="@+id/tv_confirm"
+            android:textColor="#51a697"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_cancel"
+            android:layout_alignParentRight="true"
+            android:textSize="16sp"
+            android:id="@+id/tv_cancel"
+            android:textColor="#51a697"
+            style="?android:attr/borderlessButtonStyle"/>
+    </RelativeLayout>
+
+</LinearLayout>

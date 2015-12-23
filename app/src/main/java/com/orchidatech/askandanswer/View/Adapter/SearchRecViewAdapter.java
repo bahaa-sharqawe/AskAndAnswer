@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
@@ -58,7 +59,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private final View parent;
     private final FontManager fontManager;
     private final OnLastListReachListener lastListReachListener;
-    private  ProgressBar pv_load;
+    private CircularProgressView pv_load;
 
     private ArrayList<Posts> posts;
     Activity activity;
@@ -149,7 +150,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 AQuery aq = new AQuery(activity);
 
 /* Getting Images from Server and stored in cache */
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, null, AQuery.FADE_IN);
 //                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
 //                    @Override
 //                    public void onSuccess() {
@@ -227,8 +228,8 @@ RelativeLayout card_post;
             super(itemView);
             this.viewType = viewType;
             if (viewType == TYPE_FOOTER) {
-                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
-                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                pv_load = (CircularProgressView) itemView.findViewById(R.id.pv_load);
+//                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
                 btn_reload.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl_parent"
+    android:paddingTop="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="8dp"
+    android:layoutDirection="ltr"
+    android:background="#fff"
+    android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_comments"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/rl_error"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/uncolored_logo"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/uncolored_logo"
+                android:layout_marginBottom="30dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/tv_your_questions"
+                android:id="@+id/tv_error"
+                android:layout_below="@+id/uncolored_logo"
+                android:layout_centerHorizontal="true"
+                android:textSize="15sp"/>
+
+        </RelativeLayout>
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pb_loading_main"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cpv_animAutostart="true"
+            android:layout_centerInParent="true"
+            app:cpv_indeterminate="true"
+            app:cpv_color = "#2dbda6"
+            />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+
+            <View android:layout_height="0.1dp"
+                android:layout_width="match_parent"
+                android:background="#e6e6e6"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_camera_flat"
+                        android:id="@+id/iv_camera"
+                        android:padding="10dp"
+                        android:background="@drawable/drawer_list_selector"
+
+                        android:layout_marginRight="10dp"
+                       />
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17sp"
+                        android:hint="Add a comment"
+                        android:inputType="textMultiLine"
+                        android:singleLine="false"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/ed_add_comment"
+                        android:background="@drawable/ed_add_comment_backgnd"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/rl_send_comment"
+                android:clickable="false"
+                >
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_send"
+                    android:id="@+id/iv_add_comment"
+                    android:padding="10dp"
+                    android:background="@drawable/drawer_list_selector"
+                    android:layout_gravity="center_vertical"/>
+                <com.github.rahatarmanahmed.cpv.CircularProgressView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/pb_add_comment"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:cpv_animAutostart="true"
+                    android:layout_centerInParent="true"
+                    app:cpv_indeterminate="true"
+                    app:cpv_color = "#2dbda6"
+                    android:visibility="gone"
+                    app:cpv_thickness = "2dp"/>
+
+            </RelativeLayout>
+
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/rl_comment_photo_preview"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    >
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/ic_user"
+                        android:id="@+id/iv_comment"
+                        android:visibility="visible"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="centerCrop"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_close"
+                        android:id="@+id/iv_delete"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="4dp"
+                        />
+
+
+                </RelativeLayout></LinearLayout>
+
+        </LinearLayout>
+

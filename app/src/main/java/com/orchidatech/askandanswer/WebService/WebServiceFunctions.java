@@ -1165,7 +1165,7 @@ public class WebServiceFunctions {
                     int status_code = dataObj.getInt("statusCode");
                     int status = dataObj.getInt("status");
                     if (status == 0) {
-                        listener.success(GNLConstants.getStatus(status_code));
+                        listener.success("Please, check your email inbox");
                     } else {
                         listener.fail(GNLConstants.getStatus(status_code));
                     }
@@ -1388,7 +1388,8 @@ public class WebServiceFunctions {
                         float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
                         Users owner = new Users(uid, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, rating);
                         UsersDAO.addUser(owner);
-                        listener.onSuccess(postItem, owner);
+
+                        listener.onSuccess(postItem, UsersDAO.getUser(postItem.userID));
                     } else if (status_code == 5000)
                         logoutImmediately(activity);
                     else
@@ -1462,7 +1463,8 @@ public class WebServiceFunctions {
                         float rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
                         Users owner = new Users(uid, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_tasks, rating);
                         UsersDAO.addUser(owner);
-                        listener.onSuccess(postItem, owner);
+
+                        listener.onSuccess(postItem, UsersDAO.getUser(postItem.userID));
                     }else if (status_code == 5000)
                         logoutImmediately(activity);
                     else

@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.internal.cu;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.*;
@@ -78,7 +79,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private  SharedPreferences pref;
     private  OnCommentOptionListener commentOptionListener;
     private View parent;
-    private ProgressBar pv_load;
+    private CircularProgressView pv_load;
     private Button btn_reload;
     private List<com.orchidatech.askandanswer.Database.Model.Comments> comments;
     private Activity activity;
@@ -377,8 +378,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             this.viewType = viewType;
             if (viewType == TYPE_FOOTER) {
 
-                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
-                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                pv_load = (CircularProgressView) itemView.findViewById(R.id.pv_load);
+//                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
                 btn_reload.setVisibility(View.GONE);
 

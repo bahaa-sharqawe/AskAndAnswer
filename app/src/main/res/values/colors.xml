@@ -11,4 +11,6 @@
     <color name="btn_social_off">#959595</color>
     <color name="ed_text_color">#959595</color>
     <color name="ed_underline">#f4f4f4</color>
+    <color name="spot">#2dbda6</color>
+    <color name="spots_dialog_color">@color/spot</color>
 </resources>

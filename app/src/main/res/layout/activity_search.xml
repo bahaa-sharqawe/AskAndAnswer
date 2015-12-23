@@ -27,11 +27,15 @@
         android:layout_below="@+id/toolbar"
         android:listSelector="@android:color/transparent"
         />
-    <ProgressBar
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pb_loading_main"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        app:cpv_animAutostart="true"
         android:layout_centerInParent="true"
-        android:id="@+id/pb_loading_main"
-        android:visibility="gone"/>
-
+        app:cpv_indeterminate="true"
+        app:cpv_color = "#2dbda6"
+        android:visibility="gone"
+        />
 </RelativeLayout>

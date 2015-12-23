@@ -39,7 +39,7 @@ public class ForgetPassword extends AppCompatActivity {
     EditText ed_repassword;
     Button btn_update_password;
     Validator mValidator;
-    ImageView iv_logo;
+    ImageView iv_logo,img_background;
     ImageView iv_back;
     private Animation animFade;
     private CoordinatorLayout ll_parent;
@@ -51,6 +51,7 @@ public class ForgetPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
+        img_background = (ImageView) this.findViewById(R.id.img_background);
         resizeLogo();
         fontManager = FontManager.getInstance(getAssets());
         ed_email = (EditText) this.findViewById(R.id.ed_email);
@@ -190,6 +191,9 @@ public class ForgetPassword extends AppCompatActivity {
         display.getSize(screenSize); // store size in screenSize
         iv_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
         iv_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+        img_background.getLayoutParams().height = (int) (screenSize.y * 0.33);
+
     }
+
 
 }

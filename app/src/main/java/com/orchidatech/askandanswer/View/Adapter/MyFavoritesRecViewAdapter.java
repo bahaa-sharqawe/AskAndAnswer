@@ -29,9 +29,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.MainScreen;
@@ -73,9 +76,10 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private final OnLastListReachListener lastListReachListener;
     private final Animation mAnimation;
     private final FontManager fontManager;
+    private final ColorGenerator generator;
     private SharedPreferences pref;
     private View parent;
-    private ProgressBar pv_load;
+    private CircularProgressView pv_load;
     private Button btn_reload;
     private ArrayList<Post_Favorite> posts;
     private Activity activity;
@@ -99,6 +103,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
 //set the max number of images (image width > 50) to be cached in memory, default is 20
         BitmapAjaxCallback.setCacheLimit(50);
+        generator = ColorGenerator.MATERIAL;
 
     }
 
@@ -254,6 +259,10 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             }
 
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
+            String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
+
+            final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                    .buildRound(letter, generator.getRandomColor());
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -266,14 +275,16 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                     @Override
                     public void onError() {
                         holder.iv_profile.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setImageDrawable(drawable);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
+//                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                     }
                 });
             }else{
                 holder.iv_profile.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setImageDrawable(drawable);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
+//                holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
             }
 
         }
@@ -305,9 +316,9 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         TextView tv_favorite;
         TextView tv_share;
         TextView tv_comment;
-        TextView tv_person_photo;
+        ImageView tv_person_photo;
         ImageView iv_postImage;
-        LinearLayout rl_postEvents;
+        RelativeLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
         LinearLayout ll_comment;
@@ -322,8 +333,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             super(itemView);
             this.viewType = viewType;
             if (viewType == TYPE_FOOTER) {
-                pv_load = (ProgressBar) itemView.findViewById(R.id.pv_load);
-                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                pv_load = (CircularProgressView) itemView.findViewById(R.id.pv_load);
+//                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
             } else {
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
@@ -332,14 +343,14 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
                 iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
-                rl_postEvents = (LinearLayout) itemView.findViewById(R.id.rl_postEvents);
+                rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
                 ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);
                 ll_share = (LinearLayout) itemView.findViewById(R.id.ll_share);
                 ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
@@ -351,7 +362,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+//                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
 

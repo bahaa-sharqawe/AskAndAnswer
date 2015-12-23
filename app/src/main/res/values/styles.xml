@@ -45,8 +45,10 @@
     </style>
     <style name="SpotsDialogCustom" parent="android:Theme.DeviceDefault.Dialog">
         <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
-        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotColor">@color/spots_dialog_color</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="android:textColor">@color/ed_text_color</item>
+        <item name="android:windowBackground">@color/white</item>
+
     </style>
 </resources>

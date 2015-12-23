@@ -28,6 +28,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.UpdateProfile;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -78,7 +79,7 @@ public class Profile extends Fragment {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
     private ArrayList<Posts> userPosts;
     private SharedPreferences pref;
     private FontManager fontManager;
@@ -172,19 +173,19 @@ public class Profile extends Fragment {
 
             @Override
             public void onHide() {
-                hideHeader();
+//                hideHeader();
             }
 
             @Override
             public void onShow() {
-            showHeader();
+//            showHeader();
             }
         });
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) view.findViewById(R.id.pb_loading_main);
+//        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

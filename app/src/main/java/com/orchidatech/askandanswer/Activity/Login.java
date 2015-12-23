@@ -68,8 +68,8 @@ public class Login extends AppCompatActivity {
     Button btn_login;
     CoordinatorLayout mCoordinatorLayout;
 
-    RelativeLayout btn_fb;
-    RelativeLayout btn_gplus;
+    LinearLayout btn_fb;
+    LinearLayout btn_gplus;
     private SimpleFacebook mSimpleFacebook;
     private String TAG = Login.class.getSimpleName();
     LinearLayout ll_form;
@@ -266,9 +266,29 @@ public class Login extends AppCompatActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
-        btn_gplus = (RelativeLayout) this.findViewById(R.id.btn_gplus);
+        btn_fb = (LinearLayout) this.findViewById(R.id.btn_fb);
+        btn_gplus = (LinearLayout) this.findViewById(R.id.btn_gplus);
 
+        btn_gplus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
+                if (!googleAuth.mGoogleApiClient.isConnected())
+                    googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
+                        @Override
+                        public void onSuccess(SocialUser user) {
+//                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+//                            startActivity(new Intent(Login.this, TermsActivity.class));
+                            socialUser = user;
+                            socialLogin();
+                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                else
+                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
+            }
+        });
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -327,26 +347,7 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-        btn_gplus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
-                if (!googleAuth.mGoogleApiClient.isConnected())
-                  googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
-                        @Override
-                        public void onSuccess(SocialUser user) {
-//                            UsersDAO.addUser(new Users(1, null, null, user.getName(), user.getEmail(), "123", user.getAvatarURL(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
-//                            startActivity(new Intent(Login.this, TermsActivity.class));
-                            socialUser = user;
-                            socialLogin();
-                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                else
-                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
 
-            }
-        });
 
         tv_fb = (TextView) findViewById(R.id.tv_fb);
         tv_google = (TextView) findViewById(R.id.tv_google);

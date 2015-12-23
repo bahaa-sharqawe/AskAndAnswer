@@ -326,7 +326,7 @@ public class AddEditPost extends AppCompatActivity {
 //        loadingDialog.setCancelable(false);
 
 //        loadingDialog.show(getFragmentManager(), "Saving...");
-        dialog = new SpotsDialog(AddEditPost.this, getString(R.string.saving), R.style.SpotsDialogCustom);
+        dialog = new SpotsDialog(AddEditPost.this, "Posting...", R.style.SpotsDialogCustom);
         dialog.setCancelable(false);
         dialog.show();
         WebServiceFunctions.addPost(this, user_id, category_id, postDesc, picturePath, date, is_hidden, new OnAddPostListener() {

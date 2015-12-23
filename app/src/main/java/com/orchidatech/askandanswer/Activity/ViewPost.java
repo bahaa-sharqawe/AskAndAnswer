@@ -125,7 +125,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+//        getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override

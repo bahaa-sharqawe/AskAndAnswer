@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
@@ -27,7 +28,7 @@ public class LoadingDialog extends DialogFragment {
     public static final String DIALOG_TEXT_KEY = "DIALOG_TXT";
     AlertDialog dialog;
     String dialogTxt;
-    ProgressBar pb_loading;
+    CircularProgressView pb_loading;
     TextView tv_loading;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,8 @@ public class LoadingDialog extends DialogFragment {
     private View getCustomView() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.loading_dialog, null, false);
-        pb_loading = (ProgressBar) view.findViewById(R.id.pb_loading);
-        pb_loading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading = (CircularProgressView) view.findViewById(R.id.pb_loading);
+//        pb_loading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
         tv_loading = (TextView) view.findViewById(R.id.tv_loading);
         tv_loading.setText(dialogTxt);
         return view;

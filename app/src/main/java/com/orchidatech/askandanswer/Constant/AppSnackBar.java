@@ -21,13 +21,20 @@ public class AppSnackBar {
     public static void show(View view, String message, int background, int textColor) {
         if(view == null || view.getParent() == null)
             return;
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
 //        snackbar.setActionTextColor(Color.parseColor("#3e3e3e"));
-        View snackBarView = snackbar.getView();
+        final View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(background);
         TextView tv = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextColor(textColor);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        snackBarView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+
         snackbar.show();
     }
 
@@ -63,7 +70,15 @@ public class AppSnackBar {
                 .setConfiguration(croutonConfiguration)
                 .setTextColorValue(textColor).build();
 // Display notice with custom style and configuration
-        Crouton.showText(activity, message, style);
+        final Crouton crouton = Crouton.makeText(activity, message, style);
+        crouton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                crouton.cancel();
+            }
+        });
+        crouton.show();
+//        Crouton.showText(activity, message, style);
 //        TSnackbar snackbar = TSnackbar.make(view, message, TSnackbar.LENGTH_LONG);
 //        snackbar.setActionTextColor(textColor);
 //        View snackbarView = snackbar.getView();

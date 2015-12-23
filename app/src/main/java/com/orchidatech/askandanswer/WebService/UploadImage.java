@@ -95,7 +95,7 @@ public class UploadImage {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if(TextUtils.isEmpty(s))
-                listener.onFail("Please Check your internet connection, from upload image");
+                listener.onFail("Please Check your internet connection");
             else
             listener.onSuccess(s);
         }

@@ -14,7 +14,7 @@
     >
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_centerInParent="true"
         android:src="@drawable/logo"
         android:contentDescription="@string/contenDesc_logo"
@@ -44,8 +44,8 @@
             android:drawableLeft="@drawable/ic_name"
             android:textCursorDrawable="@drawable/ed_cursor_backgnd"
             android:drawablePadding="10dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:paddingLeft="0dp"
             android:hint="@string/ed_name_hint"
             android:imeOptions="actionNext"
@@ -53,12 +53,13 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:textSize="16sp"
             android:singleLine="true"
             android:textColor="@color/ed_text_color"
             android:inputType="textPassword"
+            android:textDirection="ltr"
             android:drawableLeft="@drawable/ic_password"
             android:layout_below="@+id/ed_email"
             android:textCursorDrawable="@drawable/ed_cursor_backgnd"
@@ -76,46 +77,52 @@
             android:textColor="#fff"
             android:textSize="20dip"
             android:padding="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             style="?android:attr/borderlessButtonStyle"
             android:id="@+id/btn_login" />
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal"
             >
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:id="@+id/tv_signup_now"
                 android:textColor="#969595"
                 android:layout_alignParentLeft="true"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:text="@string/tv_signup_now"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="|"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:layout_centerInParent="true"/>
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/tv_login_using"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textColor="#969595"
+                android:gravity="right"
                 android:id="@+id/tv_login_using"
                 android:layout_alignParentRight="true"/>
 
-        </RelativeLayout>
-        <RelativeLayout
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp">
+            android:orientation="horizontal"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp">
             <RelativeLayout
-                android:layout_width="130dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingRight="10dp"
@@ -142,9 +149,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
             <RelativeLayout
-                android:layout_width="130dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingRight="10dp"
@@ -174,7 +185,7 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

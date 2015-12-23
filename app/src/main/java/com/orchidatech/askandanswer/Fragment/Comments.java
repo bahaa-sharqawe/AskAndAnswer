@@ -39,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Application.MyApplication;
@@ -78,7 +79,7 @@ public class Comments extends DialogFragment {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
     private ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments;
     private LinearLayout rl_parent;
     private List<com.orchidatech.askandanswer.Database.Model.Comments> comments;
@@ -97,7 +98,7 @@ public class Comments extends DialogFragment {
     private SharedPreferences pref;
     private Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
     private RelativeLayout rl_send_comment;
-    private ProgressBar pb_add_comment;
+    private CircularProgressView pb_add_comment;
 
     public Comments(TimelineRecViewAdapter.OnDialogDismiss listener) {
         this.listener = listener;
@@ -175,8 +176,7 @@ public class Comments extends DialogFragment {
         rl_error = (RelativeLayout) view.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) view.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) view.findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) view.findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) view.findViewById(R.id.pb_loading_main);
 
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +211,7 @@ public class Comments extends DialogFragment {
         });
         ed_add_comment = (EditText) view.findViewById(R.id.ed_add_comment);
         iv_add_comment = (ImageView) view.findViewById(R.id.iv_add_comment);
-        pb_add_comment = (ProgressBar) view.findViewById(R.id.pb_add_comment);
+        pb_add_comment = (CircularProgressView) view.findViewById(R.id.pb_add_comment);
         rl_send_comment = (RelativeLayout) view.findViewById(R.id.rl_send_comment);
         iv_add_comment.setVisibility(View.VISIBLE);
         pb_add_comment.setVisibility(View.INVISIBLE);
@@ -246,7 +246,8 @@ public class Comments extends DialogFragment {
                         public void onFail(String error) {
                             iv_add_comment.setVisibility(View.VISIBLE);
                             pb_add_comment.setVisibility(View.INVISIBLE);
-                            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
+                            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+//                            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
                         }

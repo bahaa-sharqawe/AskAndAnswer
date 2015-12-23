@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+ >
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pv_load"
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        app:cpv_animAutostart="true"
+        android:layout_centerInParent="true"
+        app:cpv_indeterminate="true"
+        app:cpv_color = "#2dbda6"
+        android:visibility="gone"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_reload"
+        android:text="@string/retry"
+        android:textSize="17sp"
+        android:visibility="gone"/>
+</RelativeLayout>

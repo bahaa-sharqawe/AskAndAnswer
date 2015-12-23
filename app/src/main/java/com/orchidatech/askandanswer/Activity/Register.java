@@ -62,6 +62,7 @@ public class Register extends Activity {
     private String repassword;
     private FontManager fontManager;
     private AlertDialog dialog;
+    private ImageView img_background;
 
 
     @Override
@@ -78,6 +79,7 @@ public class Register extends Activity {
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         prefEditor = pref.edit();
         iv_logo = (ImageView) this.findViewById(R.id.iv_logo);
+        img_background = (ImageView) this.findViewById(R.id.img_background);
         ed_fname = (EditText) this.findViewById(R.id.ed_fname);
         ed_fname.getBackground().setColorFilter(getResources().getColor(R.color.ed_underline), PorterDuff.Mode.SRC_ATOP);
         ed_lname = (EditText) this.findViewById(R.id.ed_lname);
@@ -257,7 +259,9 @@ public class Register extends Activity {
         Point screenSize = new Point(); // used to store screen size
         display.getSize(screenSize); // store size in screenSize
         iv_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
+        img_background.getLayoutParams().height = (int) (screenSize.y * 0.33);
         iv_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+
     }
     private void hideSoftKeyboard() {
         View view = Register.this.getCurrentFocus();

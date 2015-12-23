@@ -49,7 +49,7 @@ public class SelectCategory extends AppCompatActivity {
     RelativeLayout rl_parent;
     ListView lv_categories;
 //    CircularProgressView pv_load;
-    ProgressBar pv_load;
+CircularProgressView pv_load;
     CategoriesAdapter adapter;
     ArrayList<Category> categories;
     ArrayList<Category> original_categories;
@@ -128,8 +128,7 @@ public class SelectCategory extends AppCompatActivity {
     private void initializeFields() {
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         rl_parent = (RelativeLayout) this.findViewById(R.id.rl_parent);
-        pv_load = (ProgressBar) this.findViewById(R.id.pv_load);
-        pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pv_load = (CircularProgressView) this.findViewById(R.id.pv_load);
         rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override

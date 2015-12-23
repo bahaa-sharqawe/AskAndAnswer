@@ -26,9 +26,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
+import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
@@ -52,7 +54,7 @@ public class NotificationPostView extends AppCompatActivity {
         TextView tv_postDate;
         TextView tv_post;
         ImageView iv_post;
-        ProgressBar pb_loading;
+    CircularProgressView pb_loading;
          SharedPreferences pref;
          long object_id;
         int object_type;
@@ -98,7 +100,7 @@ public class NotificationPostView extends AppCompatActivity {
         tv_postDate = (TextView) this.findViewById(R.id.tv_postDate);
         tv_post = (TextView) this.findViewById(R.id.tv_post);
         iv_post = (ImageView) this.findViewById(R.id.iv_post);
-        pb_loading = (ProgressBar) this.findViewById(R.id.pb_loading);
+        pb_loading = (CircularProgressView) this.findViewById(R.id.pb_loading);
         rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +214,7 @@ public class NotificationPostView extends AppCompatActivity {
         tv_post.setText(post.getText());
         if (!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
             AQuery aq = new AQuery(NotificationPostView.this);
-            aq.id(iv_post)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(post.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
+            aq.id(iv_post)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(post.getImage(), true, true, 0, 0, null, AQuery.FADE_IN);
         }else{
             iv_post.setVisibility(View.GONE);
         }

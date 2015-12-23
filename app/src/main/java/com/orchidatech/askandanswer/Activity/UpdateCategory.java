@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -55,7 +56,7 @@ public class UpdateCategory extends AppCompatActivity {
     RelativeLayout rl_parent;
     ListView lv_categories;
     //    CircularProgressView pv_load;
-    ProgressBar pv_load;
+    CircularProgressView pv_load;
     CategoriesAdapter adapter;
     ArrayList<Category> categories;
     ArrayList<Category> original_categories;
@@ -195,8 +196,7 @@ Log.i("vvcvhjhjgjkhvgbv", newCategories.size()+"");
                 hideSoftKeyboard();
             }
         });
-        pv_load = (ProgressBar) this.findViewById(R.id.pv_load);
-        pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pv_load = (CircularProgressView) this.findViewById(R.id.pv_load);
         rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override

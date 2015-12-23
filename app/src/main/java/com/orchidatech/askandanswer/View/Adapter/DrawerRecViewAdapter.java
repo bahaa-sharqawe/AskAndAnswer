@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
@@ -37,6 +39,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_MENU = 1;
     private final FontManager fontManager;
+    private final ColorGenerator generator;
     private SharedPreferences pref;
 
     ArrayList<DrawerItem> items;
@@ -49,6 +52,8 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
         this.listener = listener;
         pref = context.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         fontManager = FontManager.getInstance(context.getAssets());
+        generator = ColorGenerator.MATERIAL;
+
 
     }
 
@@ -78,6 +83,10 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 holder.tv_person_email.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
 //                holder.load_image_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+                String letter = user.getFname().charAt(0) + " " + user.getLname().charAt(0);
+
+                final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) context.getResources().getDimension(R.dimen.drawer_user_letters_font_size)).endConfig()
+                        .buildRound(letter, generator.getRandomColor());
                 if (user != null && !user.getImage().equals(URL.DEFAULT_IMAGE)) {
                     Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
                         @Override
@@ -90,16 +99,19 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                         @Override
                         public void onError() {
                             holder.iv_profile.setVisibility(View.INVISIBLE);
+                            holder.tv_person_photo.setImageDrawable(drawable);
+
                             holder.tv_person_photo.setVisibility(View.VISIBLE);
-                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+//                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
 //                            holder.load_image_progress.setVisibility(View.GONE);
                         }
                     });
                 }
                 else{
                     holder.iv_profile.setVisibility(View.INVISIBLE);
+                    holder.tv_person_photo.setImageDrawable(drawable);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+//                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
                 }
             }
         } else {
@@ -125,13 +137,13 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_person_photo;
+        private ImageView tv_person_photo;
         int viewType;
         //header components
         TextView tv_person_name;
         TextView tv_person_email;
         ImageView iv_profile;
-        ProgressBar load_image_progress;
+//        ProgressBar load_image_progress;
         //menu components
         ImageView iv_drawer_item;
         TextView tv_drawer_item;
@@ -146,8 +158,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 tv_person_email = (TextView) itemView.findViewById(R.id.tv_person_email);
                 iv_profile = (ImageView) itemView.findViewById(R.id.iv_profile);
 //                load_image_progress = (ProgressBar) itemView.findViewById(R.id.load_image_progress);
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
-                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
 
             } else {
                 iv_drawer_item = (ImageView) itemView.findViewById(R.id.iv_drawer_item);

@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
@@ -47,7 +48,7 @@ public class CategoryPosts extends AppCompatActivity {
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
-    ProgressBar pb_loading_main;
+    CircularProgressView pb_loading_main;
     private ArrayList<Posts> storedPosts;
 
 
@@ -126,8 +127,7 @@ public class CategoryPosts extends AppCompatActivity {
         rl_error = (RelativeLayout) this.findViewById(R.id.rl_error);
         uncolored_logo = (ImageView) this.findViewById(R.id.uncolored_logo);
         tv_error = (TextView) this.findViewById(R.id.tv_error);
-        pb_loading_main = (ProgressBar) this.findViewById(R.id.pb_loading_main);
-        pb_loading_main.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        pb_loading_main = (CircularProgressView) this.findViewById(R.id.pb_loading_main);
         rl_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

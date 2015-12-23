@@ -154,6 +154,7 @@
                    android:id="@+id/ed_password"
                    android:drawableLeft="@drawable/ic_password_flat"
                    android:hint="@string/ed_password_hint"
+                   android:textDirection="ltr"
                    android:textCursorDrawable="@drawable/ed_cursor_backgnd"
                    android:textSize="16sp"
                    android:textColor="@color/ed_text_color"
@@ -185,6 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ed_new_password"
+                    android:textDirection="ltr"
                     android:drawableLeft="@drawable/ic_password_flat"
                     android:hint="New Password"
                     android:textCursorDrawable="@drawable/ed_cursor_backgnd"
@@ -210,6 +212,7 @@
                     android:paddingTop="20dp"
                     android:paddingBottom="20dp"
                     android:paddingLeft="0dp"
+                    android:textDirection="ltr"
                     android:inputType="textPassword"/>
             </LinearLayout>
            <RelativeLayout

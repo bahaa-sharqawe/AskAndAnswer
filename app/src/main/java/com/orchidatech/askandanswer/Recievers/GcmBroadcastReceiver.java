@@ -43,8 +43,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private Intent mNotificationIntent;
 
     private Uri soundURI = Uri
-            .parse(/*android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString()*/"android.resource://com.orchidatech.askandanswer/"
-                    + R.raw.alarm_rooster);
+            .parse(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString()/*"android.resource://com.orchidatech.askandanswer/"
+                    + R.raw.alarm_rooster*/);
     private long[] mVibratePattern = {0, 200, 200, 300};
     private Context context;
 
