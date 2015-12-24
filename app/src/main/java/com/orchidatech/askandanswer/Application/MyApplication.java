@@ -20,7 +20,8 @@ public class MyApplication extends com.activeandroid.app.Application {
     private static final Permission[] permissions = new Permission[]{
             Permission.USER_PHOTOS,
             Permission.EMAIL,
-            Permission.PUBLISH_ACTION
+            Permission.PUBLISH_ACTION,
+            Permission.USER_ABOUT_ME
     };
     ;
 
