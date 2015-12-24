@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:paddingTop="10dp"
-
+    android:layout_margin="20dp"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:background="@drawable/fr_contact_backgnd"
     android:orientation="vertical">
 
@@ -13,23 +15,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_delCommentTitle"
-        android:textSize="20sp"
+        android:textSize="19sp"
         android:gravity="left"
         android:paddingLeft="10dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="25dp"/>
 
     <TextView
         android:id="@+id/tv_delCommtAttention"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
         android:text="@string/tv_delCommentAttention"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"/>
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="#b3b3b3"-->
-        <!--/>-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="#b3b3b3"-->
+    <!--/>-->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -38,11 +42,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delete"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/tv_cancel"
-            android:textSize="17sp"
-            android:padding="15dp"
+            android:textSize="18sp"
             android:id="@+id/tv_confirm"
             android:textColor="#51a697"
+            android:padding="15dp"
             style="?android:attr/borderlessButtonStyle"/>
 
         <Button
@@ -50,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel"
             android:layout_alignParentRight="true"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:padding="15dp"
             android:id="@+id/tv_cancel"
             android:textColor="#51a697"

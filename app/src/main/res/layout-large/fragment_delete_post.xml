@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_margin="25dp"
     android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:background="@drawable/fr_contact_backgnd"
     android:orientation="vertical">
 
@@ -12,9 +15,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_delPostTitle"
-        android:textSize="21sp"
+        android:textSize="28sp"
         android:paddingLeft="20dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="40dp"/>
 
     <TextView
         android:id="@+id/tv_delPostAttention"
@@ -22,8 +25,8 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_delPostAttention"
         android:layout_marginBottom="40dp"
-        android:textSize="19sp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="10dp"
+        android:textSize="25sp"
         android:paddingRight="20dp"/>
     <View
         android:layout_width="match_parent"
@@ -38,8 +41,11 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_confirm"
             android:layout_toLeftOf="@+id/tv_cancel"
-            android:textSize="18sp"
-            android:padding="17dp"
+            android:textSize="22sp"
+            android:paddingTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp"
             android:id="@+id/tv_confirm"
             android:textColor="#51a697"
             style="?android:attr/borderlessButtonStyle"/>
@@ -49,8 +55,11 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel"
             android:layout_alignParentRight="true"
-            android:textSize="18sp"
-            android:padding="17dp"
+            android:textSize="22sp"
+            android:paddingTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp"
             android:id="@+id/tv_cancel"
             android:textColor="#51a697"
             style="?android:attr/borderlessButtonStyle"/>
