@@ -12,11 +12,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="30dp"
                 android:id="@+id/rl_header">
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="190dp"
+                    android:layout_height="200dp"
                     android:id="@+id/iv_profile_header"
                     android:scaleType="centerCrop"
                     android:src="@drawable/profile_header"/>
@@ -30,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/rl_person_info"
                 android:layout_marginLeft="30dp"
-                android:layout_marginTop="140dp"
+                android:layout_marginTop="150dp"
                 android:layout_marginRight="20dp">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="90dp"

@@ -37,7 +37,7 @@
                     android:text="Questions"
                     android:layout_centerVertical="true"
                     android:textStyle="bold"
-                    android:textSize="22sp"
+                    android:textSize="23sp"
                     android:visibility="visible"
                     android:textColor="#fff"/>
                 <RelativeLayout
@@ -98,7 +98,7 @@
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_navigation"
-        android:layout_width="450dp"
+        android:layout_width="570dp"
         android:layout_gravity="start"
         android:layout_height="match_parent"
         android:background="#fff"

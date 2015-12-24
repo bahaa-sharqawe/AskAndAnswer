@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_person_name"
                 android:text="June Smith"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                 android:layout_below="@+id/tv_person_name"
                 android:layout_alignLeft="@+id/tv_person_name"
                 android:text="Oct 16, 2015"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:layout_marginBottom="35dp"/>
         </RelativeLayout>
         <TextView
@@ -78,7 +78,7 @@
             android:layout_below="@+id/rl_pst_owner"
             android:layout_alignLeft="@+id/rl_pst_owner"
             android:text="@string/view_post_example"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textColor="#b5b5b5"
             android:layout_marginBottom="25dp"
             />
@@ -212,7 +212,7 @@
             android:id="@+id/tv_error"
             android:layout_below="@+id/uncolored_logo"
             android:layout_centerHorizontal="true"
-            android:textSize="19sp"/>
+            android:textSize="22sp"/>
 
     </RelativeLayout>
     <com.github.rahatarmanahmed.cpv.CircularProgressView

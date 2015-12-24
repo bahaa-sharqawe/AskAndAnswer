@@ -9,9 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.orchidatech.askandanswer.Activity.NotificationPostView;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
@@ -29,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Bahaa on 8/12/2015.
  */
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
+    private final ColorGenerator generator;
     private FontManager fontManager;
     Activity activity;
     List<Notifications> notifications;
@@ -37,6 +41,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         this.activity = activity;
         this.notifications = notifications;
         fontManager = FontManager.getInstance(activity.getAssets());
+        generator = ColorGenerator.MATERIAL;
+
     }
 
     @Override
@@ -63,6 +69,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         String date = GNLConstants.DateConversion.getDate(notification.date);
         holder.notif_date.setText(date);
         holder.tv_notification_text.setText(notification.notificationText);
+        String letter = notification.f_name.charAt(0) + " " + notification.l_name.charAt(0);
+
+        final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                .buildRound(letter, holder.text_draw_color);
+
         if (!notification.getUser_photo().equals(URL.DEFAULT_IMAGE))
             Picasso.with(activity).load(Uri.parse(notification.getUser_photo())).into(holder.iv_profile, new Callback() {
                 @Override
@@ -74,14 +85,16 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 @Override
                 public void onError() {
                     holder.iv_profile.setVisibility(View.INVISIBLE);
+                    holder.tv_person_photo.setImageDrawable(drawable);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
+//                    holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
                 }
             });
         else {
             holder.iv_profile.setVisibility(View.INVISIBLE);
+            holder.tv_person_photo.setImageDrawable(drawable);
             holder.tv_person_photo.setVisibility(View.VISIBLE);
-            holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
+//            holder.tv_person_photo.setText(notification.f_name.charAt(0) + " " + notification.l_name.charAt(0));
         }
         if (notification.isDone == 0)//not read
             holder.card_notification.setBackgroundColor(Color.parseColor("#eef4ff"));
@@ -109,11 +122,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     public class NotificationViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_person_photo;
+        private ImageView tv_person_photo;
         CircleImageView iv_profile;
         TextView tv_notification_text;
         TextView notif_date;
         RelativeLayout card_notification;
+        public int text_draw_color;
 
         public NotificationViewHolder(View itemView) {
             super(itemView);
@@ -121,8 +135,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             tv_notification_text = (TextView) itemView.findViewById(R.id.tv_notification_text);
             notif_date = (TextView) itemView.findViewById(R.id.notif_date);
             card_notification = (RelativeLayout) itemView.findViewById(R.id.card_notification);
-            tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
-            tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+            tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
+            text_draw_color = generator.getRandomColor();
+//            tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
         }
     }

@@ -41,7 +41,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="19sp"/>
+                android:textSize="22sp"/>
 
         </RelativeLayout>
 

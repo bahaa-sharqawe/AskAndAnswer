@@ -23,14 +23,20 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="25dp"
     />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/intro_content"
-        android:id="@+id/tv_intro_content"
-        android:textSize="16sp"
-        android:textColor="#5c5c5c"
-        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/intro_content"
+            android:id="@+id/tv_intro_content"
+            android:textSize="16sp"
+            android:textColor="#5c5c5c"
+            />
+
+    </ScrollView>
 
 
 </LinearLayout>

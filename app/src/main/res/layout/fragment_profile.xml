@@ -16,9 +16,9 @@
                 android:id="@+id/rl_header">
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
+                    android:layout_height="130dp"
                     android:id="@+id/iv_profile_header"
-                    android:scaleType="fitStart"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/profile_header"/>
                 <View
                     android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/rl_person_info"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="86dp"
                 android:layout_marginRight="10dp">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="80dp"
@@ -110,7 +110,6 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
     android:background="#f8f8f8"
     android:layout_below="@+id/rl_header"
     >
@@ -122,16 +121,17 @@
         android:listSelector="@android:color/transparent"
         />
 
-    <com.github.rahatarmanahmed.cpv.CircularProgressView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pb_loading_main"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:cpv_animAutostart="true"
-        android:layout_centerInParent="true"
-        app:cpv_indeterminate="true"
-        app:cpv_color = "#2dbda6"/>
-`
+`    <com.github.rahatarmanahmed.cpv.CircularProgressView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pb_loading_main"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    app:cpv_animAutostart="true"
+    android:layout_centerInParent="true"
+    app:cpv_indeterminate="true"
+    app:cpv_color = "#2dbda6"
+    />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
             android:id="@+id/tv_error"
             android:layout_below="@+id/uncolored_logo"
             android:layout_centerHorizontal="true"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
     </RelativeLayout>
 

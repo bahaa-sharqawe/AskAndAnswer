@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/introduction"
         android:id="@+id/tv_intro"
-        android:textSize="19sp"
+        android:textSize="20sp"
         android:textColor="#249785"
         />
     <View
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/intro_content"
         android:id="@+id/tv_intro_content"
-        android:textSize="18sp"
+        android:textSize="19sp"
         android:textColor="#5c5c5c"
         />
 

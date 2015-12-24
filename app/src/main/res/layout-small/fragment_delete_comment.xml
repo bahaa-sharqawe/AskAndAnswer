@@ -42,6 +42,7 @@
             android:textSize="16sp"
             android:id="@+id/tv_confirm"
             android:textColor="#51a697"
+            android:padding="14dp"
             style="?android:attr/borderlessButtonStyle"/>
 
         <Button
@@ -50,7 +51,7 @@
             android:text="@string/btn_cancel"
             android:layout_alignParentRight="true"
             android:textSize="16sp"
-
+            android:padding="14dp"
             android:id="@+id/tv_cancel"
             android:textColor="#51a697"
             style="?android:attr/borderlessButtonStyle"/>

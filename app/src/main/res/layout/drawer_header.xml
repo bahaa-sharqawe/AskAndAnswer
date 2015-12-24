@@ -15,7 +15,11 @@
         android:paddingBottom="2dp"
         android:id="@+id/rl_user_photo"
         android:layout_marginBottom="20dp">
-
+        <!--<ImageView-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:id="@+id/tv_person_photo"-->
+            <!--android:gravity="center"/>-->
         <TextView
             android:layout_width="80dp"
             android:layout_height="80dp"

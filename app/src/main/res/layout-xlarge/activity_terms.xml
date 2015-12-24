@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:text="@string/accept"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="35dp"
             android:textColor="#959595"
             android:textStyle="bold"
             android:textSize="17sp"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/terms"
                 android:id="@+id/tv_terms_title"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textColor="#2dbda6"/>
             <View android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:text="@string/terms_example"
                 android:textColor="#6a6a6a"
-                android:textSize="17sp"/>
+                android:textSize="18sp"/>
         </ScrollView>
     </RelativeLayout>
 </LinearLayout>

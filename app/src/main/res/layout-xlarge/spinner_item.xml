@@ -8,5 +8,5 @@
     android:ellipsize="marquee"
     android:textAlignment="inherit"
     android:textColor="#8d8d8d"
-    android:textSize="19sp"
+    android:textSize="21sp"
     android:padding="30dp"    />

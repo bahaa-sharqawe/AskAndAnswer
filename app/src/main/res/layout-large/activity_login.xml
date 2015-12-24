@@ -124,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-          android:padding="15dp"
+                  android:padding="15dp"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/btn_fb"
                 android:clickable="true"

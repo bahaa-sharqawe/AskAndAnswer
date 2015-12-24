@@ -22,15 +22,20 @@
             android:layout_marginRight="5dp"
             app:civ_border_width="1dp"
             app:civ_border_color="#ece8e7"/>
-        <TextView
+        <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/offline_photo_backgnd"
             android:id="@+id/tv_person_photo"
-            android:gravity="center"
-            android:textSize="17sp"
-            android:layout_marginRight="5dp"
-            />
+            android:layout_marginRight="5dp" />
+        <!--<TextView-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:background="@drawable/offline_photo_backgnd"-->
+            <!--android:id="@+id/tv_person_photo"-->
+            <!--android:gravity="center"-->
+            <!--android:textSize="17sp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--/>-->
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

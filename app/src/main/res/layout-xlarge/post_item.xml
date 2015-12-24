@@ -37,7 +37,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_person_name"
                         android:text="June Smith"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:layout_marginBottom="16dp"
                         />
                     <TextView
@@ -47,7 +47,7 @@
                         android:layout_below="@+id/tv_person_name"
                         android:layout_alignLeft="@+id/tv_person_name"
                         android:text="Oct 16, 2015"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:layout_marginBottom="30dp"/>
                 </RelativeLayout>
                 <TextView
@@ -74,7 +74,7 @@
             android:layout_below="@+id/ll_post_header"
             android:layout_alignLeft="@+id/ll_post_header"
             android:text="@string/post_example"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:layout_marginRight="17dp"
                 android:layout_marginBottom="17dp"/>
 
@@ -142,7 +142,7 @@
                         android:id="@+id/tv_comment"
                         android:layout_gravity="right|center_vertical"
                         android:text="@string/tv_comment"
-                        android:textSize="15sp"
+                        android:textSize="17sp"
                         android:textColor="#959595"/>
 
                 </LinearLayout>
@@ -168,7 +168,7 @@
                         android:id="@+id/tv_share"
                         android:layout_gravity="center_vertical|right"
                         android:text="@string/tv_share"
-                        android:textSize="15sp"
+                        android:textSize="17sp"
                         android:textColor="#959595"/>
 
                 </LinearLayout>
@@ -194,7 +194,7 @@
                         android:id="@+id/tv_favorite"
                         android:layout_gravity="center_vertical|right"
                         android:text="@string/tv_favorite"
-                        android:textSize="15sp"
+                        android:textSize="17sp"
                         android:textColor="#959595"/>
                 </LinearLayout>
             </RelativeLayout>

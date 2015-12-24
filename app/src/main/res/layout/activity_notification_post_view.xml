@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rl_post_info"
-        android:padding="20dp"
+        android:padding="10dp"
         android:layout_below="@+id/toolbar">
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -31,8 +31,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:id="@+id/iv_profile"
                 app:civ_border_width="1dp"
                 app:civ_border_color="#ece8e7"/>
@@ -45,7 +44,6 @@
                 android:gravity="center"
                 android:textSize="18sp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="5dp"
                 />
 
 
@@ -132,7 +130,7 @@
                     android:id="@+id/tv_comment"
                     android:layout_gravity="right|center_vertical"
                     android:text="@string/tv_comment"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
                     android:textColor="#959595"/>
 
             </LinearLayout>
@@ -158,7 +156,7 @@
                     android:id="@+id/tv_share"
                     android:layout_gravity="center_vertical|right"
                     android:text="@string/tv_share"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
                     android:textColor="#959595"/>
 
             </LinearLayout>
@@ -185,7 +183,7 @@
                     android:id="@+id/tv_favorite"
                     android:layout_gravity="center_vertical|right"
                     android:text="@string/tv_favorite"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
                     android:textColor="#959595"/>
             </LinearLayout>
         </LinearLayout>
@@ -228,5 +226,4 @@
         app:cpv_indeterminate="true"
         app:cpv_color = "#2dbda6"
         />
-
 </RelativeLayout>

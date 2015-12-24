@@ -25,12 +25,20 @@
             <!--android:textSize="18sp"-->
             <!--android:text="B A"-->
             <!--/>-->
-        <ImageView
+        <!--<ImageView-->
+            <!--android:layout_width="90dp"-->
+            <!--android:layout_height="90dp"-->
+            <!--android:id="@+id/tv_person_photo"-->
+            <!--android:gravity="center"/>-->
+
+        <TextView
             android:layout_width="90dp"
             android:layout_height="90dp"
+            android:background="@drawable/offline_photo_backgnd"
             android:id="@+id/tv_person_photo"
-            android:gravity="center"/>
-
+            android:gravity="center"
+            android:textSize="19sp"
+            />
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="90dp"
             android:layout_height="90dp"

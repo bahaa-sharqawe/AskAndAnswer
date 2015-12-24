@@ -76,8 +76,8 @@
        <RelativeLayout
            android:layout_width="match_parent"
            android:layout_height="match_parent"
-           android:layout_marginLeft="60dp"
-           android:layout_marginRight="60dp"
+           android:layout_marginLeft="100dp"
+           android:layout_marginRight="100dp"
            android:layout_marginTop="40dp">
            <EditText
                android:layout_width="match_parent"

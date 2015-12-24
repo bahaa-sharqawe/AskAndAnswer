@@ -9,7 +9,7 @@
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/contactus_small"
             android:textSize="20sp"
+            android:layout_alignParentLeft="true"
             android:textColor="#f0ae24"
             android:id="@+id/tv_contact"
             android:layout_centerVertical="true"/>

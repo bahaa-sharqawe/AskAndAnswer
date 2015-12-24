@@ -237,7 +237,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, generator.getRandomColor());
+                    .buildRound(letter, holder.text_draw_color);
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -371,6 +371,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         int viewType;
         public ImageView iv_comment;
         public ImageView iv_share;
+        public int text_draw_color;
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -414,6 +415,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+                text_draw_color =  generator.getRandomColor();
 //                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
 

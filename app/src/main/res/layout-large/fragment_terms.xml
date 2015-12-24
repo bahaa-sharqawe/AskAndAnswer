@@ -65,7 +65,7 @@
                             android:id="@+id/tv_terms_body"
                             android:text="@string/terms_example"
                             android:textColor="#5c5c5c"
-                            android:textSize="15sp"/>
+                            android:textSize="17sp"/>
              </ScrollView>
 </RelativeLayout>
 </LinearLayout>

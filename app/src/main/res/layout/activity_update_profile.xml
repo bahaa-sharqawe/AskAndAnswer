@@ -42,6 +42,7 @@
    <ScrollView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       android:layout_marginBottom="10dp"
        >
        <LinearLayout
            android:layout_width="match_parent"
@@ -52,7 +53,7 @@
 
        <RelativeLayout
            android:layout_width="match_parent"
-           android:layout_height="200dp"
+           android:layout_height="180dp"
            android:background="#f6f6f6"
            >
            <RelativeLayout
@@ -154,9 +155,9 @@
                    android:id="@+id/ed_password"
                    android:drawableLeft="@drawable/ic_password_flat"
                    android:hint="@string/ed_password_hint"
-                   android:textDirection="ltr"
                    android:textCursorDrawable="@drawable/ed_cursor_backgnd"
                    android:textSize="16sp"
+                   android:textDirection="ltr"
                    android:textColor="@color/ed_text_color"
                    android:drawablePadding="10dp"
                    android:paddingTop="20dp"
@@ -186,9 +187,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ed_new_password"
-                    android:textDirection="ltr"
                     android:drawableLeft="@drawable/ic_password_flat"
                     android:hint="New Password"
+                    android:textDirection="ltr"
                     android:textCursorDrawable="@drawable/ed_cursor_backgnd"
                     android:textColor="@color/ed_text_color"
                     android:drawablePadding="10dp"
@@ -205,6 +206,7 @@
                     android:id="@+id/ed_confirm_new_password"
                     android:drawableLeft="@drawable/ic_password_flat"
                     android:hint="Confirm New Password"
+                    android:textDirection="ltr"
                     android:textCursorDrawable="@drawable/ed_cursor_backgnd"
                     android:textSize="16sp"
                     android:textColor="@color/ed_text_color"
@@ -212,7 +214,6 @@
                     android:paddingTop="20dp"
                     android:paddingBottom="20dp"
                     android:paddingLeft="0dp"
-                    android:textDirection="ltr"
                     android:inputType="textPassword"/>
             </LinearLayout>
            <RelativeLayout

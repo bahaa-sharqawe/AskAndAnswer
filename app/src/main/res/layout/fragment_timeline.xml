@@ -3,6 +3,7 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/notif_drawer"
     android:background="#f8f8f8"
     xmlns:fab="http://schemas.android.com/apk/res-auto">
@@ -24,7 +25,7 @@
         android:id="@+id/rv_posts"
         android:foregroundGravity="left"
         android:divider="@null"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:listSelector="@android:color/transparent"
         />
 
@@ -71,10 +72,9 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="17sp"/>
+                android:textSize="15sp"/>
 
         </RelativeLayout>
-
         <com.github.rahatarmanahmed.cpv.CircularProgressView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/pb_loading_main"
@@ -83,7 +83,8 @@
             app:cpv_animAutostart="true"
             android:layout_centerInParent="true"
             app:cpv_indeterminate="true"
-            app:cpv_color = "#2dbda6"/>
+            app:cpv_color = "#2dbda6"
+            />
 
     </RelativeLayout>
 </RelativeLayout>

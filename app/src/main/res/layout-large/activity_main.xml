@@ -98,7 +98,7 @@
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_navigation"
-        android:layout_width="320dp"
+        android:layout_width="400dp"
         android:layout_gravity="start"
         android:layout_height="match_parent"
         android:background="#fff"

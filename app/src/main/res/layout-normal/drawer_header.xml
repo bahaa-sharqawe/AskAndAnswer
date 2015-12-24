@@ -15,20 +15,20 @@
         android:paddingBottom="2dp"
         android:id="@+id/rl_user_photo"
         android:layout_marginBottom="20dp">
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/tv_person_photo"
-            android:gravity="center"/>
-        <!--<TextView-->
+        <!--<ImageView-->
             <!--android:layout_width="80dp"-->
             <!--android:layout_height="80dp"-->
-            <!--android:background="@drawable/offline_photo_backgnd"-->
             <!--android:id="@+id/tv_person_photo"-->
-            <!--android:gravity="center"-->
-            <!--android:textSize="17sp"-->
-            <!--android:text="B A"-->
-            <!--/>-->
+            <!--android:gravity="center"/>-->
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/offline_photo_backgnd"
+            android:id="@+id/tv_person_photo"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:text="B A"
+            />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="80dp"

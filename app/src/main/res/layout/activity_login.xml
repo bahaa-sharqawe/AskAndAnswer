@@ -14,14 +14,14 @@
     >
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/logo"
         android:contentDescription="@string/contenDesc_logo"
         android:id="@+id/iv_logo"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/login_logo_top"
-        android:layout_marginBottom="@dimen/login_logo_top"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         android:visibility="visible"/>
 
 
@@ -75,15 +75,15 @@
             android:text="@string/enter"
             android:background="@drawable/btn_selector"
             android:textColor="#fff"
-            android:textSize="20dip"
+            android:textSize="18sp"
             android:padding="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             style="?android:attr/borderlessButtonStyle"
             android:id="@+id/btn_login" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             >
             <TextView
@@ -118,18 +118,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp">
-            <RelativeLayout
+            android:layout_marginTop="16dp">
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
+                android:padding="6dp"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/btn_fb"
                 android:clickable="true"
+                android:gravity="center"
                 android:background="@drawable/btn_social_backgnd">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -137,6 +135,7 @@
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_fb"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -144,33 +143,28 @@
                     android:text="@string/facebook"
                     android:id="@+id/tv_fb"
                     android:textColor="#fff"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
-            </RelativeLayout>
+            </LinearLayout>
             <Space
-                android:layout_width="8dp"
+                android:layout_width="10dp"
                 android:layout_height="wrap_content" />
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/btn_fb"
-                android:layout_alignBottom="@+id/btn_fb"
                 android:id="@+id/btn_gplus"
-                android:clickable="true"
+                android:padding="6dp"
+                android:gravity="center"
+
                 android:background="@drawable/btn_social_backgnd">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_google"
+                    android:layout_marginRight="5dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -178,12 +172,12 @@
                     android:id="@+id/tv_google"
                     android:text="@string/google"
                     android:textColor="#fff"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:clickable="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
         <TextView

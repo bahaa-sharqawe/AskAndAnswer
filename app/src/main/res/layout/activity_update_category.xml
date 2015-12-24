@@ -64,7 +64,7 @@
             android:id="@+id/tv_error"
             android:layout_below="@+id/uncolored_logo"
             android:layout_centerHorizontal="true"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
     </RelativeLayout>
     <!--<com.github.rahatarmanahmed.cpv.CircularProgressView-->
@@ -77,6 +77,7 @@
     <!--app:cpv_color="#249885"-->
     <!--android:layout_centerInParent="true"-->
     <!--/>-->
+
     <com.github.rahatarmanahmed.cpv.CircularProgressView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pv_load"
@@ -86,6 +87,6 @@
         android:layout_centerInParent="true"
         app:cpv_indeterminate="true"
         app:cpv_color = "#2dbda6"
-        android:visibility="gone"
         />
+
 </RelativeLayout>

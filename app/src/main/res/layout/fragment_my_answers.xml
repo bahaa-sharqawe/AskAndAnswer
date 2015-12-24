@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:listSelector="@android:color/transparent" />
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="17sp"/>
+                android:textSize="15sp"/>
 
         </RelativeLayout>
 
@@ -53,7 +53,9 @@
             app:cpv_animAutostart="true"
             android:layout_centerInParent="true"
             app:cpv_indeterminate="true"
-            app:cpv_color = "#2dbda6"/>
+            app:cpv_color = "#2dbda6"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>

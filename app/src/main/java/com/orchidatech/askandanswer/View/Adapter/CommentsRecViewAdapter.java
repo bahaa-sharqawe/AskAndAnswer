@@ -30,6 +30,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.internal.cu;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
@@ -75,6 +77,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private final long current_user_id;
     private final Animation mAnimation;
     private final Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
+    private final ColorGenerator generator;
     private  FontManager fontManager;
     private  SharedPreferences pref;
     private  OnCommentOptionListener commentOptionListener;
@@ -101,6 +104,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
+        generator = ColorGenerator.MATERIAL;
 
     }
 
@@ -139,6 +143,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.user_rating.setRating(commentOwner.getRating());
 //            holder.tv_comment_category.setText(commentCategory.getName());
+            String letter = commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0);
+
+            final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                    .buildRound(letter, holder.text_draw_color);
+
             if(commentOwner != null && !commentOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
                     @Override
@@ -150,14 +159,16 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                     @Override
                     public void onError() {
                         holder.iv_person.setVisibility(View.INVISIBLE);
+                        holder.tv_person_photo.setImageDrawable(drawable);
                         holder.tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
+//                        holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
                     }
                 });
             }else{
                 holder.iv_person.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setImageDrawable(drawable);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
+//                holder.tv_person_photo.setText(commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0));
             }
 //            holder.pb_photo_load.setVisibility(View.VISIBLE);
             holder.iv_comment.setVisibility(View.GONE);
@@ -354,7 +365,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_comment_options;
         CircleImageView iv_person;
-        TextView tv_person_photo;
+        ImageView tv_person_photo;
         TextView tv_person_name;
         RatingBar rating_comment;
         TextView tv_commentDate;
@@ -372,6 +383,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         RatingBar user_rating;
 //        ProgressBar pb_photo_load;
         int viewType;
+        public int text_draw_color;
 
         public CommentsViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -403,7 +415,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 tv_commentDate = (TextView) itemView.findViewById(R.id.tv_commentDate);
                 tv_commentDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
 //                tv_comment_category = (TextView) itemView.findViewById(R.id.tv_comment_category);
                 tv_commentDesc = (TextView) itemView.findViewById(R.id.tv_comDesc);
                 tv_commentDate.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
@@ -421,6 +433,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 card_comment = (RelativeLayout ) itemView.findViewById(R.id.card_comment);
                 user_rating = (RatingBar) itemView.findViewById(R.id.rating_user);
                 Log.i("Ffhghg", getAdapterPosition()+"");
+                text_draw_color = generator.getRandomColor();
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
             }

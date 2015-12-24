@@ -10,18 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.8"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/main_background">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/accept"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:textColor="#959595"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:id="@+id/tv_accept"
             />
         <ImageView
@@ -29,24 +29,25 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:id="@+id/iv_logo"
+            android:padding="8dp"
             android:src="@drawable/logo"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.2"
-        android:padding="20dp">
+        android:padding="30dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rl_terms_header"
-          >
+            >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/terms"
                 android:id="@+id/tv_terms_title"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textColor="#2dbda6"/>
             <View android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -58,13 +59,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_terms_header"
-            android:paddingTop="20dp">
+            android:paddingTop="12dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/terms_example"
                 android:textColor="#6a6a6a"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
         </ScrollView>
     </RelativeLayout>
 </LinearLayout>

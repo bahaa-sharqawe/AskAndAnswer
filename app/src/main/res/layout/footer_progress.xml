@@ -14,7 +14,9 @@
         app:cpv_animAutostart="true"
         android:layout_centerInParent="true"
         app:cpv_indeterminate="true"
-        app:cpv_color = "#2dbda6"/>
+        app:cpv_color = "#2dbda6"
+        android:visibility="gone"
+        />
 
     <Button
         android:layout_width="match_parent"

@@ -10,8 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
+        android:paddingTop="35dp"
+        android:paddingBottom="35dp"
         android:id="@+id/ll_item"
         android:paddingLeft="40dp">
         <ImageView
@@ -26,7 +26,7 @@
             android:id="@+id/tv_drawer_item"
             android:layout_gravity="center_vertical"
             android:textColor="#4d4d4d"
-            android:textSize="19sp"
+            android:textSize="20sp"
             android:text="Profile" />
     </LinearLayout>
 

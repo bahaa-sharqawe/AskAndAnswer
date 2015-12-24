@@ -50,7 +50,7 @@
                 android:id="@+id/tv_error"
                 android:layout_below="@+id/uncolored_logo"
                 android:layout_centerHorizontal="true"
-                android:textSize="19sp"/>
+                android:textSize="22sp"/>
 
         </RelativeLayout>
         <com.github.rahatarmanahmed.cpv.CircularProgressView
@@ -68,7 +68,7 @@
 
 </RelativeLayout>
 
-            <View android:layout_height="0.1dp"
+            <View android:layout_height="0.5dp"
                 android:layout_width="match_parent"
                 android:background="#e6e6e6"
                 />

@@ -24,6 +24,8 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
@@ -59,6 +61,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private final View parent;
     private final FontManager fontManager;
     private final OnLastListReachListener lastListReachListener;
+    private  ColorGenerator generator;
     private CircularProgressView pv_load;
 
     private ArrayList<Posts> posts;
@@ -73,6 +76,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         this.parent = parent;
         fontManager = FontManager.getInstance(activity.getAssets());
         this.lastListReachListener = lastListReachListener;
+        generator = ColorGenerator.MATERIAL;
 
     }
 
@@ -180,6 +184,11 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                     goToProfile(postOwner.getServerID());
                 }
             });
+            String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
+
+            final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                    .buildRound(letter, holder.text_draw_color);
+
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE))
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
                 @Override
@@ -191,14 +200,16 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 @Override
                 public void onError() {
                     holder.iv_profile.setVisibility(View.INVISIBLE);
+                    holder.tv_person_photo.setImageDrawable(drawable);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
+//                    holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                 }
             });
             else{
                 holder.iv_profile.setVisibility(View.INVISIBLE);
+                holder.tv_person_photo.setImageDrawable(drawable);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
-                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
+//                holder.tv_person_photo.setText(postOwner.getFname().charAt(0)+" "+postOwner.getLname().charAt(0));
             }
         }
     }
@@ -209,7 +220,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_person_photo;
+        ImageView tv_person_photo;
         TextView tv_person_name;
         TextView tv_postDate;
         TextView tv_postContent;
@@ -221,8 +232,10 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         TextView tv_unlikes;
         TextView tv_comments;
 //        ProgressBar pb_photo_load;
-RelativeLayout card_post;
+        RelativeLayout card_post;
         int viewType;
+        public int text_draw_color;
+
 
         public PostViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -251,7 +264,7 @@ RelativeLayout card_post;
                 tv_unlikes = (TextView) itemView.findViewById(R.id.tv_unlikes);
                 tv_comments = (TextView) itemView.findViewById(R.id.tv_comments);
                 rl_postEvents = (RelativeLayout) itemView.findViewById(R.id.rl_postEvents);
-                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
 
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
                 card_post = (RelativeLayout) itemView.findViewById(R.id.card_post);
@@ -262,6 +275,7 @@ RelativeLayout card_post;
                 tv_unlikes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comments.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_likes.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+                text_draw_color =  generator.getRandomColor();
 
 
 //                ll_comment = (LinearLayout) itemView.findViewById(R.id.ll_comment);

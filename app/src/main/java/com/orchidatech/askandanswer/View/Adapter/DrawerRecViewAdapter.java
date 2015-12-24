@@ -99,19 +99,19 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                         @Override
                         public void onError() {
                             holder.iv_profile.setVisibility(View.INVISIBLE);
-                            holder.tv_person_photo.setImageDrawable(drawable);
+//                            holder.tv_person_photo.setImageDrawable(drawable);
 
                             holder.tv_person_photo.setVisibility(View.VISIBLE);
-//                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
 //                            holder.load_image_progress.setVisibility(View.GONE);
                         }
                     });
                 }
                 else{
                     holder.iv_profile.setVisibility(View.INVISIBLE);
-                    holder.tv_person_photo.setImageDrawable(drawable);
+//                    holder.tv_person_photo.setImageDrawable(drawable);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-//                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
                 }
             }
         } else {
@@ -137,7 +137,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        private ImageView tv_person_photo;
+        private TextView tv_person_photo;
         int viewType;
         //header components
         TextView tv_person_name;
@@ -158,7 +158,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 tv_person_email = (TextView) itemView.findViewById(R.id.tv_person_email);
                 iv_profile = (ImageView) itemView.findViewById(R.id.iv_profile);
 //                load_image_progress = (ProgressBar) itemView.findViewById(R.id.load_image_progress);
-                tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
+                tv_person_photo = (TextView) itemView.findViewById(R.id.tv_person_photo);
 
             } else {
                 iv_drawer_item = (ImageView) itemView.findViewById(R.id.iv_drawer_item);

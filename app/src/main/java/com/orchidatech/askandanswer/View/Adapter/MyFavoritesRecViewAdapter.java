@@ -262,7 +262,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, generator.getRandomColor());
+                    .buildRound(letter, holder.text_draw_color);
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -329,6 +329,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         int viewType;
         public ImageView iv_comment;
         public ImageView iv_share;
+        public int text_draw_color;
+
         public FavoriteViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
@@ -362,6 +364,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+                text_draw_color = generator.getRandomColor();
 //                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 //                pb_photo_load = (ProgressBar) itemView.findViewById(R.id.pb_photo_load);
 //                pb_photo_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);

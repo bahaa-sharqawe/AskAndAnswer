@@ -39,6 +39,7 @@
             android:text="@string/btn_confirm"
             android:layout_toLeftOf="@+id/tv_cancel"
             android:textSize="18sp"
+            android:padding="17dp"
             android:id="@+id/tv_confirm"
             android:textColor="#51a697"
             style="?android:attr/borderlessButtonStyle"/>
@@ -49,6 +50,7 @@
             android:text="@string/btn_cancel"
             android:layout_alignParentRight="true"
             android:textSize="18sp"
+            android:padding="17dp"
             android:id="@+id/tv_cancel"
             android:textColor="#51a697"
             style="?android:attr/borderlessButtonStyle"/>
