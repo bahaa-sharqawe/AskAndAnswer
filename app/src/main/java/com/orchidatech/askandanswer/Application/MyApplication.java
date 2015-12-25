@@ -2,6 +2,8 @@ package com.orchidatech.askandanswer.Application;
 
 import com.activeandroid.ActiveAndroid;
 import com.alexbbb.uploadservice.UploadService;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -47,6 +49,10 @@ public class MyApplication extends com.activeandroid.app.Application {
                 .build();
         SimpleFacebook.setConfiguration(configuration);
         UploadService.NAMESPACE = "com.orchidatech.askandanswer";
+
+        AjaxCallback.setNetworkLimit(8);
+        BitmapAjaxCallback.setIconCacheLimit(50);
+        BitmapAjaxCallback.setCacheLimit(50);
     }
 //
 //

@@ -174,7 +174,6 @@
                     android:textColor="#fff"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:clickable="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
             </LinearLayout>

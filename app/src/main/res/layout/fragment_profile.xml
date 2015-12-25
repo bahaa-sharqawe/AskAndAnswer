@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rl_parent"
@@ -9,109 +9,11 @@
     android:orientation="vertical">
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:id="@+id/rl_header">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="130dp"
-                    android:id="@+id/iv_profile_header"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profile_header"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#7dfbe8"
-                    android:layout_below="@+id/iv_profile_header"/>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rl_person_info"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="86dp"
-                android:layout_marginRight="10dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:id="@+id/iv_profile"
-                    android:src="@drawable/ic_user"
-                    android:layout_marginBottom="5dp"
-                    app:civ_border_width="1dp"
-                    app:civ_border_color="#ece8e7"
-                    />
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/offline_photo_backgnd"
-                    android:id="@+id/tv_person_photo"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center"
-                    android:textSize="18sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:id="@+id/tv_person"
-                    android:text="Jun Smith"
-                    android:textSize="16sp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignLeft="@+id/iv_profile"
-                    android:layout_below="@+id/iv_profile"
-                    />
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:isIndicator="true"
-                    android:progressDrawable="@drawable/ratingbar_selector"
-                    android:rating="4"
-                    android:numStars="5"
-                    android:id="@+id/rating_person"
-                    android:layout_toRightOf="@+id/tv_person"
-                    android:paddingBottom="3dp"
-                    android:layout_alignBottom="@+id/tv_person"
-                    />
-
-            </RelativeLayout>
-                            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rl_person_info"
-                    android:layout_marginTop="12dp"
-                    android:layout_alignLeft="@+id/rl_person_info"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tv_asks"
-                        android:text="@string/tv_ask_count"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="|"
-                        android:layout_toRightOf="@+id/tv_asks"
-                        android:id="@+id/divider"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/divider"
-                        android:id="@+id/tv_answers"
-                        android:text="@string/tv_answer_count"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#f8f8f8"
-    android:layout_below="@+id/rl_header"
     >
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -173,7 +75,8 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="10dp"
         android:src="@drawable/ic_edit"
+        android:layout_gravity="end|bottom"
         fab:backgroundTint="#f0ae24"
         />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

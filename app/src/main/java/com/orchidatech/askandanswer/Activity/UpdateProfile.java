@@ -376,6 +376,7 @@ public class UpdateProfile extends AppCompatActivity {
                         dialog.dismiss();
                         Toast.makeText(UpdateProfile.this, getString(R.string.saved), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(UpdateProfile.this, MainScreen.class));
+                        finish();
 //                        AppSnackBar.show(ll_parent, getString(R.string.saved), getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                        new Handler().postDelayed(new Runnable() {
 //                            @Override

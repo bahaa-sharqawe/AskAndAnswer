@@ -3,7 +3,9 @@ package com.orchidatech.askandanswer.View.Adapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,8 +34,10 @@ import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.androidquery.AQuery;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.internal.cu;
+import com.orchidatech.askandanswer.Activity.PhotosGallery;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -73,7 +77,7 @@ import dmax.dialog.SpotsDialog;
 public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecViewAdapter.CommentsViewHolder> implements View.OnCreateContextMenuListener {
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
     private static final int TYPE_FOOTER = 1;
-    private final int fragment_numeric;
+//    private final int fragment_numeric;
     private final long current_user_id;
     private final Animation mAnimation;
     private final Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
@@ -92,14 +96,14 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private int position;
 
     public CommentsRecViewAdapter(Activity activity, List<com.orchidatech.askandanswer.Database.Model.Comments> comments, Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data, View parent, OnLastListReachListener lastListReachListener,
-                                  OnCommentOptionListener commentOptionListener, int fragment_numeric) {
+                                  OnCommentOptionListener commentOptionListener/*, int fragment_numeric*/) {
         this.activity = activity;
         this.parent = parent;
         this.comments = comments;
         this.data = data;
         this.lastListReachListener = lastListReachListener;
         this.commentOptionListener = commentOptionListener;
-        this.fragment_numeric = fragment_numeric;
+//        this.fragment_numeric = fragment_numeric;
         pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         this.current_user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
@@ -126,7 +130,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void onBindViewHolder(final CommentsViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType()?Comments.last_id_server >0:comments.size()>0)) {
+            if (!loading && isFoundData && comments.size()>0/* && (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType()?Comments.last_id_server >0:comments.size()>0)*/) {
 
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
@@ -173,19 +177,28 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //            holder.pb_photo_load.setVisibility(View.VISIBLE);
             holder.iv_comment.setVisibility(View.GONE);
             if(!TextUtils.isEmpty(currentComment.getImage()) && currentComment.getImage() != "null") {
-                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment, new Callback() {
+                AQuery aq = new AQuery(activity);
+                Bitmap preset = aq.getCachedImage(currentComment.getImage());
+                aq.id(holder.iv_comment)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentComment.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+                holder.iv_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onSuccess() {
-//                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_comment.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onError() {
-//                        holder.pb_photo_load.setVisibility(View.GONE);
-                        holder.iv_comment.setVisibility(View.INVISIBLE);
+                    public void onClick(View v) {
+                        viewPhoto(currentComment.getImage());
                     }
                 });
+//                Picasso.with(activity).load(Uri.parse(currentComment.getImage())).into(holder.iv_comment, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+////                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        holder.iv_comment.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+////                        holder.pb_photo_load.setVisibility(View.GONE);
+//                        holder.iv_comment.setVisibility(View.INVISIBLE);
+//                    }
+//                });
             }else{
 //                holder.pb_photo_load.setVisibility(View.GONE);
                 holder.iv_comment.setVisibility(View.GONE);
@@ -601,7 +614,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             }
         });
     }
-
+    private void viewPhoto(String image) {
+        Intent intent = new Intent(activity, PhotosGallery.class);
+        intent.putExtra(PhotosGallery.IMAGE_URL, image);
+        activity.startActivity(intent);
+    }
     public int getPosition() {
         return position;
     }

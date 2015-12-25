@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -207,14 +208,29 @@ public class NotificationPostView extends AppCompatActivity {
         return true;
     }
 
-    private void fillFields(Posts post, final Users owner) {
+    private void fillFields(final Posts post, final Users owner) {
         pb_loading.setVisibility(View.GONE);
         tv_person_name.setText(owner.getFname() + " " + owner.getLname());
         tv_postDate.setText(GNLConstants.DateConversion.getDate(post.getDate()));
         tv_post.setText(post.getText());
         if (!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
             AQuery aq = new AQuery(NotificationPostView.this);
-            aq.id(iv_post)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(post.getImage(), true, true, 0, 0, null, AQuery.FADE_IN);
+            Bitmap preset = aq.getCachedImage(post.getImage());
+
+            aq.id(iv_post)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(post.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+            iv_post.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                        PhotosGallery photosGallery = new PhotosGallery();
+//                        Bundle args = new Bundle();
+//                        args.putString(PhotosGallery.IMAGE_URL, post.getImage());
+//                        photosGallery.setArguments(args);
+//                        photosGallery.show(getFragmentManager(), "gallery");
+                    Intent intent = new Intent(NotificationPostView.this, PhotosGallery.class);
+                    intent.putExtra(PhotosGallery.IMAGE_URL, post.getImage());
+                    startActivity(intent);
+                }
+            });
         }else{
             iv_post.setVisibility(View.GONE);
         }
@@ -355,18 +371,21 @@ public class NotificationPostView extends AppCompatActivity {
     }
 
     private void commentPost(long postId) {
-        Bundle args = new Bundle();
-        args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
-
-            @Override
-            public void onDismiss() {
-            }
-        });
-        comments.setArguments(args);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down,R.animator.slide_up, R.animator.slide_down);
-        comments.show(ft, "Comments");
+//        Bundle args = new Bundle();
+//        args.putLong(ViewPost.POST_ID, postId);
+//        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
+//
+//            @Override
+//            public void onDismiss() {
+//            }
+//        });
+//        comments.setArguments(args);
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+////        ft.setCustomAnimations(R.animator.slide_up, R.animator.slide_down,R.animator.slide_up, R.animator.slide_down);
+//        comments.show(ft, "Comments");
+        Intent intent = new Intent(NotificationPostView.this, CommentsScreen.class);
+        intent.putExtra(ViewPost.POST_ID, postId);
+        startActivity(intent);
 
     }
 

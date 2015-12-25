@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -37,7 +38,9 @@ import com.androidquery.callback.BitmapAjaxCallback;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
+import com.orchidatech.askandanswer.Activity.CommentsScreen;
 import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.PhotosGallery;
 import com.orchidatech.askandanswer.Activity.SplashScreen;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.*;
@@ -227,31 +230,19 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 }
             });
             String postImage = currentPost.getImage();
-            ImageLoader imageLoader = ImageLoader.getInstance();
 
             if(!TextUtils.isEmpty(postImage) && postImage != "null"){
                 AQuery aq = new AQuery(activity);
+                Bitmap preset = aq.getCachedImage(postImage);
 
 /* Getting Images from Server and stored in cache */
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, R.drawable.ic_user, null, AQuery.FADE_IN);
-//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-////                        holder.pb_photo_load.setVisibility(View.GONE);
-//                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
-//                        holder.iv_postImage.setAnimation(anim);
-//                        anim.start();
-//                        holder.iv_postImage.setVisibility(View.VISIBLE);
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-////                        holder.pb_photo_load.setVisibility(View.GONE);
-//                        holder.iv_postImage.setVisibility(View.VISIBLE);
-//
-//                    }
-//                });
-                Log.i("fhfhjgh", postImage);
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+                holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewPhoto(currentPost.getImage());
+                    }
+                });
             }else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
@@ -452,17 +443,20 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         removePost(position);
     }
     private void commentPost(long postId) {
-        isCommentDialogShown = true;
-        Bundle args = new Bundle();
-        args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
-            @Override
-            public void onDismiss() {
-                isCommentDialogShown = false;
-            }
-        });
-        comments.setArguments(args);
-        comments.show(activity.getFragmentManager(), "Comments");
+//        isCommentDialogShown = true;
+//        Bundle args = new Bundle();
+//        args.putLong(ViewPost.POST_ID, postId);
+//        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
+//            @Override
+//            public void onDismiss() {
+//                isCommentDialogShown = false;
+//            }
+//        });
+//        comments.setArguments(args);
+//        comments.show(activity.getFragmentManager(), "Comments");
+        Intent intent = new Intent(activity, CommentsScreen.class);
+        intent.putExtra(ViewPost.POST_ID, postId);
+        activity.startActivity(intent);
     }
 
     private void categoryClick(long category_id, long user_id) {
@@ -484,6 +478,11 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         activity.startActivity(intent);
     }
 
+    private void viewPhoto(String image) {
+        Intent intent = new Intent(activity, PhotosGallery.class);
+        intent.putExtra(PhotosGallery.IMAGE_URL, image);
+        activity.startActivity(intent);
+    }
 
 }
 

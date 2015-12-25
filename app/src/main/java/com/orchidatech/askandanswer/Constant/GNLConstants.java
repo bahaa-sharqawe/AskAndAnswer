@@ -123,16 +123,16 @@ public class GNLConstants {
                 message = "Can't found this comment";
                 break;
             case 503:
-                message = "Can't found this post with this id";
+                message = "Can't found this post...";
                 break;
             case 504:
-                message = "Can't found  User with this id !";
+                message = "Email or password is incorrect !";
                 break;
             case 700:
                 message = "Can't add  this search to search history";
                 break;
             case 506:
-                message = "Can't found  category with this id !";
+                message = "Can't found  category!";
                 break;
             case 900:
                 message = "No comments found!";

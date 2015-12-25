@@ -51,4 +51,10 @@
         <item name="android:windowBackground">@color/white</item>
 
     </style>
+    <style name="ThemeWithCorners" >
+        <item name="android:windowBackground">@drawable/comments_fragment_backgnd</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
+
+    </style>
 </resources>

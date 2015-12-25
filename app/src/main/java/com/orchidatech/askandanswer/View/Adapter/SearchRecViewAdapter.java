@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +30,9 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
+import com.orchidatech.askandanswer.Activity.CommentsScreen;
 import com.orchidatech.askandanswer.Activity.MainScreen;
+import com.orchidatech.askandanswer.Activity.PhotosGallery;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
@@ -104,7 +107,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 pv_load.setVisibility(View.GONE);
 
         }else {
-            Posts currentPost = posts.get(position);
+            final Posts currentPost = posts.get(position);
             final Users postOwner = UsersDAO.getUser(currentPost.getUserID());
             final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
             holder.tv_post_category.setText(postCategory.getName());
@@ -154,7 +157,14 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 AQuery aq = new AQuery(activity);
 
 /* Getting Images from Server and stored in cache */
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, null, AQuery.FADE_IN);
+                Bitmap preset = aq.getCachedImage(currentPost.getImage());
+                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+                holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewPhoto(currentPost.getImage());
+                    }
+                });
 //                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
 //                    @Override
 //                    public void onSuccess() {
@@ -294,16 +304,19 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 
 
     private void commentPost(long postId) {
-        Bundle args = new Bundle();
-        args.putLong(ViewPost.POST_ID, postId);
-        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
-            @Override
-            public void onDismiss() {
-
-            }
-        });
-        comments.setArguments(args);
-        comments.show(activity.getFragmentManager(), "Comments");
+//        Bundle args = new Bundle();
+//        args.putLong(ViewPost.POST_ID, postId);
+//        Comments comments = new Comments(new TimelineRecViewAdapter.OnDialogDismiss() {
+//            @Override
+//            public void onDismiss() {
+//
+//            }
+//        });
+//        comments.setArguments(args);
+//        comments.show(activity.getFragmentManager(), "Comments");
+        Intent intent = new Intent(activity, CommentsScreen.class);
+        intent.putExtra(ViewPost.POST_ID, postId);
+        activity.startActivity(intent);
     }
     private void categoryClick(long category_id, long user_id) {
         Intent intent = new Intent(activity, CategoryPosts.class);
@@ -311,6 +324,12 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         intent.putExtra(CategoryPosts.USER_ID, user_id);
         activity.startActivity(intent);
     }
+    private void viewPhoto(String image) {
+        Intent intent = new Intent(activity, PhotosGallery.class);
+        intent.putExtra(PhotosGallery.IMAGE_URL, image);
+        activity.startActivity(intent);
+    }
+
     private void goToProfile(long userId) {
         MainScreen.oldPosition = -1;
         Fragment fragment = new Profile();

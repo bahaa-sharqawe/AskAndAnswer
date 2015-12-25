@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -17,11 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -33,14 +32,12 @@ import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.DeletePost;
-import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import dmax.dialog.SpotsDialog;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteListener{
     public static final String POST_ID = "POST_ID";
@@ -52,6 +49,8 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     RelativeLayout ll_parent;
     private SharedPreferences pref;
     private AlertDialog dialog;
+    private PhotoViewAttacher mAttacher;
+    private AQuery aq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,8 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
         setCustomActionBar();
         postId = getIntent().getLongExtra(POST_ID, -1);
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        aq = new AQuery(this);
+
 //        if(getIntent().getByteArrayExtra("picture") != null){
 //            byte[] b = getIntent().getByteArrayExtra("picture");
 //            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
@@ -73,32 +74,52 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             tv_android_cateogry.setText(CategoriesDAO.getCategory(post.getCategoryID()).getName());
             tv_post.setText(post.getText());
             if(!TextUtils.isEmpty(post.getImage())) {
-                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                        .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
-                ImageLoader.getInstance().init(config);
-                ImageLoader imageLoader = ImageLoader.getInstance();
-                imageLoader.displayImage(post.getImage(), iv_post, new ImageLoadingListener() {
+                Bitmap preset = aq.getCachedImage(post.getImage());
+                aq.id(iv_post).image(post.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+//                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+//                        .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
+//                ImageLoader.getInstance().init(config);
+//                ImageLoader imageLoader = ImageLoader.getInstance();
+//                imageLoader.displayImage(post.getImage(), iv_post, new ImageLoadingListener() {
+//                    @Override
+//                    public void onLoadingStarted(String imageUri, View view) {
+//                        iv_post.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                        iv_post.setVisibility(View.INVISIBLE);
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                        iv_post.setVisibility(View.VISIBLE);
+////
+////                        if(mAttacher != null)
+////                            mAttacher.update();
+////                        else
+////                            mAttacher = new PhotoViewAttacher(iv_post);
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingCancelled(String imageUri, View view) {
+//                        iv_post.setVisibility(View.INVISIBLE);
+//
+//                    }
+//                });
+                iv_post.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        iv_post.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        iv_post.setVisibility(View.INVISIBLE);
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        iv_post.setVisibility(View.VISIBLE);
-
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                        iv_post.setVisibility(View.INVISIBLE);
-
+                    public void onClick(View v) {
+//                        PhotosGallery photosGallery = new PhotosGallery();
+//                        Bundle args = new Bundle();
+//                        args.putString(PhotosGallery.IMAGE_URL, post.getImage());
+//                        photosGallery.setArguments(args);
+//                        photosGallery.show(getFragmentManager(), "gallery");
+                        Intent intent = new Intent(ViewPost.this, PhotosGallery.class);
+                        intent.putExtra(PhotosGallery.IMAGE_URL, post.getImage());
+                        startActivity(intent);
                     }
                 });
 //                   Picasso.with(this).load(Uri.parse(post.getImage())).into(iv_post, new Callback() {

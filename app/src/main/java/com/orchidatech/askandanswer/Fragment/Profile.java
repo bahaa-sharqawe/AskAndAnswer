@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +39,7 @@ import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.R;
+import com.orchidatech.askandanswer.View.Adapter.ProfileRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.HidingScrollListener;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
@@ -62,7 +65,7 @@ public class Profile extends Fragment {
 
 
     RecyclerView rv_posts;
-    TimelineRecViewAdapter adapter;
+    ProfileRecViewAdapter adapter;
     ArrayList<Posts> posts;
     TextView tv_person;
     RatingBar rating_person;
@@ -75,7 +78,7 @@ public class Profile extends Fragment {
     private long user_id;
     private long current_user_id;
     Users user;
-    RelativeLayout rl_parent;
+    CoordinatorLayout rl_parent;
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
@@ -84,7 +87,7 @@ public class Profile extends Fragment {
     private SharedPreferences pref;
     private FontManager fontManager;
     private TextView tv_person_photo;
-    private RelativeLayout rl_header;
+//    private RelativeLayout rl_header;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,8 +105,8 @@ public class Profile extends Fragment {
         user_id = getArguments().getLong(USER_ID_KEY, -1);
         user = UsersDAO.getUser(user_id);
         pref = getActivity().getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        rl_header = (RelativeLayout) view.findViewById(R.id.rl_header);
-        rl_parent = (RelativeLayout) view.findViewById(R.id.rl_parent);
+//        rl_header = (RelativeLayout) view.findViewById(R.id.rl_header);
+        rl_parent = (CoordinatorLayout) view.findViewById(R.id.rl_parent);
         fab_edit_profile = (FloatingActionButton) view.findViewById(R.id.fab_edit_profile);
         fab_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,58 +119,58 @@ public class Profile extends Fragment {
         if (pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1) != user_id)
             fab_edit_profile.setVisibility(View.GONE);
 
-        rating_person = (RatingBar) view.findViewById(R.id.rating_person);
-        iv_profile = (CircleImageView) view.findViewById(R.id.iv_profile);
-        tv_person_photo = (TextView) view.findViewById(R.id.tv_person_photo);
-        tv_person = (TextView) view.findViewById(R.id.tv_person);
-        tv_person.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-
-        tv_answers = (TextView) view.findViewById(R.id.tv_answers);
-        tv_answers.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
-        tv_asks = (TextView) view.findViewById(R.id.tv_asks);
-        tv_asks.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-
-        rating_person.setRating(user.getRating());
-        Log.i("rating", user.getRating() + "");
-        tv_person.setText(user.getFname() + " " + user.getLname());
-        if(user != null && !user.getImage().equals(URL.DEFAULT_IMAGE))
-            Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
-                @Override
-                public void onSuccess() {
-                    tv_person_photo.setVisibility(View.INVISIBLE);
-                    iv_profile.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onError() {
-                    iv_profile.setVisibility(View.INVISIBLE);
-                    tv_person_photo.setVisibility(View.VISIBLE);
-                    tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
-                }
-            });
-        else{
-            iv_profile.setVisibility(View.INVISIBLE);
-            tv_person_photo.setVisibility(View.VISIBLE);
-            tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
-        }
-        tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-
-        tv_asks.setText(getString(R.string.tv_ask_count, user.getAsks()));
-        tv_answers.setText(getString(R.string.tv_answer_count, user.getAnswers()));
-//        getUserInfo(user_id);
+//        rating_person = (RatingBar) view.findViewById(R.id.rating_person);
+//        iv_profile = (CircleImageView) view.findViewById(R.id.iv_profile);
+//        tv_person_photo = (TextView) view.findViewById(R.id.tv_person_photo);
+//        tv_person = (TextView) view.findViewById(R.id.tv_person);
+//        tv_person.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+//
+//        tv_answers = (TextView) view.findViewById(R.id.tv_answers);
+//        tv_answers.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+//
+//        tv_asks = (TextView) view.findViewById(R.id.tv_asks);
+//        tv_asks.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+//
+//        rating_person.setRating(user.getRating());
+//        Log.i("rating", user.getRating() + "");
+//        tv_person.setText(user.getFname() + " " + user.getLname());
+//        if(user != null && !user.getImage().equals(URL.DEFAULT_IMAGE))
+//            Picasso.with(getActivity()).load(Uri.parse(user.getImage())).into(iv_profile, new Callback() {
+//                @Override
+//                public void onSuccess() {
+//                    tv_person_photo.setVisibility(View.INVISIBLE);
+//                    iv_profile.setVisibility(View.VISIBLE);
+//                }
+//
+//                @Override
+//                public void onError() {
+//                    iv_profile.setVisibility(View.INVISIBLE);
+//                    tv_person_photo.setVisibility(View.VISIBLE);
+//                    tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
+//                }
+//            });
+//        else{
+//            iv_profile.setVisibility(View.INVISIBLE);
+//            tv_person_photo.setVisibility(View.VISIBLE);
+//            tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
+//        }
+//        tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+//
+//        tv_asks.setText(getString(R.string.tv_ask_count, user.getAsks()));
+//        tv_answers.setText(getString(R.string.tv_answer_count, user.getAnswers()));
+////        getUserInfo(user_id);
         rv_posts = (RecyclerView) view.findViewById(R.id.rv_posts);
         rv_posts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv_posts.setLayoutManager(llm);
         posts = new ArrayList<>();
-        adapter = new TimelineRecViewAdapter(getActivity(), posts, rl_parent, new OnLastListReachListener() {
+        adapter = new ProfileRecViewAdapter(getActivity(), posts, rl_parent, user_id, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
-        }, Enum.POSTS_FRAGMENTS.PROFILE.getNumericType());
+        });
         rv_posts.setAdapter(adapter);
         rv_posts.setOnScrollListener(new HidingScrollListener(){
 
@@ -222,11 +225,11 @@ public class Profile extends Fragment {
         (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.GONE);
     }
     private void hideHeader() {
-        rl_header.animate().translationY(-rl_header.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+//        rl_header.animate().translationY(-rl_header.getHeight()).setInterpolator(new AccelerateInterpolator(2));
 
     }
     private void showHeader(){
-        rl_header.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+//        rl_header.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 
     private void getUserInfo(final long user_id) {
@@ -264,7 +267,7 @@ public class Profile extends Fragment {
     }
 
     private void loadNewPosts() {
-        WebServiceFunctions.getUserPosts(getActivity(), current_user_id, user_id, GNLConstants.POST_LIMIT, adapter.getItemCount()-1, last_id_server, new OnUserPostFetched() {
+        WebServiceFunctions.getUserPosts(getActivity(), current_user_id, user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - 2, last_id_server, new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> userPosts, long last_id) {
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
@@ -287,17 +290,19 @@ public class Profile extends Fragment {
 
                                 }
                             }, 3000);
-                        }else {
+                        } else {
                             pb_loading_main.setVisibility(View.GONE);
-                            rl_error.setVisibility(View.VISIBLE);
-                            tv_error.setText(GNLConstants.getStatus(errorCode));
-                            rl_error.setEnabled(true);
+                            showSnackBar(GNLConstants.getStatus(errorCode));
+//                            rl_error.setVisibility(View.VISIBLE);
+//                            tv_error.setText(GNLConstants.getStatus(errorCode));
+//                            rl_error.setEnabled(true);
                         }
                     } else {
                         pb_loading_main.setVisibility(View.GONE);
-                        tv_error.setText(getString(R.string.no_posts_found));
-                        rl_error.setEnabled(true);
-                        rl_error.setVisibility(View.VISIBLE);
+                        showSnackBar(GNLConstants.getStatus(errorCode));
+//                        tv_error.setText(getString(R.string.no_posts_found));
+//                        rl_error.setEnabled(true);
+//                        rl_error.setVisibility(View.VISIBLE);
                     }
                 } else {
                     pb_loading_main.setVisibility(View.GONE);
@@ -305,6 +310,31 @@ public class Profile extends Fragment {
                 }
             }
         });
+    }
+
+    private void showSnackBar(String message) {
+        if(rl_parent == null)
+            return;
+         Snackbar snackbar = Snackbar
+                .make(rl_parent, message, Snackbar.LENGTH_LONG)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        snackbar.dismiss();
+                        pb_loading_main.setVisibility(View.VISIBLE);
+                        loadNewPosts();
+                    }
+                });
+
+        // Changing message text color
+        snackbar.setActionTextColor(Color.RED);
+
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+
+        snackbar.show();
     }
 
     private void getFromLocal() {

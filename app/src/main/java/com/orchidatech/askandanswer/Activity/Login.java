@@ -96,7 +96,6 @@ public class Login extends AppCompatActivity {
         resizeLogo();
         iv_logo.startAnimation(logoTranslate);
         ll_form.startAnimation(form_translate);
-
     }
 
     ///////
@@ -272,6 +271,7 @@ public class Login extends AppCompatActivity {
         btn_gplus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                Log.i("googledfs", "pressed");
                 v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
                 if (!googleAuth.mGoogleApiClient.isConnected())
                     googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
@@ -281,7 +281,7 @@ public class Login extends AppCompatActivity {
 //                            startActivity(new Intent(Login.this, TermsActivity.class));
                             socialUser = user;
                             socialLogin();
-                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
                         }
                     });
                 else
@@ -435,6 +435,14 @@ public class Login extends AppCompatActivity {
                 socialUser.setLname(response.getLastName());
                 socialUser.setName(response.getName());
                 socialUser.setNetwork(SocialUser.NetworkType.FACEBOOK);
+                if(TextUtils.isEmpty(response.getEmail())){
+                    AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
+                    SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
+                        @Override
+                        public void onLogout() {
+                        }
+                    });
+                }else
                 socialLogin();
                 Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
 

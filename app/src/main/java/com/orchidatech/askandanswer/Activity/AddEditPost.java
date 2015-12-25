@@ -300,6 +300,7 @@ public class AddEditPost extends AppCompatActivity {
                 }
                 Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(AddEditPost.this, MainScreen.class));
+                finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
@@ -340,6 +341,7 @@ public class AddEditPost extends AppCompatActivity {
                 ed_postDesc.setText("");
                 Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(AddEditPost.this, MainScreen.class));
+                finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override

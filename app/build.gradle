@@ -70,4 +70,5 @@ dependencies {
     compile files('libs/android-query-full.0.26.8.jar')
     compile 'com.github.d-max:spots-dialog:0.7@aar'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile 'com.commit451:PhotoView:1.2.4'
 }
