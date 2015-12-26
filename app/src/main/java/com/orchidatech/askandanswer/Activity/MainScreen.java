@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -48,8 +49,7 @@ import com.orchidatech.askandanswer.View.Interface.OnLogoutlistener;
 import com.orchidatech.askandanswer.View.Interface.OnMainDrawerItemClickListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -279,13 +279,16 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE);
                 prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
                 if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
-                    SimpleFacebook.getInstance(MainScreen.this).logout(new OnLogoutListener() {
-                        @Override
-                        public void onLogout() {
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
+                    LoginManager.getInstance().logOut();
+                    startActivity(intent);
+                    finish();
+//                    SimpleFacebook.getInstance(MainScreen.this).logout(new OnLogoutListener() {
+//                        @Override
+//                        public void onLogout() {
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//                    });
                 }else if(loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()){
                     if(Login.googleAuth != null)
                         Login.googleAuth.googlePlusLogout();

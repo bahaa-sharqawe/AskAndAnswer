@@ -8,9 +8,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.SimpleFacebookConfiguration;
+
 
 
 /**
@@ -19,13 +17,13 @@ import com.sromku.simple.fb.SimpleFacebookConfiguration;
 public class MyApplication extends com.activeandroid.app.Application {
     private static final String APP_ID = "446821295503912";
     private static final String APP_NAMESPACE = "orchaskandanswer";
-    private static final Permission[] permissions = new Permission[]{
-            Permission.USER_PHOTOS,
-            Permission.EMAIL,
-            Permission.PUBLISH_ACTION,
-            Permission.USER_ABOUT_ME
-    };
-    ;
+//    private static final Permission[] permissions = new Permission[]{
+//            Permission.USER_PHOTOS,
+//            Permission.EMAIL,
+//            Permission.PUBLISH_ACTION,
+//            Permission.USER_ABOUT_ME
+//    };
+//    ;
 
     @Override
     public void onCreate() {
@@ -41,13 +39,13 @@ public class MyApplication extends com.activeandroid.app.Application {
 //        builder.setDatabaseVersion(1);
 //        ActiveAndroid.initialize(builder.create());
         ActiveAndroid.initialize(this);
-
-        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
-                .setAppId(APP_ID)
-                .setNamespace(APP_NAMESPACE)
-                .setPermissions(permissions)
-                .build();
-        SimpleFacebook.setConfiguration(configuration);
+//
+//        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
+//                .setAppId(APP_ID)
+//                .setNamespace(APP_NAMESPACE)
+//                .setPermissions(permissions)
+//                .build();
+//        SimpleFacebook.setConfiguration(configuration);
         UploadService.NAMESPACE = "com.orchidatech.askandanswer";
 
         AjaxCallback.setNetworkLimit(8);

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.login.LoginManager;
 import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.NotificationPostView;
@@ -56,9 +57,7 @@ import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserFavPostFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserInfoFetched;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.User;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1825,12 +1824,13 @@ public class WebServiceFunctions {
         prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
         clearLocalDB();
         if (loginType == com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
-            SimpleFacebook.getInstance(activity).logout(new OnLogoutListener() {
-                @Override
-                public void onLogout() {
-                    activity.startActivity(intent);
-                }
-            });
+            LoginManager.getInstance().logOut();
+//            SimpleFacebook.getInstance(activity).logout(new OnLogoutListener() {
+//                @Override
+//                public void onLogout() {
+//                    activity.startActivity(intent);
+//                }
+//            });
         } else if (loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()) {
             if (Login.googleAuth != null)
                 Login.googleAuth.googlePlusLogout();

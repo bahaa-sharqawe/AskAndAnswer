@@ -27,11 +27,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Entity.SocialUser;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
+import com.orchidatech.askandanswer.Logic.AppFacebookAuth;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.Logic.GCMUtilities;
 import com.orchidatech.askandanswer.R;
@@ -41,12 +43,6 @@ import com.orchidatech.askandanswer.View.Interface.OnSocialLoggedListener;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Profile;
-import com.sromku.simple.fb.listeners.OnLoginListener;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
-import com.sromku.simple.fb.listeners.OnProfileListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +66,7 @@ public class Login extends AppCompatActivity {
 
     LinearLayout btn_fb;
     LinearLayout btn_gplus;
-    private SimpleFacebook mSimpleFacebook;
+//    private SimpleFacebook mSimpleFacebook;
     private String TAG = Login.class.getSimpleName();
     LinearLayout ll_form;
     public static AppGoogleAuth googleAuth;
@@ -88,6 +84,7 @@ public class Login extends AppCompatActivity {
     private FontManager fontManager;
     private android.app.AlertDialog dialog;
 
+    AppFacebookAuth appFacebookAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,11 +183,12 @@ public class Login extends AppCompatActivity {
                         int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
                         AppSnackBar.showTopSnackbar(Login.this, cause, Color.RED, Color.WHITE);
                         if (loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
-                            SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
-                                @Override
-                                public void onLogout() {
-                                }
-                            });
+                            LoginManager.getInstance().logOut();
+//                            SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
+//                                @Override
+//                                public void onLogout() {
+//                                }
+//                            });
                         } else if (loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()) {
                             googleAuth.googlePlusLogout();
 //                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -318,33 +316,44 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
-                if (mSimpleFacebook.isLogin()) {
-                    getFbProfile();
-                } else {
-                    mSimpleFacebook.login(new OnLoginListener() {
-                        @Override
-                        public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                            Log.i(TAG, "Logged in");
-                            getFbProfile();
-
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                        }
-
-                        @Override
-                        public void onException(Throwable throwable) {
-                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                        }
-
-                        @Override
-                        public void onFail(String reason) {
-                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                        }
-                    });
-                }
+                appFacebookAuth = new AppFacebookAuth(Login.this, new OnSocialLoggedListener() {
+                    @Override
+                    public void onSuccess(SocialUser user) {
+                        socialUser = user;
+                        if(TextUtils.isEmpty(user.getEmail())){
+                           AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
+                            LoginManager.getInstance().logOut();
+                        }else
+                            socialLogin();
+                    }
+                });
+//                if (mSimpleFacebook.isLogin()) {
+//                    getFbProfile();
+//                } else {
+//                    mSimpleFacebook.login(new OnLoginListener() {
+//                        @Override
+//                        public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
+//                            Log.i(TAG, "Logged in");
+//                            getFbProfile();
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancel() {
+//                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//                        }
+//
+//                        @Override
+//                        public void onException(Throwable throwable) {
+//                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//                        }
+//
+//                        @Override
+//                        public void onFail(String reason) {
+//                            v.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//                        }
+//                    });
+//                }
             }
         });
 
@@ -406,70 +415,75 @@ public class Login extends AppCompatActivity {
                 if (!googleAuth.mGoogleApiClient.isConnecting()) {
                     googleAuth.mGoogleApiClient.connect();
                 }
-        } else
-            mSimpleFacebook.onActivityResult(requestCode, resultCode, data);
+        } else {
+            appFacebookAuth.getCM().onActivityResult(requestCode, resultCode, data);
+            btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+
+        }
+        /*else
+            mSimpleFacebook.onActivityResult(requestCode, resultCode, data);*/
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void getFbProfile() {
-
-        Profile.Properties properties = new Profile.Properties.Builder()
-                .add(Profile.Properties.ID)
-                .add(Profile.Properties.NAME)
-                .add(Profile.Properties.PICTURE)
-                .add(Profile.Properties.EMAIL)
-                .add(Profile.Properties.FIRST_NAME)
-                .add(Profile.Properties.LAST_NAME)
-                .build();
-        mSimpleFacebook.getProfile(properties, new OnProfileListener() {
-            @Override
-            public void onComplete(Profile response) {
-                super.onComplete(response);
-//                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
-                // startActivity(new Intent(Login.this, TermsActivity.class));
-                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-                socialUser = new SocialUser();
-                socialUser.setAvatarURL(response.getPicture());
-                socialUser.setEmail(response.getEmail());
-                socialUser.setFname(response.getFirstName());
-                socialUser.setLname(response.getLastName());
-                socialUser.setName(response.getName());
-                socialUser.setNetwork(SocialUser.NetworkType.FACEBOOK);
-                if(TextUtils.isEmpty(response.getEmail())){
-                    AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
-                    SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
-                        @Override
-                        public void onLogout() {
-                        }
-                    });
-                }else
-                socialLogin();
-                Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                super.onException(throwable);
-                Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
-
-                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-            }
-
-            @Override
-            public void onFail(String reason) {
-                super.onFail(reason);
-                Toast.makeText(Login.this, reason, Toast.LENGTH_LONG).show();
-                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
-            }
-
-        });
-    }
+//    private void getFbProfile() {
+//
+//        Profile.Properties properties = new Profile.Properties.Builder()
+//                .add(Profile.Properties.ID)
+//                .add(Profile.Properties.NAME)
+//                .add(Profile.Properties.PICTURE)
+//                .add(Profile.Properties.EMAIL)
+//                .add(Profile.Properties.FIRST_NAME)
+//                .add(Profile.Properties.LAST_NAME)
+//                .build();
+//        mSimpleFacebook.getProfile(properties, new OnProfileListener() {
+//            @Override
+//            public void onComplete(Profile response) {
+//                super.onComplete(response);
+////                UsersDAO.addUser(new Users(1, response.getFirstName(), response.getLastName(), response.getName(), response.getEmail(), "123", response.getPicture(), System.currentTimeMillis(), 1, System.currentTimeMillis(), "0252255", 0, "121223"));
+//                // startActivity(new Intent(Login.this, TermsActivity.class));
+//                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//                socialUser = new SocialUser();
+//                socialUser.setAvatarURL(response.getPicture());
+//                socialUser.setEmail(response.getEmail());
+//                socialUser.setFname(response.getFirstName());
+//                socialUser.setLname(response.getLastName());
+//                socialUser.setName(response.getName());
+//                socialUser.setNetwork(SocialUser.NetworkType.FACEBOOK);
+//                if(TextUtils.isEmpty(response.getEmail())){
+//                    AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
+//                    SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
+//                        @Override
+//                        public void onLogout() {
+//                        }
+//                    });
+//                }else
+//                socialLogin();
+//                Toast.makeText(Login.this, response.getFirstName() + ", " + response.getLastName() + ", " + response.getEmail() + ", " + response.getPicture(), Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            public void onException(Throwable throwable) {
+//                super.onException(throwable);
+//                Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+//
+//                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//            }
+//
+//            @Override
+//            public void onFail(String reason) {
+//                super.onFail(reason);
+//                Toast.makeText(Login.this, reason, Toast.LENGTH_LONG).show();
+//                btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+//            }
+//
+//        });
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
+//        mSimpleFacebook = SimpleFacebook.getInstance(this);
     }
 
     @Override

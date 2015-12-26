@@ -34,7 +34,7 @@ dependencies {
     //    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.sromku:simple-fb:4.1.1'
+//    compile 'com.sromku:simple-fb:4.1.1'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.android.support:cardview-v7:23.1.0'
@@ -49,6 +49,7 @@ dependencies {
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.4'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.alexbbb:uploadservice:1.4'
+    compile "com.facebook.android:facebook-android-sdk:4.1.0"
     //        compile 'org.apache.httpcomponents:httpclient:4.3.6'
     //        compile 'org.apache.httpcomponents:httpmime:4.3.6'
     //    compile 'org.apache.httpcomponents:httpcore:4.3.3'
@@ -59,7 +60,7 @@ dependencies {
     compile files('libs/httpclient-4.3.6.jar')
     compile files('libs/httpcore-4.3.3.jar')
     compile files('libs/httpmime-4.3.6.jar')
-    compile 'com.facebook.fresco:fresco:0.8.1+'
+//    compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'com.androidadvance:topsnackbar:0.0.9'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         // exclusion is not necessary, but generally a good idea.
