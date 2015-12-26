@@ -89,7 +89,6 @@
                 android:id="@+id/iv_camera"
                 android:padding="10dp"
                 android:background="@drawable/drawer_list_selector"
-
                 android:layout_marginRight="10dp"
                 />
             <EditText
@@ -102,6 +101,8 @@
                 android:singleLine="false"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/ed_add_comment"
+                android:textColor="#4d4d4d"
+                android:textColorHint="#4d4d4d"
                 android:background="@drawable/ed_add_comment_backgnd"/>
 
             <RelativeLayout

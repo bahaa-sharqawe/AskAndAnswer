@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
@@ -1824,6 +1825,7 @@ public class WebServiceFunctions {
         prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
         clearLocalDB();
         if (loginType == com.orchidatech.askandanswer.Constant.Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
+            FacebookSdk.sdkInitialize(activity);
             LoginManager.getInstance().logOut();
 //            SimpleFacebook.getInstance(activity).logout(new OnLogoutListener() {
 //                @Override

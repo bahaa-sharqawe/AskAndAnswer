@@ -12,6 +12,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.orchidatech.askandanswer.Entity.SocialUser;
@@ -37,6 +38,7 @@ public class AppFacebookAuth {
         this.listener = listener;
         FacebookSdk.sdkInitialize(activity);
         mCallbackManager = CallbackManager.Factory.create();
+//        LoginManager.getInstance().setLoginBehavior( LoginBehavior.SUPPRESS_SSO );
         loginWithFacebook();
 
     }
@@ -51,7 +53,7 @@ public class AppFacebookAuth {
 
             @Override
             public void onCancel() {
-
+            Toast.makeText(activity, "CANCELLED", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -69,11 +71,11 @@ public class AppFacebookAuth {
                 JSONObject json = response.getJSONObject();
                 try {
                     if(json != null){
-                        String text = "Name : "+json.getString("name")+"\n Email : "+json.getString("email");
+                        String text = "Name : "+json.getString("name")+"\n Email : "+json.optString("email");
                         String str_firstname = json.getString("first_name");
                         String str_lastname = json.getString("last_name");
                         Toast.makeText(activity, text + "\n" + str_firstname + " " + str_lastname, Toast.LENGTH_LONG).show();
-//                        Log.i("response",  response.toString());
+                        Log.i("responsevcvcxvxc",  response.toString());
                         final SocialUser socialUser = new SocialUser();
                         socialUser.name = json.getString("name");
                         socialUser.avatarURL = "https://graph.facebook.com/" + json.optString("id") + "/picture?width=300&height=300";
@@ -86,7 +88,7 @@ public class AppFacebookAuth {
                     }
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Toast.makeText(activity, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });

@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.orchidatech.askandanswer.Constant.*;
@@ -279,6 +280,7 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 prefEditor.remove(GNLConstants.SharedPreference.LOGIN_TYPE);
                 prefEditor.remove(GNLConstants.SharedPreference.REG_ID).commit();
                 if(loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()){
+                    FacebookSdk.sdkInitialize(MainScreen.this);
                     LoginManager.getInstance().logOut();
                     startActivity(intent);
                     finish();
