@@ -50,6 +50,7 @@
                     android:id="@+id/tv_error"
                     android:layout_below="@+id/uncolored_logo"
                     android:layout_centerHorizontal="true"
+                    android:textColor="#4d4d4d"
                     android:textSize="22sp"/>
 
             </RelativeLayout>

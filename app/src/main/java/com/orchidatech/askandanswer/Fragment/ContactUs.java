@@ -94,7 +94,7 @@ public class ContactUs extends DialogFragment {
                             public void onSuccess() {
                                 loadingDialog.dismiss();
                                 ed_message.setText("");
-                                Toast.makeText(getActivity(), getString(R.string.message_sent), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.message_sent), Toast.LENGTH_LONG).show();
                                 dialog.dismiss();
 
                             }
@@ -102,7 +102,7 @@ public class ContactUs extends DialogFragment {
                             @Override
                             public void onFail(String error) {
                                 loadingDialog.dismiss();
-                                Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_LONG).show();
                             }
                         });
                     }else{

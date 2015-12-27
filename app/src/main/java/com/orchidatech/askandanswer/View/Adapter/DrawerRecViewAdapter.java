@@ -86,7 +86,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                 String letter = user.getFname().charAt(0) + " " + user.getLname().charAt(0);
 
                 final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) context.getResources().getDimension(R.dimen.drawer_user_letters_font_size)).endConfig()
-                        .buildRound(letter, generator.getRandomColor());
+                        .buildRound(letter.toUpperCase(), generator.getRandomColor());
                 if (user != null && !user.getImage().equals(URL.DEFAULT_IMAGE)) {
                     Picasso.with(context).load(Uri.parse(user.getImage())).skipMemoryCache().into(holder.iv_profile, new Callback() {
                         @Override

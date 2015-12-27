@@ -61,6 +61,7 @@ import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserActionsListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
@@ -89,6 +90,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
     private boolean loading = false;
     private boolean isFoundData = true;
     private boolean isCommentDialogShown = Boolean.FALSE;
+    private int last_fetched_posts_count;
 
     public MyFavoritesRecViewAdapter(Activity activity, ArrayList<Post_Favorite> posts, View parent,
                                       OnLastListReachListener lastListReachListener) {
@@ -107,7 +109,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 //set the max number of images (image width > 50) to be cached in memory, default is 20
         BitmapAjaxCallback.setCacheLimit(50);
         generator = ColorGenerator.MATERIAL;
-
+        last_fetched_posts_count = 0;
     }
 
     @Override
@@ -127,7 +129,8 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && posts.size() > 0) {
+            pv_load.setVisibility(View.GONE);
+            if (!loading && isFoundData && last_fetched_posts_count >= GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -151,12 +154,12 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             holder.tv_postDate.setText(GNLConstants.DateConversion.getDate(currentPost.getDate()));
             holder.tv_postContent.setText(currentPost.getText());
 
-            holder.ll_share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sharePost(currentPost, holder.iv_postImage.getDrawable());
-                }
-            });
+//            holder.ll_share.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    sharePost(currentPost, holder.iv_postImage.getDrawable());
+//                }
+//            });
             holder.ll_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -186,11 +189,28 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             holder.ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    ViewAnimation.blink(activity, holder.iv_share);
                     if (isCommentDialogShown)
                         return;
-//                    ViewAnimation.blink(activity, holder.iv_share);
-                    ViewAnimation.bounce(activity, holder.iv_share);
-                    sharePost(currentPost, holder.iv_postImage.getDrawable());
+                    mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            sharePost(currentPost, holder.iv_postImage.getDrawable());
+//                        holder.ll_comment.setEnabled(true);
+//                        holder.card_post.setEnabled(true);
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    holder.iv_share.startAnimation(mAnimation);
 //                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
                 }
             });
@@ -253,7 +273,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -382,6 +402,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             if(pv_load != null)
                  pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();
         } else {
             if(isErrorConnection){
@@ -415,7 +436,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
         if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
         activity.startActivity(Intent.createChooser(intent, "Share using"));

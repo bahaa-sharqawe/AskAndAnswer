@@ -60,7 +60,6 @@ dependencies {
     compile files('libs/httpclient-4.3.6.jar')
     compile files('libs/httpcore-4.3.3.jar')
     compile files('libs/httpmime-4.3.6.jar')
-//    compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'com.androidadvance:topsnackbar:0.0.9'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         // exclusion is not necessary, but generally a good idea.
@@ -72,4 +71,5 @@ dependencies {
     compile 'com.github.d-max:spots-dialog:0.7@aar'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.commit451:PhotoView:1.2.4'
+    compile 'com.facebook.fresco:fresco:0.7.0+'
 }

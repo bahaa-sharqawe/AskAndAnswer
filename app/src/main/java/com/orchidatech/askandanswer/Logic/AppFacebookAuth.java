@@ -53,12 +53,12 @@ public class AppFacebookAuth {
 
             @Override
             public void onCancel() {
-            Toast.makeText(activity, "CANCELLED", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity.getApplicationContext(), "CANCELLED", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(activity, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });

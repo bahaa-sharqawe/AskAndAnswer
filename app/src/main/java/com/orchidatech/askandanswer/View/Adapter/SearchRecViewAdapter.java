@@ -72,6 +72,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private boolean loading = false;
     private boolean isFoundData = true;
     private Button btn_reload;
+    int last_fetched_posts_count;
 
     public SearchRecViewAdapter(Activity activity, ArrayList<Posts> posts, View parent, OnLastListReachListener lastListReachListener) {
         this.activity = activity;
@@ -80,6 +81,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         fontManager = FontManager.getInstance(activity.getAssets());
         this.lastListReachListener = lastListReachListener;
         generator = ColorGenerator.MATERIAL;
+        last_fetched_posts_count = 0;
 
     }
 
@@ -99,7 +101,8 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     public void onBindViewHolder(final PostViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && posts.size() > 0) {
+            pv_load.setVisibility(View.GONE);
+            if (!loading && isFoundData && last_fetched_posts_count > GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -197,7 +200,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE))
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -349,6 +352,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
             if (pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();
 
         } else {

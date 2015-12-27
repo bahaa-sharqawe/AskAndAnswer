@@ -26,6 +26,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
@@ -39,6 +41,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnPostDataListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -50,7 +53,7 @@ public class NotificationPostView extends AppCompatActivity {
     public static final String TYPE = "object_tpe";
     Toolbar toolbar;
         CircleImageView iv_profile;
-        TextView tv_person_photo;
+        ImageView tv_person_photo;
         TextView tv_person_name;
         TextView tv_postDate;
         TextView tv_post;
@@ -77,6 +80,7 @@ public class NotificationPostView extends AppCompatActivity {
     private long post_id;
     private Posts post_item;
     RelativeLayout rl_post_info;
+    private ColorGenerator generator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +98,11 @@ public class NotificationPostView extends AppCompatActivity {
         object_id = intent.getLongExtra(OBJECT_ID, -1);
         object_type = intent.getIntExtra(TYPE, -1);
         setCustomActionBar();
+        generator = ColorGenerator.MATERIAL;
+
         rl_post_info = (RelativeLayout) this.findViewById(R.id.rl_post_info);
         iv_profile = (CircleImageView) this.findViewById(R.id.iv_profile);
-        tv_person_photo = (TextView) this.findViewById(R.id.tv_person_photo);
+        tv_person_photo = (ImageView) this.findViewById(R.id.tv_person_photo);
         tv_person_name = (TextView) this.findViewById(R.id.tv_person_name);
         tv_postDate = (TextView) this.findViewById(R.id.tv_postDate);
         tv_post = (TextView) this.findViewById(R.id.tv_post);
@@ -234,6 +240,11 @@ public class NotificationPostView extends AppCompatActivity {
         }else{
             iv_post.setVisibility(View.GONE);
         }
+        String letter = owner.getFname().charAt(0) + " " + owner.getLname().charAt(0);
+
+        final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
+                .buildRound(letter.toUpperCase(), generator.getRandomColor());
+
         if (owner != null && !owner.getImage().equals(URL.DEFAULT_IMAGE))
             Picasso.with(NotificationPostView.this).load(Uri.parse(owner.getImage())).into(iv_profile, new Callback() {
                 @Override
@@ -246,13 +257,13 @@ public class NotificationPostView extends AppCompatActivity {
                 public void onError() {
                     iv_profile.setVisibility(View.INVISIBLE);
                     tv_person_photo.setVisibility(View.VISIBLE);
-                    tv_person_photo.setText(owner.getFname().charAt(0)+" "+owner.getLname().charAt(0));
+                    tv_person_photo.setImageDrawable(drawable);
                 }
             });
         else{
             iv_profile.setVisibility(View.INVISIBLE);
             tv_person_photo.setVisibility(View.VISIBLE);
-            tv_person_photo.setText(owner.getFname().charAt(0) + " " + owner.getLname().charAt(0));
+            tv_person_photo.setImageDrawable(drawable);
         }
 
     }
@@ -288,7 +299,7 @@ public class NotificationPostView extends AppCompatActivity {
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
         if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
         startActivity(Intent.createChooser(intent, "Share using"));

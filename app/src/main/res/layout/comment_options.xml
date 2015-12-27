@@ -15,6 +15,7 @@
         android:layout_marginBottom="4dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
+        android:textColor="#4d4d4d"
         android:textStyle="bold"/>
 
     <TextView
@@ -27,6 +28,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="2dp"
+        android:textColor="#4d4d4d"
         android:background="@drawable/drawer_list_selector"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>

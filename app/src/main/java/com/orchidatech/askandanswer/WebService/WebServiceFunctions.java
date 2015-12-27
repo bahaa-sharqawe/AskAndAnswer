@@ -1661,7 +1661,7 @@ public class WebServiceFunctions {
                         String comment_image = comment.getString("image");
                         long user_id = comment.getLong("user_id");
                         long post_id = comment.getLong("post_id");
-                        long comment_date = comment.getLong("updated_at");
+                        long comment_date = comment.getLong("created_at");
                         Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0, 2);
                         CommentsDAO.addComment(newComment);
                         Users user = UsersDAO.getUser(user_id);

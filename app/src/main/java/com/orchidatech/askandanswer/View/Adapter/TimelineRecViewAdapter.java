@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nineoldandroids.animation.Animator;
@@ -63,12 +65,18 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
+import com.orchidatech.askandanswer.View.Utils.DeviceDimensionsHelper;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +104,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private boolean isFoundData = true;
     OnLastListReachListener lastListReachListener;
     private boolean isCommentDialogShown = false;
+    int last_fetched_posts_count;
 
 
     public TimelineRecViewAdapter(Activity activity, List<Posts> posts, View parent,
@@ -113,6 +122,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
+        last_fetched_posts_count = 0;
 //        AjaxCallback.setNetworkLimit(8);
 //
 ////set the max number of icons (image width <= 50) to be cached in memory, default is 20
@@ -140,7 +150,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && posts.size() > 0) {
+            pv_load.setVisibility(View.GONE);
+            if (!loading && isFoundData && last_fetched_posts_count >= GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -186,10 +197,11 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                pref.edit().remove("prevImage").commit();
 //            }
 
-            holder.iv_postImage.setVisibility(View.INVISIBLE);
+//            holder.iv_postImage.setVisibility(View.INVISIBLE);
+            holder.iv_postImage.setImageBitmap(null);
 
             if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
-                AQuery aq = new AQuery(activity);
+                final AQuery aq = new AQuery(activity);
                 if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
                     if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
                         aq.invalidate(pref.getString("prevImage", null));
@@ -200,10 +212,82 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 /* Getting Images from Server and stored in cache */
 
                 Bitmap preset = aq.getCachedImage(currentPost.getImage());
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
-                holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+//                if(preset != null){
+//                    holder.tv_postContent.measure(0, 0);       //must call measure!
+////                        holder.tv_postContent.getMeasuredHeight(); //get width
+////                        holder.tv_postContent.getMeasuredWidth();  //get height
+//                    holder.iv_postImage.setImageBitmap(preset/*BitmapUtility.resizeBitmap(preset, *//*holder.tv_postContent.getWidth()*//*431, 400)*/);
+//                    Log.i("preset", position + " " + preset.getHeight() + " x " + preset.getWidth());
+//                }
+////                aq.ajax(currentPost.getImage(), Bitmap.class, 0, new AjaxCallback<Bitmap>() {
+//                    @Override
+//                    public void callback(String url, Bitmap bitmap, AjaxStatus status) {
+//                        super.callback(url, bitmap, status);
+//                        holder.tv_postContent.measure(0, 0);       //must call measure!
+////                        holder.tv_postContent.getMeasuredHeight(); //get width
+////                        holder.tv_postContent.getMeasuredWidth();  //get height
+//                        bitmap = BitmapUtility.resizeBitmap(bitmap, holder.tv_postContent.getWidth(), 400);
+//                        Log.i("dimensd", bitmap.getHeight() + " x " + bitmap.getWidth() + ", " + holder.tv_postContent.getWidth());
+//
+//                        holder.iv_postImage.setImageBitmap(bitmap);
+//
+//                    }
+//                });
+//                holder.iv_postImage.setImageBitmap(preset);
+//else {
+                    aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
+                        @Override
+                        public void callback(String url, final ImageView iv, Bitmap bm, AjaxStatus status) {
+
+                            // Get height or width of screen at runtime
+                            int screenWidth = DeviceDimensionsHelper.getDisplayWidth(activity);
+// Resize a Bitmap maintaining aspect ratio based on screen width
+//                        BitmapUtility.scaleToFitWidth(bm, screenWidth);
+                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth());
+//                        bm = BitmapUtility.scaleToFitWidth(bm, holder.tv_postContent.getWidth());
+                            holder.tv_postContent.measure(0, 0);       //must call measure!
+//                        holder.tv_postContent.getMeasuredHeight(); //get width
+//                        holder.tv_postContent.getMeasuredWidth();  //get height
+                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
+                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
+                            final Bitmap finalBm = bm;
+/*                            new Handler().postDelayed(new Runnable() {
+
+                                @Override
+                                public void run() {*/
+        iv.setImageBitmap(finalBm);
+                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
+Log.i("preset", "reloaded");
+                               /* }
+                            }, 1000);*/
+//                        File cachedFile = aq.getCachedFile(url);
+//                        if(cachedFile != null){
+//                            OutputStream fOut = null;
+////                            File file = new File(path, "FitnessGirl"+Contador+".jpg"); // the File to save to
+//                            try {
+//                                fOut = new FileOutputStream(cachedFile);
+//                                Bitmap pictureBitmap = bm; // obtaining the Bitmap
+//                                pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+//                                fOut.flush();
+//                                fOut.close(); // do not forget to close the stream
+//                                Log.i("replacedcx", "true");
+//
+//                            } catch (FileNotFoundException e) {
+//                                e.printStackTrace();
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+
+                            iv.setVisibility(View.VISIBLE);
+                        }
+
+                    });
+//                }
+               holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                  public void onClick(View v) {
                         viewPhoto(currentPost.getImage());
                     }
                 });
@@ -238,7 +322,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                });
 
             } else {
-                holder.iv_postImage.setVisibility(View.GONE);
+//                holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
 //            holder.tv_person_photo.setVisibility(View.INVISIBLE);
@@ -246,7 +330,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -302,9 +386,26 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 public void onClick(View v) {
                     if (isCommentDialogShown)
                         return;
+                    mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            sharePost(posts.get(position), holder.iv_postImage.getDrawable());
+//                        holder.ll_comment.setEnabled(true);
+//                        holder.card_post.setEnabled(true);
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    holder.iv_share.startAnimation(mAnimation);
 //                    ViewAnimation.blink(activity, holder.iv_share);
-                    ViewAnimation.bounce(activity, holder.iv_share);
-                    sharePost(posts.get(position), holder.iv_postImage.getDrawable());
 //                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
                 }
             });
@@ -453,6 +554,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             if (pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();
 
         } else {
@@ -499,7 +601,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
         if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
         activity.startActivity(Intent.createChooser(intent, "Share using"));

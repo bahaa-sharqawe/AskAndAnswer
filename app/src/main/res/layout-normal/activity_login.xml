@@ -47,7 +47,7 @@
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
             android:paddingLeft="0dp"
-            android:hint="@string/ed_name_hint"
+            android:hint="@string/ed_email_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_name" />
         <EditText

@@ -55,17 +55,47 @@ public class GNLConstants {
 
     public final static class DateConversion {
         final static String MONTHS[] = new String[]{"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-        public static String getDate(long milliSeconds) {
+        public static String getDate(long milliSeconds)
+        {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds);
-            String fullDate = MONTHS[calendar.get(Calendar.MONTH)] + " " + buildValueOf(calendar.get(Calendar.DAY_OF_MONTH)) + ", " + calendar.get(Calendar.YEAR);
+            String fullDate = MONTHS[calendar.get(Calendar.MONTH)] + " " + buildValueOf(calendar.get(Calendar.DAY_OF_MONTH)) + ", " + calendar.get(Calendar.YEAR) + " at "+
+                    buildValueOf(getHour(calendar.get(Calendar.HOUR_OF_DAY))) + ":" + buildValueOf(calendar.get(Calendar.MINUTE)) + " " + time_type(calendar.get(Calendar.HOUR_OF_DAY));
             return fullDate;
+
+        }
+
+        private static String time_type(int i) {
+            if(i > 12)
+                return "PM";
+
+            return "AM";
+        }
+
+        private static int getHour(int hour) {
+            if(hour < 12)
+                return hour;
+            else
+                return hour-12;
         }
 
         private static String buildValueOf(int value) {
-            return value >= 10 ? String.valueOf(value) : "0" + String.valueOf(value);
+            if (value >= 10)
+                return String.valueOf(value);
+            else
+                return "0" + String.valueOf(value);
         }
+
+//        public static String getDate(long milliSeconds) {
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTimeInMillis(milliSeconds);
+//            String fullDate = MONTHS[calendar.get(Calendar.MONTH)] + " " + buildValueOf(calendar.get(Calendar.DAY_OF_MONTH)) + ", " + calendar.get(Calendar.YEAR);
+//            return fullDate;
+//        }
+//
+//        private static String buildValueOf(int value) {
+//            return value >= 10 ? String.valueOf(value) : "0" + String.valueOf(value);
+//        }
     }
 
     public static String getStatus(int code){
@@ -143,29 +173,49 @@ public class GNLConstants {
         }
         return message;
     }
+//    public static class BitmapUtility
+//    {
+//        // Scale and maintain aspect ratio given a desired width
+//        // BitmapScaler.scaleToFitWidth(bitmap, 100);
+//        public static Bitmap scaleToFitWidth(Bitmap b, int width) {
+//            float factor = width / (float) b.getWidth();
+//            return Bitmap.createScaledBitmap(b, width, (int) (b.getHeight() * factor), true);
+//        }
+//
+//
+//        // Scale and maintain aspect ratio given a desired height
+//        // BitmapScaler.scaleToFitHeight(bitmap, 100);
+//
+//        public static Bitmap scaleToFitHeight(Bitmap b, int height)
+//        {
+//            float factor = height / (float) b.getHeight();
+//            return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factor), height, true);
+//        }
+//
+//        public static Bitmap drawableToBitmap (Drawable drawable) {
+//
+//            Bitmap bitmap = null;
+//
+//            if (drawable instanceof BitmapDrawable) {
+//                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+//                if(bitmapDrawable.getBitmap() != null) {
+//                    return bitmapDrawable.getBitmap();
+//                }
+//            }
+//
+//            if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+//                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+//            } else {
+//                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+//            }
+//
+//            Canvas canvas = new Canvas(bitmap);
+//            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+//            drawable.draw(canvas);
+//            return bitmap;
+//        }
+//    }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
     public static class Parser{
         public static Users getUser(JSONObject user_json){
             try {

@@ -72,7 +72,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         String letter = notification.f_name.charAt(0) + " " + notification.l_name.charAt(0);
 
         final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                .buildRound(letter, holder.text_draw_color);
+                .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
         if (!notification.getUser_photo().equals(URL.DEFAULT_IMAGE))
             Picasso.with(activity).load(Uri.parse(notification.getUser_photo())).into(holder.iv_profile, new Callback() {

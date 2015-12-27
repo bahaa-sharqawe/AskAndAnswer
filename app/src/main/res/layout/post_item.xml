@@ -69,15 +69,15 @@
             </LinearLayout>
 
             <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_postContent"
-            android:layout_below="@+id/ll_post_header"
-            android:layout_alignLeft="@+id/ll_post_header"
-            android:text="@string/post_example"
-            android:textSize="12sp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_postContent"
+                android:layout_below="@+id/ll_post_header"
+                android:layout_alignLeft="@+id/ll_post_header"
+                android:text="@string/post_example"
+                android:textSize="12sp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"/>
 
         </RelativeLayout>
         <RelativeLayout
@@ -127,7 +127,6 @@
                     android:layout_weight="1"
                     android:id="@+id/ll_comment"
                     android:gravity="left"
-                    android:background="?android:attr/selectableItemBackground"
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center_vertical"
                     android:orientation="horizontal">
@@ -156,7 +155,6 @@
                     android:id="@+id/ll_share"
                     android:gravity="left"
                     android:layout_gravity="center_vertical"
-                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"
@@ -183,7 +181,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="left"
                     android:layout_gravity="center_vertical"
-                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"
@@ -209,24 +206,24 @@
             android:layout_alignParentLeft="true"
             android:id="@+id/rl_person_photo"
             >
-<ImageView
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:id="@+id/tv_person_photo"
-            android:layout_marginRight="5dp"
-    android:layout_marginLeft="2dp"/>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/tv_person_photo"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="2dp"/>
             <!--<TextView-->
-                <!--android:layout_width="40dp"-->
-                <!--android:layout_height="40dp"-->
-                <!--android:background="@drawable/offline_photo_backgnd"-->
-                <!--android:id="@+id/tv_person_photo"-->
-                <!--android:gravity="center"-->
-                <!--android:textSize="14sp"-->
-                <!--android:text="A B"-->
-                <!--android:layout_marginRight="5dp"-->
-                <!--android:layout_marginLeft="2dp"-->
-                <!--android:visibility="visible"-->
-                <!--/>-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:background="@drawable/offline_photo_backgnd"-->
+            <!--android:id="@+id/tv_person_photo"-->
+            <!--android:gravity="center"-->
+            <!--android:textSize="14sp"-->
+            <!--android:text="A B"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:layout_marginLeft="2dp"-->
+            <!--android:visibility="visible"-->
+            <!--/>-->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"

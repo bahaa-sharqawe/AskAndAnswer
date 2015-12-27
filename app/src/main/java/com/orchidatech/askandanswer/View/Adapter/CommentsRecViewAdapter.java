@@ -94,6 +94,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private boolean isFoundData = true;
     private final OnLastListReachListener lastListReachListener;
     private int position;
+    private int last_fetched_comments_count;
 
     public CommentsRecViewAdapter(Activity activity, List<com.orchidatech.askandanswer.Database.Model.Comments> comments, Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data, View parent, OnLastListReachListener lastListReachListener,
                                   OnCommentOptionListener commentOptionListener/*, int fragment_numeric*/) {
@@ -109,6 +110,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
         generator = ColorGenerator.MATERIAL;
+        last_fetched_comments_count = 0;
 
     }
 
@@ -130,7 +132,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     public void onBindViewHolder(final CommentsViewHolder holder, final int position) {
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && comments.size()>0/* && (fragment_numeric == Enum.COMMENTS_FRAGMENTS.COMMENTS.getNumericType()?Comments.last_id_server >0:comments.size()>0)*/) {
+            pv_load.setVisibility(View.GONE);
+            if (!loading && isFoundData && last_fetched_comments_count >= GNLConstants.COMMENTS_LIMIT) {
 
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
@@ -150,7 +153,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             String letter = commentOwner.getFname().charAt(0) + " " + commentOwner.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
             if(commentOwner != null && !commentOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(commentOwner.getImage())).into(holder.iv_person, new Callback() {
@@ -355,7 +358,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 data.remove(comments.get(position));
                 comments.remove(position);
                 notifyDataSetChanged();
-                Toast.makeText(activity, activity.getResources().getString(R.string.deleted), Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), activity.getResources().getString(R.string.deleted), Toast.LENGTH_LONG).show();
 //                AppSnackBar.showTopSnackbar(activity, activity.getResources().getString(R.string.deleted), activity.getResources().getColor(R.color.colorPrimary), Color.WHITE);
             }
 
@@ -468,6 +471,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             if(pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            last_fetched_comments_count = _comments.size();
 //            if(comments.size() > GNLConstants.MAX_COMMENTS_ROWS)
 //                comments = comments.subList(comments.size()-GNLConstants.MAX_COMMENTS_ROWS, comments.size());
             notifyDataSetChanged();

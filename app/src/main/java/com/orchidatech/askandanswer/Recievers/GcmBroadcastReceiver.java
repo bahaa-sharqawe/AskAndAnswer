@@ -16,6 +16,7 @@ import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.NotificationPostView;
 import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
+import com.orchidatech.askandanswer.Fragment.Timeline;
 import com.orchidatech.askandanswer.R;
 
 import org.json.JSONException;
@@ -110,6 +111,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             }
             Log.i("vcvcvc", NotificationsDAO.getAllNotifications().size() + "");
             sendNotification(notification_text, notification_object_id, notification_type);
+            context.sendBroadcast(new Intent(Timeline.CUSTOM_INTENT));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

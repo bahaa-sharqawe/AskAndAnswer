@@ -18,7 +18,9 @@
         android:textSize="30sp"
         android:gravity="left"
         android:paddingLeft="30dp"
-        android:layout_marginBottom="40dp"/>
+        android:layout_marginBottom="40dp"
+        android:textColor="#4d4d4d"
+        />
 
     <TextView
         android:id="@+id/tv_delCommtAttention"
@@ -26,6 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_delCommentAttention"
         android:textSize="25sp"
+        android:textColor="#4d4d4d"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"/>
     <!--<View-->

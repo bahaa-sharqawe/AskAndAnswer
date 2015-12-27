@@ -199,7 +199,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
             public void onDeleted() {
                     dialog.dismiss();
                 Toast.makeText(ViewPost.this, getResources().getString(R.string.deleted), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ViewPost.this, MainScreen.class));
+                startActivity(new Intent(getApplicationContext(), MainScreen.class));
 
 //                AppSnackBar.show(ll_parent, getResources().getString(R.string.deleted), getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {

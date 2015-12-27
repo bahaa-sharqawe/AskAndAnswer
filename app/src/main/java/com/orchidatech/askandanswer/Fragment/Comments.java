@@ -246,7 +246,7 @@ public class Comments extends DialogFragment {
                         public void onFail(String error) {
                             iv_add_comment.setVisibility(View.VISIBLE);
                             pb_add_comment.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_LONG).show();
 //                            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);

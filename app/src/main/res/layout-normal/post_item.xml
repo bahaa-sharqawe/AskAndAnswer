@@ -127,7 +127,6 @@
                     android:layout_weight="1"
                     android:id="@+id/ll_comment"
                     android:gravity="left"
-                    android:background="?android:attr/selectableItemBackground"
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center_vertical"
                     android:orientation="horizontal">
@@ -156,7 +155,6 @@
                     android:id="@+id/ll_share"
                     android:gravity="left"
                     android:layout_gravity="center_vertical"
-                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"
@@ -183,7 +181,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="left"
                     android:layout_gravity="center_vertical"
-                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"

@@ -179,6 +179,8 @@ public class CommentsScreen extends Activity {
                     pb_add_comment.setVisibility(View.VISIBLE);
                     iv_add_comment.setEnabled(false);
                     iv_camera.setEnabled(false);
+                    iv_delete.setEnabled(false);
+                    ed_add_comment.setEnabled(false);
                     WebServiceFunctions.addComment(CommentsScreen.this, comment, picturePath, postId, pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1), new OnCommentAddListener() {
 
                         @Override
@@ -194,16 +196,20 @@ public class CommentsScreen extends Activity {
                             adapter.addComment(comment);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
+                            ed_add_comment.setEnabled(true);
+
                         }
 
                         @Override
                         public void onFail(String error) {
                             iv_add_comment.setVisibility(View.VISIBLE);
                             pb_add_comment.setVisibility(View.INVISIBLE);
-                            Toast.makeText(CommentsScreen.this, error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 //                            AppSnackBar.show(rl_parent, error, Color.RED, Color.WHITE);
                             iv_add_comment.setEnabled(true);
                             iv_camera.setEnabled(true);
+                            iv_delete.setEnabled(true);
+                            ed_add_comment.setEnabled(true);
                         }
                     });
                 }

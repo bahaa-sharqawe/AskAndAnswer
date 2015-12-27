@@ -1,8 +1,10 @@
 package com.orchidatech.askandanswer.Fragment;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -58,6 +60,10 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
  * Created by Bahaa on 7/11/2015.
  */
 public class Timeline extends Fragment {
+    public static final String CUSTOM_INTENT = "com.orchida.askandanswer.notification_received";
+    private final IntentFilter intentFilter = new IntentFilter(CUSTOM_INTENT);
+
+
     RecyclerView rv_posts;
     TimelineRecViewAdapter adapter;
     NotificationsAdapter notificationsAdapter;
@@ -80,6 +86,8 @@ public class Timeline extends Fragment {
     private List<Posts> allStoredPosts;
 
     TextView tv_notifications_count;
+    private BroadcastReceiver notifications_listener = new NotificationRec();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,14 +120,14 @@ public class Timeline extends Fragment {
 
         allPosts = new ArrayList<>();
         allNotifications = new ArrayList<>(NotificationsDAO.getAllNotifications());
-        Log.i("xvxv", allNotifications.size()+"");
+        Log.i("xvxv", allNotifications.size() + "");
         adapter = new TimelineRecViewAdapter(getActivity(), allPosts, coordinator_layout, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewPosts();
             }
         }, Enum.POSTS_FRAGMENTS.TIMELINE.getNumericType());
-        if(allNotifications.size() > 0)
+        if (allNotifications.size() > 0)
             tv_no_notification.setVisibility(View.INVISIBLE);
         else
             tv_no_notification.setVisibility(View.VISIBLE);
@@ -153,17 +161,13 @@ public class Timeline extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv_notifications_count = (TextView) getActivity().findViewById(R.id.tv_notifications_count);
-        ArrayList<Notifications> allNotDoneNoti = new ArrayList<>(NotificationsDAO.getAllNotDoneNotifications());
-        if(allNotDoneNoti.size() == 0)
-            tv_notifications_count.setVisibility(View.INVISIBLE);
-        else
-        tv_notifications_count.setText(allNotDoneNoti.size()+"");
+      getNotificationsCount();
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
         rl_num_notifications.setVisibility(View.VISIBLE);
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                if (!mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.openDrawer(GravityCompat.END);
                 else
                     mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -174,11 +178,19 @@ public class Timeline extends Fragment {
 
     }
 
+    private void getNotificationsCount() {
+        ArrayList<Notifications> allNotDoneNoti = new ArrayList<>(NotificationsDAO.getAllNotDoneNotifications());
+        if (allNotDoneNoti.size() == 0)
+            tv_notifications_count.setVisibility(View.INVISIBLE);
+        else
+            tv_notifications_count.setText(allNotDoneNoti.size() + "");
+    }
+
     private void setActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Questions");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        ( getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
-        (getActivity(). findViewById(R.id.rl_num_notifications)).setVisibility(View.VISIBLE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Questions");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        (getActivity().findViewById(R.id.ed_search)).setVisibility(View.GONE);
+        (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.VISIBLE);
     }
 
     private void loadNewPosts() {
@@ -222,13 +234,14 @@ public class Timeline extends Fragment {
     }
 
     private void getFromLocal(String error) {
-        if(allStoredPosts == null || allStoredPosts.size() == 0) {
+        if (allStoredPosts == null || allStoredPosts.size() == 0) {
             rl_error.setVisibility(View.VISIBLE);
             tv_error.setText(error);
             rl_error.setEnabled(true);
         }
         adapter.addFromLocal(allStoredPosts);
     }
+
     private void resizeLogo() {
         Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point screenSize = new Point(); // used to store screen size
@@ -238,21 +251,26 @@ public class Timeline extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(notifications_listener, intentFilter);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        Log.i("mmmmmmmmmmm", "pause");
+        getActivity().unregisterReceiver(notifications_listener);
+
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i("mmmmmmmmmmm", "stop");
-    }
+    private class NotificationRec extends BroadcastReceiver {
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i("mmmmmmmmmmm", "detach");
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getNotificationsCount();
+            allNotifications.add(NotificationsDAO.getAllNotifications().get(0));
+            notificationsAdapter.notifyDataSetChanged();
+        }
 
     }
 }

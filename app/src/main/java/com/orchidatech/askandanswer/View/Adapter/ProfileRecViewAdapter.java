@@ -56,6 +56,7 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
@@ -88,7 +89,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     private boolean isFoundData = true;
     OnLastListReachListener lastListReachListener;
     private boolean isCommentDialogShown = false;
-
+    int last_fetched_posts_count;
 
     public ProfileRecViewAdapter(Activity activity, List<Posts> posts, View parent, long user_id,
                                   OnLastListReachListener lastListReachListener) {
@@ -106,6 +107,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
         fontManager = FontManager.getInstance(activity.getAssets());
         generator = ColorGenerator.MATERIAL;
          user = UsersDAO.getUser(user_id);
+        last_fetched_posts_count = 0;
     }
 
     @Override
@@ -155,7 +157,8 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
 
         }else if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            if (!loading && isFoundData && posts.size() > 0) {
+            pv_load.setVisibility(View.GONE);
+            if (!loading && isFoundData && last_fetched_posts_count  >= GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -259,7 +262,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
             String letter = user.getFname().charAt(0) + " " + user.getLname().charAt(0);
 
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter, holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
 
             if (user != null && !user.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(user.getImage())).into(holder.iv_profile, new Callback() {
@@ -315,9 +318,25 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 public void onClick(View v) {
                     if (isCommentDialogShown)
                         return;
-//                    ViewAnimation.blink(activity, holder.iv_share);
-                    ViewAnimation.bounce(activity, holder.iv_share);
-                    sharePost(posts.get(position-1), holder.iv_postImage.getDrawable());
+                    mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            sharePost(posts.get(position - 1), holder.iv_postImage.getDrawable());
+//                        holder.ll_comment.setEnabled(true);
+//                        holder.card_post.setEnabled(true);
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    holder.iv_share.startAnimation(mAnimation);
 //                        pe_listener.onSharePost(posts.get(getAdapterPosition()).getServerID());
                 }
             });
@@ -389,6 +408,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
         CircleImageView iv_profile;
         ImageView iv_favorite;
         ProgressBar pb_photo_load;
+
 
         int viewType;
         public ImageView iv_comment;
@@ -480,6 +500,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
             if (pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
+            last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();
 
         } else {
@@ -526,7 +547,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
         if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), GNLConstants.drawableToBitmap(postPhoto), "", null);
+            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
         }
         activity.startActivity(Intent.createChooser(intent, "Share using"));

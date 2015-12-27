@@ -218,6 +218,20 @@ public class Login extends AppCompatActivity {
             public void onFail() {
                 dialog.dismiss();
                 AppSnackBar.showTopSnackbar(Login.this, "An Error Occurred, Retry", Color.RED, Color.WHITE);
+                int loginType = pref.getInt(GNLConstants.SharedPreference.LOGIN_TYPE, 0);
+
+                if (loginType == Enum.LOGIN_TYPE.FACEBOOK.getNumericType()) {
+                    LoginManager.getInstance().logOut();
+//                            SimpleFacebook.getInstance(Login.this).logout(new OnLogoutListener() {
+//                                @Override
+//                                public void onLogout() {
+//                                }
+//                            });
+                } else if (loginType == Enum.LOGIN_TYPE.GOOGLE.getNumericType()) {
+                    googleAuth.googlePlusLogout();
+//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+
+                }
 
             }
         });

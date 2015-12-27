@@ -115,7 +115,7 @@ public class ForgetPassword extends AppCompatActivity {
             @Override
             public void success(String message) {
                 dialog.dismiss();
-                Toast.makeText(ForgetPassword.this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                onBackPressed();
             }
 

@@ -298,8 +298,8 @@ public class AddEditPost extends AppCompatActivity {
                     pref.edit().putLong(postId+"",postId).commit();
                     pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }
-                Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
-                startActivity(new Intent(AddEditPost.this, MainScreen.class));
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), MainScreen.class));
                 finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {
@@ -339,8 +339,8 @@ public class AddEditPost extends AppCompatActivity {
                 picturePath = null;
                 iv_camera.setEnabled(true);
                 ed_postDesc.setText("");
-                Toast.makeText(AddEditPost.this, message, Toast.LENGTH_LONG).show();
-                startActivity(new Intent(AddEditPost.this, MainScreen.class));
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), MainScreen.class));
                 finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {
@@ -388,7 +388,8 @@ public class AddEditPost extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-            final Bitmap bitmap = ShrinkBitmap(picturePath, 300, 300);
+//            final Bitmap bitmap = ShrinkBitmap(picturePath, 300, 300);
+            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
             if (bitmap == null) {
                 Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
