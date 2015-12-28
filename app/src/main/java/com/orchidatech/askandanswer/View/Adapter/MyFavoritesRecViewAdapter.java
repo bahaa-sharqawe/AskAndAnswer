@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -35,6 +37,15 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
@@ -251,22 +262,89 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
             });
             String postImage = currentPost.getImage();
 
-            if(!TextUtils.isEmpty(postImage) && postImage != "null"){
-                AQuery aq = new AQuery(activity);
-                Bitmap preset = aq.getCachedImage(postImage);
 
+            if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
+                holder.iv_postImage.setVisibility(View.VISIBLE);
+
+                final AQuery aq = new AQuery(activity);
+                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+                        aq.invalidate(pref.getString("prevImage", null));
+                    }
+                    pref.edit().remove(currentPost.getServerID() + "").commit();
+                    pref.edit().remove("prevImage").commit();
+                }
 /* Getting Images from Server and stored in cache */
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+
+//                Bitmap preset = aq.getCachedImage(currentPost.getImage());
+//                    aq.id(holder.iv_postImage).image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
+//                        @Override
+//                        public void callback(String url, final ImageView iv, Bitmap bm, AjaxStatus status) {
+//
+//                            int screenWidth = DeviceDimensionsHelper.getDisplayWidth(activity);
+//
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth());
+//                            holder.tv_postContent.measure(0, 0);       //must call measure!
+//                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
+//                            final Bitmap finalBm = bm;
+//        iv.setImageBitmap(finalBm);
+//                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
+//Log.i("preset", "reloaded");
+//
+//                            iv.setVisibility(View.VISIBLE);
+//                        }
+//
+//                    });
+//                }
+                GenericDraweeHierarchyBuilder builder =
+                        new GenericDraweeHierarchyBuilder(activity.getResources());
+                GenericDraweeHierarchy hierarchy = builder
+                        .setProgressBarImage(new ProgressBarDrawable())
+                        .build();
+                holder.iv_postImage.setHierarchy(hierarchy);
+
+
+                ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(
+                            String id,
+                            @Nullable ImageInfo imageInfo,
+                            @Nullable Animatable anim) {
+                        if (imageInfo == null) {
+                            return;
+                        }
+
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+                    }
+
+                    @Override
+                    public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+
+                    }
+
+                    @Override
+                    public void onFailure(String id, Throwable throwable) {
+                    }
+                };
+                DraweeController controller = (DraweeController) Fresco.newDraweeControllerBuilder()
+                        .setControllerListener(controllerListener)
+                        .setUri(Uri.parse(currentPost.getImage()))
+                                // other setters
+                        .build();
+                holder.iv_postImage.setController(controller);
+
+//                holder.iv_postImage.setImageURI(Uri.parse(currentPost.getImage()));
                 holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         viewPhoto(currentPost.getImage());
                     }
                 });
-            }else {
+            } else {
                 holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
-
             }
 
             holder.iv_favorite.setImageResource(R.drawable.ic_fav_on);
@@ -328,7 +406,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         TextView tv_share;
         TextView tv_comment;
         ImageView tv_person_photo;
-        ImageView iv_postImage;
+        SimpleDraweeView iv_postImage;
         RelativeLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
@@ -357,7 +435,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
                 tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
-                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_postImage = (SimpleDraweeView) itemView.findViewById(R.id.iv_postImage);
                 iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment);
                 iv_share = (ImageView) itemView.findViewById(R.id.iv_share);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);

@@ -9,11 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -36,13 +39,23 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.image.QualityInfo;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nineoldandroids.animation.Animator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.CommentsScreen;
 import com.orchidatech.askandanswer.Activity.MainScreen;
@@ -122,7 +135,6 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
-        last_fetched_posts_count = 0;
 //        AjaxCallback.setNetworkLimit(8);
 //
 ////set the max number of icons (image width <= 50) to be cached in memory, default is 20
@@ -201,6 +213,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             holder.iv_postImage.setImageBitmap(null);
 
             if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
+                holder.iv_postImage.setVisibility(View.VISIBLE);
+
                 final AQuery aq = new AQuery(activity);
                 if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
                     if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
@@ -211,118 +225,74 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 }
 /* Getting Images from Server and stored in cache */
 
-                Bitmap preset = aq.getCachedImage(currentPost.getImage());
-//                if(preset != null){
-//                    holder.tv_postContent.measure(0, 0);       //must call measure!
-////                        holder.tv_postContent.getMeasuredHeight(); //get width
-////                        holder.tv_postContent.getMeasuredWidth();  //get height
-//                    holder.iv_postImage.setImageBitmap(preset/*BitmapUtility.resizeBitmap(preset, *//*holder.tv_postContent.getWidth()*//*431, 400)*/);
-//                    Log.i("preset", position + " " + preset.getHeight() + " x " + preset.getWidth());
-//                }
-////                aq.ajax(currentPost.getImage(), Bitmap.class, 0, new AjaxCallback<Bitmap>() {
-//                    @Override
-//                    public void callback(String url, Bitmap bitmap, AjaxStatus status) {
-//                        super.callback(url, bitmap, status);
-//                        holder.tv_postContent.measure(0, 0);       //must call measure!
-////                        holder.tv_postContent.getMeasuredHeight(); //get width
-////                        holder.tv_postContent.getMeasuredWidth();  //get height
-//                        bitmap = BitmapUtility.resizeBitmap(bitmap, holder.tv_postContent.getWidth(), 400);
-//                        Log.i("dimensd", bitmap.getHeight() + " x " + bitmap.getWidth() + ", " + holder.tv_postContent.getWidth());
+//                Bitmap preset = aq.getCachedImage(currentPost.getImage());
+//                    aq.id(holder.iv_postImage).image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
+//                        @Override
+//                        public void callback(String url, final ImageView iv, Bitmap bm, AjaxStatus status) {
 //
-//                        holder.iv_postImage.setImageBitmap(bitmap);
+//                            int screenWidth = DeviceDimensionsHelper.getDisplayWidth(activity);
 //
-//                    }
-//                });
-//                holder.iv_postImage.setImageBitmap(preset);
-//else {
-                    aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
-                        @Override
-                        public void callback(String url, final ImageView iv, Bitmap bm, AjaxStatus status) {
-
-                            // Get height or width of screen at runtime
-                            int screenWidth = DeviceDimensionsHelper.getDisplayWidth(activity);
-// Resize a Bitmap maintaining aspect ratio based on screen width
-//                        BitmapUtility.scaleToFitWidth(bm, screenWidth);
-                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth());
-//                        bm = BitmapUtility.scaleToFitWidth(bm, holder.tv_postContent.getWidth());
-                            holder.tv_postContent.measure(0, 0);       //must call measure!
-//                        holder.tv_postContent.getMeasuredHeight(); //get width
-//                        holder.tv_postContent.getMeasuredWidth();  //get height
-                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
-                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
-                            final Bitmap finalBm = bm;
-/*                            new Handler().postDelayed(new Runnable() {
-
-                                @Override
-                                public void run() {*/
-        iv.setImageBitmap(finalBm);
-                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
-Log.i("preset", "reloaded");
-                               /* }
-                            }, 1000);*/
-//                        File cachedFile = aq.getCachedFile(url);
-//                        if(cachedFile != null){
-//                            OutputStream fOut = null;
-////                            File file = new File(path, "FitnessGirl"+Contador+".jpg"); // the File to save to
-//                            try {
-//                                fOut = new FileOutputStream(cachedFile);
-//                                Bitmap pictureBitmap = bm; // obtaining the Bitmap
-//                                pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
-//                                fOut.flush();
-//                                fOut.close(); // do not forget to close the stream
-//                                Log.i("replacedcx", "true");
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth());
+//                            holder.tv_postContent.measure(0, 0);       //must call measure!
+//                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
+//                            final Bitmap finalBm = bm;
+//        iv.setImageBitmap(finalBm);
+//                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
+//Log.i("preset", "reloaded");
 //
-//                            } catch (FileNotFoundException e) {
-//                                e.printStackTrace();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//
+//                            iv.setVisibility(View.VISIBLE);
 //                        }
+//
+//                    });
+//                }
+                GenericDraweeHierarchyBuilder builder =
+                        new GenericDraweeHierarchyBuilder(activity.getResources());
+                GenericDraweeHierarchy hierarchy = builder
+                        .setProgressBarImage(new ProgressBarDrawable())
+                        .build();
+                holder.iv_postImage.setHierarchy(hierarchy);
 
-                            iv.setVisibility(View.VISIBLE);
+
+                ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(
+                            String id,
+                            @Nullable ImageInfo imageInfo,
+                            @Nullable Animatable anim) {
+                        if (imageInfo == null) {
+                            return;
                         }
 
-                    });
-//                }
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+                    }
+
+                    @Override
+                    public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+
+                    }
+
+                    @Override
+                    public void onFailure(String id, Throwable throwable) {
+                    }
+                };
+                DraweeController controller = (DraweeController) Fresco.newDraweeControllerBuilder()
+                        .setControllerListener(controllerListener)
+                        .setUri(Uri.parse(currentPost.getImage()))
+                // other setters
+                        .build();
+                holder.iv_postImage.setController(controller);
+
+//                holder.iv_postImage.setImageURI(Uri.parse(currentPost.getImage()));
                holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
                    @Override
                   public void onClick(View v) {
                         viewPhoto(currentPost.getImage());
                     }
                 });
-//
-//                imageLoader.displayImage(currentPost.getImage(), holder.iv_postImage, new ImageLoadingListener() {
-//                    @Override
-//                    public void onLoadingStarted(String imageUri, View view) {
-//                        view.setVisibility(View.VISIBLE);
-//                    }
-//
-//                    @Override
-//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                        view.setVisibility(View.VISIBLE);
-//
-//                    }
-//
-//                    @Override
-//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                        Animation anim = AnimationUtils.loadAnimation(activity, R.anim.fade);
-//                        view.setAnimation(anim);
-//                        anim.start();
-//                        view.setVisibility(View.VISIBLE);
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onLoadingCancelled(String imageUri, View view) {
-////                       holder.iv_postImage.setVisibility(View.INVISIBLE);
-//
-//                    }
-//                });
-
             } else {
-//                holder.iv_postImage.setVisibility(View.GONE);
+                holder.iv_postImage.setVisibility(View.GONE);
 //                holder.pb_photo_load.setVisibility(View.GONE);
             }
 //            holder.tv_person_photo.setVisibility(View.INVISIBLE);
@@ -465,6 +435,8 @@ Log.i("preset", "reloaded");
         return posts.size() + 1;
     }
 
+
+
     public class PostViewHolder extends RecyclerView.ViewHolder {
         TextView tv_person_name;
         TextView tv_postDate;
@@ -474,7 +446,7 @@ Log.i("preset", "reloaded");
         TextView tv_share;
         TextView tv_comment;
         ImageView tv_person_photo;
-        ImageView iv_postImage;
+        SimpleDraweeView iv_postImage;
         RelativeLayout rl_postEvents;
         LinearLayout ll_share;
         LinearLayout ll_favorite;
@@ -510,7 +482,7 @@ Log.i("preset", "reloaded");
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
-                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_postImage = (SimpleDraweeView ) itemView.findViewById(R.id.iv_postImage);
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
@@ -554,7 +526,7 @@ Log.i("preset", "reloaded");
             if (pv_load != null)
                 pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
-            last_fetched_posts_count = newPosts.size();
+            last_fetched_posts_count = posts.size();
             notifyDataSetChanged();
 
         } else {
@@ -594,7 +566,10 @@ Log.i("preset", "reloaded");
         isFoundData = false;
         notifyDataSetChanged();
     }
-
+    public void addFrontOfList(ArrayList<Posts> latestPosts) {
+    posts.addAll(0, latestPosts);
+        notifyDataSetChanged();
+    }
     private void sharePost(Posts post, Drawable postPhoto) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -744,5 +719,8 @@ Log.i("preset", "reloaded");
 
     public interface OnDialogDismiss {
         void onDismiss();
+    }
+    public long getNewestPostId(){
+        return posts.get(0).getServerID();
     }
 }

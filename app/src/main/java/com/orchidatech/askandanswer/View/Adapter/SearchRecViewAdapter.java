@@ -7,13 +7,17 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +32,15 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.CommentsScreen;
@@ -64,6 +77,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
     private final View parent;
     private final FontManager fontManager;
     private final OnLastListReachListener lastListReachListener;
+    private final SharedPreferences pref;
     private  ColorGenerator generator;
     private CircularProgressView pv_load;
 
@@ -82,6 +96,8 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         this.lastListReachListener = lastListReachListener;
         generator = ColorGenerator.MATERIAL;
         last_fetched_posts_count = 0;
+        pref = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
 
     }
 
@@ -156,35 +172,90 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
 //        holder.pb_photo_load.setVisibility(View.VISIBLE);
             holder.iv_postImage.setVisibility(View.GONE);
 
-            if (postImage != null && postImage.length() > 0) {
-                AQuery aq = new AQuery(activity);
+            if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
+                holder.iv_postImage.setVisibility(View.VISIBLE);
 
+                final AQuery aq = new AQuery(activity);
+                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+                        aq.invalidate(pref.getString("prevImage", null));
+                    }
+                    pref.edit().remove(currentPost.getServerID() + "").commit();
+                    pref.edit().remove("prevImage").commit();
+                }
 /* Getting Images from Server and stored in cache */
-                Bitmap preset = aq.getCachedImage(currentPost.getImage());
-                aq.id(holder.iv_postImage)/*.progress(convertView.findViewById(R.id.progressBar1))*/.image(currentPost.getImage(), true, true, 0, 0, preset, AQuery.FADE_IN);
+
+//                Bitmap preset = aq.getCachedImage(currentPost.getImage());
+//                    aq.id(holder.iv_postImage).image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
+//                        @Override
+//                        public void callback(String url, final ImageView iv, Bitmap bm, AjaxStatus status) {
+//
+//                            int screenWidth = DeviceDimensionsHelper.getDisplayWidth(activity);
+//
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth());
+//                            holder.tv_postContent.measure(0, 0);       //must call measure!
+//                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
+//                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
+//                            final Bitmap finalBm = bm;
+//        iv.setImageBitmap(finalBm);
+//                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
+//Log.i("preset", "reloaded");
+//
+//                            iv.setVisibility(View.VISIBLE);
+//                        }
+//
+//                    });
+//                }
+                GenericDraweeHierarchyBuilder builder =
+                        new GenericDraweeHierarchyBuilder(activity.getResources());
+                GenericDraweeHierarchy hierarchy = builder
+                        .setProgressBarImage(new ProgressBarDrawable())
+                        .build();
+                holder.iv_postImage.setHierarchy(hierarchy);
+
+
+                ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(
+                            String id,
+                            @Nullable ImageInfo imageInfo,
+                            @Nullable Animatable anim) {
+                        if (imageInfo == null) {
+                            return;
+                        }
+
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+                    }
+
+                    @Override
+                    public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                        holder.iv_postImage.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+
+                    }
+
+                    @Override
+                    public void onFailure(String id, Throwable throwable) {
+                    }
+                };
+                DraweeController controller = (DraweeController) Fresco.newDraweeControllerBuilder()
+                        .setControllerListener(controllerListener)
+                        .setUri(Uri.parse(currentPost.getImage()))
+                                // other setters
+                        .build();
+                holder.iv_postImage.setController(controller);
+
+//                holder.iv_postImage.setImageURI(Uri.parse(currentPost.getImage()));
                 holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         viewPhoto(currentPost.getImage());
                     }
                 });
-//                Picasso.with(activity).load(Uri.parse(currentPost.getImage())).into(holder.iv_postImage, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-////                    holder.pb_photo_load.setVisibility(View.GONE);
-//                        holder.iv_postImage.setVisibility(View.VISIBLE);
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-////                    holder.pb_photo_load.setVisibility(View.GONE);
-//                        holder.iv_postImage.setVisibility(View.VISIBLE);
-//                    }
-//                });
             } else {
-//            holder.pb_photo_load.setVisibility(View.GONE);
                 holder.iv_postImage.setVisibility(View.GONE);
+//                holder.pb_photo_load.setVisibility(View.GONE);
             }
+
             holder.tv_comments.setText(posts.get(position).getComments_no() > 0 ? activity.getString(R.string.tv_comments_count, posts.get(position).getComments_no()) : activity.getString(R.string.no_comments));
 
             holder.tv_unlikes.setText(posts.get(position).getNum_dislikes() + "");
@@ -238,7 +309,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
         TextView tv_postDate;
         TextView tv_postContent;
         TextView tv_post_category;  //change visibility
-        ImageView iv_postImage;
+        SimpleDraweeView iv_postImage;
         RelativeLayout rl_postEvents; //change visibility
         CircleImageView iv_profile;
         TextView tv_likes;
@@ -270,7 +341,7 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 tv_person_name = (TextView) itemView.findViewById(R.id.tv_person_name);
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
-                iv_postImage = (ImageView) itemView.findViewById(R.id.iv_postImage);
+                iv_postImage = (SimpleDraweeView) itemView.findViewById(R.id.iv_postImage);
                 iv_profile = (CircleImageView) itemView.findViewById(R.id.iv_profile);
                 tv_post_category = (TextView) itemView.findViewById(R.id.tv_post_category);
                 tv_likes = (TextView) itemView.findViewById(R.id.tv_likes);

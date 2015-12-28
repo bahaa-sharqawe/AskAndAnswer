@@ -29,6 +29,7 @@ import dmax.dialog.SpotsDialog;
  * Created by Bahaa on 5/11/2015.
  */
 public class ContactUs extends DialogFragment {
+    public static final String DIALOG_TITLE = "title";
     AlertDialog dialog;
     TextView tv_cancel;
     TextView tv_send;
@@ -37,6 +38,15 @@ public class ContactUs extends DialogFragment {
     LinearLayout ll_parent;
     private long user_id;
     private FontManager mFontManager;
+    private String title;
+    private int type;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        title = getArguments().getString(DIALOG_TITLE);
+        type = title.equals(getActivity().getResources().getString(R.string.suggest_us))?1:0;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -67,6 +77,7 @@ public class ContactUs extends DialogFragment {
         imm.showSoftInputFromInputMethod(ed_message.getWindowToken(), 0);
 
         tv_send = (TextView) view.findViewById(R.id.tv_send);
+
         tv_send.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         tv_send.setOnClickListener(new View.OnClickListener() {
@@ -76,19 +87,19 @@ public class ContactUs extends DialogFragment {
                 hideSoftKeyboard();
 //                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 String message = ed_message.getText().toString().trim();
-                if(!TextUtils.isEmpty(message)){
+                if (!TextUtils.isEmpty(message)) {
                     message = Validator.getInstance().getSafeText(message);
-                    if(!TextUtils.isEmpty(message)){
+                    if (!TextUtils.isEmpty(message)) {
 //                        final LoadingDialog loadingDialog = new LoadingDialog();
 //                        Bundle args = new Bundle();
 //                        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.sending));
 //                        loadingDialog.setArguments(args);
 //                        loadingDialog.setCancelable(false);
 //                        loadingDialog.show(getFragmentManager(), "sending");
-                        final AlertDialog loadingDialog = new SpotsDialog(getActivity(), getString(R.string.sending), R.style.SpotsDialogCustom);
+                        final AlertDialog loadingDialog = new SpotsDialog(getActivity(), getString(R.string.sending_message), R.style.SpotsDialogCustom);
                         loadingDialog.setCancelable(false);
                         loadingDialog.show();
-                        WebServiceFunctions.sendMessage(getActivity(), user_id, message, new OnSendMessageListener(){
+                        WebServiceFunctions.sendMessage(getActivity(), user_id, message, type, new OnSendMessageListener() {
 
                             @Override
                             public void onSuccess() {
@@ -105,7 +116,7 @@ public class ContactUs extends DialogFragment {
                                 Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_LONG).show();
                             }
                         });
-                    }else{
+                    } else {
                         ed_message.setError(getString(R.string.BR_GNL_007));
                     }
                 }
@@ -122,6 +133,7 @@ public class ContactUs extends DialogFragment {
             }
         });
         tv_contact = (TextView) view.findViewById(R.id.tv_contact);
+        tv_contact.setText(title);
         tv_contact.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         return view;

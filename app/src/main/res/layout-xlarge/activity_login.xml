@@ -53,6 +53,10 @@
             android:hint="@string/ed_name_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_name" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,6 +76,16 @@
             android:hint="@string/ed_password_hint"
             android:imeOptions="actionDone"
             android:id="@+id/ed_password" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_forget_password"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textSize="20sp"
+                android:textColor="#969595"
+                android:text="@string/forget"/>
+        </RelativeLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -84,39 +98,7 @@
             android:textColor="#fff"
             style="?android:attr/borderlessButtonStyle"
             android:id="@+id/btn_login" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            >
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/tv_signup_now"
-                android:textColor="#969595"
-                android:layout_alignParentLeft="true"
-                android:textSize="19sp"
-                android:text="@string/tv_signup_now"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="|"
-                android:textSize="19sp"
-                android:layout_centerInParent="true"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/tv_login_using"
-                android:textSize="19sp"
-                android:textColor="#969595"
-                android:gravity="right"
-                android:id="@+id/tv_login_using"
-                android:layout_alignParentRight="true"/>
 
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,11 +172,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/forget_password"
             android:textSize="20sp"
             android:textColor="#969595"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/tv_forget_password"/>
+            android:text="@string/tv_signup"
+            android:id="@+id/tv_signup_now"
+            />
     </LinearLayout>
 </ScrollView>
 </LinearLayout>

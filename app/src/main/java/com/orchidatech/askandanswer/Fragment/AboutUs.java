@@ -46,7 +46,12 @@ public class AboutUs extends Fragment {
         rl_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ContactUs().show(getFragmentManager(), getActivity().getResources().getString(R.string.contactus_small));
+                Bundle args = new Bundle();
+                args.putString(ContactUs.DIALOG_TITLE, getActivity().getResources().getString(R.string.contactus_small));
+               ContactUs contactUs = new ContactUs();
+                contactUs.setArguments(args);
+                contactUs.show(getFragmentManager(), getActivity().getResources().getString(R.string.contactus_small));
+//                new ContactUs().show(getFragmentManager(), getActivity().getResources().getString(R.string.contactus_small));
 
             }
         });

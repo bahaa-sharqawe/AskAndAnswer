@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ListViewAutoScrollHelper;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,6 +88,8 @@ public class Timeline extends Fragment {
 
     TextView tv_notifications_count;
     private BroadcastReceiver notifications_listener = new NotificationRec();
+    SwipeRefreshLayout swipeRefreshLayout;
+    private int numOfPostFetchedSwiping = 0;
 
     @Nullable
     @Override
@@ -151,8 +154,20 @@ public class Timeline extends Fragment {
 //        userPosts = new ArrayList<>(PostsDAO.getUserPosts(user_id));
         rl_error.setVisibility(View.GONE);
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.notif_drawer);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
         resizeLogo();
         allStoredPosts = PostsDAO.getPostsInUserCategories(user_id);
+
         loadNewPosts();
         return view;
     }
@@ -193,83 +208,109 @@ public class Timeline extends Fragment {
         (getActivity().findViewById(R.id.rl_num_notifications)).setVisibility(View.VISIBLE);
     }
 
-    private void loadNewPosts() {
-        WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - 1, last_id_server, new OnUserPostFetched() {
+    private void refreshItems() {
+        if(adapter.getItemCount()==1){ swipeRefreshLayout.setRefreshing(false);return;}
+        WebServiceFunctions.getNewestPosts(getActivity(), user_id, adapter.getNewestPostId(), new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
-                if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    pb_loading_main.setVisibility(View.GONE);
-                }
-                last_id_server = last_id_server == 0 ? last_id : last_id_server;
 
-                adapter.addFromServer(latestPosts, false);
+                adapter.addFrontOfList(latestPosts);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFail(final String error, int errorCode) {
-                if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                pb_loading_main.setVisibility(View.GONE);
-                                getFromLocal(error);
-                            }
-                        }, 3000);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+        });
+    }
+    private void loadNewPosts() {
+//        if (pb_loading_main.getVisibility() == View.VISIBLE)
+//            swipeRefreshLayout.setEnabled(false);
+                WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - numOfPostFetchedSwiping - 1, last_id_server, new OnUserPostFetched() {
+                    @Override
+                    public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
+                        if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                            pb_loading_main.setVisibility(View.GONE);
+                        }
+                        last_id_server = last_id_server == 0 ? last_id : last_id_server;
+
+                        adapter.addFromServer(latestPosts, false);
+                        numOfPostFetchedSwiping +=latestPosts.size();
+                        swipeRefreshLayout.setEnabled(true);
+
+                    }
+
+                    @Override
+                    public void onFail(final String error, int errorCode) {
+                        if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                            if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        pb_loading_main.setVisibility(View.GONE);
+                                        getFromLocal(error);
+                                        swipeRefreshLayout.setEnabled(true);
+                                    }
+                                }, 3000);
 //                            pb_loading_main.setVisibility(View.GONE);
 //                            getFromLocal(error);
 
-                    } else {
-                        pb_loading_main.setVisibility(View.GONE);
-                        tv_error.setText(getActivity().getString(R.string.no_posts_found));
-                        rl_error.setEnabled(true);
-                        rl_error.setVisibility(View.VISIBLE);
+                            } else {
+                                pb_loading_main.setVisibility(View.GONE);
+                                tv_error.setText(getActivity().getString(R.string.no_posts_found));
+                                rl_error.setEnabled(true);
+                                rl_error.setVisibility(View.VISIBLE);
+                                swipeRefreshLayout.setEnabled(false);
+                            }
+                        } else {
+                            pb_loading_main.setVisibility(View.GONE);
+                            adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                            swipeRefreshLayout.setEnabled(true);
+
+                        }
                     }
-                } else {
-                    pb_loading_main.setVisibility(View.GONE);
-                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                });
+    }
+
+            private void getFromLocal(String error) {
+                if (allStoredPosts == null || allStoredPosts.size() == 0) {
+                    rl_error.setVisibility(View.VISIBLE);
+                    tv_error.setText(error);
+                    rl_error.setEnabled(true);
                 }
+                adapter.addFromLocal(allStoredPosts);
             }
-        });
-    }
 
-    private void getFromLocal(String error) {
-        if (allStoredPosts == null || allStoredPosts.size() == 0) {
-            rl_error.setVisibility(View.VISIBLE);
-            tv_error.setText(error);
-            rl_error.setEnabled(true);
-        }
-        adapter.addFromLocal(allStoredPosts);
-    }
+            private void resizeLogo() {
+                Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                Point screenSize = new Point(); // used to store screen size
+                display.getSize(screenSize); // store size in screenSize
+                uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
+                uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+            }
 
-    private void resizeLogo() {
-        Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point screenSize = new Point(); // used to store screen size
-        display.getSize(screenSize); // store size in screenSize
-        uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
-        uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
-    }
+            @Override
+            public void onResume() {
+                super.onResume();
+                getActivity().registerReceiver(notifications_listener, intentFilter);
+            }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().registerReceiver(notifications_listener, intentFilter);
-    }
+            @Override
+            public void onPause() {
+                super.onPause();
+                getActivity().unregisterReceiver(notifications_listener);
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().unregisterReceiver(notifications_listener);
+            }
 
-    }
+            private class NotificationRec extends BroadcastReceiver {
 
-    private class NotificationRec extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            getNotificationsCount();
-            allNotifications.add(NotificationsDAO.getAllNotifications().get(0));
-            notificationsAdapter.notifyDataSetChanged();
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    getNotificationsCount();
+                    allNotifications.add(0, NotificationsDAO.getAllNotifications().get(0));
+                    notificationsAdapter.notifyDataSetChanged();
         }
 
     }

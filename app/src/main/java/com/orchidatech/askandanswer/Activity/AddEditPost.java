@@ -354,7 +354,7 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onFail(String error) {
                 dialog.dismiss();
-                AppSnackBar.show(ll_parent, error, getResources().getColor(R.color.colorPrimary), Color.WHITE);
+                AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });
     }

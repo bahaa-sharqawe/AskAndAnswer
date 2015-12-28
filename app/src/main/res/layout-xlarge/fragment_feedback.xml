@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="40dp"
+    android:background="#f8f8f8">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background= "@drawable/drawer_list_selector"
+        android:id="@+id/rl_feed"
+        >
+        <View
+            android:layout_width="17dp"
+            android:layout_height="match_parent"
+            android:background="#ed4145"
+            android:id="@+id/left_intro_border"
+            android:layout_marginRight="35dp"
+            />
+        <TextView
+            android:id="@+id/tv_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/left_intro_border"
+            android:text="@string/send_feedback"
+            android:layout_centerVertical="true"
+            android:textSize="22sp"/>
+    </RelativeLayout>
+</LinearLayout>

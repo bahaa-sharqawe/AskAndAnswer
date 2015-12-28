@@ -4,6 +4,7 @@ import com.activeandroid.ActiveAndroid;
 import com.alexbbb.uploadservice.UploadService;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -28,7 +29,6 @@ public class MyApplication extends com.activeandroid.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(this)
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
                 ImageLoader.getInstance().init(config);

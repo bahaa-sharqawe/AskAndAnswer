@@ -34,6 +34,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.Model.Post_Favorite;
 import com.orchidatech.askandanswer.Entity.DrawerItem;
 import com.orchidatech.askandanswer.Fragment.AboutUs;
+import com.orchidatech.askandanswer.Fragment.Feedback;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Fragment.MyAnswers;
 import com.orchidatech.askandanswer.Fragment.MyAsks;
@@ -214,6 +215,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
                 //about
                 fragment = new AboutUs();
                 break;
+            case 9:
+                //about
+                fragment = new Feedback();
+                break;
         }
         if (fragment != null) {
             oldPosition = position;
@@ -224,10 +229,10 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
             switch (position){
                 case 0:
                 case 1:
+                case 9:
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                     break;
                 case 3:
-
                 case 7:
                 case 2:
                     ft.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
@@ -240,7 +245,6 @@ public class MainScreen extends AppCompatActivity implements TermsFragment.OnDra
 
                     ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                     break;
-
 
             }
             ft.replace(R.id.fragment_host, fragment);

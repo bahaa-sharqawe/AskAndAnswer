@@ -88,14 +88,12 @@
             android:layout_alignLeft="@+id/rl_post_desc"
             android:id="@+id/rl_post_photo">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="match_parent"
                 android:id="@+id/iv_postImage"
-                android:scaleType="centerCrop"
+                android:layout_height="wrap_content"
                 android:visibility="visible"
                 />
-
             <!--<ProgressBar-->
             <!--style="?android:attr/progressBarStyleSmall"-->
             <!--android:layout_width="wrap_content"-->

@@ -297,7 +297,7 @@ public class Login extends AppCompatActivity {
                         }
                     });
                 else
-                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.gplus_social_backgnd));
 
             }
         });
@@ -312,9 +312,9 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-        tv_login_using = (TextView) findViewById(R.id.tv_login_using);
+//        tv_login_using = (TextView) findViewById(R.id.tv_login_using);
         tv_signup_now.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
-        tv_login_using.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+//        tv_login_using.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
         tv_signup_now.setText(Html.fromHtml(getResources().getString(R.string.tv_signup_now)));
         tv_signup_now.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -419,7 +419,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == googleAuth.RC_SIGN_IN) {
-            btn_gplus.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+            btn_gplus.setBackground(getResources().getDrawable(R.drawable.gplus_social_backgnd));
 
             if (resultCode == RESULT_OK) {
                 googleAuth.signedInUser = false;
@@ -431,7 +431,7 @@ public class Login extends AppCompatActivity {
                 }
         } else {
             appFacebookAuth.getCM().onActivityResult(requestCode, resultCode, data);
-            btn_fb.setBackground(getResources().getDrawable(R.drawable.btn_social_backgnd));
+            btn_fb.setBackground(getResources().getDrawable(R.drawable.fb_social_backgnd));
 
         }
         /*else

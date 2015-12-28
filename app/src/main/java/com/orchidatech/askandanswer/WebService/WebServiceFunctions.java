@@ -1029,6 +1029,78 @@ public class WebServiceFunctions {
 
     }
 
+    public static void getNewestPosts(final Activity activity, long user_id, long newestPostId, final OnUserPostFetched listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_NEWEST_POSTS + "?" + URL.URLParameters.USER_ID + "=" + user_id +
+                "&" + URL.URLParameters.LAST_ID + "=" + newestPostId +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    Log.i("sdsadsadsds", response);
+
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = dataObj.getJSONArray("data");
+                        ArrayList<Posts> fetchedPosts = new ArrayList<Posts>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject post = data.getJSONObject(i);
+                            /////data for post
+                            long id = Long.parseLong(post.getString("id"));
+                            String text = post.getString("text");
+                            String image = post.getString("image");
+                            long user_id = Long.parseLong(post.getString("user_id"));
+                            int is_hidden = Integer.parseInt(post.getString("is_hidden"));
+                            long category_id = Long.parseLong(post.getString("category_id"));
+                            int comments_no = post.getInt("comment_no");
+                            long post_created_at = post.getLong("updated_at");
+                            /////////////////////////////////////////////////////////////
+                            ///data for post's user to store him/her if does not stored in local db
+                            JSONObject user = post.getJSONObject("user");
+                            String f_name = user.getString("f_name");
+                            String l_name = user.getString("l_name");
+                            String email = user.getString("email");
+                            String user_image = user.getString("image");
+                            int active = Integer.parseInt(user.getString("active"));
+                            long user_created_at = user.getLong("created_at");
+                            long last_login = user.getLong("last_login");
+                            String code = user.getString("code");
+                            String mobile = user.getString("mobile");
+                            int is_public = Integer.parseInt(user.getString("is_public"));
+
+                            JSONObject askandanswer = user.getJSONObject("askandanswer");
+                            int no_asks = askandanswer.getInt("no_ask");
+                            int no_answers = askandanswer.getInt("no_answer");
+                            float user_rating = Float.parseFloat(askandanswer.getInt("no_of_stars") + "");
+                            /////////////////////////////////////////////////////////////
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login, mobile, is_public, code, no_answers, no_asks, user_rating);
+                            UsersDAO.addUser(_user);
+                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, post_created_at, user_id, category_id, is_hidden, comments_no, post.getBoolean("is_postfavorite") ? 1 : 0, -1, -1);
+                            PostsDAO.addPost(postItem);
+                            fetchedPosts.add(postItem);
+                        }
+                        long last_id = dataObj.getLong("last_id");
+
+                        listener.onSuccess(fetchedPosts, last_id);
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    Log.i("DCDF", e.getMessage());
+                    listener.onFail(GNLConstants.getStatus(100), 100);
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        });    }
     public static void geTimeLine(final Activity activity, final long uid, int limit, int offset, long last_id, final OnUserPostFetched listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
@@ -1262,14 +1334,14 @@ public class WebServiceFunctions {
 
     }
 
-    public static void sendMessage(final Activity activity, long user_id, String message, final OnSendMessageListener listener) {
+    public static void sendMessage(final Activity activity, long user_id, String message, int type, final OnSendMessageListener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
         Map<String, String> params = new HashMap<>();
         params.put(URL.URLParameters.USER_ID, user_id + "");
         params.put(URL.URLParameters.MESSAGE, message);
         params.put(URL.URLParameters.REGISTERATION_ID, reg_id);
-        Operations.getInstance(activity).sendPostRequest(URL.CONTACT_US, params, new OnLoadFinished() {
+        Operations.getInstance(activity).sendPostRequest(type==0?URL.CONTACT_US:URL.FEEDBACK, params, new OnLoadFinished() {
 
             @Override
             public void onSuccess(String response) {

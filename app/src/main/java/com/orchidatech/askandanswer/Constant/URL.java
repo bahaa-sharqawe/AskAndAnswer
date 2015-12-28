@@ -30,6 +30,9 @@ public class URL {
     public static final String ADD_POST = SERVER_URL + WEB_SERVICES_PATH + "post/add-post";
     public static final String DELETE_POST = SERVER_URL + WEB_SERVICES_PATH + "post/delete-post";
     public static final String GET_TIME_LINE = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost";
+
+    public static String GET_NEWEST_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/newpost-data";
+
     public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
     public static final String GET_POST_DATA = SERVER_URL + WEB_SERVICES_PATH + "post/post-data";
     ;
@@ -47,6 +50,7 @@ public class URL {
     public static String ADD_ACTION = SERVER_URL + WEB_SERVICES_PATH + "commentAction/add-comment-action";
 
     public static final String CONTACT_US = SERVER_URL + WEB_SERVICES_PATH + "contactus/add-massage";
+    public static final String FEEDBACK = SERVER_URL + WEB_SERVICES_PATH + "contactus/add-massage";
 
     public class URLParameters {
         public static final String ID = "id";
