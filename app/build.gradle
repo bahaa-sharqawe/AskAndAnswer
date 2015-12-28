@@ -72,4 +72,5 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.commit451:PhotoView:1.2.4'
     compile 'com.facebook.fresco:fresco:0.7.0+'
+//    compile 'com.rockerhieu.emojicon:library:<latest-version>'
 }

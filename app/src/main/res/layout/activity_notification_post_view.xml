@@ -16,13 +16,15 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
     </android.support.v7.widget.Toolbar>
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_below="@+id/toolbar">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_post_info"
-        android:padding="10dp"
-        android:layout_below="@+id/toolbar">
+        android:id="@+id/rl_post_info">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,15 +39,15 @@
                 app:civ_border_width="1dp"
                 app:civ_border_color="#ece8e7"/>
             <!--<TextView-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-                <!--android:background="@drawable/offline_photo_backgnd"-->
-                <!--android:id="@+id/tv_person_photo"-->
-                <!--android:text="A"-->
-                <!--android:gravity="center"-->
-                <!--android:textSize="18sp"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--/>-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:background="@drawable/offline_photo_backgnd"-->
+            <!--android:id="@+id/tv_person_photo"-->
+            <!--android:text="A"-->
+            <!--android:gravity="center"-->
+            <!--android:textSize="18sp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--/>-->
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -193,6 +195,8 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+</ScrollView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

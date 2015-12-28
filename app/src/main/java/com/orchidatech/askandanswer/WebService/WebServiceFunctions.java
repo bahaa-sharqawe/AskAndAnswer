@@ -1644,6 +1644,7 @@ public class WebServiceFunctions {
     public static void addComment(final Activity activity, final String comment, String picturePath, long postId, long user_id, final OnCommentAddListener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        Log.i("coomented", comment);
         UploadImage uploadImage = new UploadImage(activity, URL.ADD_COMMENT, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
