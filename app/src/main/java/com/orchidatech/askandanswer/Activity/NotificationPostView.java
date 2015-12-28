@@ -96,6 +96,7 @@ public class NotificationPostView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if((user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)) == -1){
             final Intent intent = new Intent(this, Login.class);

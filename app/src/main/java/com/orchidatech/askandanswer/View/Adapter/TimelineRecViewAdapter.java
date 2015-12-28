@@ -39,6 +39,7 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
+import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
@@ -218,7 +219,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 final AQuery aq = new AQuery(activity);
                 if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
                     if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
-                        aq.invalidate(pref.getString("prevImage", null));
+//                        aq.invalidate(pref.getString("prevImage", null));
+                        Uri uri = Uri.parse(pref.getString("prevImage", null));
+                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
+                        Log.i("removedFroFresco", "true");
                     }
                     pref.edit().remove(currentPost.getServerID() + "").commit();
                 pref.edit().remove("prevImage").commit();

@@ -80,7 +80,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //    private final int fragment_numeric;
     private final long current_user_id;
     private final Animation mAnimation;
-    private final Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
+//    private final Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data;
     private final ColorGenerator generator;
     private  FontManager fontManager;
     private  SharedPreferences pref;
@@ -96,12 +96,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private int position;
     private int last_fetched_comments_count;
 
-    public CommentsRecViewAdapter(Activity activity, List<com.orchidatech.askandanswer.Database.Model.Comments> comments, Map<com.orchidatech.askandanswer.Database.Model.Comments, Integer> data, View parent, OnLastListReachListener lastListReachListener,
+    public CommentsRecViewAdapter(Activity activity, List<com.orchidatech.askandanswer.Database.Model.Comments> comments, View parent, OnLastListReachListener lastListReachListener,
                                   OnCommentOptionListener commentOptionListener/*, int fragment_numeric*/) {
         this.activity = activity;
         this.parent = parent;
         this.comments = comments;
-        this.data = data;
         this.lastListReachListener = lastListReachListener;
         this.commentOptionListener = commentOptionListener;
 //        this.fragment_numeric = fragment_numeric;
@@ -355,7 +354,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             public void onDeleted() {
                 dialog.dismiss();
                 Log.i("vcvc2", comments.size() + "");
-                data.remove(comments.get(position));
                 comments.remove(position);
                 notifyDataSetChanged();
                 Toast.makeText(activity.getApplicationContext(), activity.getResources().getString(R.string.deleted), Toast.LENGTH_LONG).show();
@@ -501,8 +499,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     }
 
     public void addComment(com.orchidatech.askandanswer.Database.Model.Comments comment) {
-        comments.add(0, comment);
-        data.put(comment, 2);
+        comments.add(comment);
         notifyDataSetChanged();
     }
 

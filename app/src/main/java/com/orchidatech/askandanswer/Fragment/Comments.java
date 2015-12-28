@@ -155,7 +155,7 @@ public class Comments extends DialogFragment {
         mRecyclerView.setLayoutManager(llm);
         comments = new ArrayList<>();
         data = new HashMap<>();
-        adapter = new CommentsRecViewAdapter(getActivity(), comments, data, rl_parent, new OnLastListReachListener() {
+        adapter = new CommentsRecViewAdapter(getActivity(), comments, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();

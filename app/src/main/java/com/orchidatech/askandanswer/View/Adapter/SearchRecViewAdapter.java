@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
+import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -179,6 +180,10 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
                     if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
                         aq.invalidate(pref.getString("prevImage", null));
+                        Uri uri = Uri.parse(pref.getString("prevImage", null));
+                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
                     }
                     pref.edit().remove(currentPost.getServerID() + "").commit();
                     pref.edit().remove("prevImage").commit();

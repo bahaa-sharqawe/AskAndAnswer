@@ -299,7 +299,9 @@ public class AddEditPost extends AppCompatActivity {
                     pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                startActivity(new Intent(getApplicationContext(), MainScreen.class));
+                Intent intent = new Intent(AddEditPost.this, MainScreen.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {
@@ -340,7 +342,9 @@ public class AddEditPost extends AppCompatActivity {
                 iv_camera.setEnabled(true);
                 ed_postDesc.setText("");
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                startActivity(new Intent(getApplicationContext(), MainScreen.class));
+                Intent intent = new Intent(AddEditPost.this, MainScreen.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
 //                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
 //                new Handler().postDelayed(new Runnable() {

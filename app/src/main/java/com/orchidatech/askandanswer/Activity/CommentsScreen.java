@@ -109,7 +109,7 @@ public class CommentsScreen extends Activity {
         mRecyclerView.setLayoutManager(llm);
         comments = new ArrayList<>();
         data = new HashMap<>();
-        adapter = new CommentsRecViewAdapter(this, comments, data, rl_parent, new OnLastListReachListener() {
+        adapter = new CommentsRecViewAdapter(this, comments, rl_parent, new OnLastListReachListener() {
             @Override
             public void onReached() {
                 loadNewComments();
