@@ -213,9 +213,9 @@ public class Timeline extends Fragment {
         WebServiceFunctions.getNewestPosts(getActivity(), user_id, adapter.getNewestPostId(), new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
-
                 adapter.addFrontOfList(latestPosts);
                 swipeRefreshLayout.setRefreshing(false);
+                numOfPostFetchedSwiping +=latestPosts.size();
             }
 
             @Override
@@ -237,7 +237,6 @@ public class Timeline extends Fragment {
                         last_id_server = last_id_server == 0 ? last_id : last_id_server;
 
                         adapter.addFromServer(latestPosts, false);
-                        numOfPostFetchedSwiping +=latestPosts.size();
                         swipeRefreshLayout.setEnabled(true);
 
                     }

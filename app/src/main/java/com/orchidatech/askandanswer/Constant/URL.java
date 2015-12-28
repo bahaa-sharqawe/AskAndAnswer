@@ -50,7 +50,7 @@ public class URL {
     public static String ADD_ACTION = SERVER_URL + WEB_SERVICES_PATH + "commentAction/add-comment-action";
 
     public static final String CONTACT_US = SERVER_URL + WEB_SERVICES_PATH + "contactus/add-massage";
-    public static final String FEEDBACK = SERVER_URL + WEB_SERVICES_PATH + "contactus/add-massage";
+    public static final String FEEDBACK = SERVER_URL + WEB_SERVICES_PATH + "feedback/add-feedback";
 
     public class URLParameters {
         public static final String ID = "id";
