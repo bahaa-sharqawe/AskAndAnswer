@@ -174,7 +174,7 @@ public class CommentsScreen extends Activity {
             public void onClick(View v) {
 
                 String comment = ed_add_comment.getText().toString().trim();
-                if (!TextUtils.isEmpty(comment)) {
+                if (!TextUtils.isEmpty(comment) || !TextUtils.isEmpty(picturePath)) {
                     iv_add_comment.setVisibility(View.INVISIBLE);
                     pb_add_comment.setVisibility(View.VISIBLE);
                     iv_add_comment.setEnabled(false);

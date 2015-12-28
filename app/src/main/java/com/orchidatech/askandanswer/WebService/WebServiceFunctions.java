@@ -950,7 +950,7 @@ public class WebServiceFunctions {
                                 User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
                                         , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), current_user_action = Integer.parseInt(user_action.getString("action_type"))));
                             }
-                            Comments comment_item = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
+                            Comments comment_item = new Comments(comment_id, comment_text.equals("null")?"":comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
                             CommentsDAO.addComment(comment_item);
                             fetchedComments.add(comment_item);
 
@@ -1734,8 +1734,8 @@ public class WebServiceFunctions {
                         String comment_image = comment.getString("image");
                         long user_id = comment.getLong("user_id");
                         long post_id = comment.getLong("post_id");
-                        long comment_date = comment.getLong("created_at");
-                        Comments newComment = new Comments(comment_id, comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0, 2);
+                        long comment_date = comment.getLong("updated_at");
+                        Comments newComment = new Comments(comment_id, comment_text.equals("null")?"":comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, 0, 0, 2);
                         CommentsDAO.addComment(newComment);
                         Users user = UsersDAO.getUser(user_id);
                         user.answers = user.answers + 1;
@@ -1755,7 +1755,8 @@ public class WebServiceFunctions {
                 listener.onFail(error);
             }
         });
-        uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
+        if (!TextUtils.isEmpty(comment))
+            uploadImage.addStringProperty(URL.URLParameters.COMMENT, comment);
         uploadImage.addStringProperty(URL.URLParameters.POST_ID, postId + "");
         uploadImage.addStringProperty(URL.URLParameters.USER_ID, user_id + "");
         uploadImage.addStringProperty(URL.URLParameters.REGISTERATION_ID, reg_id);
