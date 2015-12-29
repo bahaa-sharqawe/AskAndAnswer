@@ -64,8 +64,8 @@ public class Login extends AppCompatActivity {
     Button btn_login;
     CoordinatorLayout mCoordinatorLayout;
 
-    LinearLayout btn_fb;
-    LinearLayout btn_gplus;
+    RelativeLayout btn_fb;
+    RelativeLayout btn_gplus;
 //    private SimpleFacebook mSimpleFacebook;
     private String TAG = Login.class.getSimpleName();
     LinearLayout ll_form;
@@ -277,14 +277,14 @@ public class Login extends AppCompatActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        btn_fb = (LinearLayout) this.findViewById(R.id.btn_fb);
-        btn_gplus = (LinearLayout) this.findViewById(R.id.btn_gplus);
+        btn_fb = (RelativeLayout) this.findViewById(R.id.btn_fb);
+        btn_gplus = (RelativeLayout) this.findViewById(R.id.btn_gplus);
 
         btn_gplus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Log.i("googledfs", "pressed");
-                v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
+//                v.setBackground(getResources().getDrawable(R.drawable.btn_gplus_backgnd_on));
                 if (!googleAuth.mGoogleApiClient.isConnected())
                     googleAuth.googlePlusLogin(new OnSocialLoggedListener() {
                         @Override
@@ -296,8 +296,7 @@ public class Login extends AppCompatActivity {
 //                            Toast.makeText(Login.this, user.getEmail() + ", " + user.getFname() + ", " + user.getLname(), Toast.LENGTH_LONG).show();
                         }
                     });
-                else
-                    btn_gplus.setBackground(getResources().getDrawable(R.drawable.gplus_social_backgnd));
+
 
             }
         });
@@ -329,7 +328,7 @@ public class Login extends AppCompatActivity {
         btn_fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
+//                v.setBackground(getResources().getDrawable(R.drawable.btn_fb_backgnd_on));
                 appFacebookAuth = new AppFacebookAuth(Login.this, new OnSocialLoggedListener() {
                     @Override
                     public void onSuccess(SocialUser user) {
@@ -419,7 +418,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == googleAuth.RC_SIGN_IN) {
-            btn_gplus.setBackground(getResources().getDrawable(R.drawable.gplus_social_backgnd));
+//            btn_gplus.setBackground(getResources().getDrawable(R.drawable.gplus_social_backgnd));
 
             if (resultCode == RESULT_OK) {
                 googleAuth.signedInUser = false;
@@ -431,7 +430,7 @@ public class Login extends AppCompatActivity {
                 }
         } else {
             appFacebookAuth.getCM().onActivityResult(requestCode, resultCode, data);
-            btn_fb.setBackground(getResources().getDrawable(R.drawable.fb_social_backgnd));
+//            btn_fb.setBackground(getResources().getDrawable(R.drawable.fb_social_backgnd));
 
         }
         /*else

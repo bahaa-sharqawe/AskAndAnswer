@@ -5,171 +5,178 @@
     android:layout_height="match_parent"
     android:id="@+id/coordinatorLayout"
     android:layoutDirection="ltr"
-    tools:context="com.orchidatech.askandanswer.Activity.Login">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/main_background"
-    >
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/contenDesc_logo"
-        android:id="@+id/iv_logo"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:visibility="visible"/>
 
-
-    <LinearLayout
+    tools:context="com.orchidatech.askandanswer.Activity.Login">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.4"
-        android:orientation="vertical"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:id="@+id/ll_form"
-        >
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/ed_text_color"
-            android:singleLine="true"
-            android:inputType="textEmailAddress"
-            android:drawableLeft="@drawable/ic_name"
-            android:textCursorDrawable="@drawable/ed_cursor_backgnd"
-            android:drawablePadding="10dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:paddingLeft="0dp"
-            android:hint="@string/ed_name_hint"
-            android:imeOptions="actionNext"
-            android:id="@+id/ed_name" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
-                android:textSize="16sp"
-                android:singleLine="true"
-                android:textColor="@color/ed_text_color"
-                android:inputType="textPassword"
-                android:textDirection="ltr"
-                android:drawableLeft="@drawable/ic_password"
-                android:layout_below="@+id/ed_email"
-                android:textCursorDrawable="@drawable/ed_cursor_backgnd"
-                android:drawablePadding="10dp"
-                android:paddingLeft="0dp"
-                android:hint="@string/ed_password_hint"
-                android:imeOptions="actionDone"
-                android:id="@+id/ed_password" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_forget_password"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="#969595"
-                android:textSize="17sp"
-                android:text="@string/forget"/>
-        </RelativeLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/enter"
-            android:background="@drawable/btn_selector"
-            android:textColor="#fff"
-            android:textSize="18sp"
-            android:padding="10dp"
-            android:layout_marginTop="20dp"
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/btn_login" />
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="16dp">
-            <LinearLayout
-                android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="6dp"
-                android:layout_alignParentLeft="true"
-                android:id="@+id/btn_fb"
-                android:clickable="true"
-                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/contenDesc_logo"
+                android:id="@+id/iv_logo"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:visibility="visible"/>
 
-                android:background="@drawable/fb_social_backgnd">
-                <ImageView
-                    android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.4"
+                android:orientation="vertical"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/ll_form"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/ed_text_color"
+                    android:singleLine="true"
+                    android:inputType="textEmailAddress"
+                    android:drawableLeft="@drawable/ic_name"
+                    android:textCursorDrawable="@drawable/ed_cursor_backgnd"
+                    android:drawablePadding="10dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="0dp"
+                    android:hint="@string/ed_name_hint"
+                    android:imeOptions="actionNext"
+                    android:id="@+id/ed_name" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:textColor="@color/ed_text_color"
+                        android:inputType="textPassword"
+                        android:textDirection="ltr"
+                        android:drawableLeft="@drawable/ic_password"
+                        android:layout_below="@+id/ed_email"
+                        android:textCursorDrawable="@drawable/ed_cursor_backgnd"
+                        android:drawablePadding="10dp"
+                        android:paddingLeft="0dp"
+                        android:hint="@string/ed_password_hint"
+                        android:imeOptions="actionDone"
+                        android:id="@+id/ed_password" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_forget_password"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="#969595"
+                        android:textSize="17sp"
+                        android:text="@string/forget"/>
+                </RelativeLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enter"
+                    android:background="@drawable/enter_btn_selector"
+                    android:textColor="@drawable/enter_btn_text_color_selector"
+                    android:textSize="18sp"
+                    android:padding="10dp"
+                    android:layout_marginTop="20dp"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/btn_login" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:textSize="18sp"
+                    android:textColor="#969595"
+                    />
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_fb"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="5dp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/facebook"
-                    android:id="@+id/tv_fb"
-                    android:textColor="@color/btn_fb_on"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"/>
-            </LinearLayout>
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="wrap_content" />
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/btn_gplus"
-                android:padding="6dp"
-                android:gravity="center"
-
-                android:background="@drawable/gplus_social_backgnd">
-                <ImageView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_fb"
+                    android:clickable="true"
+                    android:padding="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/fb_social_backgnd">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:src="@drawable/ic_fb"
+                        android:id="@+id/iv_fb"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/facebook"
+                        android:id="@+id/tv_fb"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/iv_fb"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_google"
-                    android:layout_marginRight="5dp"
-                    />
+                    android:id="@+id/btn_gplus"
+                    android:clickable="true"
+                    android:padding="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/gplus_social_backgnd">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:src="@drawable/ic_google"
+                        android:id="@+id/iv_gplus"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_google"
+                        android:text="@string/google"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/iv_gplus"
+                        />
+                </RelativeLayout>
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_google"
-                    android:text="@string/google"
-                    android:textColor="@color/btn_gplus_on"
-                    android:textSize="15sp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                    android:text="@string/tv_signup_now"
+                    android:textSize="17sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="#969595"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/tv_signup_now"/>
             </LinearLayout>
 
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_signup"
-            android:textSize="17sp"
-            android:textColor="#969595"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/tv_signup_now"/>
-    </LinearLayout>
-
-</LinearLayout>
-
+    </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

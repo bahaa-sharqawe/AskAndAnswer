@@ -15,11 +15,11 @@
     <string name="intro_content">Question combines the power and potential of Asking Therapy and Answering Therapy into one money-saving app.\n\n
 Asking and answering questions is critical to the natural give-and-take of everyday communication.\n\n Re-learning how to properly initiate and respond to questions will help a person with aphasia regain confidence in conversation.\n\n
 Question Therapy targets both the receptive and the expressive use of questions, concentrating on yes-or-no questions and the who, what, when, where, how, and why of a situation.</string>
-    <string name="tv_signup_now">&lt;b&gt;Signup&lt;/b&gt; Now</string>
+    <string name="tv_signup_now">Not amember? &lt;b&gt;Signup&lt;/b&gt; Now</string>
     <string name="tv_signup">Sign Up</string>
     <string name="tv_login_using">Or Login Using</string>
-    <string name="facebook">Facebook</string>
-    <string name="google">Google +</string>
+    <string name="facebook">Login with Facebook</string>
+    <string name="google">Login with Google +</string>
     <string name="contactus_small">Contact Us</string>
     <string name="ed_contactus_hint">write here ...</string>
     <string name="btn_send">SEND</string>
