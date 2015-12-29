@@ -226,8 +226,8 @@ public class Timeline extends Fragment {
         });
     }
     private void loadNewPosts() {
-//        if (pb_loading_main.getVisibility() == View.VISIBLE)
-//            swipeRefreshLayout.setEnabled(false);
+        if (pb_loading_main.getVisibility() == View.VISIBLE)
+            swipeRefreshLayout.setEnabled(false);
                 WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - numOfPostFetchedSwiping - 1, last_id_server, new OnUserPostFetched() {
                     @Override
                     public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {

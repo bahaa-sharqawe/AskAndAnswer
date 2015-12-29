@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -64,7 +65,7 @@ public class AddEditPost extends AppCompatActivity {
     LinearLayout ll_parent;
     Spinner spinner;
     SpinAdapter adapter;
-    ImageView iv_post;
+    SimpleDraweeView iv_post;
     ImageView iv_delete;
     EditText ed_postDesc;
     RelativeLayout rl_post_photo;
@@ -124,48 +125,7 @@ public class AddEditPost extends AppCompatActivity {
             picturePath = editPost.getImage();
             if(!TextUtils.isEmpty(picturePath)) {
                 isPostHasImagePrev = true;
-                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                        .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
-                ImageLoader.getInstance().init(config);
-
-                ImageLoader imageLoader = ImageLoader.getInstance();
-                imageLoader.displayImage(picturePath, iv_post, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        iv_post.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        iv_post.setVisibility(View.INVISIBLE);
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        iv_post.setVisibility(View.VISIBLE);
-
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                        iv_post.setVisibility(View.INVISIBLE);
-
-                    }
-                });
-
-//                Picasso.with(this).load(Uri.parse(editPost.getImage())).into(iv_post, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        iv_post.setVisibility(View.INVISIBLE);
-//                    }
-//                });
-
+              iv_post.setImageURI(Uri.parse(picturePath));
             }
             else {
                 iv_post.setVisibility(View.INVISIBLE);
@@ -207,7 +167,7 @@ public class AddEditPost extends AppCompatActivity {
         ed_postDesc = (EditText) this.findViewById(R.id.ed_postDesc);
         ed_postDesc.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
 
-        iv_post = (ImageView) this.findViewById(R.id.iv_post);
+        iv_post = (SimpleDraweeView) this.findViewById(R.id.iv_post);
         iv_delete = (ImageView) this.findViewById(R.id.iv_delete);
     }
 
