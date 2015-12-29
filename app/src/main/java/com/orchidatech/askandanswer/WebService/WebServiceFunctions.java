@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.orchidatech.askandanswer.Activity.CommentsScreen;
 import com.orchidatech.askandanswer.Activity.Login;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.NotificationPostView;
@@ -888,7 +889,87 @@ public class WebServiceFunctions {
             }
         });
     }
+    public static void getNewestComments(final Activity activity, long user_id, long postId, long newestCommentId, final OnCommentFetchListener listener) {
+        String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                .getString(GNLConstants.SharedPreference.REG_ID, "null");
+        String url = URL.GET_Newest_POST_Comments + "?" +
+                URL.URLParameters.POST_ID + "=" + postId +
+                "&" + URL.URLParameters.USER_ID + "=" + user_id +
+                "&" + URL.URLParameters.LAST_ID + "=" + newestCommentId +
+                "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Log.i("cvv", url);
+        Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
+            @Override
+            public void onSuccess(String response) {
+                Log.i("sds", response);
+                try {
+                    JSONObject dataObj = new JSONObject(response);
+                    int status_code = dataObj.getInt("statusCode");
+                    int status = dataObj.getInt("status");
+                    if (status == 0) {
+                        JSONArray data = dataObj.getJSONArray("data");
+                        ArrayList<Comments> fetchedComments = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject comment = data.getJSONObject(i);
+                            long comment_id = Long.parseLong(comment.getString("id"));
+                            String comment_text = comment.getString("comment");
+                            String comment_image = comment.getString("image");
+                            long user_id = Long.parseLong(comment.getString("user_id"));
+                            long post_id = Long.parseLong(comment.getString("post_id"));
+                            long comment_date = comment.getLong("updated_at");
+                            JSONObject actions = comment.getJSONObject("action");
+                            int likes = actions.getInt("like");
+                            int dislikes = actions.getInt("dislike");
+                            ///////////////////////////////////////////////
+                            ///comment's user data
+                            JSONObject user_info = comment.getJSONObject("user_info");
+                            String f_name = user_info.getString("f_name");
+                            String l_name = user_info.getString("l_name");
+                            String email = user_info.getString("email");
+                            String user_image = user_info.getString("image");
+                            int active = Integer.parseInt(user_info.getString("active"));
+                            long created_at = user_info.getLong("created_at");
+                            long last_login = user_info.getLong("last_login");
+                            String code = user_info.getString("code");
+                            String mobile = user_info.getString("mobile");
+                            int is_public = Integer.parseInt(user_info.getString("is_public"));
+                            JSONObject askandanswer = user_info.getJSONObject("askandanswer");
+                            int no_answer = askandanswer.getInt("no_answer");
+                            int no_ask = askandanswer.getInt("no_ask");
+                            float user_rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
 
+                            Users _user = new Users(user_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, created_at, active, last_login, mobile, is_public, code, no_answer, no_ask, user_rating);
+                            UsersDAO.addUser(_user);
+                            /////////////////////////s/////////////////////
+                            int current_user_action = 2;
+                            JSONArray user_action_arr = comment.optJSONArray("user_action");
+                            if (user_action_arr != null && user_action_arr.length() > 0) {
+                                JSONObject user_action = user_action_arr.getJSONObject(0);
+                                User_ActionsDAO.addUserAction(new User_Actions(Long.parseLong(user_action.getString("id"))
+                                        , Long.parseLong(user_action.getString("comment_id")), Long.parseLong(user_action.getString("user_id")), System.currentTimeMillis(), current_user_action = Integer.parseInt(user_action.getString("action_type"))));
+                            }
+                            Comments comment_item = new Comments(comment_id, comment_text.equals("null")?"":comment_text, comment_image.equals("null") ? null : comment_image, comment_date, user_id, post_id, likes, dislikes, current_user_action);
+                            CommentsDAO.addComment(comment_item);
+                            fetchedComments.add(comment_item);
+
+                        }
+                        long last_id = Long.parseLong(dataObj.getString("last_id"));
+                        listener.onSuccess(fetchedComments, last_id);
+                    } else if (status_code == 5000)
+                        logoutImmediately(activity);
+                    else
+                        listener.onFail(GNLConstants.getStatus(status_code), status_code);
+                } catch (JSONException e) {
+                    listener.onFail(GNLConstants.getStatus(100), 100);
+                }
+            }
+
+            @Override
+            public void onFail(String error) {
+                listener.onFail(error, 100);
+            }
+        });
+    }
     public static void getPostComments(final Activity activity, long user_id, final long pid, int limit, int offset, long last_id, final OnCommentFetchListener listener) {
         String reg_id = activity.getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getString(GNLConstants.SharedPreference.REG_ID, "null");
@@ -1035,6 +1116,7 @@ public class WebServiceFunctions {
         String url = URL.GET_NEWEST_POSTS + "?" + URL.URLParameters.USER_ID + "=" + user_id +
                 "&" + URL.URLParameters.LAST_ID + "=" + newestPostId +
                 "&" + URL.URLParameters.REGISTERATION_ID + "=" + reg_id;
+        Log.i("REFRESHLAYOUT", url+"");
         Operations.getInstance(activity).sendGetRequest(url, new OnLoadFinished() {
             @Override
             public void onSuccess(String response) {
@@ -1926,6 +2008,7 @@ public class WebServiceFunctions {
         Post_FavoriteDAO.deleteAllUserPostFavorite();
         NotificationsDAO.deleteAllNotifications();
     }
+
 
 
 }

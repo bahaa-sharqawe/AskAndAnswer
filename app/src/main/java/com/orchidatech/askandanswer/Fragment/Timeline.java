@@ -226,9 +226,8 @@ public class Timeline extends Fragment {
         });
     }
     private void loadNewPosts() {
-        if (pb_loading_main.getVisibility() == View.VISIBLE)
-            swipeRefreshLayout.setEnabled(false);
-                WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - numOfPostFetchedSwiping - 1, last_id_server, new OnUserPostFetched() {
+        swipeRefreshLayout.setEnabled(false);
+        WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - numOfPostFetchedSwiping - 1, last_id_server, new OnUserPostFetched() {
                     @Override
                     public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
                         if (pb_loading_main.getVisibility() == View.VISIBLE) {
@@ -261,7 +260,7 @@ public class Timeline extends Fragment {
                                 tv_error.setText(getActivity().getString(R.string.no_posts_found));
                                 rl_error.setEnabled(true);
                                 rl_error.setVisibility(View.VISIBLE);
-                                swipeRefreshLayout.setEnabled(false);
+                                swipeRefreshLayout.setEnabled(true);
                             }
                         } else {
                             pb_loading_main.setVisibility(View.GONE);

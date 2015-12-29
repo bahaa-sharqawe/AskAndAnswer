@@ -128,6 +128,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 
 //        mNotificationIntent = new Intent(context,
 //                MainScreen.class);
+//        Intent intent = new Intent(activity, NotificationPostView.class);
+//        intent.putExtra(NotificationPostView.OBJECT_ID, notification.getObjectID());
+//        intent.putExtra(NotificationPostView.TYPE, notification.getNotificationType());
+//
         mNotificationIntent = new Intent(context, NotificationPostView.class);
         mNotificationIntent.putExtra(NotificationPostView.OBJECT_ID, notification_object_id);
         mNotificationIntent.putExtra(NotificationPostView.TYPE, notification_type);

@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,6 +84,8 @@ public class CommentsScreen extends Activity {
     private Map<Comments, Integer> data;
     private RelativeLayout rl_send_comment;
     private CircularProgressView pb_add_comment;
+    SwipeRefreshLayout swipeRefreshLayout;
+
 
 
     @Override
@@ -142,6 +145,17 @@ public class CommentsScreen extends Activity {
         });
         rl_error.setVisibility(View.GONE);
         resizeLogo();
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
         loadNewComments();
         postComments = new ArrayList<>(CommentsDAO.getAllCommentsByPost(postId));
         iv_camera = (ImageView) findViewById(R.id.iv_camera);
@@ -218,12 +232,29 @@ public class CommentsScreen extends Activity {
 
     }
 
+    private void refreshItems() {
+        if(adapter.getItemCount()==1){ swipeRefreshLayout.setRefreshing(false);return;}
+        WebServiceFunctions.getNewestComments(this, user_id, postId, adapter.getNewestCommentId(), new OnCommentFetchListener() {
+            @Override
+            public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
+                adapter.addToLastList(comments);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFail(String error, int errorCode) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
     private void pickPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 
     private void loadNewComments() {
+
         WebServiceFunctions.getPostComments(this, user_id, postId, GNLConstants.COMMENTS_LIMIT, numOfFetchedFromServer, last_id_server, new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {

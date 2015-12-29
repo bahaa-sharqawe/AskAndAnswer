@@ -373,7 +373,14 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         return comments.size() + 1;
     }
 
+    public long getNewestCommentId() {
+        return comments.get(comments.size()-1).getServerID();
+    }
 
+    public void addToLastList(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments) {
+        comments.addAll(comments);
+        notifyDataSetChanged();
+    }
 
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder {

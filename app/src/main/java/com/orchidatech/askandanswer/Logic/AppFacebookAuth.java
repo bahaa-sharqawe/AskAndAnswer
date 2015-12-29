@@ -74,7 +74,7 @@ public class AppFacebookAuth {
                         String text = "Name : "+json.getString("name")+"\n Email : "+json.optString("email");
                         String str_firstname = json.getString("first_name");
                         String str_lastname = json.getString("last_name");
-                        Toast.makeText(activity, text + "\n" + str_firstname + " " + str_lastname, Toast.LENGTH_LONG).show();
+           //             Toast.makeText(activity, text + "\n" + str_firstname + " " + str_lastname, Toast.LENGTH_LONG).show();
                         Log.i("responsevcvcxvxc",  response.toString());
                         final SocialUser socialUser = new SocialUser();
                         socialUser.name = json.getString("name");
