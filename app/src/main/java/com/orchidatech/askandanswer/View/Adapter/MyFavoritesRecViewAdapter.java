@@ -211,7 +211,7 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            sharePost(currentPost, holder.iv_postImage.getDrawable());
+                            sharePost(currentPost/*, holder.iv_postImage.getDrawable()*/);
 //                        holder.ll_comment.setEnabled(true);
 //                        holder.card_post.setEnabled(true);
 
@@ -513,15 +513,15 @@ public class MyFavoritesRecViewAdapter extends RecyclerView.Adapter<MyFavoritesR
         notifyDataSetChanged();
     }
 
-    private void sharePost(Posts post, Drawable postPhoto) {
+    private void sharePost(Posts post) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-        }
+//        if(!TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+//            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
+//            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+//        }
         activity.startActivity(Intent.createChooser(intent, "Share using"));
     }
 

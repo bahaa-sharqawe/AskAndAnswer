@@ -372,7 +372,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            sharePost(posts.get(position - 1), holder.iv_postImage.getDrawable());
+                            sharePost(posts.get(position - 1));
 //                        holder.ll_comment.setEnabled(true);
 //                        holder.card_post.setEnabled(true);
 
@@ -588,15 +588,15 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
         notifyDataSetChanged();
     }
 
-    private void sharePost(Posts post, Drawable postPhoto) {
+    private void sharePost(Posts post) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-        }
+//        if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+//            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
+//            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+//        }
         activity.startActivity(Intent.createChooser(intent, "Share using"));
     }
 

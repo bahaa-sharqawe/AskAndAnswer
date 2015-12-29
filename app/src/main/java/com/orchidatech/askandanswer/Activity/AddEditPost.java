@@ -255,6 +255,7 @@ public class AddEditPost extends AppCompatActivity {
             public void onSuccess(String message) {
                 dialog.dismiss();
                 if(imageState == 2 || imageState == 0){
+                    Log.i("wilbedeleted", "true");
                     pref.edit().putLong(postId+"",postId).commit();
                     pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }

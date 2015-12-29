@@ -211,7 +211,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //            }
 
 //            holder.iv_postImage.setVisibility(View.INVISIBLE);
-            holder.iv_postImage.setImageBitmap(null);
+//            holder.iv_postImage.setImageBitmap(null);
 
             if (!TextUtils.isEmpty(postImage) && postImage != "null"/* && !loadPhotoPos.contains(position)*/) {
                 holder.iv_postImage.setVisibility(View.VISIBLE);
@@ -219,7 +219,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 final AQuery aq = new AQuery(activity);
                 if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
                     if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
-//                        aq.invalidate(pref.getString("prevImage", null));
+                        aq.invalidate(pref.getString("prevImage", null));
                         Uri uri = Uri.parse(pref.getString("prevImage", null));
                         Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
                         Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
@@ -369,7 +369,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            sharePost(posts.get(position), holder.iv_postImage.getDrawable());
+                            sharePost(posts.get(position));
 //                        holder.ll_comment.setEnabled(true);
 //                        holder.card_post.setEnabled(true);
 
@@ -576,15 +576,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     posts.addAll(0, latestPosts);
         notifyDataSetChanged();
     }
-    private void sharePost(Posts post, Drawable postPhoto) {
+    private void sharePost(Posts post) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TEXT, post.getText());
-        if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
-            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-        }
+//        if (postPhoto != null && !TextUtils.isEmpty(post.getImage()) && post.getImage() != "null") {
+//            String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), BitmapUtility.drawableToBitmap(postPhoto), "", null);
+//            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+//        }
         activity.startActivity(Intent.createChooser(intent, "Share using"));
     }
 
