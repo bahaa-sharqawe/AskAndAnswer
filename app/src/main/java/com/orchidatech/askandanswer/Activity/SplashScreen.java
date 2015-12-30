@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -24,6 +26,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
@@ -49,7 +52,8 @@ public class SplashScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(getApplicationContext());
+//        Fresco.initialize(getApplicationContext());
+        initFresco();
         setContentView(R.layout.activity_splash);
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
@@ -135,5 +139,14 @@ public class SplashScreen extends Activity {
         display.getSize(screenSize); // store size in screenSize
         iv_logo.getLayoutParams().height = (int) (screenSize.y * LOGO_SCALE);
         iv_logo.getLayoutParams().width = (int) (screenSize.y * LOGO_SCALE);
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 }

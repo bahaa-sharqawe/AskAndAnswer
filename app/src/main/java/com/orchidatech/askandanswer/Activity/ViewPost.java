@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -44,6 +46,7 @@ import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Fragment.DeletePost;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnPostDeletedListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
@@ -67,6 +70,8 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initFresco();
+//        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_view_post);
         setCustomActionBar();
         postId = getIntent().getLongExtra(POST_ID, -1);
@@ -209,7 +214,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
 
             @Override
             public void onDeleted() {
-                    dialog.dismiss();
+                dialog.dismiss();
                 Toast.makeText(ViewPost.this, getResources().getString(R.string.deleted), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainScreen.class));
                 finish();
@@ -224,7 +229,7 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
 
             @Override
             public void onFail(String error) {
-                    dialog.dismiss();
+                dialog.dismiss();
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });
@@ -233,6 +238,15 @@ public class ViewPost extends AppCompatActivity implements DeletePost.OnDeleteLi
     @Override
     public void onDelete() {
         performDeleting();
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 
 }

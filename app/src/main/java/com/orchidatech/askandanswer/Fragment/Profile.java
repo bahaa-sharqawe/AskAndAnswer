@@ -292,14 +292,16 @@ public class Profile extends Fragment {
                             }, 3000);
                         } else {
                             pb_loading_main.setVisibility(View.GONE);
-                            showSnackBar(GNLConstants.getStatus(errorCode));
+                            if(isAdded())
+                                showSnackBar(GNLConstants.getStatus(errorCode));
 //                            rl_error.setVisibility(View.VISIBLE);
 //                            tv_error.setText(GNLConstants.getStatus(errorCode));
 //                            rl_error.setEnabled(true);
                         }
                     } else {
                         pb_loading_main.setVisibility(View.GONE);
-                        showSnackBar(GNLConstants.getStatus(errorCode));
+                        if(isAdded())
+                            showSnackBar(GNLConstants.getStatus(errorCode));
 //                        tv_error.setText(getString(R.string.no_posts_found));
 //                        rl_error.setEnabled(true);
 //                        rl_error.setVisibility(View.VISIBLE);

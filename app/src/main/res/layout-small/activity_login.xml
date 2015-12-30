@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_name"
                 android:drawablePadding="10dp"
-                android:hint="@string/ed_name_hint"
+                android:hint="@string/ed_email_hint"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="10dp"

@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
@@ -48,6 +50,7 @@ import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
 import com.orchidatech.askandanswer.Fragment.Comments;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnPostDataListener;
@@ -96,7 +99,8 @@ public class NotificationPostView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
+        initFresco();
+//        Fresco.initialize(getApplicationContext());
         pref = getSharedPreferences(GNLConstants.SharedPreference.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if((user_id = pref.getLong(GNLConstants.SharedPreference.ID_KEY, -1)) == -1){
             final Intent intent = new Intent(this, Login.class);
@@ -454,6 +458,15 @@ public class NotificationPostView extends AppCompatActivity {
         intent.putExtra(ViewPost.POST_ID, postId);
         startActivity(intent);
 
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 
 }

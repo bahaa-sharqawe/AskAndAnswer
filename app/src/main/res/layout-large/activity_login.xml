@@ -50,7 +50,7 @@
             android:paddingTop="25dp"
             android:paddingBottom="25dp"
             android:paddingLeft="0dp"
-            android:hint="@string/ed_name_hint"
+            android:hint="@string/ed_email_hint"
             android:imeOptions="actionNext"
             android:id="@+id/ed_name" />
         <RelativeLayout

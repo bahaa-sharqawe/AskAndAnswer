@@ -163,13 +163,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            pv_load.setVisibility(View.GONE);
+//            pv_load.setVisibility(View.GONE);
             if (!loading && isFoundData && last_fetched_posts_count >= GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
-            } else
-                pv_load.setVisibility(View.GONE);
+            }
 
         } else {
             final Posts currentPost = posts.get(position);
@@ -441,6 +440,9 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         return posts.size() + 1;
     }
 
+    public List<Posts> getList() {
+        return posts;
+    }
 
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
@@ -529,10 +531,13 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            if (pv_load != null)
+            if (pv_load != null && newPosts.size() >= GNLConstants.POST_LIMIT)
                 pv_load.setVisibility(View.VISIBLE);
+            else if(pv_load != null)
+                pv_load.setVisibility(View.GONE);
+
             isFoundData = true;
-            last_fetched_posts_count = posts.size();
+            last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();
 
         } else {
@@ -727,6 +732,11 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         void onDismiss();
     }
     public long getNewestPostId(){
-        return posts.get(0).getServerID();
+        long id = -1;
+        for(Posts post : posts){
+            if(post.getServerID() >= id)
+                id = post.getServerID();
+        }
+        return id;
     }
 }

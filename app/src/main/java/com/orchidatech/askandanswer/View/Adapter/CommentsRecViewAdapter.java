@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -65,6 +66,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -117,29 +120,29 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     @Override
     public CommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = null;
-        if (viewType == TYPE_FOOTER) {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
-            return new CommentsViewHolder(itemView, TYPE_FOOTER);
+        if (viewType == TYPE_HEADER) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_header_progress, parent, false);
+            return new CommentsViewHolder(itemView, TYPE_HEADER);
         } else {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
-            return new CommentsViewHolder(itemView, TYPE_HEADER);
+            return new CommentsViewHolder(itemView, TYPE_FOOTER);
         }
 
     }
 
     @Override
     public void onBindViewHolder(final CommentsViewHolder holder, final int position) {
-        if (holder.viewType == TYPE_FOOTER) {
-            btn_reload.setVisibility(View.GONE);
-            pv_load.setVisibility(View.GONE);
-            if (!loading && isFoundData && last_fetched_comments_count >= GNLConstants.COMMENTS_LIMIT) {
-
+        if (holder.viewType == TYPE_HEADER) {
+            if(loading) {
+                btn_reload.setVisibility(View.GONE);
                 pv_load.setVisibility(View.VISIBLE);
-                loading = true;
-                lastListReachListener.onReached();
+            }
+            if (!loading && isFoundData && last_fetched_comments_count >= GNLConstants.COMMENTS_LIMIT) {
+                btn_reload.setVisibility(View.VISIBLE);
+                pv_load.setVisibility(View.GONE);
             }
         }else {
-            final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position);
+            final com.orchidatech.askandanswer.Database.Model.Comments currentComment = comments.get(position-1);
             final Users commentOwner = UsersDAO.getUser(currentComment.getUserID());
 //            Posts commentPost = PostsDAO.getPost(currentComment.getPostID());
 //            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
@@ -208,10 +211,10 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             }
             holder.tv_unlikes.setText(currentComment.getDisLikes()+"");
             holder.tv_likes.setText(currentComment.getLikes() + "");
-            if(comments.get(position).getUser_action() == Enum.USER_ACTIONS.LIKE.getNumericType()){
+            if(comments.get(position-1).getUser_action() == Enum.USER_ACTIONS.LIKE.getNumericType()){
                     holder.iv_unlike.setImageResource(R.drawable.unlike);
                     holder.iv_like.setImageResource(R.drawable.ic_like_on);
-            }else if(comments.get(position).getUser_action() == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
+            }else if(comments.get(position-1).getUser_action() == Enum.USER_ACTIONS.DISLIKE.getNumericType()){
                     holder.iv_unlike.setImageResource(R.drawable.ic_dislike_on);
                     holder.iv_like.setImageResource(R.drawable.like);
             }else{
@@ -229,7 +232,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            likeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                            likeComment(currentComment.getServerID(), position-1, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
                         }
 
                         @Override
@@ -252,7 +255,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
                        @Override
                        public void onAnimationEnd(Animation animation) {
-                           dislikeComment(currentComment.getServerID(), position, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
+                           dislikeComment(currentComment.getServerID(), position-1, holder.iv_like, holder.iv_unlike, holder.tv_unlikes, holder.tv_likes);
                        }
 
                        @Override
@@ -266,7 +269,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.rl_comment_item.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    setPosition(position);
+                    setPosition(position-1);
                     return false;
                 }
             });
@@ -278,7 +281,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             holder.iv_comment_options.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewOptionsMenu(position, v);
+                    viewOptionsMenu(position-1, v);
                 }
             });
             if(commentOwner.getServerID() == current_user_id){
@@ -363,7 +366,8 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
             @Override
             public void onFail(String error) {
                 dialog.dismiss();
-                AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
+                Toast.makeText(activity.getApplicationContext(), error, Toast.LENGTH_LONG).show();
+//                AppSnackBar.show(parent, error, Color.RED, Color.WHITE);
             }
         });
     }
@@ -409,11 +413,12 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         public CommentsViewHolder(View itemView, int viewType) {
             super(itemView);
             this.viewType = viewType;
-            if (viewType == TYPE_FOOTER) {
+            if (viewType == TYPE_HEADER) {
 
                 pv_load = (CircularProgressView) itemView.findViewById(R.id.pv_load);
 //                pv_load.getIndeterminateDrawable().setColorFilter(Color.parseColor("#249885"), android.graphics.PorterDuff.Mode.MULTIPLY);
                 btn_reload = (Button) itemView.findViewById(R.id.btn_reload);
+                pv_load.setVisibility(View.GONE);
                 btn_reload.setVisibility(View.GONE);
 
                 btn_reload.setOnClickListener(new View.OnClickListener() {
@@ -464,19 +469,26 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     @Override
     public int getItemViewType(int position) {
-        if (position == comments.size())
-            return TYPE_FOOTER;
-        return TYPE_HEADER;
+        if (position == 0)
+            return TYPE_HEADER;
+        return TYPE_FOOTER;
     }
 
 
     public void addFromServer(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments, boolean isErrorConnection) {
         if (_comments != null && _comments.size() > 0) {
-            comments.addAll(_comments);
-            if(pv_load != null)
-                pv_load.setVisibility(View.VISIBLE);
+            Collections.reverse(_comments);
+            comments.addAll(0, _comments);
+
+//            if(pv_load != null)
+//                pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             last_fetched_comments_count = _comments.size();
+            if (pv_load != null && _comments.size() >= GNLConstants.POST_LIMIT)
+                btn_reload.setVisibility(View.VISIBLE);
+            else if(pv_load != null)
+                btn_reload.setVisibility(View.GONE);
+
 //            if(comments.size() > GNLConstants.MAX_COMMENTS_ROWS)
 //                comments = comments.subList(comments.size()-GNLConstants.MAX_COMMENTS_ROWS, comments.size());
             notifyDataSetChanged();
@@ -498,10 +510,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         loading = false;
     }
     public void addFromLocal(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments) {
-        comments.addAll(postComments);
-        if(pv_load != null)
+
+        comments.addAll(0, postComments);
+        if(pv_load != null) {
             pv_load.setVisibility(View.GONE);
-        isFoundData = false;
+            btn_reload.setVisibility(View.GONE);
+        }
+            isFoundData = false;
         notifyDataSetChanged();
     }
 

@@ -24,5 +24,7 @@
         android:id="@+id/btn_reload"
         android:text="@string/retry"
         android:textSize="13sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textColor="#959595"
+        style="?android:attr/borderlessButtonStyle"/>
 </RelativeLayout>

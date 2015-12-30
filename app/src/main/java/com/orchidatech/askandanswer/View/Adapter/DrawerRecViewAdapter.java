@@ -102,7 +102,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
 //                            holder.tv_person_photo.setImageDrawable(drawable);
 
                             holder.tv_person_photo.setVisibility(View.VISIBLE);
-                            holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                            holder.tv_person_photo.setText((user.getFname().charAt(0) + " " + user.getLname().charAt(0)).toUpperCase());
 //                            holder.load_image_progress.setVisibility(View.GONE);
                         }
                     });
@@ -111,7 +111,7 @@ public class DrawerRecViewAdapter extends RecyclerView.Adapter<DrawerRecViewAdap
                     holder.iv_profile.setVisibility(View.INVISIBLE);
 //                    holder.tv_person_photo.setImageDrawable(drawable);
                     holder.tv_person_photo.setVisibility(View.VISIBLE);
-                    holder.tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                    holder.tv_person_photo.setText((user.getFname().charAt(0) + " " + user.getLname().charAt(0)).toUpperCase());
                 }
             }
         } else {

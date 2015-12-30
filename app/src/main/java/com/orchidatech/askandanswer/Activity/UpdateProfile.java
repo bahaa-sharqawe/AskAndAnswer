@@ -241,7 +241,7 @@ public class UpdateProfile extends AppCompatActivity {
             public void onError() {
                 profile_image.setVisibility(View.INVISIBLE);
                 tv_person_photo.setVisibility(View.VISIBLE);
-                tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                tv_person_photo.setText((user.getFname().charAt(0) + " " + user.getLname().charAt(0)).toUpperCase());
             }
         });else{
             profile_image.setVisibility(View.INVISIBLE);

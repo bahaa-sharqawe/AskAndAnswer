@@ -31,7 +31,7 @@ public class URL {
     public static final String DELETE_POST = SERVER_URL + WEB_SERVICES_PATH + "post/delete-post";
     public static final String GET_TIME_LINE = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost";
 
-    public static String GET_NEWEST_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/newpost-data";
+    public static String GET_NEWEST_POSTS = SERVER_URL + WEB_SERVICES_PATH + "post/newestpost-refresh";
 
     public static final String SEARCH = SERVER_URL + WEB_SERVICES_PATH + "post/searchuserpostall";
     public static final String GET_POST_DATA = SERVER_URL + WEB_SERVICES_PATH + "post/post-data";

@@ -128,13 +128,15 @@ public class MyFavorites extends Fragment {
                         } else {
                             pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
-                            tv_error.setText(GNLConstants.getStatus(errorCode));
+                            if(isAdded())
+                                tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
                         pb_loading_main.setVisibility(View.GONE);
                         rl_error.setVisibility(View.VISIBLE);
-                        tv_error.setText(getString(R.string.no_posts_found));
+                        if(isAdded())
+                         tv_error.setText(getString(R.string.no_posts_found));
                         rl_error.setEnabled(true);
                     }
                 } else {

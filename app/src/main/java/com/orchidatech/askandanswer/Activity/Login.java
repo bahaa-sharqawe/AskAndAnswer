@@ -106,6 +106,7 @@ public class Login extends AppCompatActivity {
 //        loadingDialog.setArguments(args);
 //        loadingDialog.setCancelable(false);
 //        loadingDialog.show(getFragmentManager(), "logging in");
+        
         if(TextUtils.isEmpty(registration_id))
             registerWithGCM(0);
         else
@@ -373,8 +374,8 @@ public class Login extends AppCompatActivity {
 
         tv_fb = (TextView) findViewById(R.id.tv_fb);
         tv_google = (TextView) findViewById(R.id.tv_google);
-        tv_fb.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-        tv_google.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
+        tv_fb.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
+        tv_google.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
         btn_login.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
         tv_forget_password.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
     }
@@ -391,7 +392,7 @@ public class Login extends AppCompatActivity {
         if (TextUtils.isEmpty(username)) {
             ViewAnimation.blink(Login.this, ed_name);
             Crouton.cancelAllCroutons();
-            AppSnackBar.showTopSnackbar(Login.this, getString(R.string.BR_LOGIN_001), Color.RED, Color.WHITE);
+            AppSnackBar.showTopSnackbar(Login.this, getString(R.string.BR_SIGN_005), Color.RED, Color.WHITE);
             return false;
         } else if (!mValidator.isValidEmail(username)) {
             ViewAnimation.blink(Login.this, ed_name);

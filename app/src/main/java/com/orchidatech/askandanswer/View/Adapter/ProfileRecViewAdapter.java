@@ -158,25 +158,23 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                     public void onError() {
                         holder.header_iv_profile.setVisibility(View.INVISIBLE);
                         holder.header_tv_person_photo.setVisibility(View.VISIBLE);
-                        holder.header_tv_person_photo.setText(user.getFname().charAt(0) + " " + user.getLname().charAt(0));
+                        holder.header_tv_person_photo.setText((user.getFname().charAt(0) + " " + user.getLname().charAt(0)).toUpperCase());
                     }
                 });
             else{
                 holder.header_iv_profile.setVisibility(View.INVISIBLE);
                 holder.header_tv_person_photo.setVisibility(View.VISIBLE);
-                holder.header_tv_person_photo.setText(user.getFname().charAt(0)+" "+user.getLname().charAt(0));
+                holder.header_tv_person_photo.setText((user.getFname().charAt(0)+" "+user.getLname().charAt(0)).toUpperCase());
             }
 
         }else if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
-            pv_load.setVisibility(View.GONE);
+//            pv_load.setVisibility(View.GONE);
             if (!loading && isFoundData && last_fetched_posts_count  >= GNLConstants.POST_LIMIT) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
-            } else
-                pv_load.setVisibility(View.GONE);
-
+            }
         } else {
             final Posts currentPost = posts.get(position-1);
             final Category postCategory = CategoriesDAO.getCategory(currentPost.getCategoryID());
@@ -544,8 +542,10 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            if (pv_load != null)
+            if (pv_load != null && newPosts.size() >= GNLConstants.POST_LIMIT)
                 pv_load.setVisibility(View.VISIBLE);
+            else if(pv_load != null)
+                pv_load.setVisibility(View.GONE);
             isFoundData = true;
             last_fetched_posts_count = newPosts.size();
             notifyDataSetChanged();

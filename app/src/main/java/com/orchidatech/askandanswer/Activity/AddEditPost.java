@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -43,6 +46,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
 import com.orchidatech.askandanswer.Fragment.LoadingDialog;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SpinAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
@@ -85,6 +89,8 @@ public class AddEditPost extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initFresco();
+//        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_add_edit_post);
         setCustomActionBar();
         editPostId = getIntent().getLongExtra(ViewPost.POST_ID, -1);
@@ -223,7 +229,7 @@ public class AddEditPost extends AppCompatActivity {
     private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
         final int imageState;
         if(isPostHasImagePrev){
-            Log.i("vxvcv", editPost.getImage()+"xcx");
+            Log.i("vxvcv", editPost.getImage() + "xcx");
 
             if(TextUtils.isEmpty(picturePath))
                 imageState = 0;//remove post photo from DB... do not send photo to server
@@ -353,8 +359,8 @@ public class AddEditPost extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-//            final Bitmap bitmap = ShrinkBitmap(picturePath, 300, 300);
-            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+            final Bitmap bitmap = ShrinkBitmap(picturePath, 100, 100);
+//            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
             if (bitmap == null) {
                 Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
@@ -404,5 +410,14 @@ public class AddEditPost extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 }

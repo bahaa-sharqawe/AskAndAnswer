@@ -38,6 +38,7 @@ import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,20 +101,8 @@ public class MyAnswers extends Fragment {
         rl_error.setVisibility(View.GONE);
         pb_loading_main.setVisibility(View.VISIBLE);
         resizeLogo();
+
         myAnswers = new ArrayList<>(CommentsDAO.getAllComments(user_id));
-        allStoredCommentedPost  = new ArrayList<>();
-        for(int i = 0; i < myAnswers.size(); i++){
-            Posts post = PostsDAO.getPost(myAnswers.get(i).getPostID());
-            boolean isExist = false;
-            for(int x = 0; x < allStoredCommentedPost.size(); x++){
-                if(allStoredCommentedPost.get(x).getServerID() == post.getServerID()){
-                    isExist = true;
-                    break;
-                }
-            }
-            if(!isExist)
-                allStoredCommentedPost.add(post);
-        }
         loadNewComments();
 
         return view;
@@ -130,20 +119,22 @@ public class MyAnswers extends Fragment {
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
                 Log.i("list size",allFetchedCommentedPosts.size()+"" );
                 ArrayList<Posts> newCommentedPost = new ArrayList<Posts>();
+//                Collections.reverse(comments);
                 for(int i = 0; i < comments.size(); i++){
                     Posts post = PostsDAO.getPost(comments.get(i).getPostID());
                     boolean isExist = false;
                     for(int x = 0; x < allFetchedCommentedPosts.size(); x++){
-                        if(allFetchedCommentedPosts.get(x).getServerID() == post.getServerID()){
+                        if(allFetchedCommentedPosts.get(x).getServerID() == comments.get(i).getPostID()){
                             isExist = true;
                             break;
                         }
                     }
                     if(!isExist)
-                        newCommentedPost.add(post);
+                        allFetchedCommentedPosts.add(post);
 
                 }
-                adapter.addFromServer(newCommentedPost, false);
+
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -162,7 +153,8 @@ public class MyAnswers extends Fragment {
                         } else {
                             pb_loading_main.setVisibility(View.GONE);
                             rl_error.setVisibility(View.VISIBLE);
-                            tv_error.setText(GNLConstants.getStatus(errorCode));
+                            if(isAdded())
+                                tv_error.setText(GNLConstants.getStatus(errorCode));
                             rl_error.setEnabled(true);
                         }
                     } else {
@@ -180,6 +172,19 @@ public class MyAnswers extends Fragment {
     }
 
     private void getFromLocal() {
+        allStoredCommentedPost  = new ArrayList<>();
+        for(int i = 0; i < myAnswers.size(); i++){
+            Posts post = PostsDAO.getPost(myAnswers.get(i).getPostID());
+            boolean isExist = false;
+            for(int x = 0; x < allStoredCommentedPost.size(); x++){
+                if(allStoredCommentedPost.get(x).getServerID() == post.getServerID()){
+                    isExist = true;
+                    break;
+                }
+            }
+            if(!isExist)
+                allStoredCommentedPost.add(post);
+        }
         adapter.addFromLocal(allStoredCommentedPost);
     }
 

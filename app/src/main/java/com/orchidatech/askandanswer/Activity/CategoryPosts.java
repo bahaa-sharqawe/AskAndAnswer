@@ -1,5 +1,6 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -18,12 +19,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
@@ -55,6 +59,8 @@ public class CategoryPosts extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initFresco();
+//        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_category_posts);
         setCustomActionBar();
         categoryId = getIntent().getLongExtra(CATEGORY_KEY, -1);
@@ -229,5 +235,14 @@ public class CategoryPosts extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 }

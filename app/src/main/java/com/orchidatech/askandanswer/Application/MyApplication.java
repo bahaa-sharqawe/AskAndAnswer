@@ -1,15 +1,18 @@
 package com.orchidatech.askandanswer.Application;
 
+import android.app.ActivityManager;
+
 import com.activeandroid.ActiveAndroid;
 import com.alexbbb.uploadservice.UploadService;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
-
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 
 
 /**
@@ -29,6 +32,8 @@ public class MyApplication extends com.activeandroid.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initFresco();
+//        Fresco.initialize(getApplicationContext());
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(this)
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
                 ImageLoader.getInstance().init(config);
@@ -59,5 +64,13 @@ public class MyApplication extends com.activeandroid.app.Application {
 //        super.onTerminate();
 //        ActiveAndroid.dispose();
 //    }
+private void initFresco() {
+    ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+            .newBuilder(getApplicationContext())
+            .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+            .build();
 
+    Fresco.initialize(getApplicationContext(), imagePipelineConfig);
+}
 }

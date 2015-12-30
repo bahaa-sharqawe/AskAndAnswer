@@ -68,11 +68,11 @@ public class CommentsDAO {
     }
 
     public static List<Comments> getAllComments(long userServerId) {
-        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_USER_ID + " = ?", userServerId).execute();
+        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_USER_ID + " = ?", userServerId).orderBy(Comments.FIELDS.COLUMN_DATE + " asc").execute();
     }
 
     public static List<Comments> getAllCommentsByPost(long postServerId) {
-        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).orderBy(Comments.FIELDS.COLUMN_DATE + " desc").execute();
+        return new Select().from(Comments.class).where(Comments.FIELDS.COLUMN_POST_ID + " = ?", postServerId).orderBy(Comments.FIELDS.COLUMN_DATE + " asc").execute();
     }
 
     private static boolean isExist(long serverID) {

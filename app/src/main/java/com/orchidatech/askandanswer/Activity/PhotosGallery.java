@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -12,8 +13,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Logic.HackyViewPager;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.ViewPagerAdapter;
 
@@ -31,6 +35,8 @@ public class PhotosGallery extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Fresco.initialize(getApplicationContext());
+        initFresco();
         setContentView(R.layout.gallery);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         image_url = getIntent().getStringExtra(IMAGE_URL);
@@ -58,4 +64,13 @@ public class PhotosGallery extends Activity {
 //        viewPager.setAdapter(new ViewPagerAdapter(getActivity(), imagesUrl));
 //        return view;
 //    }
+private void initFresco() {
+    ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+            .newBuilder(getApplicationContext())
+            .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+            .build();
+
+    Fresco.initialize(getApplicationContext(), imagePipelineConfig);
+}
 }

@@ -1,6 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
@@ -39,6 +42,7 @@ import com.orchidatech.askandanswer.Database.DAO.User_ActionsDAO;
 import com.orchidatech.askandanswer.Database.Model.Comments;
 import com.orchidatech.askandanswer.Database.Model.User_Actions;
 import com.orchidatech.askandanswer.Fragment.DeleteComment;
+import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.CommentsRecViewAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
@@ -91,6 +95,8 @@ public class CommentsScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Fresco.initialize(getApplicationContext());
+        initFresco();
         setContentView(R.layout.activity_comments_screen);
 //        setDragEdge(SwipeBackLayout.DragEdge.BOTTOM);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -233,10 +239,12 @@ public class CommentsScreen extends Activity {
     }
 
     private void refreshItems() {
+//        Log.i("llasdsd", adapter.getNewestCommentId()+"");
         if(adapter.getItemCount()==1){ swipeRefreshLayout.setRefreshing(false);return;}
         WebServiceFunctions.getNewestComments(this, user_id, postId, adapter.getNewestCommentId(), new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
+                rl_error.setVisibility(View.GONE);
                 adapter.addToLastList(comments);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -254,32 +262,34 @@ public class CommentsScreen extends Activity {
     }
 
     private void loadNewComments() {
-
+        swipeRefreshLayout.setEnabled(false);
         WebServiceFunctions.getPostComments(this, user_id, postId, GNLConstants.COMMENTS_LIMIT, numOfFetchedFromServer, last_id_server, new OnCommentFetchListener() {
             @Override
             public void onSuccess(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments, long last_id) {
+                swipeRefreshLayout.setEnabled(true);
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                 }
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
-
+                Log.i("llasdsd", comments.get(0).getServerID() + "");
                 numOfFetchedFromServer += comments.size();
                 Log.i("fdfcdfdf", last_id_server + "");
-                for (com.orchidatech.askandanswer.Database.Model.Comments comment : comments) {
-                    User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
-                    if (user_actions == null || user_actions.actionType == com.orchidatech.askandanswer.Constant.Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
-                        data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
-                    } else if (user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()) {
-                        data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
-                    } else {
-                        data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
-                    }
-                }
+//                for (com.orchidatech.askandanswer.Database.Model.Comments comment : comments) {
+//                    User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
+//                    if (user_actions == null || user_actions.actionType == com.orchidatech.askandanswer.Constant.Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()) {
+//                        data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
+//                    } else if (user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()) {
+//                        data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
+//                    } else {
+//                        data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
+//                    }
+//                }
                 adapter.addFromServer(comments, false);
             }
 
             @Override
             public void onFail(String error, int errorCode) {
+                swipeRefreshLayout.setEnabled(true);
                 if (pb_loading_main.getVisibility() == View.VISIBLE) {
                     pb_loading_main.setVisibility(View.GONE);
                     if (errorCode != 404) {//ALL ERRORS EXCEPT NO_COMMENTS
@@ -293,7 +303,7 @@ public class CommentsScreen extends Activity {
                     } else {
                         rl_error.setVisibility(View.VISIBLE);
 //                        if (!isDestroyed())
-                            tv_error.setText(getString(R.string.no_comments_found));
+                        tv_error.setText(getString(R.string.no_comments_found));
                         rl_error.setEnabled(true);
                     }
                 } else {
@@ -304,16 +314,17 @@ public class CommentsScreen extends Activity {
     }
 
     private void getFromLocal() {
-        for(com.orchidatech.askandanswer.Database.Model.Comments comment : postComments){
-            User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
-            if(user_actions == null || user_actions.actionType == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()){
-                data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
-            }else if(user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()){
-                data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
-            }else{
-                data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
-            }
-        }
+        swipeRefreshLayout.setEnabled(false);
+//        for(com.orchidatech.askandanswer.Database.Model.Comments comment : postComments){
+//            User_Actions user_actions = User_ActionsDAO.getUserAction(user_id, comment.getServerID());
+//            if(user_actions == null || user_actions.actionType == Enum.USER_ACTIONS.NO_ACTIONS.getNumericType()){
+//                data.put(comment, Enum.USER_ACTIONS.NO_ACTIONS.getNumericType());
+//            }else if(user_actions.actionType == Enum.USER_ACTIONS.LIKE.getNumericType()){
+//                data.put(comment, Enum.USER_ACTIONS.LIKE.getNumericType());
+//            }else{
+//                data.put(comment, Enum.USER_ACTIONS.DISLIKE.getNumericType());
+//            }
+//        }
         adapter.addFromLocal(postComments);
     }
 
@@ -408,5 +419,14 @@ public class CommentsScreen extends Activity {
             deletePost.show(getFragmentManager(), getString(R.string.delete_comment));
         }
         return super.onContextItemSelected(item);
+    }
+    private void initFresco() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig
+                .newBuilder(getApplicationContext())
+                .setBitmapMemoryCacheParamsSupplier(new LollipopBitmapMemoryCacheParamsSupplier(activityManager))
+                .build();
+
+        Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
 }

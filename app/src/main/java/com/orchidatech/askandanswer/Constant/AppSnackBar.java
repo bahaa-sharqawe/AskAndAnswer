@@ -34,7 +34,6 @@ public class AppSnackBar {
                 snackbar.dismiss();
             }
         });
-
         snackbar.show();
     }
 

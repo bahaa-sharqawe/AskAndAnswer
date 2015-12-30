@@ -159,6 +159,7 @@ public class Timeline extends Fragment {
                 R.color.refresh_progress_1,
                 R.color.refresh_progress_2,
                 R.color.refresh_progress_3);
+        swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -213,6 +214,7 @@ public class Timeline extends Fragment {
         WebServiceFunctions.getNewestPosts(getActivity(), user_id, adapter.getNewestPostId(), new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
+                rl_error.setVisibility(View.GONE);
                 adapter.addFrontOfList(latestPosts);
                 swipeRefreshLayout.setRefreshing(false);
                 numOfPostFetchedSwiping +=latestPosts.size();
@@ -234,7 +236,6 @@ public class Timeline extends Fragment {
                             pb_loading_main.setVisibility(View.GONE);
                         }
                         last_id_server = last_id_server == 0 ? last_id : last_id_server;
-
                         adapter.addFromServer(latestPosts, false);
                         swipeRefreshLayout.setEnabled(true);
 
@@ -257,7 +258,8 @@ public class Timeline extends Fragment {
 
                             } else {
                                 pb_loading_main.setVisibility(View.GONE);
-                                tv_error.setText(getActivity().getString(R.string.no_posts_found));
+                                if(isAdded())
+                                    tv_error.setText(getActivity().getString(R.string.no_posts_found));
                                 rl_error.setEnabled(true);
                                 rl_error.setVisibility(View.VISIBLE);
                                 swipeRefreshLayout.setEnabled(true);
@@ -273,6 +275,7 @@ public class Timeline extends Fragment {
     }
 
             private void getFromLocal(String error) {
+                swipeRefreshLayout.setEnabled(false);
                 if (allStoredPosts == null || allStoredPosts.size() == 0) {
                     rl_error.setVisibility(View.VISIBLE);
                     tv_error.setText(error);
