@@ -193,7 +193,7 @@ public class CommentsScreen extends Activity {
             @Override
             public void onClick(View v) {
 
-                String comment = ed_add_comment.getText().toString().trim();
+                String comment = encode(ed_add_comment.getText().toString().trim());
                 if (!TextUtils.isEmpty(comment) || !TextUtils.isEmpty(picturePath)) {
                     iv_add_comment.setVisibility(View.INVISIBLE);
                     pb_add_comment.setVisibility(View.VISIBLE);
@@ -429,4 +429,8 @@ public class CommentsScreen extends Activity {
 
         Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
+    private String encode(String s) {
+        return Uri.encode(s, "utf-8");
+    }
+
 }

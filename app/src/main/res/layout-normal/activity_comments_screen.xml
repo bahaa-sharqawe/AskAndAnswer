@@ -103,7 +103,7 @@
                 android:layout_weight="1"
                 android:textSize="17sp"
                 android:hint="Add a comment"
-                android:inputType="textEmailAddress|textMultiLine"
+                android:inputType="text|textMultiLine"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/ed_add_comment"
                 android:textColor="#4d4d4d"

@@ -148,7 +148,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
 //            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
-            holder.tv_commentDesc.setText(currentComment.getText());
+            holder.tv_commentDesc.setText(decode(currentComment.getText()));
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.user_rating.setRating(commentOwner.getRating());
 //            holder.tv_comment_category.setText(commentCategory.getName());
@@ -648,6 +648,9 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
     public void setPosition(int position) {
         this.position = position;
+    }
+    private String decode(String s) {
+        return Uri.decode(s);
     }
 
 }
