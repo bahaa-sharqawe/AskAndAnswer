@@ -470,10 +470,13 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //                pv_load.setVisibility(View.VISIBLE);
             isFoundData = true;
             last_fetched_comments_count = _comments.size();
-            if (pv_load != null && _comments.size() >= GNLConstants.POST_LIMIT)
+            if (pv_load != null && _comments.size() >= GNLConstants.POST_LIMIT) {
                 btn_reload.setVisibility(View.VISIBLE);
-            else if (pv_load != null)
+                pv_load.setVisibility(View.GONE);
+            } else if (pv_load != null) {
                 btn_reload.setVisibility(View.GONE);
+                pv_load.setVisibility(View.GONE);
+            }
 
 //            if(comments.size() > GNLConstants.MAX_COMMENTS_ROWS)
 //                comments = comments.subList(comments.size()-GNLConstants.MAX_COMMENTS_ROWS, comments.size());
