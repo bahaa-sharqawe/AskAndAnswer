@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,17 +25,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.orchidatech.askandanswer.Activity.AddEditPost;
-import com.orchidatech.askandanswer.Activity.SplashScreen;
-import com.orchidatech.askandanswer.Activity.ViewPost;
-import com.orchidatech.askandanswer.Constant.*;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.NotificationsDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.Model.Notifications;
@@ -46,16 +40,11 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.NotificationsAdapter;
 import com.orchidatech.askandanswer.View.Adapter.TimelineRecViewAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostEventListener;
-import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserPostFetched;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by Bahaa on 7/11/2015.
@@ -177,7 +166,7 @@ public class Timeline extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv_notifications_count = (TextView) getActivity().findViewById(R.id.tv_notifications_count);
-      getNotificationsCount();
+        getNotificationsCount();
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
         rl_num_notifications.setVisibility(View.VISIBLE);
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {
@@ -210,14 +199,17 @@ public class Timeline extends Fragment {
     }
 
     private void refreshItems() {
-        if(adapter.getItemCount()==1){ swipeRefreshLayout.setRefreshing(false);return;}
+        if (adapter.getItemCount() == 1) {
+            swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
         WebServiceFunctions.getNewestPosts(getActivity(), user_id, adapter.getNewestPostId(), new OnUserPostFetched() {
             @Override
             public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
                 rl_error.setVisibility(View.GONE);
                 adapter.addFrontOfList(latestPosts);
                 swipeRefreshLayout.setRefreshing(false);
-                numOfPostFetchedSwiping +=latestPosts.size();
+                numOfPostFetchedSwiping += latestPosts.size();
             }
 
             @Override
@@ -227,91 +219,92 @@ public class Timeline extends Fragment {
 
         });
     }
+
     private void loadNewPosts() {
         swipeRefreshLayout.setEnabled(false);
         WebServiceFunctions.geTimeLine(getActivity(), user_id, GNLConstants.POST_LIMIT, adapter.getItemCount() - numOfPostFetchedSwiping - 1, last_id_server, new OnUserPostFetched() {
-                    @Override
-                    public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
-                        if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                            pb_loading_main.setVisibility(View.GONE);
-                        }
-                        last_id_server = last_id_server == 0 ? last_id : last_id_server;
-                        adapter.addFromServer(latestPosts, false);
-                        swipeRefreshLayout.setEnabled(true);
+            @Override
+            public void onSuccess(ArrayList<Posts> latestPosts, long last_id) {
+                if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                    pb_loading_main.setVisibility(View.GONE);
+                }
+                last_id_server = last_id_server == 0 ? last_id : last_id_server;
+                adapter.addFromServer(latestPosts, false);
+                swipeRefreshLayout.setEnabled(true);
 
-                    }
+            }
 
-                    @Override
-                    public void onFail(final String error, int errorCode) {
-                        if (pb_loading_main.getVisibility() == View.VISIBLE) {
-                            if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        pb_loading_main.setVisibility(View.GONE);
-                                        getFromLocal(error);
-                                        swipeRefreshLayout.setEnabled(true);
-                                    }
-                                }, 3000);
+            @Override
+            public void onFail(final String error, int errorCode) {
+                if (pb_loading_main.getVisibility() == View.VISIBLE) {
+                    if (errorCode != 402) {//ALL ERRORS EXCEPT NO_POSTS
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pb_loading_main.setVisibility(View.GONE);
+                                getFromLocal(error);
+                                swipeRefreshLayout.setEnabled(true);
+                            }
+                        }, 3000);
 //                            pb_loading_main.setVisibility(View.GONE);
 //                            getFromLocal(error);
 
-                            } else {
-                                pb_loading_main.setVisibility(View.GONE);
-                                if(isAdded())
-                                    tv_error.setText(getActivity().getString(R.string.no_posts_found));
-                                rl_error.setEnabled(true);
-                                rl_error.setVisibility(View.VISIBLE);
-                                swipeRefreshLayout.setEnabled(true);
-                            }
-                        } else {
-                            pb_loading_main.setVisibility(View.GONE);
-                            adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
-                            swipeRefreshLayout.setEnabled(true);
-
-                        }
+                    } else {
+                        pb_loading_main.setVisibility(View.GONE);
+                        if (isAdded())
+                            tv_error.setText(getActivity().getString(R.string.no_posts_found));
+                        rl_error.setEnabled(true);
+                        rl_error.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setEnabled(true);
                     }
-                });
+                } else {
+                    pb_loading_main.setVisibility(View.GONE);
+                    adapter.addFromServer(null, errorCode != 402 ? true : false);//CONNECTION ERROR
+                    swipeRefreshLayout.setEnabled(true);
+
+                }
+            }
+        });
     }
 
-            private void getFromLocal(String error) {
-                swipeRefreshLayout.setEnabled(false);
-                if (allStoredPosts == null || allStoredPosts.size() == 0) {
-                    rl_error.setVisibility(View.VISIBLE);
-                    tv_error.setText(error);
-                    rl_error.setEnabled(true);
-                }
-                adapter.addFromLocal(allStoredPosts);
-            }
+    private void getFromLocal(String error) {
+        swipeRefreshLayout.setEnabled(false);
+        if (allStoredPosts == null || allStoredPosts.size() == 0) {
+            rl_error.setVisibility(View.VISIBLE);
+            tv_error.setText(error);
+            rl_error.setEnabled(true);
+        }
+        adapter.addFromLocal(allStoredPosts);
+    }
 
-            private void resizeLogo() {
-                Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-                Point screenSize = new Point(); // used to store screen size
-                display.getSize(screenSize); // store size in screenSize
-                uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
-                uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
-            }
+    private void resizeLogo() {
+        Display display = ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point screenSize = new Point(); // used to store screen size
+        display.getSize(screenSize); // store size in screenSize
+        uncolored_logo.getLayoutParams().height = (int) (screenSize.y * 0.25);
+        uncolored_logo.getLayoutParams().width = (int) (screenSize.y * 0.25);
+    }
 
-            @Override
-            public void onResume() {
-                super.onResume();
-                getActivity().registerReceiver(notifications_listener, intentFilter);
-            }
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(notifications_listener, intentFilter);
+    }
 
-            @Override
-            public void onPause() {
-                super.onPause();
-                getActivity().unregisterReceiver(notifications_listener);
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(notifications_listener);
 
-            }
+    }
 
-            private class NotificationRec extends BroadcastReceiver {
+    private class NotificationRec extends BroadcastReceiver {
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    getNotificationsCount();
-                    allNotifications.add(0, NotificationsDAO.getAllNotifications().get(0));
-                    notificationsAdapter.notifyDataSetChanged();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getNotificationsCount();
+            allNotifications.add(0, NotificationsDAO.getAllNotifications().get(0));
+            notificationsAdapter.notifyDataSetChanged();
         }
 
     }

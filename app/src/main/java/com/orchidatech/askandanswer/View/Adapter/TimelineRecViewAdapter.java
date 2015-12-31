@@ -7,17 +7,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,11 +29,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.facebook.cache.common.SimpleCacheKey;
-import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -50,49 +39,37 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.image.QualityInfo;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.nineoldandroids.animation.Animator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import com.orchidatech.askandanswer.Activity.CategoryPosts;
 import com.orchidatech.askandanswer.Activity.CommentsScreen;
 import com.orchidatech.askandanswer.Activity.MainScreen;
 import com.orchidatech.askandanswer.Activity.PhotosGallery;
-import com.orchidatech.askandanswer.Activity.Register;
 import com.orchidatech.askandanswer.Activity.ViewPost;
 import com.orchidatech.askandanswer.Constant.Enum;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Constant.URL;
 import com.orchidatech.askandanswer.Database.DAO.CategoriesDAO;
-import com.orchidatech.askandanswer.Database.DAO.Post_FavoriteDAO;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.UsersDAO;
 import com.orchidatech.askandanswer.Database.Model.Category;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.Users;
-import com.orchidatech.askandanswer.Fragment.Comments;
 import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
-import com.orchidatech.askandanswer.View.Animation.ViewAnimation;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
-import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
-import com.orchidatech.askandanswer.View.Utils.DeviceDimensionsHelper;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -120,6 +97,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private boolean isCommentDialogShown = false;
     int last_fetched_posts_count;
 
+    private Map<Long, Integer> personsColors;
 
     public TimelineRecViewAdapter(Activity activity, List<Posts> posts, View parent,
                                   OnLastListReachListener lastListReachListener, int fragment_numeric) {
@@ -136,6 +114,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ImageLoader.getInstance().init(config);
         mAnimation = AnimationUtils.loadAnimation(activity, R.anim.zoom_enter);
         fontManager = FontManager.getInstance(activity.getAssets());
+        personsColors = new HashMap<>();
+
 //        AjaxCallback.setNetworkLimit(8);
 //
 ////set the max number of icons (image width <= 50) to be cached in memory, default is 20
@@ -143,7 +123,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //
 ////set the max number of images (image width > 50) to be cached in memory, default is 20
 //        BitmapAjaxCallback.setCacheLimit(50);
-         generator = ColorGenerator.MATERIAL;
+        generator = ColorGenerator.MATERIAL;
     }
 
     @Override
@@ -226,7 +206,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                         Log.i("removedFroFresco", "true");
                     }
                     pref.edit().remove(currentPost.getServerID() + "").commit();
-                pref.edit().remove("prevImage").commit();
+                    pref.edit().remove("prevImage").commit();
                 }
 /* Getting Images from Server and stored in cache */
 
@@ -285,14 +265,14 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 DraweeController controller = (DraweeController) Fresco.newDraweeControllerBuilder()
                         .setControllerListener(controllerListener)
                         .setUri(Uri.parse(currentPost.getImage()))
-                // other setters
+                                // other setters
                         .build();
                 holder.iv_postImage.setController(controller);
 
 //                holder.iv_postImage.setImageURI(Uri.parse(currentPost.getImage()));
-               holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                  public void onClick(View v) {
+                holder.iv_postImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         viewPhoto(currentPost.getImage());
                     }
                 });
@@ -303,9 +283,16 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //            holder.tv_person_photo.setVisibility(View.INVISIBLE);
       /*&& !postOwner.getFname().equals("بهاء")*/
             String letter = postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0);
-
+            if (personsColors.get(postOwner.getServerID()) == null) {
+                personsColors.put(postOwner.getServerID(), generator.getRandomColor());
+            }
             final TextDrawable drawable = TextDrawable.builder().beginConfig().fontSize((int) activity.getResources().getDimension(R.dimen.user_letters_font_size)).endConfig()
-                    .buildRound(letter.toUpperCase(), holder.text_draw_color);
+                    .buildRound(letter.toUpperCase(), personsColors.get(postOwner.getServerID()));
+//            holder.tv_person_photo.setImageDrawable(null);
+            holder.tv_person_photo.setVisibility(View.INVISIBLE);
+            holder.tv_person_photo.setImageDrawable(drawable);
+            holder.tv_person_photo.setVisibility(View.VISIBLE);
+
 
             if (postOwner != null && !postOwner.getImage().equals(URL.DEFAULT_IMAGE)) {
                 Picasso.with(activity).load(Uri.parse(postOwner.getImage())).into(holder.iv_profile, new Callback() {
@@ -323,7 +310,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                        holder.tv_person_photo.setText(postOwner.getFname().charAt(0) + " " + postOwner.getLname().charAt(0));
                     }
                 });
-            }else{
+            } else {
                 holder.iv_profile.setVisibility(View.INVISIBLE);
                 holder.tv_person_photo.setImageDrawable(drawable);
                 holder.tv_person_photo.setVisibility(View.VISIBLE);
@@ -462,7 +449,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         RelativeLayout card_post;
         CircleImageView iv_profile;
         ImageView iv_favorite;
-                ProgressBar  pb_photo_load;
+        ProgressBar pb_photo_load;
 
         int viewType;
         public ImageView iv_comment;
@@ -490,7 +477,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_postDate = (TextView) itemView.findViewById(R.id.tv_postDate);
                 tv_postContent = (TextView) itemView.findViewById(R.id.tv_postContent);
                 tv_person_photo = (ImageView) itemView.findViewById(R.id.tv_person_photo);
-                iv_postImage = (SimpleDraweeView ) itemView.findViewById(R.id.iv_postImage);
+                iv_postImage = (SimpleDraweeView) itemView.findViewById(R.id.iv_postImage);
                 tv_comment = (TextView) itemView.findViewById(R.id.tv_comment);
                 tv_favorite = (TextView) itemView.findViewById(R.id.tv_favorite);
                 tv_share = (TextView) itemView.findViewById(R.id.tv_share);
@@ -511,7 +498,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 tv_favorite.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_comment.setTypeface(fontManager.getFont(FontManager.ROBOTO_LIGHT));
                 tv_person_name.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
-                text_draw_color =  generator.getRandomColor();
+                text_draw_color = generator.getRandomColor();
 //                tv_person_photo.setTypeface(fontManager.getFont(FontManager.ROBOTO_MEDIUM));
 
 
@@ -533,7 +520,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
             posts.addAll(newPosts);
             if (pv_load != null && newPosts.size() >= GNLConstants.POST_LIMIT)
                 pv_load.setVisibility(View.VISIBLE);
-            else if(pv_load != null)
+            else if (pv_load != null)
                 pv_load.setVisibility(View.GONE);
 
             isFoundData = true;
@@ -577,10 +564,12 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         isFoundData = false;
         notifyDataSetChanged();
     }
+
     public void addFrontOfList(ArrayList<Posts> latestPosts) {
-    posts.addAll(0, latestPosts);
+        posts.addAll(0, latestPosts);
         notifyDataSetChanged();
     }
+
     private void sharePost(Posts post) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -643,7 +632,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     iv_favorite.setImageResource(R.drawable.ic_favorite);
-                    posts.get(position).isFavorite=0;
+                    posts.get(position).isFavorite = 0;
                     posts.get(position).save();
                 }
 
@@ -725,16 +714,17 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         ft.addToBackStack("4");
         ft.commit();
         mFragmentManager.executePendingTransactions();
-        ((MainScreen)activity).updateDrawer(4);
+        ((MainScreen) activity).updateDrawer(4);
     }
 
     public interface OnDialogDismiss {
         void onDismiss();
     }
-    public long getNewestPostId(){
+
+    public long getNewestPostId() {
         long id = -1;
-        for(Posts post : posts){
-            if(post.getServerID() >= id)
+        for (Posts post : posts) {
+            if (post.getServerID() >= id)
                 id = post.getServerID();
         }
         return id;

@@ -705,8 +705,8 @@ public class WebServiceFunctions {
                             int comments_no = post.getInt("comment_no");
                             long created_at = post.getLong("updated_at");
                             int isFavorite = post.getBoolean("is_postfavorite") ? 1 : 0;
-                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, userId, category_id, is_hidden, comments_no, isFavorite, -1, -1);
                             JSONObject user = post.getJSONObject("user");
+                            Long user_post_id = Long.parseLong(user.getString("id"));
                             String f_name = user.getString("f_name");
                             String l_name = user.getString("l_name");
                             String email = user.getString("email");
@@ -721,8 +721,10 @@ public class WebServiceFunctions {
                             int no_answer = askandanswer.getInt("no_answer");
                             int no_ask = askandanswer.getInt("no_ask");
                             float user_rating = Float.parseFloat(askandanswer.get("no_of_stars") + "");
-                            Users _user = new Users(id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login,
+                            Users _user = new Users(user_post_id, f_name, l_name, null, email, null, user_image.equals("null") ? null : user_image, user_created_at, active, last_login,
                                     mobile, is_public, code, no_answer, no_ask, user_rating);
+                            Posts postItem = new Posts(id, text, image.equals("null") ? null : image, created_at, user_post_id, category_id, is_hidden, comments_no, isFavorite, -1, -1);
+
                             UsersDAO.addUser(_user);
                             PostsDAO.addPost(postItem);
                             fetchedPosts.add(postItem);
