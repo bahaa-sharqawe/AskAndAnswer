@@ -77,7 +77,10 @@ public class ContactUs extends DialogFragment {
         imm.showSoftInputFromInputMethod(ed_message.getWindowToken(), 0);
 
         tv_send = (TextView) view.findViewById(R.id.tv_send);
-
+        if(type == 1)
+            tv_send.setText("SUGGEST");
+        else
+            tv_send.setText("SEND");
         tv_send.setTypeface(mFontManager.getFont(FontManager.ROBOTO_LIGHT));
 
         tv_send.setOnClickListener(new View.OnClickListener() {

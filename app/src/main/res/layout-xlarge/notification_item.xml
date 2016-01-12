@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_notification"
-    android:layoutDirection="ltr"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="35dp">
+
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="20dp"
             android:id="@+id/iv_profile"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_user"
-            app:civ_border_width="1dp"
-            app:civ_border_color="#ece8e7"
-            />
-        <!--<TextView-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:background="@drawable/offline_photo_backgnd"-->
-            <!--android:id="@+id/tv_person_photo"-->
-            <!--android:gravity="center"-->
-            <!--android:textSize="20sp"-->
-            <!--android:layout_marginRight="30dp"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--/>-->
-        <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:id="@+id/tv_person_photo"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="30dp"
-            android:layout_marginLeft="20dp"/>
+            android:src="@drawable/ic_user"
+            app:civ_border_color="#ece8e7"
+            app:civ_border_width="1dp" />
+        <!--<TextView-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:background="@drawable/offline_photo_backgnd"-->
+        <!--android:id="@+id/tv_person_photo"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="20sp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--/>-->
+        <ImageView
+            android:id="@+id/tv_person_photo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp" />
+
         <TextView
+            android:id="@+id/tv_notification_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_notification_text"
-            android:layout_marginLeft="24dp"
             android:layout_alignTop="@+id/iv_profile"
+            android:layout_marginLeft="24dp"
             android:layout_toRightOf="@+id/iv_profile"
-            android:textSize="18sp"
-            android:text="@string/post_example"/>
+            android:text="@string/post_example"
+            android:textSize="18sp" />
+
         <TextView
+            android:id="@+id/notif_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/notif_date"
             android:layout_alignLeft="@+id/tv_notification_text"
             android:layout_below="@+id/tv_notification_text"
             android:layout_marginTop="24dp"
-            android:textSize="17sp"
-            android:text="Dec 13, 2015"/>
+            android:text="Dec 13, 2015"
+            android:textSize="17sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tv_notification_text"
-            android:layout_marginTop="8dp"
             android:layout_below="@+id/notif_date"
-            android:text="@string/post_example"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/notification_backgnd"
             android:padding="6dp"
-            android:visibility="gone"
-            android:background="@drawable/notification_backgnd"/>
+            android:text="@string/post_example"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"
-        android:layout_marginTop="30dp"
+        android:paddingTop="30dp"
+        android:background="#f8f8f8"
         android:listSelector="@android:color/transparent" />
     <RelativeLayout
         android:layout_width="match_parent"

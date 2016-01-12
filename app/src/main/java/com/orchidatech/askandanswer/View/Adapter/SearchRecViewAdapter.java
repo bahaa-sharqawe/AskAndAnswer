@@ -175,17 +175,17 @@ public class SearchRecViewAdapter extends RecyclerView.Adapter<SearchRecViewAdap
                 holder.iv_postImage.setVisibility(View.VISIBLE);
 
                 final AQuery aq = new AQuery(activity);
-                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
-                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
-                        aq.invalidate(pref.getString("prevImage", null));
-                        Uri uri = Uri.parse(pref.getString("prevImage", null));
-                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
-                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
-                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
-                    }
-                    pref.edit().remove(currentPost.getServerID() + "").commit();
-                    pref.edit().remove("prevImage").commit();
-                }
+//                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+//                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+//                        aq.invalidate(pref.getString("prevImage", null));
+//                        Uri uri = Uri.parse(pref.getString("prevImage", null));
+//                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+//                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+//                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
+//                    }
+//                    pref.edit().remove(currentPost.getServerID() + "").commit();
+//                    pref.edit().remove("prevImage").commit();
+//                }
 /* Getting Images from Server and stored in cache */
 
 //                Bitmap preset = aq.getCachedImage(currentPost.getImage());

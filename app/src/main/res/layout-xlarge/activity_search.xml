@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:id="@+id/rl_parent"
     android:layoutDirection="ltr"
-
     tools:context="com.orchidatech.askandanswer.Activity.Search">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -23,7 +22,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rv_posts"
         android:divider="@null"
-        android:layout_marginTop="40dp"
+        android:paddingTop="40dp"
         android:layout_below="@+id/toolbar"
         android:listSelector="@android:color/transparent"
         />

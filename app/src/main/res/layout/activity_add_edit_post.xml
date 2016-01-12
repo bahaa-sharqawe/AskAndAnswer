@@ -76,6 +76,7 @@
                 android:id="@+id/iv_post"
                 android:visibility="visible"
                 fresco:actualImageScaleType="fitXY"
+                android:scaleType="fitXY"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 />

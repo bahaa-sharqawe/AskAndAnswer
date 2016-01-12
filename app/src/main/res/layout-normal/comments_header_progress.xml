@@ -25,7 +25,7 @@
         android:text="@string/load_prev_comments"
         android:visibility="gone"
         android:gravity="center"
-        android:textColor="#959595"
+        android:textColor="#2dbda6"
         android:layout_centerInParent="true"
         style="?android:attr/borderlessButtonStyle"/>
 </RelativeLayout>

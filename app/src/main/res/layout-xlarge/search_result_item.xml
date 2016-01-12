@@ -1,128 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_post"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_post"
     android:layout_marginBottom="40dp"
     android:layout_marginLeft="35dp"
     android:layout_marginRight="35dp"
-    android:background="#fff"
 
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    android:background="#fff">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="30dp"
 
         >
+
         <RelativeLayout
+            android:id="@+id/rl_post_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_profile"
             android:layout_alignParentRight="true"
-            android:id="@+id/rl_post_desc">
+            android:layout_toRightOf="@+id/iv_profile">
+
             <LinearLayout
+                android:id="@+id/ll_post_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_alignParentLeft="true"
-                android:id="@+id/ll_post_header">
+                android:orientation="horizontal">
+
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="left">
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:id="@+id/tv_person_name"
-                        android:text="June Smith"
-                        android:textSize="22sp"
-                        android:layout_marginBottom="16dp"
-                        />
-                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="June Smith"
+                        android:textSize="22sp" />
+
+                    <TextView
                         android:id="@+id/tv_postDate"
-                        android:layout_below="@+id/tv_person_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignLeft="@+id/tv_person_name"
+                        android:layout_below="@+id/tv_person_name"
+                        android:layout_marginBottom="30dp"
                         android:text="Oct 16, 2015"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="30dp"/>
+                        android:textSize="20sp" />
                 </RelativeLayout>
+
                 <TextView
+                    android:id="@+id/tv_post_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_post_category"
-                    android:text="Android"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="4dp"
                     android:background="@drawable/post_category_backgnd"
-                    android:textColor="#fff"
+                    android:paddingBottom="8dp"
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:layout_marginLeft="4dp"
+                    android:text="Android"
+                    android:textColor="#fff"
                     android:textSize="20sp"
-                    android:layout_gravity="right"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_postContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_postContent"
-                android:layout_below="@+id/ll_post_header"
                 android:layout_alignLeft="@+id/ll_post_header"
                 android:layout_alignParentLeft="true"
-                android:text="@string/post_example"
-                android:textSize="20sp"
+                android:layout_below="@+id/ll_post_header"
+                android:layout_marginBottom="10dp"
                 android:layout_marginRight="17dp"
-                android:layout_marginBottom="10dp"/>
+                android:text="@string/post_example"
+                android:textSize="20sp" />
 
         </RelativeLayout>
+
         <RelativeLayout
+            android:id="@+id/rl_post_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rl_post_desc"
-            android:layout_marginRight="10dp"
             android:layout_alignLeft="@+id/rl_post_desc"
-            android:id="@+id/rl_post_photo">
+            android:layout_below="@+id/rl_post_desc"
+            android:layout_marginRight="10dp">
+
             <RelativeLayout
+                android:id="@+id/rl_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rl_photo">
+                android:layout_height="wrap_content">
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:layout_width="match_parent"
                     android:id="@+id/iv_postImage"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    />
+                    android:visibility="visible" />
+
                 <ProgressBar
+                    android:id="@+id/pb_photo_load"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:id="@+id/pb_photo_load"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </RelativeLayout>
-            <View android:layout_width="match_parent"
-                android:layout_height="2dp"
+
+            <View
                 android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
                 android:layout_below="@+id/rl_photo"
                 android:layout_marginTop="10dp"
                 android:background="#e6e6e6" />
 
             <RelativeLayout
+                android:id="@+id/rl_postEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/rl_postEvents"
+                android:layout_below="@+id/divider"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/divider"
                 android:visibility="visible">
 
                 <RelativeLayout
@@ -132,39 +141,43 @@
                     android:visibility="visible"
 
                     >
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:id="@+id/tv_comments"
-                        android:text="@string/tv_comments_count"
-                        android:textSize="16sp"
-                        android:textColor="#959595"
-                        android:layout_centerVertical="true"
-                        android:visibility="visible"/>
-                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/tv_comments_count"
+                        android:textColor="#959595"
+                        android:textSize="16sp"
+                        android:visibility="visible" />
+
+                    <LinearLayout
                         android:id="@+id/ll_unlike"
-                        android:orientation="horizontal"
-                        android:layout_alignParentRight="true">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:orientation="horizontal">
+
                         <TextView
+                            android:id="@+id/tv_unlikes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/tv_unlikes"
                             android:layout_gravity="center_vertical"
                             android:text="30"
-                            android:textSize="16sp"
-                            android:textColor="#959595"/>
+                            android:textColor="#959595"
+                            android:textSize="16sp" />
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
+
                             <ImageView
+                                android:id="@+id/iv_unlike"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/iv_unlike"
                                 android:layout_gravity="center"
-                                android:src="@drawable/unlike"
-                                />
+                                android:src="@drawable/unlike" />
                             <!--<ImageView-->
                             <!--android:layout_width="wrap_content"-->
                             <!--android:layout_height="wrap_content"-->
@@ -175,32 +188,34 @@
                         </RelativeLayout>
 
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/ll_like"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/ll_like"
-                        android:orientation="horizontal"
-                        android:layout_toLeftOf="@+id/ll_unlike"
                         android:layout_marginRight="15dp"
-                        >
+                        android:layout_toLeftOf="@+id/ll_unlike"
+                        android:orientation="horizontal">
+
                         <TextView
+                            android:id="@+id/tv_likes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/tv_likes"
                             android:layout_gravity="center_vertical"
                             android:text="10"
-                            android:textSize="16sp"
-                            android:textColor="#959595"/>
+                            android:textColor="#959595"
+                            android:textSize="16sp" />
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
+
                             <ImageView
+                                android:id="@+id/iv_like"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/iv_like"
                                 android:layout_gravity="center_vertical"
-                                android:src="@drawable/like"
-                                />
+                                android:src="@drawable/like" />
                             <!--<ImageView-->
                             <!--android:layout_width="wrap_content"-->
                             <!--android:layout_height="wrap_content"-->
@@ -215,33 +230,34 @@
         </RelativeLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="5dp"
             android:id="@+id/iv_profile"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_user"
-            app:civ_border_width="1dp"
-            app:civ_border_color="#ece8e7"/>
-        <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/tv_person_photo"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
-            android:layout_marginLeft="5dp"/>
+            android:src="@drawable/ic_user"
+            app:civ_border_color="#ece8e7"
+            app:civ_border_width="1dp" />
+
+        <ImageView
+            android:id="@+id/tv_person_photo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp" />
 
         <!--<TextView-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:background="@drawable/offline_photo_backgnd"-->
-            <!--android:id="@+id/tv_person_photo"-->
-            <!--android:text="A"-->
-            <!--android:gravity="center"-->
-            <!--android:textSize="19sp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="5dp"-->
-            <!--/>-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:background="@drawable/offline_photo_backgnd"-->
+        <!--android:id="@+id/tv_person_photo"-->
+        <!--android:text="A"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="19sp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--/>-->
 
     </RelativeLayout>
 

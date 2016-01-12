@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplie
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnCategoriesFetchedListener;
 import com.orchidatech.askandanswer.View.Interface.OnUserCategoriesFetched;
+import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
@@ -55,6 +59,7 @@ public class SplashScreen extends Activity {
 //        Fresco.initialize(getApplicationContext());
         initFresco();
         setContentView(R.layout.activity_splash);
+//        getFbEmailyuFromAccounts();
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
         ImageLoader.getInstance().init(config);
@@ -149,4 +154,6 @@ public class SplashScreen extends Activity {
 
         Fresco.initialize(getApplicationContext(), imagePipelineConfig);
     }
+
+
 }

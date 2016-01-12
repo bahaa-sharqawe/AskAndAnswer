@@ -77,7 +77,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
     private List<com.orchidatech.askandanswer.Database.Model.Comments> comments;
     private Activity activity;
     private boolean loading = false;
-    private boolean isFoundData = true;
+    private boolean isFoundData = false;
     private final OnLastListReachListener lastListReachListener;
     private int position;
     private int last_fetched_comments_count;
@@ -121,7 +121,7 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 btn_reload.setVisibility(View.GONE);
                 pv_load.setVisibility(View.VISIBLE);
             }
-            if (!loading && isFoundData && last_fetched_comments_count >= GNLConstants.COMMENTS_LIMIT) {
+            if (!loading && isFoundData) {
                 btn_reload.setVisibility(View.VISIBLE);
                 pv_load.setVisibility(View.GONE);
             }
@@ -132,7 +132,12 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 //            User_Actions user_actions = User_ActionsDAO.getUserAction(current_user_id, currentComment.getServerID());
 //            Category commentCategory = CategoriesDAO.getCategory(commentPost.getCategoryID());
             holder.tv_commentDate.setText(GNLConstants.DateConversion.getDate(currentComment.getDate()));
-            holder.tv_commentDesc.setText(decode(currentComment.getText()));
+            if(TextUtils.isEmpty(decode(currentComment.getText())))
+                holder.tv_commentDesc.setVisibility(View.GONE);
+            else {
+                holder.tv_commentDesc.setVisibility(View.VISIBLE);
+                holder.tv_commentDesc.setText(decode(currentComment.getText()));
+            }
             holder.tv_person_name.setText(commentOwner.getFname() + " " + commentOwner.getLname());
             holder.user_rating.setRating(commentOwner.getRating());
 //            holder.tv_comment_category.setText(commentCategory.getName());
@@ -367,10 +372,6 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         return comments.get(comments.size() - 1).getServerID();
     }
 
-    public void addToLastList(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> comments) {
-        comments.addAll(comments);
-        notifyDataSetChanged();
-    }
 
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
@@ -468,19 +469,21 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
 
 //            if(pv_load != null)
 //                pv_load.setVisibility(View.VISIBLE);
-            isFoundData = true;
             last_fetched_comments_count = _comments.size();
-            if (pv_load != null && _comments.size() >= GNLConstants.POST_LIMIT) {
-                btn_reload.setVisibility(View.VISIBLE);
-                pv_load.setVisibility(View.GONE);
-            } else if (pv_load != null) {
+            if (_comments.size() >= GNLConstants.COMMENTS_LIMIT) {
+                isFoundData = true;
+            }else{
+                isFoundData = false;
+            }
+            if(pv_load != null){
                 btn_reload.setVisibility(View.GONE);
                 pv_load.setVisibility(View.GONE);
             }
 
 //            if(comments.size() > GNLConstants.MAX_COMMENTS_ROWS)
 //                comments = comments.subList(comments.size()-GNLConstants.MAX_COMMENTS_ROWS, comments.size());
-            notifyDataSetChanged();
+            loading = false;
+             notifyItemRangeInserted(0, _comments.size());
         } else {
             if (isErrorConnection) {
                 if (pv_load != null && btn_reload != null) {
@@ -495,12 +498,11 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
                 isFoundData = false;
 //                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
             }
+            loading = false;
         }
-        loading = false;
     }
 
     public void addFromLocal(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> postComments) {
-
         comments.addAll(0, postComments);
         if (pv_load != null) {
             pv_load.setVisibility(View.GONE);
@@ -510,9 +512,15 @@ public class CommentsRecViewAdapter extends RecyclerView.Adapter<CommentsRecView
         notifyDataSetChanged();
     }
 
+    public void addToLastList(ArrayList<com.orchidatech.askandanswer.Database.Model.Comments> _comments) {
+        comments.addAll(_comments);
+        notifyItemRangeInserted(comments.size() - _comments.size(), _comments.size());
+//        notifyDataSetChanged();
+    }
     public void addComment(com.orchidatech.askandanswer.Database.Model.Comments comment) {
         comments.add(comment);
-        notifyDataSetChanged();
+        notifyItemInserted(comments.size()-1);
+//        notifyDataSetChanged();
     }
 
     private void dislikeComment(long commentId, final int position, final ImageView iv_like, final ImageView iv_unlike, final TextView tv_unlikes, final TextView tv_likes) {

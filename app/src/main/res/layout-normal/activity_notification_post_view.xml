@@ -76,6 +76,7 @@
                     android:layout_alignLeft="@+id/tv_person_name"
                     android:text="Oct 16, 2015"
                     android:textSize="14sp"
+                    android:textColor="#959595"
                     android:layout_marginBottom="20dp"/>
             </RelativeLayout>
             <TextView

@@ -28,7 +28,8 @@
         android:id="@+id/rv_posts"
         android:foregroundGravity="left"
         android:divider="@null"
-        android:layout_marginTop="30dp"
+        android:paddingTop="30dp"
+        android:background="#f8f8f8"
         android:listSelector="@android:color/transparent"
         />
 </android.support.v4.widget.SwipeRefreshLayout>

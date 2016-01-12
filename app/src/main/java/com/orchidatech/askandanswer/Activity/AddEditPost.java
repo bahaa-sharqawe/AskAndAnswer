@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,21 +30,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Database.DAO.PostsDAO;
 import com.orchidatech.askandanswer.Database.DAO.User_CategoriesDAO;
 import com.orchidatech.askandanswer.Database.Model.Posts;
 import com.orchidatech.askandanswer.Database.Model.User_Categories;
-import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.LollipopBitmapMemoryCacheParamsSupplier;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SpinAdapter;
@@ -53,8 +48,6 @@ import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -73,17 +66,17 @@ public class AddEditPost extends AppCompatActivity {
     ImageView iv_delete;
     EditText ed_postDesc;
     RelativeLayout rl_post_photo;
+    long user_id;
+    TextView tv_addPost;
     private ImageView iv_camera;
     private User_Categories selectedCategory;
     private long editPostId;
     private Posts editPost;
     private String image_str;
-    long user_id;
     private String picturePath = null;
     private boolean isPostHasImagePrev;
     private SharedPreferences pref;
     private FontManager fontManager;
-    TextView tv_addPost;
     private AlertDialog dialog;
 
     @Override
@@ -129,11 +122,10 @@ public class AddEditPost extends AppCompatActivity {
             iv_camera.setEnabled(true);
             ed_postDesc.setText(editPost.getText());
             picturePath = editPost.getImage();
-            if(!TextUtils.isEmpty(picturePath)) {
+            if (!TextUtils.isEmpty(picturePath)) {
                 isPostHasImagePrev = true;
-              iv_post.setImageURI(Uri.parse(picturePath));
-            }
-            else {
+                iv_post.setImageURI(Uri.parse(picturePath));
+            } else {
                 iv_post.setVisibility(View.INVISIBLE);
                 isPostHasImagePrev = false;
             }
@@ -218,7 +210,7 @@ public class AddEditPost extends AppCompatActivity {
                 }
             }
             return true;
-        }else if(id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             hideSoftKeyboard();
             onBackPressed();
             return true;
@@ -228,10 +220,10 @@ public class AddEditPost extends AppCompatActivity {
 
     private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
         final int imageState;
-        if(isPostHasImagePrev){
+        if (isPostHasImagePrev) {
             Log.i("vxvcv", editPost.getImage() + "xcx");
 
-            if(TextUtils.isEmpty(picturePath))
+            if (TextUtils.isEmpty(picturePath))
                 imageState = 0;//remove post photo from DB... do not send photo to server
             else {
                 if (editPost.getImage() == picturePath)
@@ -240,7 +232,7 @@ public class AddEditPost extends AppCompatActivity {
                     imageState = 2;//post photo changed.. send photo to server
             }
         } else {
-            if(picturePath == null)
+            if (picturePath == null)
                 imageState = 0;//post photo did not changed.. do not send photo to server
             else
                 imageState = 2;//post photo changed.. send photo to server
@@ -256,27 +248,25 @@ public class AddEditPost extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
 
-        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState, imageState==1?editPost.getImage():picturePath, date, isHidden, new OnEditPostListener() {
+        WebServiceFunctions.editPost(this, postId, user_id, category_id, postDesc, imageState, imageState == 1 ? editPost.getImage() : picturePath, date, isHidden, new OnEditPostListener() {
             @Override
             public void onSuccess(String message) {
                 dialog.dismiss();
-                if(imageState == 2 || imageState == 0){
-                    Log.i("wilbedeleted", "true");
-                    pref.edit().putLong(postId+"",postId).commit();
-                    pref.edit().putString("prevImage",editPost.getImage()).commit();
+                if (imageState == 2 || imageState == 0) {
+                    ///remove previous image from cache
+                    new AQuery(AddEditPost.this).invalidate(editPost.getImage());
+                    Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(editPost.getImage().toString()));
+                    Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(editPost.getImage().toString()));
+                    Fresco.getImagePipeline().evictFromMemoryCache(Uri.parse(editPost.getImage()));
+//                    Log.i("wilbedeleted", "true");
+//                    pref.edit().putLong(postId+"",postId).commit();
+//                    pref.edit().putString("prevImage",editPost.getImage()).commit();
                 }
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(AddEditPost.this, MainScreen.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
-//                AppSnackBar.show(ll_parent, message, getResources().getColor(R.color.colorPrimary), Color.WHITE);
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        startActivity(new Intent(AddEditPost.this, MainScreen.class));
-//                    }
-//                }, 3000);
             }
 
             @Override
@@ -288,7 +278,7 @@ public class AddEditPost extends AppCompatActivity {
     }
 
 
-    private void addPost(final long user_id, long category_id, final String postDesc,  final long date, int is_hidden) {
+    private void addPost(final long user_id, long category_id, final String postDesc, final long date, int is_hidden) {
 //        final LoadingDialog loadingDialog = new LoadingDialog();
 //        Bundle args = new Bundle();
 //        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
@@ -359,7 +349,7 @@ public class AddEditPost extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-            final Bitmap bitmap = ShrinkBitmap(picturePath, 100, 100);
+            final Bitmap bitmap = ShrinkBitmap(picturePath, 300, 300);
 //            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
             if (bitmap == null) {
@@ -411,6 +401,7 @@ public class AddEditPost extends AppCompatActivity {
         }
 
     }
+
     private void initFresco() {
         ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig

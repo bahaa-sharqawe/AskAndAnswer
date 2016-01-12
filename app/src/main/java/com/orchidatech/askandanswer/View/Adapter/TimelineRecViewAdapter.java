@@ -92,7 +92,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     private List<Posts> posts;
     private Activity activity;
     private boolean loading = false;
-    private boolean isFoundData = true;
+    private boolean isFoundData = false;
     OnLastListReachListener lastListReachListener;
     private boolean isCommentDialogShown = false;
     int last_fetched_posts_count;
@@ -144,7 +144,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
         if (holder.viewType == TYPE_FOOTER) {
             btn_reload.setVisibility(View.GONE);
 //            pv_load.setVisibility(View.GONE);
-            if (!loading && isFoundData && last_fetched_posts_count >= GNLConstants.POST_LIMIT) {
+            if (!loading && isFoundData) {
                 pv_load.setVisibility(View.VISIBLE);
                 loading = true;
                 lastListReachListener.onReached();
@@ -518,14 +518,15 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
     public void addFromServer(ArrayList<Posts> newPosts, boolean isErrorConnection) {
         if (newPosts != null && newPosts.size() > 0) {
             posts.addAll(newPosts);
-            if (pv_load != null && newPosts.size() >= GNLConstants.POST_LIMIT)
-                pv_load.setVisibility(View.VISIBLE);
-            else if (pv_load != null)
-                pv_load.setVisibility(View.GONE);
+            if (newPosts.size() >= GNLConstants.POST_LIMIT) {
+                isFoundData = true;
+            }else
+                isFoundData = false;
 
-            isFoundData = true;
-            last_fetched_posts_count = newPosts.size();
-            notifyDataSetChanged();
+            if (pv_load != null)
+                pv_load.setVisibility(View.GONE);
+            loading = false;
+            notifyItemRangeInserted(posts.size()-newPosts.size(), newPosts.size());
 
         } else {
             if (isErrorConnection) {
@@ -543,8 +544,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                AppSnackBar.show(parent, activity.getString(R.string.BR_GNL_005), Color.RED, Color.WHITE);
 //                optimizeLocalDB();
             }
+            loading = false;
         }
-        loading = false;
     }
 
     private void optimizeLocalDB() {
@@ -567,7 +568,8 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 
     public void addFrontOfList(ArrayList<Posts> latestPosts) {
         posts.addAll(0, latestPosts);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, latestPosts.size());
+//        notifyDataSetChanged();
     }
 
     private void sharePost(Posts post) {

@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rl_comment_item"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/comment_item_backgnd"
         >
         <de.hdodenhof.circleimageview.CircleImageView

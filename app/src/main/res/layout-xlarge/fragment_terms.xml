@@ -5,69 +5,79 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.orchidatech.askandanswer.Fragment.TermsFragment">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.8"
         android:background="@drawable/main_background">
+
         <ImageView
+            android:id="@+id/iv_drawer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_drawer_flat"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
-            android:id="@+id/iv_drawer"
-            />
+            android:src="@drawable/ic_drawer_flat" />
+
         <ImageView
+            android:id="@+id/iv_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:id="@+id/iv_logo"
-            android:src="@drawable/logo"/>
-        </RelativeLayout>
-    <View android:layout_width="match_parent"
+            android:src="@drawable/logo" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:background="#e8e7e7"
         android:layout_marginBottom="30dp"
+        android:background="#e8e7e7"
 
 
         />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.2"
-            android:padding="60dp">
-                <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rl_terms_header"
-                android:layout_marginBottom="35dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/terms"
-                        android:id="@+id/tv_terms_title"
-                        android:textSize="18sp"
-                        android:textColor="#2dbda6"/>
-                    <View android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="#2dbda6"
-                        android:layout_below="@+id/tv_terms_title"
-                        android:layout_marginTop="16dp"/>
-            </RelativeLayout>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_terms_header">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/tv_terms_body"
-                            android:text="@string/terms_example"
-                            android:textColor="#5c5c5c"
-                            android:textSize="18sp"/>
-             </ScrollView>
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:padding="60dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_terms_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp">
+
+            <TextView
+                android:id="@+id/tv_terms_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/terms"
+                android:textColor="#2dbda6"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/tv_terms_title"
+                android:layout_marginTop="16dp"
+                android:background="#2dbda6" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_terms_header">
+
+            <TextView
+                android:id="@+id/tv_terms_body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/terms_example"
+                android:textColor="#5c5c5c"
+                android:textSize="18sp" />
+        </ScrollView>
+    </RelativeLayout>
 </LinearLayout>

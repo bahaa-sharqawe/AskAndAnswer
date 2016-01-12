@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/card_post"
     android:layout_gravity="left"
-    android:layout_marginBottom="30dp"
+    android:layout_marginBottom="25dp"
     android:layout_marginLeft="25dp"
     android:layout_marginRight="25dp"
     android:background="@drawable/drawer_list_selector"
@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
+        android:paddingTop="25dp"
         android:layout_gravity="left">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,6 +48,7 @@
                         android:layout_alignLeft="@+id/tv_person_name"
                         android:text="Oct 16, 2015"
                         android:textSize="16sp"
+                        android:textColor="#959595"
                         android:layout_marginBottom="25dp"/>
                 </RelativeLayout>
                 <TextView
@@ -105,7 +106,7 @@
                 android:layout_height="1dp"
                 android:id="@+id/divider"
                 android:layout_below="@+id/iv_postImage"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="18dp"
                 android:background="#e6e6e6" />
 
 
@@ -206,7 +207,7 @@
                 android:layout_height="60dp"
                 android:id="@+id/tv_person_photo"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="4dp"/>
+                android:layout_marginLeft="20dp"/>
             <!--<TextView-->
                 <!--android:layout_width="60dp"-->
                 <!--android:layout_height="60dp"-->
@@ -223,7 +224,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="20dp"
                 android:id="@+id/iv_profile"
                 app:civ_border_width="1dp"
                 app:civ_border_color="#ece8e7"/>

@@ -2,15 +2,11 @@ package com.orchidatech.askandanswer.View.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 

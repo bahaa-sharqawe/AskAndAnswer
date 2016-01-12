@@ -9,9 +9,9 @@
         android:id="@+id/rv_favorites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
         android:divider="@null"
-
+        android:background="#f8f8f8"
         android:listSelector="@android:color/transparent" />
     <RelativeLayout
         android:layout_width="match_parent"

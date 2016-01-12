@@ -1,80 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#f8f8f8"
     android:layoutDirection="ltr"
     android:orientation="vertical">
 
 
-
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#f8f8f8"
-    >
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rv_posts"
-        android:divider="@null"
-        android:listSelector="@android:color/transparent"
-        />
-
-    <com.github.rahatarmanahmed.cpv.CircularProgressView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pb_loading_main"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:cpv_animAutostart="true"
-        android:layout_centerInParent="true"
-        app:cpv_indeterminate="true"
-        app:cpv_color = "#2dbda6"
-        />
-`
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/rl_error"
-        android:visibility="visible">
+        android:background="#f8f8f8">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_posts"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/uncolored_logo"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/uncolored_logo"
-            android:layout_marginBottom="50dp"/>
+            android:divider="@null"
+            android:paddingTop="50dp"
+            android:background="#f8f8f8"
+            android:listSelector="@android:color/transparent" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pb_loading_main"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            app:cpv_animAutostart="true"
+            app:cpv_color="#2dbda6"
+            app:cpv_indeterminate="true" />
+        `
+
+        <RelativeLayout
+            android:id="@+id/rl_error"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/tv_your_questions"
-            android:id="@+id/tv_error"
-            android:layout_below="@+id/uncolored_logo"
-            android:layout_centerHorizontal="true"
-            android:textSize="22sp"/>
+            android:layout_centerInParent="true"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/uncolored_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="50dp"
+                android:src="@drawable/uncolored_logo" />
+
+            <TextView
+                android:id="@+id/tv_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uncolored_logo"
+                android:layout_centerHorizontal="true"
+                android:text="@string/tv_your_questions"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="22sp" />
+        </RelativeLayout>
+
+
     </RelativeLayout>
 
-
-</RelativeLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fab_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="40dp"
         android:layout_marginRight="30dp"
         android:src="@drawable/ic_edit"
-        fab:backgroundTint="#f0ae24"
-        />
+        fab:backgroundTint="#f0ae24" />
 
 </RelativeLayout>

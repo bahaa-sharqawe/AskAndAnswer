@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_drawer_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/rl_drawer_item"
-    android:clickable="true"
-    android:orientation="horizontal"
     android:background="@drawable/nav_drawer_list_selector"
-    >
+    android:clickable="true"
+    android:orientation="horizontal">
+
     <LinearLayout
+        android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="35dp"
         android:paddingBottom="35dp"
-        android:id="@+id/ll_item"
-        android:paddingLeft="40dp">
+        android:paddingLeft="40dp"
+        android:paddingTop="35dp">
+
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/iv_drawer_item"
-            android:src="@drawable/ic_name_flat"
-            android:layout_marginRight="35dp"/>
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="35dp"
+            android:src="@drawable/ic_name_flat" />
+
+        <TextView
             android:id="@+id/tv_drawer_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:text="Profile"
             android:textColor="#4d4d4d"
-            android:textSize="20sp"
-            android:text="Profile" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>

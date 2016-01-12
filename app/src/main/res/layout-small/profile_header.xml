@@ -29,7 +29,7 @@
             android:layout_height="70dp"
             android:id="@+id/iv_profile"
             android:src="@drawable/ic_user"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="10dp"
             app:civ_border_width="1dp"
             app:civ_border_color="#ece8e7"
             />
@@ -38,7 +38,7 @@
             android:layout_height="70dp"
             android:background="@drawable/offline_photo_backgnd"
             android:id="@+id/tv_person_photo"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:textSize="17sp"
             />

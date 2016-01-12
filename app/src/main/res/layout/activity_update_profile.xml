@@ -244,7 +244,6 @@
                        android:textAppearance="?android:attr/textAppearanceMedium"
                        android:text="@string/profile_setting_title"
                        android:textSize="15sp"
-                       android:textColor="#333333"
                        android:layout_marginBottom="7dp"
                        android:id="@+id/tv_show_profile_setting_title" />
                    <TextView

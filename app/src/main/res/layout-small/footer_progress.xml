@@ -25,6 +25,6 @@
         android:text="@string/retry"
         android:textSize="13sp"
         android:visibility="gone"
-        android:textColor="#959595"
+        android:textColor="#2dbda6"
         style="?android:attr/borderlessButtonStyle"/>
 </RelativeLayout>

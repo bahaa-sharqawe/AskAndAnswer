@@ -1,5 +1,7 @@
 package com.orchidatech.askandanswer.Activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +10,6 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -25,14 +26,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.orchidatech.askandanswer.Constant.*;
+import com.orchidatech.askandanswer.Constant.AppSnackBar;
 import com.orchidatech.askandanswer.Constant.Enum;
+import com.orchidatech.askandanswer.Constant.GNLConstants;
 import com.orchidatech.askandanswer.Entity.SocialUser;
-import com.orchidatech.askandanswer.Fragment.LoadingDialog;
 import com.orchidatech.askandanswer.Logic.AppFacebookAuth;
 import com.orchidatech.askandanswer.Logic.AppGoogleAuth;
 import com.orchidatech.askandanswer.Logic.GCMUtilities;
@@ -45,38 +45,36 @@ import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import dmax.dialog.SpotsDialog;
 
 public class Login extends AppCompatActivity {
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
-
+    public static AppGoogleAuth googleAuth;
     ImageView iv_logo;
     TextView tv_signup_now;
     TextView tv_forget_password;
-    private TextView tv_login_using;
-    private TextView tv_fb;
-    private TextView tv_google;
     EditText ed_name;
     EditText ed_password;
     Button btn_login;
     CoordinatorLayout mCoordinatorLayout;
-
     RelativeLayout btn_fb;
     RelativeLayout btn_gplus;
-//    private SimpleFacebook mSimpleFacebook;
-    private String TAG = Login.class.getSimpleName();
     LinearLayout ll_form;
-    public static AppGoogleAuth googleAuth;
+    Animation logoTranslate;
+    GoogleCloudMessaging gcm;
+    AppFacebookAuth appFacebookAuth;
+    private TextView tv_login_using;
+    private TextView tv_fb;
+    private TextView tv_google;
+    //    private SimpleFacebook mSimpleFacebook;
+    private String TAG = Login.class.getSimpleName();
     private Validator mValidator;
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
-    Animation logoTranslate;
     private Animation animFade;
     private Animation form_translate;
-    GoogleCloudMessaging gcm;
     private String registration_id;
     private SocialUser socialUser;
     private String username;
@@ -84,7 +82,6 @@ public class Login extends AppCompatActivity {
     private FontManager fontManager;
     private android.app.AlertDialog dialog;
 
-    AppFacebookAuth appFacebookAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +103,8 @@ public class Login extends AppCompatActivity {
 //        loadingDialog.setArguments(args);
 //        loadingDialog.setCancelable(false);
 //        loadingDialog.show(getFragmentManager(), "logging in");
-        
-        if(TextUtils.isEmpty(registration_id))
+
+        if (TextUtils.isEmpty(registration_id))
             registerWithGCM(0);
         else
             sendLoginRequest();
@@ -154,13 +151,14 @@ public class Login extends AppCompatActivity {
 //        loadingDialog.setArguments(args);
 //        loadingDialog.setCancelable(false);
 //        loadingDialog.show(getFragmentManager(), "logging in");
-     prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork()).commit();
-     if(TextUtils.isEmpty(registration_id))
-         registerWithGCM(1);
-     else
-         sendSocialSignupRequest();
- }
-    private void sendSocialSignupRequest(){
+        prefEditor.putInt(GNLConstants.SharedPreference.LOGIN_TYPE, socialUser.getNetwork()).commit();
+        if (TextUtils.isEmpty(registration_id))
+            registerWithGCM(1);
+        else
+            sendSocialSignupRequest();
+    }
+
+    private void sendSocialSignupRequest() {
         WebServiceFunctions.socialLogin(Login.this, socialUser, registration_id,
                 new com.orchidatech.askandanswer.View.Interface.OnLoginListener() {
                     @Override
@@ -199,7 +197,8 @@ public class Login extends AppCompatActivity {
                 });
 
     }
-    private void registerWithGCM(final int eventType){
+
+    private void registerWithGCM(final int eventType) {
 
         GCMUtilities gcmUtilities = new GCMUtilities(Login.this, GNLConstants.SENDER_ID, new OnGCMRegisterListener() {
 
@@ -209,7 +208,7 @@ public class Login extends AppCompatActivity {
                 registration_id = reg_id;
                 Log.i("reg_id", reg_id);
                 prefEditor.putString(GNLConstants.SharedPreference.REG_ID, reg_id).commit();
-                if(eventType == 0)
+                if (eventType == 0)
                     sendLoginRequest();
                 else
                     sendSocialSignupRequest();
@@ -239,6 +238,7 @@ public class Login extends AppCompatActivity {
         gcmUtilities.register();
 
     }
+
     private void initializeFields() {
         fontManager = FontManager.getInstance(getAssets());
 
@@ -304,8 +304,8 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                 username = ed_name.getText().toString().toLowerCase().trim();
-                 password = ed_password.getText().toString();
+                username = ed_name.getText().toString().toLowerCase().trim();
+                password = ed_password.getText().toString();
                 if (verifyInputs(username, password)) {
                     v.startAnimation(animFade);
                     login(username, password);
@@ -333,11 +333,12 @@ public class Login extends AppCompatActivity {
                 appFacebookAuth = new AppFacebookAuth(Login.this, new OnSocialLoggedListener() {
                     @Override
                     public void onSuccess(SocialUser user) {
+                        user.setEmail(TextUtils.isEmpty(user.getEmail()) ? getFbEmailFromAccounts() : user.getEmail());
                         socialUser = user;
-                        if(TextUtils.isEmpty(user.getEmail())){
-                           AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
+                        if (TextUtils.isEmpty(user.getEmail())) {
+                            AppSnackBar.showTopSnackbar(Login.this, "Please check availability or accessibility to your facebook email", Color.RED, Color.WHITE);
                             LoginManager.getInstance().logOut();
-                        }else
+                        } else
                             socialLogin();
                     }
                 });
@@ -504,5 +505,17 @@ public class Login extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Crouton.cancelAllCroutons();
+    }
+
+    private String getFbEmailFromAccounts() {
+        Account[] accounts = AccountManager.get(this).getAccountsByType("com.facebook.auth.login");
+        if (accounts != null && accounts.length > 0) {
+            if (Validator.getInstance().isValidEmail(accounts[0].name)) {
+                Log.i("fbAccount", accounts[0].type + " : " + accounts[0].name);
+                return accounts[0].name;
+            }
+            return null;
+        }
+        return null;
     }
 }

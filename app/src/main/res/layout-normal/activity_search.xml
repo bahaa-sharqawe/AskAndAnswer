@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rv_posts"
         android:divider="@null"
-        android:layout_marginTop="20dp"
+        android:paddingTop="20dp"
         android:layout_below="@+id/toolbar"
         android:listSelector="@android:color/transparent"
         />

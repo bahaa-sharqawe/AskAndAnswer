@@ -24,7 +24,7 @@
         android:id="@+id/btn_reload"
         android:text="@string/load_prev_comments"
         android:visibility="gone"
-        android:textColor="#959595"
+        android:textColor="#2dbda6"
         android:gravity="center"
         android:layout_centerInParent="true"
         style="?android:attr/borderlessButtonStyle"/>

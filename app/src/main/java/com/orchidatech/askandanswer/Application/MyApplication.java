@@ -33,6 +33,8 @@ public class MyApplication extends com.activeandroid.app.Application {
     public void onCreate() {
         super.onCreate();
         initFresco();
+        ActiveAndroid.initialize(this);
+
 //        Fresco.initialize(getApplicationContext());
         ImageLoaderConfiguration  config = new ImageLoaderConfiguration.Builder(this)
                 .memoryCache(new LruMemoryCache(GNLConstants.MAX_IMAGE_LOADER_CACH_SIZE)).build();
@@ -43,7 +45,6 @@ public class MyApplication extends com.activeandroid.app.Application {
 //        builder.setDatabaseName("AskAndAnswer.db");
 //        builder.setDatabaseVersion(1);
 //        ActiveAndroid.initialize(builder.create());
-        ActiveAndroid.initialize(this);
 //
 //        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
 //                .setAppId(APP_ID)

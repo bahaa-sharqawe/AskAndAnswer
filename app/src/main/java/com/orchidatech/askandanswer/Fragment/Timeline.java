@@ -65,19 +65,17 @@ public class Timeline extends Fragment {
     DrawerLayout mDrawerLayout;
     RecyclerView rv_notifications;
     TextView tv_no_notification;
-    private long last_id_server = 0;
-    private long user_id;
-
     RelativeLayout rl_error;
     ImageView uncolored_logo;
     TextView tv_error;
     CircularProgressView pb_loading_main;
+    TextView tv_notifications_count;
+    SwipeRefreshLayout swipeRefreshLayout;
+    private long last_id_server = 0;
+    private long user_id;
     private SharedPreferences pref;
     private List<Posts> allStoredPosts;
-
-    TextView tv_notifications_count;
     private BroadcastReceiver notifications_listener = new NotificationRec();
-    SwipeRefreshLayout swipeRefreshLayout;
     private int numOfPostFetchedSwiping = 0;
 
     @Nullable
@@ -166,7 +164,7 @@ public class Timeline extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv_notifications_count = (TextView) getActivity().findViewById(R.id.tv_notifications_count);
-        getNotificationsCount();
+        refreshNotificationsCount();
         rl_num_notifications = (RelativeLayout) getActivity().findViewById(R.id.rl_num_notifications);
         rl_num_notifications.setVisibility(View.VISIBLE);
         rl_num_notifications.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +181,7 @@ public class Timeline extends Fragment {
 
     }
 
-    private void getNotificationsCount() {
+    private void refreshNotificationsCount() {
         ArrayList<Notifications> allNotDoneNoti = new ArrayList<>(NotificationsDAO.getAllNotDoneNotifications());
         if (allNotDoneNoti.size() == 0)
             tv_notifications_count.setVisibility(View.INVISIBLE);
@@ -231,7 +229,6 @@ public class Timeline extends Fragment {
                 last_id_server = last_id_server == 0 ? last_id : last_id_server;
                 adapter.addFromServer(latestPosts, false);
                 swipeRefreshLayout.setEnabled(true);
-
             }
 
             @Override
@@ -273,8 +270,8 @@ public class Timeline extends Fragment {
             rl_error.setVisibility(View.VISIBLE);
             tv_error.setText(error);
             rl_error.setEnabled(true);
-        }
-        adapter.addFromLocal(allStoredPosts);
+        }else
+             adapter.addFromLocal(allStoredPosts);
     }
 
     private void resizeLogo() {
@@ -299,12 +296,11 @@ public class Timeline extends Fragment {
     }
 
     private class NotificationRec extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
-            getNotificationsCount();
+            refreshNotificationsCount();
             allNotifications.add(0, NotificationsDAO.getAllNotifications().get(0));
-            notificationsAdapter.notifyDataSetChanged();
+            notificationsAdapter.notifyItemInserted(0);
         }
 
     }

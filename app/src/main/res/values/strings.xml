@@ -174,8 +174,8 @@ Question Therapy targets both the receptive and the expressive use of questions,
     <string name="no_comments">No comments</string>
     <string name="logging_out">Logging out...</string>
     <string name="deleteSmall">Delete</string>
-    <string name="send_feedback">SEND FEEDBACK</string>
-    <string name="suggest_us">Suggest Us</string>
+    <string name="send_feedback">SUGGEST CATEGORIES</string>
+    <string name="suggest_us">Suggest Categories</string>
     <string name="sending_message">sending message...</string>
     <string name="forget">Forget?</string>
     <string name="load_prev_comments">Load Previous Comments</string>

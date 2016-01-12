@@ -26,7 +26,7 @@
         android:textSize="19sp"
         android:visibility="gone"
         android:layout_centerInParent="true"
-    android:gravity="center"
-        android:textColor="#959595"
+        android:gravity="center"
+        android:textColor="#2dbda6"
         style="?android:attr/borderlessButtonStyle"/>
 </RelativeLayout>

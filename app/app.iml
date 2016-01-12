@@ -144,7 +144,6 @@
     <orderEntry type="library" exported="" name="facebook-android-sdk-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="crouton-1.8.5" level="project" />
     <orderEntry type="library" exported="" name="httpmime-4.3.6" level="project" />
-    <orderEntry type="library" exported="" name="facebook-android-sdk" level="project" />
     <orderEntry type="library" exported="" name="spots-dialog-0.7" level="project" />
     <orderEntry type="library" exported="" name="android-android-23" level="project" />
   </component>

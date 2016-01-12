@@ -78,6 +78,7 @@
                 fresco:actualImageScaleType="fitXY"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:scaleType="fitXY"
                 />
 
             <ImageView
@@ -91,6 +92,7 @@
                 android:layout_alignParentRight="true"
                 />
         </RelativeLayout>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="150dp"

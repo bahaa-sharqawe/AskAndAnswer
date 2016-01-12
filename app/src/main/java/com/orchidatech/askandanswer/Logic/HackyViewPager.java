@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 /**
  * Created by Bahaa on 25/12/2015.
  */
-public class HackyViewPager  extends ViewPager {
+public class HackyViewPager extends ViewPager {
 
     private boolean isLocked;
 
@@ -44,12 +44,12 @@ public class HackyViewPager  extends ViewPager {
         isLocked = !isLocked;
     }
 
-    public void setLocked(boolean isLocked) {
-        this.isLocked = isLocked;
-    }
-
     public boolean isLocked() {
         return isLocked;
+    }
+
+    public void setLocked(boolean isLocked) {
+        this.isLocked = isLocked;
     }
 
 }

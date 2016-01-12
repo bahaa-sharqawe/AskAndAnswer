@@ -218,19 +218,18 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 holder.iv_postImage.setVisibility(View.VISIBLE);
 
                 final AQuery aq = new AQuery(activity);
-                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
-                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
-                        aq.invalidate(pref.getString("prevImage", null));
-                        Uri uri = Uri.parse(pref.getString("prevImage", null));
-                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
-                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
-                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
-                    }
-                    pref.edit().remove(currentPost.getServerID() + "").commit();
-                    pref.edit().remove("prevImage").commit();
-                }
+//                if (pref.getLong(currentPost.getServerID() + "", -1) == currentPost.getServerID()) {
+//                    if (!TextUtils.isEmpty(pref.getString("prevImage", null))) {
+//                        aq.invalidate(pref.getString("prevImage", null));
+//                        Uri uri = Uri.parse(pref.getString("prevImage", null));
+//                        Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+//                        Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(uri.toString()));
+//                        Fresco.getImagePipeline().evictFromMemoryCache(uri);
+//                    }
+//                    pref.edit().remove(currentPost.getServerID() + "").commit();
+//                    pref.edit().remove("prevImage").commit();
+//                }
 /* Getting Images from Server and stored in cache */
-
 //                Bitmap preset = aq.getCachedImage(currentPost.getImage());
 //                    aq.id(holder.iv_postImage).image(currentPost.getImage(), false, true, 0, 0, new BitmapAjaxCallback() {
 //                        @Override
@@ -397,7 +396,7 @@ public class ProfileRecViewAdapter extends RecyclerView.Adapter<ProfileRecViewAd
                 @Override
                 public void onClick(View v) {
                     if (/*fragment_numeric != Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType() && */!isCommentDialogShown)
-                        commentPost(posts.get(position).getServerID());
+                        commentPost(posts.get(position-1).getServerID());
 //                    else if (fragment_numeric == Enum.POSTS_FRAGMENTS.MY_ASKS.getNumericType() && !isCommentDialogShown)
 //                        viewPost(posts.get(position).getServerID());
                 }
