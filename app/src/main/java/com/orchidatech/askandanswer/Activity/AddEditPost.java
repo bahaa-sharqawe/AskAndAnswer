@@ -400,6 +400,7 @@ public class AddEditPost extends AppCompatActivity {
                 downSampleImage(picturePath);
                 if (bitmap == null) {
                     Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
+                    picturePath = null;
                     return;
                 }
                 rl_post_photo.setVisibility(View.VISIBLE);
@@ -408,7 +409,7 @@ public class AddEditPost extends AppCompatActivity {
                 iv_post.setImageBitmap(bitmap);
 
             }catch (Exception e){
-
+                picturePath = null;
             }
 //            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
