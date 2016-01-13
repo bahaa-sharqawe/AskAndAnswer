@@ -35,6 +35,11 @@ public class Validator {
         matcher = pattern.matcher(username);
         return matcher.matches();
     }
+    public  boolean isWebUrl(String url){
+        pattern = Patterns.WEB_URL;
+        matcher = pattern.matcher(url);
+        return matcher.matches();
+    }
     public  boolean isValidEmail(String email){
         pattern = Patterns.EMAIL_ADDRESS;
         matcher = pattern.matcher(email);

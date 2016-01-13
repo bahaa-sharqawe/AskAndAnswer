@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.androidquery.AQuery;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
@@ -38,7 +40,11 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -61,6 +67,7 @@ import com.orchidatech.askandanswer.Fragment.Profile;
 import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Interface.OnLastListReachListener;
 import com.orchidatech.askandanswer.View.Interface.OnPostFavoriteListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 import com.squareup.picasso.Callback;
@@ -221,7 +228,7 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
 //                            holder.tv_postContent.measure(0, 0);       //must call measure!
 //                            bm = BitmapUtility.resizeBitmap(bm, holder.tv_postContent.getWidth(), 400);
 //                            Log.i("dimensd", bm.getHeight() + " x " + bm.getWidth() + ", " + holder.tv_postContent.getWidth());
-//                            final Bitmap finalBm = bm;
+    //                            final Bitmap finalBm = bm;
 //        iv.setImageBitmap(finalBm);
 //                            iv.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.images_fade));
 //Log.i("preset", "reloaded");
@@ -262,11 +269,19 @@ public class TimelineRecViewAdapter extends RecyclerView.Adapter<TimelineRecView
                     public void onFailure(String id, Throwable throwable) {
                     }
                 };
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(currentPost.getImage()))
+//                        .setResizeOptions(new ResizeOptions(50, 50))
+
+                        .build();;
                 DraweeController controller = (DraweeController) Fresco.newDraweeControllerBuilder()
                         .setControllerListener(controllerListener)
                         .setUri(Uri.parse(currentPost.getImage()))
                                 // other setters
                         .build();
+//                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+//                        .setOldController(holder.iv_postImage.getController())
+//                        .setImageRequest(request)
+//                        .build();
                 holder.iv_postImage.setController(controller);
 
 //                holder.iv_postImage.setImageURI(Uri.parse(currentPost.getImage()));

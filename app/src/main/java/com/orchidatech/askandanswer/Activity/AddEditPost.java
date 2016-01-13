@@ -46,10 +46,13 @@ import com.orchidatech.askandanswer.R;
 import com.orchidatech.askandanswer.View.Adapter.SpinAdapter;
 import com.orchidatech.askandanswer.View.Interface.OnAddPostListener;
 import com.orchidatech.askandanswer.View.Interface.OnEditPostListener;
+import com.orchidatech.askandanswer.View.Utils.BitmapUtility;
 import com.orchidatech.askandanswer.View.Utils.FontManager;
+import com.orchidatech.askandanswer.View.Utils.Validator;
 import com.orchidatech.askandanswer.WebService.WebServiceFunctions;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 
 import dmax.dialog.SpotsDialog;
@@ -78,6 +81,7 @@ public class AddEditPost extends AppCompatActivity {
     private SharedPreferences pref;
     private FontManager fontManager;
     private AlertDialog dialog;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,12 +205,26 @@ public class AddEditPost extends AppCompatActivity {
         if (id == R.id.done) {
             hideSoftKeyboard();
             String postDesc = ed_postDesc.getText().toString();
+            Uri selectedImage = null;
             if (verifyInputs(postDesc)) {
+                if(picturePath != null){
+                    if(!Validator.getInstance().isWebUrl(picturePath)) {
+                        selectedImage = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", null));
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        picturePath = cursor.getString(columnIndex);
+//                        Log.i("rtrtgfg", picturePath);
+//
+//                        picturePath = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", null);
+                    }
+                }
                 ///SEND TO SERVER
                 if (editPostId == -1) {//add case
-                    addPost(user_id, selectedCategory.getCategoryID(), postDesc, System.currentTimeMillis(), 0);
+                    addPost(user_id, selectedCategory.getCategoryID(), postDesc, System.currentTimeMillis(), 0, selectedImage);
                 } else {//edit case
-                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, picturePath/*to know if picture changed */, editPost.getIsHidden());
+                    editPost(editPostId, user_id, selectedCategory.getCategoryID(), postDesc, editPost.date, picturePath/*to know if picture changed */, editPost.getIsHidden(), selectedImage);
                 }
             }
             return true;
@@ -218,7 +236,7 @@ public class AddEditPost extends AppCompatActivity {
         return false;
     }
 
-    private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, String picturePath, int isHidden) {
+    private void editPost(final long postId, long user_id, long category_id, String postDesc, long date, final String picturePath, int isHidden, final Uri selectedImage) {
         final int imageState;
         if (isPostHasImagePrev) {
             Log.i("vxvcv", editPost.getImage() + "xcx");
@@ -254,6 +272,14 @@ public class AddEditPost extends AppCompatActivity {
                 dialog.dismiss();
                 if (imageState == 2 || imageState == 0) {
                     ///remove previous image from cache
+                    if(picturePath != null){
+                        if(!Validator.getInstance().isWebUrl(picturePath)){
+//                            File  file  = new File(picturePath);
+//                            file.delete();
+                            getContentResolver().delete(selectedImage, null, null);
+                        }
+//                        picturePath = Me1diaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", null);
+                    }
                     new AQuery(AddEditPost.this).invalidate(editPost.getImage());
                     Fresco.getImagePipelineFactory().getMainDiskStorageCache().remove(new SimpleCacheKey(editPost.getImage().toString()));
                     Fresco.getImagePipelineFactory().getSmallImageDiskStorageCache().remove(new SimpleCacheKey(editPost.getImage().toString()));
@@ -272,13 +298,22 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onFail(String error) {
                 dialog.dismiss();
+                if(picturePath != null){
+                    if(!Validator.getInstance().isWebUrl(picturePath)){
+//                        File  file  = new File(picturePath);
+//                        file.delete();
+                        getContentResolver().delete(selectedImage, null, null);
+//                        Toast.makeText(AddEditPost.this, "deleted", Toast.LENGTH_LONG).show();
+                    }
+//                        picturePath = Me1diaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", null);
+                }
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });
     }
 
 
-    private void addPost(final long user_id, long category_id, final String postDesc, final long date, int is_hidden) {
+    private void addPost(final long user_id, long category_id, final String postDesc, final long date, int is_hidden, final Uri selectedImage) {
 //        final LoadingDialog loadingDialog = new LoadingDialog();
 //        Bundle args = new Bundle();
 //        args.putString(LoadingDialog.DIALOG_TEXT_KEY, getString(R.string.saving));
@@ -293,6 +328,12 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 dialog.dismiss();
+                if (picturePath != null) {
+                    if (!Validator.getInstance().isWebUrl(picturePath)) {
+                        getContentResolver().delete(selectedImage, null, null);
+                    }
+//                        picturePath = Me1diaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", null);
+                }
                 rl_post_photo.setVisibility(View.GONE);
                 image_str = null;
                 picturePath = null;
@@ -315,6 +356,12 @@ public class AddEditPost extends AppCompatActivity {
             @Override
             public void onFail(String error) {
                 dialog.dismiss();
+                if (!Validator.getInstance().isWebUrl(picturePath)) {
+//                    File  file  = new File(picturePath);
+//                    file.delete();
+                    getContentResolver().delete(selectedImage, null, null);
+//                    Toast.makeText(AddEditPost.this, "deleted", Toast.LENGTH_LONG).show();
+                }
                 AppSnackBar.show(ll_parent, error, Color.RED, Color.WHITE);
             }
         });
@@ -349,25 +396,30 @@ public class AddEditPost extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-            final Bitmap bitmap = ShrinkBitmap(picturePath, 300, 300);
+            try {
+                downSampleImage(picturePath);
+                if (bitmap == null) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                rl_post_photo.setVisibility(View.VISIBLE);
+                iv_post.setVisibility(View.VISIBLE);
+                iv_camera.setEnabled(true);
+                iv_post.setImageBitmap(bitmap);
+
+            }catch (Exception e){
+
+            }
 //            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-            if (bitmap == null) {
-                Toast.makeText(getApplicationContext(), getString(R.string.choose_valid_image), Toast.LENGTH_LONG).show();
-                return;
-            }
-            rl_post_photo.setVisibility(View.VISIBLE);
-            iv_post.setVisibility(View.VISIBLE);
-            iv_camera.setEnabled(true);
-            iv_post.setImageBitmap(bitmap);
 
         /*
          * Convert the image to a string
          * */
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream); //compress to which format you want.
-            byte[] byte_arr = stream.toByteArray();
-            image_str = Base64.encodeToString(byte_arr, 0);
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream); //compress to which format you want.
+//            byte[] byte_arr = stream.toByteArray();
+//            image_str = Base64.encodeToString(byte_arr, 0);
         }
     }
 
@@ -392,7 +444,16 @@ public class AddEditPost extends AppCompatActivity {
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
     }
+private  Bitmap downSampleImage(String filePath){
+    BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+//    bmpFactoryOptions.inJustDecodeBounds = true;
+//    bmpFactoryOptions.inSampleSize = 8;
+//    bmpFactoryOptions.inJustDecodeBounds = false;
+    bitmap = BitmapUtility.resizeBitmap(BitmapFactory.decodeFile(filePath, bmpFactoryOptions), 1280, 800);
+    return bitmap;
 
+
+}
     private void hideSoftKeyboard() {
         View view = AddEditPost.this.getCurrentFocus();
         if (view != null) {

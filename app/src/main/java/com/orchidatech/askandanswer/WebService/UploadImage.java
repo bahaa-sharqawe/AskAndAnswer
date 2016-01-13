@@ -75,7 +75,7 @@ public class UploadImage {
                 httpPost.setEntity(entity);
                 HttpResponse response = httpClient.execute(httpPost);
                 HttpEntity r_entity = response.getEntity();
-
+//Log.i("responsadd",  EntityUtils.toString(r_entity));
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == 200) {
                     responseString = EntityUtils.toString(r_entity);
@@ -87,6 +87,7 @@ public class UploadImage {
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.i("responsadd",  e.getMessage());
             }
             return responseString;
         }
